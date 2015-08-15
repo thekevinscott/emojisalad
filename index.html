@@ -32,7 +32,7 @@
 	        <section class='phone-input'>
 		        <label for='tel-number'>Give us your number, we'll text you.</label>
 		        <input type='tel' id='tel-number' placeholder='(555) 555-1234' />
-		        <button class='submit'>Text me</button>
+		        <button id='submit-button' class='submit'>Text me</button>
 		        <p>No spam, promise.</p>
 	        </section>
 	    </div>
@@ -40,6 +40,23 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
+        <script src="js/jquery.mask.js"></script>
+		<!-- Phone number mask -->
+		<script type="text/javascript">
+			$(document).ready(function(){
+  				$('#tel-number').mask('(000) 000-0000');
+			});
+		</script>
+
+        <!-- Send request to server -->
+        <script type="text/javascript">
+        	$(document).ready(function(){
+        		$("#submit-button").click(function(){
+            		var val1= $("#tel-number").val();
+               		$.post('http://192.168.1.3:5000/new', {number: val1 }, function(data) {console.log(data); } )
+            	}); 	
+        	}); 
+        </script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

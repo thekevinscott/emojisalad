@@ -110,6 +110,9 @@ button:focus {
   display: block;
   padding-bottom: 5px;
 }
+.container .phone-input input {
+  color: #000;
+}
 .container .phone-input .submit {
   color: #0086c2;
   font-size: 24px;
