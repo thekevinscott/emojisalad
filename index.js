@@ -29,7 +29,7 @@ app.get('/messages', function(req, res) {
     });
 });
 
-app.get('/response', function(req, res) {
+app.post('/reply', function(req, res) {
     var twilio = require('twilio');
     var twiml = new twilio.TwimlResponse();
     twiml.say('This is msg 1');
