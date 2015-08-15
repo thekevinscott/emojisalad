@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 var text = require('./text');
 
 app.get('/', function (req, res) {
-    res.send('hello');
+    res.send('hello1');
 });
 
 app.get('/goat/:number', function(req, res) {
