@@ -51,6 +51,7 @@ module.exports = function(app, conn) {
         passReqToCallback : true
     },
     function(req, username, password, done) {
+        console.log('register time');
         if ( username.length < 5 ) {
             return done('Your username must be longer than 5 characters');
         }
@@ -67,9 +68,11 @@ module.exports = function(app, conn) {
             .where('username=?', username);
 
         db.query(query).then(function(rows) {
+            console.log('back');
             if (rows.length) {
                 return done('That username is already taken.');
             } else {
+                console.log('lets try');
                 // if there is no user with that username
                 // create the user
                 var user = {
