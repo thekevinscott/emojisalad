@@ -2,8 +2,6 @@
 var express = require('express');
 var app = express();
 
-console.log('*** TODO: Lets get Node using ES6, too');
-
 app.use(express.static(__dirname + '/public'));
 
 // set up handlebars
@@ -35,6 +33,7 @@ app.listen(app.get('port'), function() {
 // routes
 require('./api/routes/account')(app);
 require('./api/routes/players')(app);
+require('./api/routes/messages')(app);
 
 // bootstrap our web app
 app.get('*', function(req, res) {
