@@ -1,17 +1,26 @@
-// Twilio Credentials 
-var accountSid = 'ACf2076b907d44abdd8dc8d262ff941ee4'; 
-var authToken = '0d7b1b491ca038d4ff4fdf674cd46aa1'; 
+var config = require('./config/twilio');
+var _ = require('lodash');
+
+var client = require('twilio')(config.accountSid, config.authToken); 
  
-//require the Twilio module and create a REST client 
-var client = require('twilio')(accountSid, authToken); 
-var from = "18603814348";
- 
-function send(to, msg) {
-    return client.messages.create({ 
+function send(to, data) {
+    var params = {
         to: to, 
-        from: from, 
-        body: msg
-    });
+        from: config.from, 
+    };
+
+    if ( _.isObject(data) ) {
+        if ( data.msg ) {
+            params.body = data.msg;
+        }
+        if ( data.url ) {
+            params.mediaUrl = data.url;
+        }
+    } else {
+        params.body = data.msg;
+    }
+
+    return client.messages.post(params);
 }
 
 function get(sid) {
@@ -22,7 +31,17 @@ function get(sid) {
     }
 }
 
+function reply(messages) {
+    var twilio = require('twilio');
+    var twiml = new twilio.TwimlResponse();
+    messages.map(function(message) {
+        twiml.message(message);
+    });
+    return twiml;
+}
+
 module.exports = {
     send: send,
-    get: get
+    get: get,
+    reply: reply
 }
