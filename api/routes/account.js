@@ -4,9 +4,6 @@ module.exports = function(app) {
 
     app.post('/login', function(req, res, next) {
         passport.authenticate('local-login', function(message, user, err) {
-            console.log('local login');
-            console.log('message', message);
-            console.log('err', err);
             if ( err ) {
                 // err is returned from passport's authentication
                 // strategy before the callback is called. Usually

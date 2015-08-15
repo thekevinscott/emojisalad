@@ -10,6 +10,6 @@ export class Login extends Form {
         this.handleSuccess = this.handleSuccess.bind(this);
     }
     handleSuccess(resp) {
-        console.log('success registering', resp);
+        console.log('success logging in', resp);
     }
 }

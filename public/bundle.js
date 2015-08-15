@@ -199,7 +199,7 @@ webpackJsonp([1],[
 	    _createClass(Login, [{
 	        key: 'handleSuccess',
 	        value: function handleSuccess(resp) {
-	            console.log('success registering', resp);
+	            console.log('success logging in', resp);
 	        }
 	    }]);
 
