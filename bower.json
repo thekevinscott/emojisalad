@@ -1,0 +1,20 @@
+{
+  "name": "zdate",
+  "version": "0.0.0",
+  "homepage": "https://github.com/scottlabs/ZDate",
+  "authors": [
+    "Kevin Scott <kscott@tenable.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "~0.13.3",
+    "superagent": "~1.2.0",
+    "reqwest": "~2.0.1"
+  }
+}

@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>ZDate</title>
+        <meta name = "viewport" content = "width = device-width">
+        <link rel="stylesheet/less" type="text/css" href="/styles/main.less" />
+        <script src="/js/lib/less/dist/less.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                {{#if user.id}}
+                <a class="logout" href="/logout">Log Out</a>
+                {{/if}}
+            </header>
+            {{{ body }}}
+        </div>
+    </body>
+</html>
