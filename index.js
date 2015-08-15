@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 
+<<<<<<< HEAD
 app.set('port', (process.env.PORT || 5000));
 
 var bodyParser = require('body-parser')
@@ -104,3 +105,22 @@ function response(twiml, res) {
 app.listen(app.get('port'), function() {
     console.log('Example app listening on port', app.get('port'));
 });
+=======
+app.set('port', (process.env.PORT || 5002));
+
+app.use(express.static(__dirname + '/'));
+
+// views is directory for all template files
+app.set('views', __dirname + '/');
+app.set('view engine', 'html');
+
+app.get('/', function(request, response) {
+    response.render('index');
+});
+
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
+
+
+>>>>>>> 54cf611479db055bbaa2e7077e1674b348e821f7

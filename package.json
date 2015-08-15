@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "twilio-test",
   "version": "1.0.0",
   "description": "",
@@ -17,5 +18,25 @@
   },
   "devDependencies": {
     "ngrok": "^0.1.99"
+=======
+  "name": "EmojinaryFriend",
+  "version": "1.0.0",
+  "description": "Website for Emojinary Friend",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:slipper-siblings/text-hackathon-website.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3"
+>>>>>>> 54cf611479db055bbaa2e7077e1674b348e821f7
   }
 }
