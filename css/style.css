@@ -1,19 +1,67 @@
-@import url("http://fonts.googleapis.com/css?family=Work+Sans:400,100,600");
-@import url("http://fonts.googleapis.com/css?family=Alegreya:400,700|Alegreya+Sans|Poppins");
+@import url("http://fonts.googleapis.com/css?family=Josefin+Slab:400,400italic");
+@font-face {
+  font-family: 'Big John';
+  font-style: normal;
+  src: local('Big John'), url("../fonts/BIGJOHN.otf") format('opentype');
+}
+@font-face {
+  font-family: 'Slim Joe';
+  font-style: normal;
+  src: local('Slim Joe'), url("../fonts/SlimJoe.otf") format('opentype');
+}
 html,
 body {
-  background-color: #5ccdff;
+  background-color: #26bafa;
   color: #fff;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
+  text-align: center;
 }
-h1,
+h1 {
+  font-family: 'Big John', sans-serif;
+  font-size: 2em;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+}
+h1 .light {
+  font-family: 'Slim Joe', sans-serif;
+}
 h2 {
-  font-weight: 700;
-  margin: 15px;
+  font-family: 'Slim Joe', sans-serif;
+  font-size: 1.2em;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+}
+p {
+  font-family: 'Josefin Slab', serif;
+  font-style: italic;
+  font-size: 1em;
+  letter-spacing: 0.05em;
+}
+a {
+  color: #26bafa;
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 1px dashed #26bafa;
+}
+a:hover {
+  color: #58cafb;
+  border-bottom: 1px dashed #58cafb;
 }
 button:focus {
   outline: 0;
+}
+section {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+.description {
+  width: 100%;
+  background-color: #58cafb;
+}
+.phone-input {
+  width: 100%;
+  background-color: #fff;
+  color: #26bafa;
 }
 .container {
   display: -webkit-box;
@@ -57,11 +105,12 @@ button:focus {
   -moz-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
+  margin-bottom: 15px;
 }
 .container .venn .rounded {
   opacity: 0.4;
   border-radius: 80px;
-  max-width: 50%;
+  max-width: 30%;
 }
 .container .venn .rounded.left {
   opacity: 1;
@@ -72,15 +121,7 @@ button:focus {
   margin-left: -20px;
   padding-left: -20px;
 }
-.container .wtf {
-  background-color: #76d5ff;
-  -webkit-appearence: none;
-  border: none;
-  margin-bottom: 24px;
-}
 .container .phone-input {
-  background-color: #76d5ff;
-  width: 100%;
   display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
@@ -100,22 +141,32 @@ button:focus {
   -moz-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  color: #fff;
 }
 .container .phone-input label {
-  padding-top: 10px;
+  font-family: 'Big John', sans-serif;
+  font-size: 0.9em;
+  line-height: 1.4;
+  padding-bottom: 10px;
 }
-.container .phone-input label,
 .container .phone-input input {
-  display: block;
+  font-family: 'Slim Joe', sans-serif;
+  font-size: 1.2em;
+  line-height: 1.4;
+  text-align: center;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #26bafa;
+  padding-top: 10px;
   padding-bottom: 5px;
 }
 .container .phone-input .submit {
-  color: #0086c2;
-  font-size: 24px;
-  font-weight: 400;
-  background-color: #fff;
+  background-color: #26bafa;
+  color: #fff;
   -webkit-appearence: none;
   border: none;
-  margin-top: 10px;
+  font-family: 'Big John', sans-serif;
+  font-size: 0.9em;
+  line-height: 0.9em;
+  padding: 15px 20px 10px 20px;
+  margin-bottom: 20px;
 }
