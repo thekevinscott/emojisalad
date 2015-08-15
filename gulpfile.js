@@ -1,43 +1,38 @@
 var gulp = require('gulp');
 var stylus = require('gulp-stylus');
-var livereload = require('gulp-livereload');
-var lr;
+connect = require('gulp-connect');
 
-// Express server
-gulp.task('express', function() {
-  var express = require('express');
-  var app = express();
-  app.use(express.static(__dirname));
-  app.listen(4000, '0.0.0.0');
+// Connect server, and make LiveReload happen
+gulp.task('connect', function() {
+  connect.server({
+    root: './',
+    livereload: true
+  });
 });
 
 // Get all .styl files in one folder and render
 gulp.task('stylus', function () {
+    console.log('Hello!')
     gulp.src('./stylus/*.styl')
         .pipe(stylus())
-        .pipe(gulp.dest('./css/'))
-        .pipe(livereload());
+        .pipe(gulp.dest('css'));
 });
 
-// Let the system notify the browser to refresh
-gulp.task('startLiveReload', function(){
-	livereload({ start: true });
+// Watch HTML for changes, and Live Reload
+gulp.task('html', function () {
+  gulp.src('./*.html')
+    .pipe(connect.reload());
 });
 
-function notifyLiveReload(event) {
-  gulp.src(event.path, {read: false})
-      .pipe(require('gulp-livereload')(lr));
-};	
-
-//Watch for changes
-gulp.task('watch', function() {
-	livereload.listen();
-	gulp.watch('stylus/*.styl', ['stylus']);
-	gulp.watch('*.html', notifyLiveReload);
-	gulp.watch('css/*.css', notifyLiveReload);
+// Watch for changes
+gulp.task('watch', function () {
+  gulp.watch(['stylus/*.styl'], ['stylus']);
+  gulp.watch(['*.html'], ['html']);
+  gulp.watch(['css/*'], ['html']);
 });
+
 
 //Run tasks
-gulp.task('default', ['express','stylus','startLiveReload','watch'], function() {
+gulp.task('default', ['connect', 'stylus', 'html', 'watch'], function() {
 
 });
