@@ -32,8 +32,8 @@ app.get('/messages', function(req, res) {
 app.post('/reply', function(req, res) {
     var twilio = require('twilio');
     var twiml = new twilio.TwimlResponse();
-    twiml.say('This is msg 1');
-    twiml.say('This is msg 2');
+    twiml.message('This is msg 1');
+    twiml.message('This is msg 2');
 
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(twiml.toString());
