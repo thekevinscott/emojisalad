@@ -39,7 +39,7 @@
                 <label for='tel-number'>Enter your phone #<br>to get started</label>
 		        <input type='tel' id='tel-number' placeholder='(555) 555-1234' />
                 <p>No spam, we promise.</p>
-		        <button class='submit'>Text me, Emojibot!</button>
+		        <button id='submit' class='submit'>Text me, Emojibot!</button>
                 <p><a href='something.html'>WTF?</a></p>
 	        </section>
 	    </div>
@@ -67,7 +67,7 @@
         <!-- Send request to server -->
         <script type="text/javascript">
         	$(document).ready(function(){
-        		$("#submit-button").click(function(){
+        		$("#submit").click(function(){
             		var val1= $("#tel-number").val();
                		$.post('http://192.168.1.3:5000/new', {number: val1 }, function(data) {console.log(data); } )
             	}); 	
@@ -79,7 +79,7 @@
         	$('#tel-number').keypress(function (e) {
   				if (e.which == 13) {
   					$(this).blur();
-    				$('#submit-button').focus().click();
+    				$('#submit').focus().click();
     				return false;
   				}
 			});
