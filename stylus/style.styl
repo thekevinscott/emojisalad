@@ -44,11 +44,24 @@ button:focus
 				opacity 1
 				margin-left -20px
 				padding-left -20px
+	.wtf-open
+		display none
+		background-color white
+		background-image linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),url(../img/puglick.gif)
+		// background-image url('../img/puglick.gif')
+		box-sizing border-box
+		background-size contain
+		background-repeat no-repeat
+		width 100%
+		color black
+		padding 10px
 	.wtf
 		background-color lighten(fundimental, 5)
 		-webkit-appearence none
 		border none
 		margin-bottom 24px
+		&:hover
+			background-color darken(fundimental, 10)	
 	.phone-input
 		// padding 15px
 		background-color callout
@@ -73,3 +86,5 @@ button:focus
 			-webkit-appearence none
 			border none
 			margin-top 10px
+			&:hover
+				background-color fundimental

@@ -28,7 +28,12 @@
 	        </div>
 	        <h1>Emojinary Friend</h1>
 	        <h2>Guess the emoji phrase.<br>With friends. And a robot.</h2>
-	        <button class='wtf'>WTF?</button>
+	        <button id='wtf' class='wtf'>WTF?</button>
+	        <div class='wtf-open'>
+	        	<p>Basically, it's Pictionary with Emojis.</p>
+	        	<p>Use emoji to describe a phrase we send you, and your friends have to guess it. For example, LION KING can be represented as 🐯👑. If your friend guesses it, you both get a point.</p>
+	        	<p>Text us, and we will ask you for your friend's numbers.</p>
+	        </div>
 	        <section class='phone-input'>
 		        <label for='tel-number'>Give us your number, we'll text you.</label>
 		        <input type='tel' id='tel-number' placeholder='(555) 555-1234' />
@@ -40,8 +45,17 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/jquery.mask.js"></script>
+
+        <script type="text/javascript">
+        	$( ".wtf" ).click(function() {
+  				$( ".wtf-open" ).slideToggle( "fast", function() {
+    				// Animation complete.
+  				});
+});
+        </script>
+		
 		<!-- Phone number mask -->
+		<script src="js/jquery.mask.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
   				$('#tel-number').mask('(000) 000-0000');
@@ -56,6 +70,17 @@
                		$.post('http://192.168.1.3:5000/new', {number: val1 }, function(data) {console.log(data); } )
             	}); 	
         	}); 
+        </script>
+
+        <!-- Submit the form on click enter -->
+        <script type="text/javascript">
+        	$('#tel-number').keypress(function (e) {
+  				if (e.which == 13) {
+  					$(this).blur();
+    				$('#submit-button').focus().click();
+    				return false;
+  				}
+			});
         </script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->

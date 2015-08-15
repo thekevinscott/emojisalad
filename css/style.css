@@ -72,11 +72,25 @@ button:focus {
   margin-left: -20px;
   padding-left: -20px;
 }
+.container .wtf-open {
+  display: none;
+  background-color: #fff;
+  background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url("../img/puglick.gif");
+  box-sizing: border-box;
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 100%;
+  color: #000;
+  padding: 10px;
+}
 .container .wtf {
   background-color: #76d5ff;
   -webkit-appearence: none;
   border: none;
   margin-bottom: 24px;
+}
+.container .wtf:hover {
+  background-color: #29bdff;
 }
 .container .phone-input {
   background-color: #76d5ff;
@@ -121,4 +135,7 @@ button:focus {
   -webkit-appearence: none;
   border: none;
   margin-top: 10px;
+}
+.container .phone-input .submit:hover {
+  background-color: #5ccdff;
 }
