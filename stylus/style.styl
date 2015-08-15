@@ -1,32 +1,38 @@
+@import 'flex'
 @import url('http://fonts.googleapis.com/css?family=Work+Sans:400,100,600');
+@import url('http://fonts.googleapis.com/css?family=Alegreya:400,700|Alegreya+Sans|Poppins');
 
-darkgray = #584B53
-skyblue = #D6E3F8
-peach = #FEF5EF
-tan = #E4BB97
-crimson = #9F4A54
-sans = 'Work Sans', sans-serif;
+fundimental = #5ccdff
+cta = #D6E3F8
+callout = lighten(fundimental, 5)
+// sans = 'Work Sans', sans-serif;
+sans = 'Poppins', sans-serif;
 submit-button-height = 40px
 
-body
-	background-color darkgray
-	color lighten(darkgray, 40)
+html, body
+	background-color fundimental
+	color white
 	font-family sans
-	font-weight 100
+	font-weight 700 
 h1, h2
-	font-weight 100
+	font-weight 700
+	margin 15px
+	
+button:focus
+	outline 0
 		
 .container
-	padding 24px
-	display flex
-	align-items center
-	justify-content center
-	flex-direction column
+	// display -webkit-box
+	flex()
+	align(center)
+	justify-content(center)
+	flex-direction(column)
+	width 100%
 	.venn
-		display flex
-		align-items center
-		justify-content center
-		flex-direction row
+		flex()
+		align(center)
+		justify-content(center)
+		flex-direction(row)
 		.rounded
 			opacity 0.4
 			border-radius (160px/2)
@@ -38,13 +44,30 @@ h1, h2
 				opacity 1
 				margin-left -20px
 				padding-left -20px
+	.wtf
+		background-color lighten(fundimental, 5)
+		-webkit-appearence none
+		border none
+		margin-bottom 24px
 	.phone-input
-		display flex
-		align-items center
-		justify-content center
-		flex-direction column
+		// padding 15px
+		background-color callout
+		width 100%
+		flex()
+		align(center)
+		justify-content(center)
+		flex-direction(column)
+		color lighten(fundimental, 50)
+		label
+			padding-top 10px
 		label, input
 			display block
+			padding-bottom 5px
 		.submit
-			height submit-button-height
-			border-radius (submit-button-height/2)
+			color darken(fundimental,30)
+			font-size 24px
+			font-weight 400
+			background-color white
+			-webkit-appearence none
+			border none
+			margin-top 10px

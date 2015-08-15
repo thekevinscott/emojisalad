@@ -1,25 +1,61 @@
 @import url("http://fonts.googleapis.com/css?family=Work+Sans:400,100,600");
+@import url("http://fonts.googleapis.com/css?family=Alegreya:400,700|Alegreya+Sans|Poppins");
+html,
 body {
-  background-color: #584b53;
-  color: #bdb2b9;
-  font-family: 'Work Sans', sans-serif;
-  font-weight: 100;
+  background-color: #5ccdff;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 }
 h1,
 h2 {
-  font-weight: 100;
+  font-weight: 700;
+  margin: 15px;
+}
+button:focus {
+  outline: 0;
 }
 .container {
-  padding: 24px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  width: 100%;
 }
 .container .venn {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
   flex-direction: row;
 }
 .container .venn .rounded {
@@ -36,17 +72,50 @@ h2 {
   margin-left: -20px;
   padding-left: -20px;
 }
+.container .wtf {
+  background-color: #76d5ff;
+  -webkit-appearence: none;
+  border: none;
+  margin-bottom: 24px;
+}
 .container .phone-input {
+  background-color: #76d5ff;
+  width: 100%;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  color: #fff;
+}
+.container .phone-input label {
+  padding-top: 10px;
 }
 .container .phone-input label,
 .container .phone-input input {
   display: block;
+  padding-bottom: 5px;
 }
 .container .phone-input .submit {
-  height: 40px;
-  border-radius: 20px;
+  color: #0086c2;
+  font-size: 24px;
+  font-weight: 400;
+  background-color: #fff;
+  -webkit-appearence: none;
+  border: none;
+  margin-top: 10px;
 }
