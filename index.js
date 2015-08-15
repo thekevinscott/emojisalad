@@ -92,7 +92,7 @@ app.post('/reply', function(req, res) {
             text.send(from, {
                 url: img
             });
-        }, 1000 * count);
+        }, 500 * count);
     });
 });
 

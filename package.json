@@ -14,5 +14,8 @@
     "lodash": "^3.10.1",
     "q": "^1.4.1",
     "twilio": "^2.3.0"
+  },
+  "devDependencies": {
+    "ngrok": "^0.1.99"
   }
 }
