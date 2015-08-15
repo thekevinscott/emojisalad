@@ -3,10 +3,10 @@ var connection;
 if ( ! connection ) {
     connection = mysql.createConnection({
         host     : 'db.herdingpixels.com',
-        user     : 'zdate',
-        password : 'wgFkcma9b#zHkKoZRPXK9WVNH.p2U9'
+        user     : 'emojinaryfriend',
+        password : 'hVZR3ZB^i2JN*ZRgcbZ4A%TjPyJu'
     });
-    connection.query('USE zdate2');
+    connection.query('USE emojinaryfriend');
 }
 
 function getConnection(start) {
