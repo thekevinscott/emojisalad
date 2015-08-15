@@ -1,11 +1,12 @@
 var crypt = require('crypt3');
 var passport = require('passport');
+var Q = require('q');
 
 var LocalStrategy = require('passport-local').Strategy;
 
 var squel = require('squel');
 
-var db = require('../db');
+var db = require('./db');
 
 module.exports = function(app, conn) {
     app.use(passport.initialize());
@@ -32,7 +33,6 @@ module.exports = function(app, conn) {
 
 
     function isAuthenticated(req, res, next) {
-        console.log('check authenticated');
 
         // CHECK THE USER STORED IN SESSION FOR A CUSTOM VARIABLE
         // you can do this however you want with whatever variables you set up
@@ -51,7 +51,6 @@ module.exports = function(app, conn) {
         passReqToCallback : true
     },
     function(req, username, password, done) {
-        console.log('register time');
         if ( username.length < 5 ) {
             return done('Your username must be longer than 5 characters');
         }
@@ -67,34 +66,40 @@ module.exports = function(app, conn) {
             .from('users')
             .where('username=?', username);
 
+        var user = {
+            username: username,
+            password: password,
+            salt: crypt.createSalt('sha512')
+        };
+
+        user.password = crypt(password, user.salt);
+
         db.query(query).then(function(rows) {
-            console.log('back');
-            if (rows.length) {
-                return done('That username is already taken.');
+            if (rows && rows.length) {
+                var msg = 'That username is already taken.';
+                done(msg);
+                throw msg;
             } else {
-                console.log('lets try');
                 // if there is no user with that username
                 // create the user
-                var user = {
-                    username: username,
-                    password: password,
-                    salt: crypt.createSalt('sha512')
-                };
-                user.password = crypt(password, user.salt);
-
                 var query = squel
                             .insert()
                             .into('users')
                             .setFields(user);
 
-                db.query(query).then(function(rows) {
-                    user.id = rows.insertId;
-                    return done(null, user);
-                }, function(err) {
-                    return done('There was an unknown error; please try again later.');
-                });
+                            //var dfd = Q.defer();
+                            //dfd.resolve({insertId: 'foo' });
+                            //return dfd.promise;
+                return db.query(query);
             }	
-        }, function(err) {
+        }).then(function(data) {
+            user.id = data.insertId;
+            return done(null, {
+                username: user.username,
+                id: user.id 
+            });
+        }).fail(function(err) {
+            console.error('err', err);
             return done('There was an unknown error; please try again later.');
         });
     }));

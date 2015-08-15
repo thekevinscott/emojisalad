@@ -357,11 +357,11 @@ webpackJsonp([1],[
 	var update = __webpack_require__(11)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
-	if(false) {
+	if(true) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./form.less", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./form.less");
+			module.hot.accept(9, function() {
+				var newContent = __webpack_require__(9);
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -751,11 +751,7 @@ webpackJsonp([1],[
 	    _createClass(Header, [{
 	        key: 'render',
 	        value: function render() {
-	            return React.createElement(
-	                'header',
-	                null,
-	                'Header'
-	            );
+	            return React.createElement('header', null);
 	        }
 	    }]);
 
@@ -777,11 +773,11 @@ webpackJsonp([1],[
 	var update = __webpack_require__(11)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
-	if(false) {
+	if(true) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./base.less", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./base.less");
+			module.hot.accept(15, function() {
+				var newContent = __webpack_require__(15);
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});

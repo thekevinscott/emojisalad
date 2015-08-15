@@ -4,7 +4,6 @@ var app = express();
 
 console.log('*** TODO: Lets get Node using ES6, too');
 
-var db = require('./db.js');
 app.use(express.static(__dirname + '/public'));
 
 // set up handlebars
