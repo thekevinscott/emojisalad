@@ -1,11 +1,50 @@
+@import url('http://fonts.googleapis.com/css?family=Work+Sans:400,100,600');
+
 darkgray = #584B53
 skyblue = #D6E3F8
 peach = #FEF5EF
 tan = #E4BB97
 crimson = #9F4A54
+sans = 'Work Sans', sans-serif;
+submit-button-height = 40px
 
 body
-	background-color: peach
-	
-p
-	color: darkgray
+	background-color darkgray
+	color lighten(darkgray, 40)
+	font-family sans
+	font-weight 100
+h1, h2
+	font-weight 100
+		
+.container
+	padding 24px
+	display flex
+	align-items center
+	justify-content center
+	flex-direction column
+	.venn
+		display flex
+		align-items center
+		justify-content center
+		flex-direction row
+		.rounded
+			opacity 0.4
+			border-radius (160px/2)
+			max-width 50%
+			&.left
+				opacity 1
+				margin-right -20px
+			&.right
+				opacity 1
+				margin-left -20px
+				padding-left -20px
+	.phone-input
+		display flex
+		align-items center
+		justify-content center
+		flex-direction column
+		label, input
+			display block
+		.submit
+			height submit-button-height
+			border-radius (submit-button-height/2)

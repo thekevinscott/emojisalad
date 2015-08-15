@@ -1,6 +1,52 @@
+@import url("http://fonts.googleapis.com/css?family=Work+Sans:400,100,600");
 body {
-  background-color: #fef5ef;
+  background-color: #584b53;
+  color: #bdb2b9;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 100;
 }
-p {
-  color: #584b53;
+h1,
+h2 {
+  font-weight: 100;
+}
+.container {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.container .venn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+.container .venn .rounded {
+  opacity: 0.4;
+  border-radius: 80px;
+  max-width: 50%;
+}
+.container .venn .rounded.left {
+  opacity: 1;
+  margin-right: -20px;
+}
+.container .venn .rounded.right {
+  opacity: 1;
+  margin-left: -20px;
+  padding-left: -20px;
+}
+.container .phone-input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.container .phone-input label,
+.container .phone-input input {
+  display: block;
+}
+.container .phone-input .submit {
+  height: 40px;
+  border-radius: 20px;
 }
