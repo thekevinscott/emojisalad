@@ -1,7 +1,7 @@
 {
-  "name": "zdate",
+  "name": "Admin.EmojinaryFriend",
   "version": "1.0.0",
-  "description": "",
+  "description": "The CMS for EmojinaryFriend",
   "main": "index.js",
   "scripts": {
     "webpack": "webpack --progress --colors --watch",
