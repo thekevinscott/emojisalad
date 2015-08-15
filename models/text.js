@@ -47,6 +47,7 @@ var Text = {
       } else {
         var message = messages[0];
         params.body = message.message;
+        console.log('params', params);
 
         return client.messages.post(params).then(function(response) {
 
