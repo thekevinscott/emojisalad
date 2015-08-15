@@ -43,7 +43,6 @@ export var Messages = React.createClass({
         } else {
           save = <a onClick={this.save.bind(this, message)}>Save</a>;
         }
-
         return (
           <tr><td>{message.key}</td><td className="full"><textarea>{message.message}</textarea></td><td>{save}</td><td>x</td></tr>
         );
