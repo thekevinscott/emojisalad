@@ -6,22 +6,19 @@ import { auth } from '../auth';
 
 var Link = Router.Link;
 
-export var Dashboard = React.createClass({
+export var Games = React.createClass({
   statics: {
     willTransitionTo: function (transition, params, query) {
       auth.isLoggedIn(transition);
     }
   },
   render: function () {
-    console.log('redner dashboard 2');
+    console.log('redner dashboard');
     return (
-      <div className="dashboard page">
-        <h1>This is a Dashboard page</h1>
-        <ul>
-          <li><Link to="games">Games</Link></li>
-          <li><Link to="players">Players</Link></li>
-        </ul>
+      <div className="games page">
+      Games
       </div>
     );
   }
 });
+

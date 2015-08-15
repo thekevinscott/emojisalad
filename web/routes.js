@@ -5,6 +5,8 @@ import { Dashboard } from './dashboard';
 import { NotFound } from './notfound';
 import { Account } from './account';
 import { Logout } from './account/logout';
+import { Games } from './games';
+import { Players } from './players';
 
 var DefaultRoute = Router.DefaultRoute;
 var NotFoundRoute = Router.NotFoundRoute;
@@ -19,6 +21,8 @@ export const routes = (
     <Route name="login" handler={Account} />
     <Route name="logout" handler={Logout} />
     <Route handler={Dashboard} />
+    <Route handler={Games} name="games" />
+    <Route handler={Players} name="players" />
     <NotFoundRoute handler={NotFound} />
   </Route>
 );

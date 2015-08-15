@@ -26,7 +26,7 @@ webpackJsonp([1],[
 
 	var _routes = __webpack_require__(5);
 
-	var _router = __webpack_require__(21);
+	var _router = __webpack_require__(13);
 
 	_router.RouterContainer.set(Router.run(_routes.routes, Router.HashLocation, function (Handler) {
 	  React.render(React.createElement(Handler, null), document.body);
@@ -54,15 +54,19 @@ webpackJsonp([1],[
 
 	var _app = __webpack_require__(6);
 
-	var _dashboard = __webpack_require__(13);
+	var _dashboard = __webpack_require__(16);
 
-	var _notfound = __webpack_require__(14);
+	var _notfound = __webpack_require__(17);
 
-	var _account = __webpack_require__(15);
+	var _account = __webpack_require__(18);
 
-	var _accountLogout = __webpack_require__(22);
+	var _accountLogout = __webpack_require__(24);
 
-	var _auth = __webpack_require__(8);
+	var _games = __webpack_require__(25);
+
+	var _players = __webpack_require__(26);
+
+	var _auth = __webpack_require__(12);
 
 	var DefaultRoute = Router.DefaultRoute;
 	var NotFoundRoute = Router.NotFoundRoute;
@@ -76,6 +80,8 @@ webpackJsonp([1],[
 	  React.createElement(Route, { name: 'login', handler: _account.Account }),
 	  React.createElement(Route, { name: 'logout', handler: _accountLogout.Logout }),
 	  React.createElement(Route, { handler: _dashboard.Dashboard }),
+	  React.createElement(Route, { handler: _games.Games, name: 'games' }),
+	  React.createElement(Route, { handler: _players.Players, name: 'players' }),
 	  React.createElement(NotFoundRoute, { handler: _notfound.NotFound })
 	);
 	exports.routes = routes;
@@ -110,9 +116,9 @@ webpackJsonp([1],[
 
 	var _header = __webpack_require__(7);
 
-	var _auth = __webpack_require__(8);
+	var _auth = __webpack_require__(12);
 
-	__webpack_require__(9);
+	__webpack_require__(14);
 
 	var RouteHandler = Router.RouteHandler;
 	var Link = Router.Link;
@@ -174,6 +180,8 @@ webpackJsonp([1],[
 
 	var Router = _interopRequireWildcard(_reactRouter);
 
+	__webpack_require__(8);
+
 	var Link = Router.Link;
 
 	var Header = (function (_React$Component) {
@@ -188,24 +196,52 @@ webpackJsonp([1],[
 	  _createClass(Header, [{
 	    key: 'render',
 	    value: function render() {
-	      var link;
+	      var account;
 	      if (this.props.loggedIn) {
-	        link = React.createElement(
+	        account = React.createElement(
 	          Link,
 	          { to: '/logout' },
 	          'Log out'
 	        );
 	      } else {
-	        link = React.createElement(
+	        account = React.createElement(
 	          Link,
 	          { to: '/login' },
 	          'Sign in'
 	        );
 	      }
+
+	      var links = React.createElement(
+	        'ul',
+	        null,
+	        React.createElement(
+	          'li',
+	          { className: 'account' },
+	          account
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            Link,
+	            { to: 'games' },
+	            'Games'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            Link,
+	            { to: 'players' },
+	            'Players'
+	          )
+	        )
+	      );
 	      return React.createElement(
 	        'header',
 	        null,
-	        link
+	        links
 	      );
 	    }
 	  }]);
@@ -219,100 +255,20 @@ webpackJsonp([1],[
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _reqwest = __webpack_require__(2);
-
-	var _reqwest2 = _interopRequireDefault(_reqwest);
-
-	var _router = __webpack_require__(21);
-
-	var user = null;
-
-	if (localStorage.user) {
-	  user = localStorage.user;
-	}
-
-	var auth = {
-	  login: function login(username, password, handleSuccess, handleError) {
-	    (0, _reqwest2['default'])({
-	      url: '/api/login',
-	      method: 'post',
-	      data: {
-	        username: username,
-	        password: password
-	      }
-	    }).then((function (resp) {
-	      if (resp.error) {
-	        if (handleError) {
-	          handleError(resp.error);
-	        }
-	      } else {
-	        user = resp;
-	        localStorage.user = user;
-	        handleSuccess(resp);
-	      }
-	    }).bind(undefined), (function (err, msg) {
-	      if (handleError) {
-	        if (err) {
-	          handleError(err);
-	        } else {
-	          handleError('There was an unknown error');
-	        }
-	      }
-	    }).bind(undefined));
-	  },
-	  logout: function logout() {
-	    (0, _reqwest2['default'])({
-	      url: '/api/logout',
-	      method: 'get'
-	    }).then(function () {
-	      user = null;
-	      _router.RouterContainer.transition('login');
-	    }).fail(function (err) {
-	      user = null;
-	      _router.RouterContainer.get().transitionTo('/login');
-	      console.error('error when logging out', err);
-	    });
-	  },
-	  isLoggedIn: function isLoggedIn(transition, cb) {
-	    if (user === null) {
-	      if (transition) {
-	        transition.abort();
-	        transition.redirect('/login');
-	      }
-	      return false;
-	    } else {
-	      return true;
-	    }
-	  }
-	};
-	exports.auth = auth;
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(10);
+	var content = __webpack_require__(9);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(12)(content, {});
+	var update = __webpack_require__(11)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(true) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept(10, function() {
-				var newContent = __webpack_require__(10);
+			module.hot.accept(9, function() {
+				var newContent = __webpack_require__(9);
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -322,21 +278,21 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(11)();
+	exports = module.exports = __webpack_require__(10)();
 	// imports
-	exports.push([module.id, "@import url(https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css);", ""]);
+
 
 	// module
-	exports.push([module.id, "body {\n  background: #EEE;\n}\na {\n  text-decoration: underline;\n  cursor: pointer;\n}\n", ""]);
+	exports.push([module.id, ".admin header {\n  padding: 10px;\n  background: #DDD;\n}\n.admin header .account {\n  float: right;\n  clear: both;\n}\n.admin header li {\n  display: inline-block;\n  margin-right: 20px;\n}\n.admin header li a {\n  text-decoration: none;\n  color: black;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/*
@@ -391,7 +347,7 @@ webpackJsonp([1],[
 	};
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -616,7 +572,158 @@ webpackJsonp([1],[
 
 
 /***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _reqwest = __webpack_require__(2);
+
+	var _reqwest2 = _interopRequireDefault(_reqwest);
+
+	var _router = __webpack_require__(13);
+
+	var user = null;
+
+	if (localStorage.user) {
+	  user = localStorage.user;
+	}
+
+	var auth = {
+	  login: function login(username, password, handleSuccess, handleError) {
+	    (0, _reqwest2['default'])({
+	      url: '/api/login',
+	      method: 'post',
+	      data: {
+	        username: username,
+	        password: password
+	      }
+	    }).then((function (resp) {
+	      if (resp.error) {
+	        if (handleError) {
+	          handleError(resp.error);
+	        }
+	      } else {
+	        user = resp;
+	        localStorage.user = user;
+	        handleSuccess(resp);
+	      }
+	    }).bind(undefined), (function (err, msg) {
+	      if (handleError) {
+	        if (err) {
+	          handleError(err);
+	        } else {
+	          handleError('There was an unknown error');
+	        }
+	      }
+	    }).bind(undefined));
+	  },
+	  logout: function logout() {
+	    (0, _reqwest2['default'])({
+	      url: '/api/logout',
+	      method: 'get'
+	    }).then(function () {
+	      user = null;
+	      _router.RouterContainer.transition('login');
+	    }).fail(function (err) {
+	      user = null;
+	      _router.RouterContainer.get().transitionTo('/login');
+	      console.error('error when logging out', err);
+	    });
+	  },
+	  isLoggedIn: function isLoggedIn(transition, cb) {
+	    if (user === null) {
+	      if (transition) {
+	        transition.abort();
+	        transition.redirect('/login');
+	      }
+	      return false;
+	    } else {
+	      return true;
+	    }
+	  }
+	};
+	exports.auth = auth;
+
+/***/ },
 /* 13 */
+/***/ function(module, exports) {
+
+	// router.js
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+	var _router;
+
+	var RouterContainer = {
+	  get: function get() {
+	    return _router;
+	  },
+
+	  set: function set(router) {
+	    _router = router;
+	  },
+
+	  transition: function transition(path) {
+	    if (_router) {
+	      _router.transitionTo(path);
+	    } else {
+	      window.location = '/#' + path;
+	    }
+	  }
+	};
+	exports.RouterContainer = RouterContainer;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(15);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(11)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(true) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept(15, function() {
+				var newContent = __webpack_require__(15);
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(10)();
+	// imports
+	exports.push([module.id, "@import url(https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css);", ""]);
+
+	// module
+	exports.push([module.id, "body {\n  background: #EEE;\n}\na {\n  text-decoration: underline;\n  cursor: pointer;\n}\n.page {\n  padding: 20px;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -633,11 +740,17 @@ webpackJsonp([1],[
 
 	var React = _interopRequireWildcard(_react);
 
+	var _reactRouter = __webpack_require__(3);
+
+	var Router = _interopRequireWildcard(_reactRouter);
+
 	var _reqwest = __webpack_require__(2);
 
 	var _reqwest2 = _interopRequireDefault(_reqwest);
 
-	var _auth = __webpack_require__(8);
+	var _auth = __webpack_require__(12);
+
+	var Link = Router.Link;
 
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
@@ -648,18 +761,44 @@ webpackJsonp([1],[
 	    }
 	  },
 	  render: function render() {
-	    console.log('redner dashboard');
+	    console.log('redner dashboard 2');
 	    return React.createElement(
 	      'div',
-	      null,
-	      'Dashboard Page'
+	      { className: 'dashboard page' },
+	      React.createElement(
+	        'h1',
+	        null,
+	        'This is a Dashboard page'
+	      ),
+	      React.createElement(
+	        'ul',
+	        null,
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            Link,
+	            { to: 'games' },
+	            'Games'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          null,
+	          React.createElement(
+	            Link,
+	            { to: 'players' },
+	            'Players'
+	          )
+	        )
+	      )
 	    );
 	  }
 	});
 	exports.Dashboard = Dashboard;
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -708,7 +847,7 @@ webpackJsonp([1],[
 	exports.NotFound = NotFound;
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -731,9 +870,9 @@ webpackJsonp([1],[
 
 	var React = _interopRequireWildcard(_react);
 
-	var _login = __webpack_require__(16);
+	var _login = __webpack_require__(19);
 
-	var _register = __webpack_require__(20);
+	var _register = __webpack_require__(23);
 
 	var Account = (function (_React$Component) {
 	    _inherits(Account, _React$Component);
@@ -781,7 +920,7 @@ webpackJsonp([1],[
 	exports.Account = Account;
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -808,11 +947,11 @@ webpackJsonp([1],[
 
 	var Router = _interopRequireWildcard(_reactRouter);
 
-	var _form = __webpack_require__(17);
+	var _form = __webpack_require__(20);
 
-	var _auth = __webpack_require__(8);
+	var _auth = __webpack_require__(12);
 
-	var _router = __webpack_require__(21);
+	var _router = __webpack_require__(13);
 
 	var Login = (function (_Form) {
 	  _inherits(Login, _Form);
@@ -855,7 +994,7 @@ webpackJsonp([1],[
 	exports.Login = Login;
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -884,9 +1023,9 @@ webpackJsonp([1],[
 
 	var _reqwest2 = _interopRequireDefault(_reqwest);
 
-	var _auth = __webpack_require__(8);
+	var _auth = __webpack_require__(12);
 
-	__webpack_require__(18);
+	__webpack_require__(21);
 
 	var Form = (function (_React$Component) {
 	  _inherits(Form, _React$Component);
@@ -993,23 +1132,23 @@ webpackJsonp([1],[
 	exports.Form = Form;
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(19);
+	var content = __webpack_require__(22);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(12)(content, {});
+	var update = __webpack_require__(11)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(true) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept(19, function() {
-				var newContent = __webpack_require__(19);
+			module.hot.accept(22, function() {
+				var newContent = __webpack_require__(22);
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -1019,10 +1158,10 @@ webpackJsonp([1],[
 	}
 
 /***/ },
-/* 19 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(11)();
+	exports = module.exports = __webpack_require__(10)();
 	// imports
 
 
@@ -1033,7 +1172,7 @@ webpackJsonp([1],[
 
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1056,7 +1195,7 @@ webpackJsonp([1],[
 
 	var React = _interopRequireWildcard(_react);
 
-	var _form = __webpack_require__(17);
+	var _form = __webpack_require__(20);
 
 	var Register = (function (_Form) {
 	    _inherits(Register, _Form);
@@ -1083,38 +1222,7 @@ webpackJsonp([1],[
 	exports.Register = Register;
 
 /***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	// router.js
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-	var _router;
-
-	var RouterContainer = {
-	  get: function get() {
-	    return _router;
-	  },
-
-	  set: function set(router) {
-	    _router = router;
-	  },
-
-	  transition: function transition(path) {
-	    if (_router) {
-	      _router.transitionTo(path);
-	    } else {
-	      window.location = '/#' + path;
-	    }
-	  }
-	};
-	exports.RouterContainer = RouterContainer;
-
-/***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1141,7 +1249,7 @@ webpackJsonp([1],[
 
 	var Router = _interopRequireWildcard(_reactRouter);
 
-	var _auth = __webpack_require__(8);
+	var _auth = __webpack_require__(12);
 
 	var Logout = (function (_React$Component) {
 	  _inherits(Logout, _React$Component);
@@ -1163,6 +1271,102 @@ webpackJsonp([1],[
 	})(React.Component);
 
 	exports.Logout = Logout;
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	var _react = __webpack_require__(1);
+
+	var React = _interopRequireWildcard(_react);
+
+	var _reactRouter = __webpack_require__(3);
+
+	var Router = _interopRequireWildcard(_reactRouter);
+
+	var _reqwest = __webpack_require__(2);
+
+	var _reqwest2 = _interopRequireDefault(_reqwest);
+
+	var _auth = __webpack_require__(12);
+
+	var Link = Router.Link;
+
+	var Games = React.createClass({
+	  displayName: 'Games',
+
+	  statics: {
+	    willTransitionTo: function willTransitionTo(transition, params, query) {
+	      _auth.auth.isLoggedIn(transition);
+	    }
+	  },
+	  render: function render() {
+	    console.log('redner dashboard');
+	    return React.createElement(
+	      'div',
+	      { className: 'games page' },
+	      'Games'
+	    );
+	  }
+	});
+	exports.Games = Games;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	var _react = __webpack_require__(1);
+
+	var React = _interopRequireWildcard(_react);
+
+	var _reactRouter = __webpack_require__(3);
+
+	var Router = _interopRequireWildcard(_reactRouter);
+
+	var _reqwest = __webpack_require__(2);
+
+	var _reqwest2 = _interopRequireDefault(_reqwest);
+
+	var _auth = __webpack_require__(12);
+
+	var Players = React.createClass({
+	  displayName: 'Players',
+
+	  statics: {
+	    willTransitionTo: function willTransitionTo(transition, params, query) {
+	      _auth.auth.isLoggedIn(transition);
+	    }
+	  },
+	  render: function render() {
+	    console.log('redner dashboard');
+	    return React.createElement(
+	      'div',
+	      { className: 'players page' },
+	      'Players'
+	    );
+	  }
+	});
+	exports.Players = Players;
 
 /***/ }
 ]);
