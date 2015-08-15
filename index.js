@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 
+app.set('port', (process.env.PORT || 5000));
+
 var text = require('./text');
 
 app.get('/', function (req, res) {
@@ -38,9 +40,6 @@ app.get('/response', function(req, res) {
 
 });
 
-var server = app.listen(5000, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log('Example app listening at http://%s:%s', host, port);
+app.listen(app.get('port'), function() {
+    console.log('Example app listening on port', app.get('port'));
 });
