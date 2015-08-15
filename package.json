@@ -1,24 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "twilio-test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.13.3",
-    "express": "^4.13.3",
-    "lodash": "^3.10.1",
-    "q": "^1.4.1",
-    "twilio": "^2.3.0"
-  },
-  "devDependencies": {
-    "ngrok": "^0.1.99"
-=======
   "name": "EmojinaryFriend",
   "version": "1.0.0",
   "description": "Website for Emojinary Friend",
@@ -37,6 +17,5 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.13.3"
->>>>>>> 54cf611479db055bbaa2e7077e1674b348e821f7
   }
 }
