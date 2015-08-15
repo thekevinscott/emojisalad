@@ -159,6 +159,9 @@ section {
   padding-top: 10px;
   padding-bottom: 5px;
 }
+.container .phone-input input {
+  color: #000;
+}
 .container .phone-input .submit {
   background-color: #26bafa;
   color: #fff;
