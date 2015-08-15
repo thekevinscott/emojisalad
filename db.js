@@ -49,7 +49,7 @@ var db = {
       var dfd = Q.defer();
       function callback(err, data) {
         if (err) {
-          switch(errno) {
+          switch(err.errno) {
             // dup entry
             case 1062:
               break;
