@@ -1,0 +1,17 @@
+{
+  "name": "Admin.EmojinaryFriend",
+  "version": "1.0.0",
+  "description": "The CMS for EmojinaryFriend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "mysql": "^2.8.0",
+    "squel": "^4.0.0"
+  }
+}
