@@ -34,6 +34,7 @@ app.listen(app.get('port'), function() {
 
 // routes
 require('./api/routes/account')(app);
+require('./api/routes/players')(app);
 
 // bootstrap our web app
 app.get('*', function(req, res) {

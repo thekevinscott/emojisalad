@@ -1,11 +1,5 @@
-webpackJsonp([1],[
-/* 0 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(4);
-
-
-/***/ },
+webpackHotUpdate(1,[
+/* 0 */,
 /* 1 */,
 /* 2 */,
 /* 3 */,
@@ -28,11 +22,13 @@ webpackJsonp([1],[
 
 	var _router = __webpack_require__(13);
 
-	console.log('admin');
+	/*
 
-	_router.RouterContainer.set(Router.run(_routes.routes, Router.HashLocation, function (Handler) {
-	  React.render(React.createElement(Handler, null), document.body);
+	RouterContainer.set(Router.run(routes, Router.HashLocation, (Handler) => {
+	  debugger;
+	  React.render(<Handler />, document.body);
 	}));
+	*/
 
 /***/ },
 /* 5 */
@@ -637,6 +633,7 @@ webpackJsonp([1],[
 	  isLoggedIn: function isLoggedIn(transition, cb) {
 	    if (user === null) {
 	      if (transition) {
+	        transition.abort();
 	        transition.redirect('/login');
 	      }
 	      return false;
@@ -1456,4 +1453,4 @@ webpackJsonp([1],[
 	exports.Players = Players;
 
 /***/ }
-]);
+])

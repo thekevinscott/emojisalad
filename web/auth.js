@@ -42,18 +42,15 @@ export var auth = {
       url: '/api/logout',
       method: 'get',
     }).then(function() {
-      user = null;
-      RouterContainer.transition('login');
+      clearUser();
     }).fail(function(err) {
-      user = null;
-      RouterContainer.get().transitionTo('/login');
+      clearUser();
       console.error('error when logging out', err);
     });
   },
   isLoggedIn: (transition, cb) => {
     if ( user === null ) {
       if ( transition ) {
-        transition.abort();
         transition.redirect('/login');
       }
       return false;
@@ -61,4 +58,10 @@ export var auth = {
       return true;
     }
   }
+}
+
+function clearUser() {
+  user = null;
+  delete localStorage.user;
+  RouterContainer.transition('login');
 }

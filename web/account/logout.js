@@ -7,4 +7,9 @@ export class Logout extends React.Component {
   componentWillMount() {
     auth.logout();
   }
+  render() {
+    return (
+      <div />
+    );
+  }
 }
