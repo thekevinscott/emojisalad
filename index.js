@@ -20,6 +20,22 @@ app.get('/messages/:sid', function (req, res) {
 });
 
 app.get('/messages', function(req, res) {
+    text.get().then(function(messages) {
+        res.json(messages);
+    }).fail(function(err) {
+        res.json(err);
+    });
+});
+
+app.get('/response', function(req, res) {
+    var twilio = require('twilio');
+    var twiml = new twilio.TwimlResponse();
+    twiml.say('This is msg 1');
+    twiml.say('This is msg 2');
+
+    res.writeHead(200, {'Content-Type': 'text/xml'});
+    res.end(twiml.toString());
+
 });
 
 var server = app.listen(5000, function () {

@@ -1,56 +1,28 @@
-var Q = require('q');
 // Twilio Credentials 
-var accountSid = 'ACe1033942b378b846fa69be0a58f04778'; 
-var authToken = '0b2a36fbb7cb1c6f558163f5fd61f081'; 
+var accountSid = 'ACf2076b907d44abdd8dc8d262ff941ee4'; 
+var authToken = '0d7b1b491ca038d4ff4fdf674cd46aa1'; 
  
 //require the Twilio module and create a REST client 
 var client = require('twilio')(accountSid, authToken); 
-
-var from = "12039412722";
+var from = "18603814834";
  
 function send(to, msg) {
-    var dfd = Q.defer();
-    client.messages.create({ 
+    return client.messages.create({ 
         to: to, 
         from: from, 
         body: msg
-    }, function(err, message) { 
-        if ( err ) {
-            dfd.reject(err);
-        } else {
-            dfd.resolve(message);
-        }
     });
-    return dfd.promise;
 }
 
 function get(sid) {
-    var dfd = Q.defer();
-    client.messages(sid).get(function(err, message) {
-        if ( err ) {
-            dfd.reject(err);
-        } else {
-            dfd.resolve(message);
-        }
-    });
-    return dfd.promise;
-}
-
-function getAll() {
-
-    var dfd = Q.defer();
-    client.messages.list(function(err, message) {
-        if ( err ) {
-            dfd.reject(err);
-        } else {
-            dfd.resolve(message);
-        }
-    });
-    return dfd.promise;
+    if ( sid ) {
+        return client.messages(sid).get();
+    } else {
+        return client.messages.list();
+    }
 }
 
 module.exports = {
     send: send,
     get: get
 }
-
