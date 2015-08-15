@@ -51,11 +51,11 @@ module.exports = function(app, conn) {
         passReqToCallback : true
     },
     function(req, username, password, done) {
-        if ( username.length < 5 ) {
-            return done('Your username must be longer than 5 characters');
+        if ( username.length < 2 ) {
+            return done('Your username must be longer than 2 characters');
         }
-        if ( password.length < 5 ) {
-            return done('Your password must be longer than 5 characters');
+        if ( password.length < 2 ) {
+            return done('Your password must be longer than 2 characters');
         }
 
         // find a user whose username is the same as the forms username
