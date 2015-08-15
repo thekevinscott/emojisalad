@@ -5,7 +5,7 @@ import { Form } from './form';
 export class Register extends Form {
     constructor(props) {
         super(props);
-        this.url = '/register';
+        this.url = '/api/register';
         this.submitValue = 'Register';
         this.handleSuccess = this.handleSuccess.bind(this);
     }

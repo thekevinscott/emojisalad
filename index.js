@@ -36,6 +36,7 @@ app.listen(app.get('port'), function() {
 require('./api/routes/account')(app);
 
 // bootstrap our web app
-app.get('/', function(req, res) {
+app.get('*', function(req, res) {
     res.render('app.html');
 });
+

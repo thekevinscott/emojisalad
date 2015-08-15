@@ -8,6 +8,8 @@ var squel = require('squel');
 
 var db = require('./db');
 
+var table = 'admins';
+
 module.exports = function(app, conn) {
     app.use(passport.initialize());
     app.use(passport.session());
@@ -21,7 +23,7 @@ module.exports = function(app, conn) {
 
         var query = squel
             .select()
-            .from('users')
+            .from(table)
             .where('id=?', id);
 
         db.query(query).then(function(rows) {
@@ -63,7 +65,7 @@ module.exports = function(app, conn) {
         //
         var query = squel
             .select()
-            .from('users')
+            .from(table)
             .where('username=?', username);
 
         var user = {
@@ -84,7 +86,7 @@ module.exports = function(app, conn) {
                 // create the user
                 var query = squel
                             .insert()
-                            .into('users')
+                            .into(table)
                             .setFields(user);
 
                             //var dfd = Q.defer();
@@ -104,6 +106,7 @@ module.exports = function(app, conn) {
         });
     }));
 
+
     // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
@@ -119,7 +122,7 @@ module.exports = function(app, conn) {
     function(req, username, password, done) {
         var query = squel
             .select()
-            .from('users')
+            .from(table)
             .where('username=?', username);
 
         var error_message = 'There was an error logging in. Please try again.';
