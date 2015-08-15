@@ -45,17 +45,29 @@ function getConnection(start) {
 
 var db = {
   query: function(sql) {
-    var param = sql.toParam();
     return getConnection().then(function(conn) {
       var dfd = Q.defer();
-      conn.query(param.text, param.values, function(err, data) {
+      function callback(err, data) {
         if (err) {
-          console.error('db error', err);
+          switch(errno) {
+            // dup entry
+            case 1062:
+              break;
+            default: 
+              console.error('db error', err);
+            break;
+          }
           dfd.reject(err);
         } else {
           dfd.resolve(data);
         }
-      });
+      }
+      if ( typeof(sql) === 'string' ) {
+        conn.query(sql, callback);
+      } else {
+        var param = sql.toParam();
+        conn.query(param.text, param.values, callback);
+      }
       return dfd.promise;
     });
   }

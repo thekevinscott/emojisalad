@@ -11,6 +11,12 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 var text = require('./text');
 
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 app.get('/', function (req, res) {
     res.send('hello1');
 });
@@ -103,7 +109,6 @@ function response(twiml, res) {
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(twiml.toString());
 }
-
 app.listen(app.get('port'), function() {
     console.log('Example app listening on port', app.get('port'));
 });

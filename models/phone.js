@@ -6,6 +6,11 @@ var db = require('../db');
 var Phone = {
   // valid phone number test
   regex : /^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/,
+  formatNumber: function(s) {
+    var s2 = (""+s).replace(/\D/g, '');
+    var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+    return (!m) ? null : m[1]+m[2]+m[3];
+  },
   table: 'users',
 
   // create a new phone number
@@ -18,7 +23,7 @@ var Phone = {
       dfd.reject('You must provide a valid phone number');
     } else {
       var user = {
-        number: number
+        number: this.formatNumber(number)
       };
       var query = squel
                   .insert()
