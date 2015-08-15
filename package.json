@@ -12,7 +12,9 @@
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
     "lodash": "^3.10.1",
+    "mysql": "^2.8.0",
     "q": "^1.4.1",
+    "squel": "^4.0.0",
     "twilio": "^2.3.0"
   },
   "devDependencies": {

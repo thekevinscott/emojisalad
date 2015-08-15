@@ -15,6 +15,9 @@ app.get('/', function (req, res) {
     res.send('hello1');
 });
 
+// this creates a new game
+app.post('/new', require('./routes/new'));
+
 app.get('/goat/:number', function(req, res) {
     var msg = 'Are you ready to get GOATED???\n\nPlease reply yes or no';
     var to = req.params.number;
