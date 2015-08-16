@@ -15,7 +15,7 @@ var Message = {
       if ( messages.length ) {
         return messages[0];
       } else {
-        throw "No messages foudn for key " + key;
+        throw "No messages found for key " + key;
       }
     });
   }
