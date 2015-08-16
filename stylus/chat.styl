@@ -1,12 +1,15 @@
-device-width = 250 //This is hard-coded. We need to figure out how to handle this based on device 
+device-width = 400 //This is hard-coded. We need to figure out how to handle this based on device 
 
 .chat
   font-family "Helvetica Neue" !important
   font-size 20px
   font-weight normal
-  max-width 250px
+  max-width device-width
   margin 50px auto
   text-align left
+  background-color core-light
+  padding 30px
+  overflow hidden
   .bubble
     font-family "Helvetica Neue" !important
     font-size 20px
@@ -44,7 +47,7 @@ device-width = 250 //This is hard-coded. We need to figure out how to handle thi
       right -56px
       width 26px
       height 20px
-      background core-color
+      background core-light
       border-bottom-left-radius 10px
       -webkit-transform translate(-30px, -2px)
   .from-them
@@ -72,7 +75,7 @@ device-width = 250 //This is hard-coded. We need to figure out how to handle thi
       left 4px
       width 26px
       height 20px
-      background core-color
+      background core-light
       border-bottom-right-radius 10px
       -webkit-transform translate(-30px, -2px)
 .delay
