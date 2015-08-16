@@ -1,26 +1,25 @@
-.delay {
-  animation-delay: 2s;
-}
-.delay2 {
-  animation-delay: 4s;
-}
 .chat {
-  font-family: "Helvetica Neue";
+  font-family: "Helvetica Neue" !important;
   font-size: 20px;
   font-weight: normal;
   max-width: 450px;
   margin: 50px auto;
+  text-align: left;
 }
-section .bubble {
+.chat .bubble {
+  font-family: "Helvetica Neue" !important;
+  font-size: 20px;
+  font-weight: normal;
+  max-width: 450px;
   max-width: 255px;
   word-wrap: break-word;
   margin-bottom: 20px;
   line-height: 24px;
 }
-.clear {
+.chat .clear {
   clear: both;
 }
-.from-me {
+.chat .from-me {
   position: relative;
   padding: 10px 20px;
   color: #fff;
@@ -28,7 +27,7 @@ section .bubble {
   border-radius: 25px;
   float: right;
 }
-.from-me:before {
+.chat .from-me:before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -39,7 +38,7 @@ section .bubble {
   border-bottom-left-radius: 16px 14px;
   -webkit-transform: translate(0, -2px);
 }
-.from-me:after {
+.chat .from-me:after {
   content: "";
   position: absolute;
   z-index: 1;
@@ -47,11 +46,11 @@ section .bubble {
   right: -56px;
   width: 26px;
   height: 20px;
-  background: #fff;
+  background: #26bafa;
   border-bottom-left-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
-.from-them {
+.chat .from-them {
   position: relative;
   padding: 10px 20px;
   background: #e5e5ea;
@@ -59,7 +58,7 @@ section .bubble {
   color: #000;
   float: left;
 }
-.from-them:before {
+.chat .from-them:before {
   content: "";
   position: absolute;
   z-index: 2;
@@ -70,7 +69,7 @@ section .bubble {
   border-bottom-right-radius: 16px 14px;
   -webkit-transform: translate(0, -2px);
 }
-.from-them:after {
+.chat .from-them:after {
   content: "";
   position: absolute;
   z-index: 3;
@@ -78,7 +77,13 @@ section .bubble {
   left: 4px;
   width: 26px;
   height: 20px;
-  background: #fff;
+  background: #26bafa;
   border-bottom-right-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
+}
+.delay {
+  animation-delay: 2s;
+}
+.delay2 {
+  animation-delay: 4s;
 }

@@ -1,0 +1,114 @@
+chunky = 'Big John', sans-serif;
+slim = 'Slim Joe', sans-serif;
+serifed = 'Josefin Slab', serif;
+submit-button-height = 40px
+
+html, body
+	background-color core-color
+	color white
+	text-align center
+
+h1
+	font-family chunky
+	font-size 2em
+	line-height 1.40
+	letter-spacing 0.2em
+	.light
+		font-family slim
+h2	
+	font-family slim
+	font-size 1.2em
+	line-height 1.40
+	letter-spacing 0.2em
+p
+	font-family serifed
+	font-style italic
+	font-size 1em
+	// line-height 1em
+	letter-spacing 0.05em
+a
+	color core-color
+	text-decoration none
+	padding-bottom 3px
+	border-bottom 1px dashed core-color
+	&:hover
+		color color-tint
+		border-bottom 1px dashed color-tint
+	
+button:focus
+	outline 0
+	
+section
+	padding-top 20px
+	padding-bottom 20px
+	text-align center
+.description
+	width 100%
+	background-color color-tint
+.phone-input
+	width 100%
+	background-color white
+	color core-color
+	
+.container
+	// display -webkit-box
+	flex()
+	align(center)
+	justify-content(center)
+	flex-direction(column)
+	width 100%
+	.venn
+		flex()
+		align(center)
+		justify-content(center)
+		flex-direction(row)
+		margin-bottom 15px
+		.rounded
+			background-size contain
+			opacity 0.4
+			border-radius (160px/2)
+			max-width 30%
+			height 160px
+			width 160px
+			&.left
+				opacity 1
+				margin-right -20px
+			&.right
+				opacity 1
+				margin-left -20px
+				padding-left -20px
+	.phone-input
+		flex()
+		align(center)
+		justify-content(center)
+		flex-direction(column)
+		// color lighten(core-color, 50)
+		label
+			// padding-top 10px
+			font-family chunky
+			font-size .9em
+			line-height 1.4
+			padding-bottom 10px
+		input
+			// display block
+			font-family slim
+			font-size 1.2em
+			line-height 1.4
+			text-align center
+			border-style solid
+			border-width 1px
+			border-color core-color
+			padding-top 10px
+			padding-bottom 5px
+		input
+			color black
+		.submit
+			background-color core-color
+			color white
+			-webkit-appearence none
+			border none
+			font-family chunky
+			font-size .9em
+			line-height .9em
+			padding 15px 20px 10px 20px
+			margin-bottom 20px

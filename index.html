@@ -9,8 +9,8 @@
 
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory -->
-
         <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/animate.css">  
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         
@@ -29,10 +29,26 @@
         <div class='container'>
 	        <section class='header'>
                 <h1><span class='light'>Hello,</span><br>Emojinary Friend</h1>
-                <div class='venn'>
+                <!-- <div class='venn'>
                 	<i class="twa twa-wink rounded left"></i>
                     <i class="twa twa-grin rounded right"></i>
-                </div>
+                </div> -->
+                <section class='chat'>
+                	<div class="clear"></div>
+				    <div class="bubble from-me animated bounceInRight">
+				      <i class="twa twa-tiger"></i>
+				      <i class="twa twa-crown"></i>
+				    </div>
+					<div class="clear"></div>
+				    <div class="bubble from-them animated bounceInLeft delay">
+				    	<p>DAVE: Lion King!</p>
+				    </div>
+  					<div class="clear"></div>
+  					<div class="bubble from-them animated bounceInLeft delay2">
+      					<p>EMOJIBOT <i class="twa twa-space-invader"></i>: Good job, Dave, you got it!<br>Alright, Michelle's turn.</p>
+    				</div>
+  					<div class="clear"></div>
+				</section>
             </section>
             <section class='description'>
     	        <h2>SMS emoji pictionary.</h2>
