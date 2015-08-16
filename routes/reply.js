@@ -24,6 +24,7 @@
  */
 var User = require('../models/user');
 var Message = require('../models/message');
+var Game = require('../models/game');
 var Text = require('../models/text');
 var regex = require('../config/regex');
 module.exports = function(req, res) {
@@ -33,19 +34,22 @@ module.exports = function(req, res) {
   Text.saveResponse(req.body);
   // body can match a number of predetermined messages
   if ( regex('invite').test(body) ) {
+    console.log('do we invite? yes we do');
     var invitingUserNumber = number;
     var invitedUserNumber = body;
 
     // Check that the user has completed the onboarding flow
-    User.onboarded(invitingUserNumber).then(function(onboarded) {
-      if ( onboarded ) {
+    User.onboarded(invitingUserNumber).then(function(response) {
+      if ( response ) {
         console.log('inviting user has been onboarded, proceed');
         User.invite(invitedUserNumber, invitingUserNumber).then(function(users) {
+          //console.log('we back from the invite');
           var invitingUser = users.invitingUser;
           var invitedUser = users.invitedUser;
           // success!
           //console.log('user invited, let them know', invitingUser.number);
-          Text.send(number, 'intro_4', [ invitedUser.number ]);
+          Text.send(invitingUser, 'intro_4', [ invitedUser.number ]);
+          console.log('post sending text');
           Game.create([
             invitingUser,
             invitedUser
@@ -60,7 +64,7 @@ module.exports = function(req, res) {
         });
       } else {
         // The user has not completed onboarding
-        Text.send(number, 'intro_error', [ 'Plese respond to my previous text MESSAGE >:( (fix this later -ed)' ]);
+        Text.send(number, 'not_yet_onboarded_error', [ response.last_step ]);
       }
     }).fail(function(err) {
       console.error('wtf error when checking user onboarded status', err);
@@ -69,12 +73,16 @@ module.exports = function(req, res) {
     // we look at the from message, and see in the database
     // what message you were last sent
 
-    User.lastStep(number, ['intro_error']).then(function(message_key) {
+    var weDontCareAboutTheseSteps = [
+      'intro_error',
+      'not_yet_onboarded_error'
+    ];
+    User.lastStep(number, weDontCareAboutTheseSteps).then(function(message_key) {
       console.log('last step was', message_key);
       switch(message_key) {
         case 'intro' :
           if ( /^yes$|^yeah|^yea|^y/i.test(body) ) {
-          console.log('send step 2');
+          console.log('send step 2', number);
           Text.send(number, 'intro_2');
         }
         break;
@@ -85,7 +93,39 @@ module.exports = function(req, res) {
         User.updateNickname(body, number).then(function() {
           console.log('send step 3');
           Text.send(number, 'intro_3', [body]);
+          User.updateState('onboarded', number);
         });
+        break;
+        case 'invite' :
+          if ( /^yes$|^yeah|^yea|^y/i.test(body) ) {
+            
+            console.log('send invite step 2', number);
+            Text.send(number, 'invite_2');
+          }
+        break;
+        case 'invite_2' :
+          console.log('heres invite 2');
+          var nickname = body;
+          console.log('upadte invited nick', nickname, number);
+          User.updateNickname(nickname, number).then(function() {
+            console.log('upadte invited state');
+            User.updateState('onboarded', number);
+            console.log('let inviter know');
+            User.get(number).then(function(users) {
+              if ( users.length ) {
+                var user = users[0];
+                console.log('user inviter', user, nickname);
+                // let the person who invited Ari know he joined
+                Text.send({
+                  id: user.inviter_id,
+                  number: user.inviter_number
+                }, 'accepted', [ nickname ]);
+              } else {
+                throw "wtf this should not happen, the inviter id returns a null user" + user.inviter_id;
+              }
+            });
+
+          });
         break;
         default:
           console.log('message key', message_key);

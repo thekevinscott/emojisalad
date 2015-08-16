@@ -17,41 +17,81 @@ var User = {
   table: 'users',
 
   // create a new user number
-  create: function(number) {
+  create: function(number, state, inviter_number) {
     var dfd = Q.defer();
 
     if ( ! number ) {
       dfd.reject('You must provide a phone number');
-    } else if ( !regex('phone').test(number) ) {
-      console.log('number', number, 'failed regex');
-      dfd.reject('You must provide a valid phone number');
+    //} else if ( !regex('phone').test(number) ) {
+      //console.log('number', number, 'failed regex');
+      //dfd.reject('You must provide a valid phone number');
     } else {
       var user = {
         number: this.formatNumber(number),
         origNumber: this.formatNumber(number)
       };
 
-      console.log('the user to insert', user);
+      var promises = [];
+
+      if ( inviter_number ) {
+        promises.push(function() {
+          console.log('the inviter promise');
+          var inviter_id = squel
+                           .select()
+                           .field('id')
+                           .from('users')
+                           .where('number=?', inviter_number);
+
+          return db.query(inviter_id).then(function(inviter_id) {
+            if ( inviter_id.length ) {
+              inviter_id = inviter_id[0].id;
+              query.set('inviter_id', inviter_id);
+            } else {
+              throw "This should never happen - the user who invited this phone is not in databse" + inviter_id;
+            }
+          });
+        }());
+      }
+
       var query = squel
                   .insert()
                   .into(this.table)
                   .setFields(user);
 
-      db.query(query).then(function(rows) {
-        dfd.resolve({
-          id: rows.insertId,
-          number: user.number
-        });
-      }).fail(function(err) {
-        switch(err.errno) {
-          case 1062:
-            dfd.reject('Phone number is already registered');
+      if ( state ) {
+        promises.push(function() {
+          console.log('the state promise');
+          var user_state = squel
+                           .select()
+                           .field('id')
+                           .from('user_states')
+                           .where('state=?',state);
+          return db.query(user_state).then(function(state_id) {
+            if ( state_id.length ) {
+              state_id = state_id[0].id;
+              query.set('state_id', state_id);
+            }
+          });
+        }());
+      }
+
+      Q.allSettled(promises).spread(function() {
+        db.query(query).then(function(rows) {
+          dfd.resolve({
+            id: rows.insertId,
+            number: user.number
+          });
+        }).fail(function(err) {
+          switch(err.errno) {
+            case 1062:
+              dfd.reject('Phone number is already registered');
             break;
-          default: 
-            console.error('error registering phone number', err);
+            default: 
+              console.error('error registering phone number', err);
             dfd.reject('There was an unknown error registering the phone number. Please try again later');
             break;
-        }
+          }
+        });
       });
     }
     return dfd.promise;
@@ -60,9 +100,9 @@ var User = {
     var query = squel
                 .select()
                 .field('m.key')
-                .from('messages', 'm')
-                .left_join("texts", 't', "t.message_id = m.id")
-                .left_join("users", 'u', "u.id = t.user_id")
+                .from('texts', 't')
+                .left_join('messages', 'm', 't.message_id = m.id')
+                .left_join('users', 'u', 'u.id = t.user_id')
                 .where('u.number = ?', number)
                 .order('t.created', false)
 
@@ -72,21 +112,19 @@ var User = {
           return steps[0].key;
         } else {
           for ( var i=0;i<steps.length;i++ ) {
-            if ( skip.indexOf(steps[i].key) ) {
+            if ( skip.indexOf(steps[i].key) === -1 ) {
               return steps[i].key;
             }
           }
           return 'No last step found that was excluded by skip';
         }
       } else {
-        throw "No last step found";
+        return null;
       }
     });
   },
   updatePhone: function(number, user) {
-    console.log(number, user);
     if ( number !== user.number ) {
-      console.log('update hte phone');
       var query = squel
                   .update()
                   .table('users')
@@ -97,13 +135,11 @@ var User = {
     }
   },
   updateNickname: function(nickname, number) {
-    console.log('update nickname', nickname, number);
     var query = squel
                 .update()
                 .table('users')
                 .set('nickname', nickname)
                 .where('number=?', number);
-                console.log(query.toString());
 
     return db.query(query);
   },
@@ -112,10 +148,17 @@ var User = {
     function fetchUser(key, val) {
       var query = squel
                   .select()
-                  //.field('id')
-                  .from('users')
-                  .where('`'+key+'`=?', val);
-      db.query(query).then(dfd.resolve).fail(dfd.reject);
+                  .field('u.id')
+                  .field('u.number')
+                  .field('u.nickname')
+                  .field('u.created')
+                  .field('u.inviter_id')
+                  .field('i.number', 'inviter_number')
+                  .from('users', 'u')
+                  .left_join('users', 'i', 'i.id = u.inviter_id')
+                  .where('u.`'+key+'`=?', val);
+                  console.log(query.toString());
+      db.query(query.toString()).then(dfd.resolve).fail(dfd.reject);
     }
     if ( typeof user === 'object' ) {
       // then we've passed a user object
@@ -137,7 +180,7 @@ var User = {
     }
     var invitedNumber = msg.split('invite ').pop();
     return Q.allSettled([
-      User.create(invitedNumber),
+      User.create(invitedNumber, 'invited', invitingUserNumber),
       User.get(invitingUserNumber)
     ]).spread(function(invitedUserPromise, invitingUserPromise) {
       /* 
@@ -176,19 +219,63 @@ var User = {
       }
     });
   },
+  // set a user's status to onboarded being true
+  updateState: function(state, number) {
+    console.log('update user state');
+    var user_state = squel
+                     .select()
+                     .field('id')
+                     .from('user_states')
+                     .where('state=?',state);
+
+    var query = squel
+                .update()
+                .table('users')
+                .set('state_id', user_state, { dontQuote: true })
+                .where('number=?', number);
+                console.log('state query', query.toString());
+
+    return db.query(query);
+  },
   // check to see if a user has completed onboarding
   onboarded: function(number) {
-    return this.lastStep(number).then(function(message_key) {
-      var onboardingSteps = [
-        'intro',
-        'intro_2'
-      ];
-      if ( onboardingSteps.indexOf(message_key) === -1 ) {
+    var query = squel
+                .select()
+                .field('s.state')
+                .from('users', 'u')
+                .left_join('user_states', 's', 's.id = u.state_id')
+                .where('u.number=?', number);
+
+    return db.query(query.toString()).then(function(state) {
+      console.log('the user state', number, state);
+      if ( state !== 'created' && state !== 'invited' ) {
         return true;
       } else {
         return false;
       }
     });
+    /*
+    var weDontCareAboutTheseSteps = [
+      'intro_error',
+      'not_yet_onboarded_error'
+    ];
+    return this.lastStep(number, weDontCareAboutTheseSteps).then(function(message_key) {
+      var onboardingSteps = [
+        'intro',
+        'intro_2'
+      ];
+      if ( onboardingSteps.indexOf(message_key) === -1 ) {
+        return {
+          onboarded: true
+        };
+      } else {
+        return {
+          onboarded: false ,
+          last_step: message_key
+        };
+      }
+    });
+    */
   }
 };
 

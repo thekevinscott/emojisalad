@@ -30,25 +30,29 @@ var Message = require('./message');
 
 var Text = {
   table: 'texts',
-  send: function send(user, message_id, message_options) {
-    console.log('send to ', user);
+  send: function send(user, message_key, message_options) {
     var params = {
       from: config.from
     };
 
     if ( typeof user === 'object' ) {
+      console.log('user is an object', user);
       // then we've passed a user object
       params.to = user.number;
     } else {
+      console.log('user is an string');
       // we've passed a phone number string
       params.to = user;
     }
 
-    return Message.get(message_id, message_options).then(function(message) {
-      params.body = message;
-      console.log('params', params);
+    console.log('got messeage?');
+    return Message.get(message_key, message_options).then(function(message) {
+      console.log('got messeage');
+      params.body = message.message;
 
+      console.log('params', params);
       return client.messages.post(params).then(function(response) {
+        console.log('sent messeage');
         this.saveMessage(user, message.id, params.body, response);
         // we don't wait for the db call to finish,
         // this can fail and we still want to proceed
@@ -58,7 +62,6 @@ var Text = {
 
   },
   saveMessage: function(userData, message_id, message, response) {
-    //console.log('save message');
     return User.get(userData).then(function(users) {
       if ( users.length ) {
         var user = users[0];
@@ -77,9 +80,9 @@ var Text = {
                       message_id: message_id,
                       response: JSON.stringify(response)
                     });
-                    //console.log('save message query: ' , query.toString());
         return db.query(query);
       } else {
+        console.log('TODO: HANDLE THIS');
       }
 
     }.bind(this));
@@ -101,12 +104,11 @@ var Text = {
         });
       } else {
         query.setFields({
-          phone: req.body.From,
-          message: req.body.Body,
-          response: JSON.stringify(req.body)
+          phone: response.From,
+          message: response.Body,
+          response: JSON.stringify(response)
         });
       }
-      console.log('query to save', query.toString());
       db.query(query);
     }).fail(function(err) {
       console.error('error getting user id when saving response', err);

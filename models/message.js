@@ -3,7 +3,6 @@ var squel = require('squel');
 var sprintf = require('sprintf');
 
 var db = require('db');
-var User = require('./user');
 
 var Message = {
   table: 'messages',
@@ -13,15 +12,14 @@ var Message = {
     }
     var query = squel
                 .select()
-                .field('message')
                 .from(this.table)
                 .where('`key`=?',key);
-                console.log(query.toString());
+
     return db.query(query).then(function(messages) {
-      console.log('messages', messages);
       if ( messages.length ) {
-        console.log('we have messages');
-        return sprintf.apply(null, [messages[0].message].concat(options));
+        var message = messages[0];
+        message.message = sprintf.apply(null, [message.message].concat(options));
+        return message;
       } else {
         throw "No messages found for key " + key;
       }
