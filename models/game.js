@@ -6,12 +6,16 @@ var User = require('./user');
 
 var Game = {
   table: 'games',
-  create: function() {
+  create: function(users) {
     var query = squel
                 .insert()
                 .into(this.table)
                 .setFields(user);
-    return db.query(query);
+    return db.query(query).then(function(game) {
+      var game_id = game.insertId;
+    }).fail(err) {
+      console.error('error when creating game', err);
+    });
   }
 };
 

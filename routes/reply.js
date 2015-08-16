@@ -44,14 +44,15 @@ module.exports = function(req, res) {
           var invitingUser = users.invitingUser;
           var invitedUser = users.invitedUser;
           // success!
-          console.log('user invited, let them know', invitingUser.number);
-          Text.send(number, 'intro_4', [ invitingUser.number ]);
+          //console.log('user invited, let them know', invitingUser.number);
+          Text.send(number, 'intro_4', [ invitedUser.number ]);
           console.log('invitingUser', invitingUser);
           console.log('invitedUser', invitedUser);
-          //Game.create([
-            //invitingUser,
-
-          //]);
+          // NEXT STEP: CREATE GAME
+          Game.create([
+            invitingUser,
+            invitedUser
+          ]);
         }).fail(function(err) {
           console.log('error inviting user, message: ', body, 'from:', number, 'err:', err);
           if ( typeof err === 'object' && err.key ) {
