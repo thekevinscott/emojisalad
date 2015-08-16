@@ -35,7 +35,6 @@ var User = {
 
       if ( inviter_number ) {
         promises.push(function() {
-          console.log('the inviter promise');
           var inviter_id = squel
                            .select()
                            .field('id')
@@ -60,7 +59,6 @@ var User = {
 
       if ( state ) {
         promises.push(function() {
-          console.log('the state promise');
           var user_state = squel
                            .select()
                            .field('id')
@@ -157,7 +155,6 @@ var User = {
                   .from('users', 'u')
                   .left_join('users', 'i', 'i.id = u.inviter_id')
                   .where('u.`'+key+'`=?', val);
-                  console.log(query.toString());
       db.query(query.toString()).then(dfd.resolve).fail(dfd.reject);
     }
     if ( typeof user === 'object' ) {
@@ -221,7 +218,6 @@ var User = {
   },
   // set a user's status to onboarded being true
   updateState: function(state, number) {
-    console.log('update user state');
     var user_state = squel
                      .select()
                      .field('id')
@@ -233,7 +229,6 @@ var User = {
                 .table('users')
                 .set('state_id', user_state, { dontQuote: true })
                 .where('number=?', number);
-                console.log('state query', query.toString());
 
     return db.query(query);
   },
@@ -247,35 +242,12 @@ var User = {
                 .where('u.number=?', number);
 
     return db.query(query.toString()).then(function(state) {
-      console.log('the user state', number, state);
       if ( state !== 'created' && state !== 'invited' ) {
         return true;
       } else {
         return false;
       }
     });
-    /*
-    var weDontCareAboutTheseSteps = [
-      'intro_error',
-      'not_yet_onboarded_error'
-    ];
-    return this.lastStep(number, weDontCareAboutTheseSteps).then(function(message_key) {
-      var onboardingSteps = [
-        'intro',
-        'intro_2'
-      ];
-      if ( onboardingSteps.indexOf(message_key) === -1 ) {
-        return {
-          onboarded: true
-        };
-      } else {
-        return {
-          onboarded: false ,
-          last_step: message_key
-        };
-      }
-    });
-    */
   }
 };
 

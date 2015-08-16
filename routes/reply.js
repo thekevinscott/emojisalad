@@ -120,6 +120,7 @@ module.exports = function(req, res) {
                   id: user.inviter_id,
                   number: user.inviter_number
                 }, 'accepted', [ nickname ]);
+                Game.update(user.inviter_id);
               } else {
                 throw "wtf this should not happen, the inviter id returns a null user" + user.inviter_id;
               }

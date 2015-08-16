@@ -47,12 +47,9 @@ var Text = {
 
     console.log('got messeage?');
     return Message.get(message_key, message_options).then(function(message) {
-      console.log('got messeage');
       params.body = message.message;
 
-      console.log('params', params);
       return client.messages.post(params).then(function(response) {
-        console.log('sent messeage');
         this.saveMessage(user, message.id, params.body, response);
         // we don't wait for the db call to finish,
         // this can fail and we still want to proceed
