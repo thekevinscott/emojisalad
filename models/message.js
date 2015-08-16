@@ -12,7 +12,11 @@ var Message = {
                 .from(this.table)
                 .where('`key`=?',key);
     return db.query(query).then(function(messages) {
-      return messages[0];
+      if ( messages.length ) {
+        return messages[0];
+      } else {
+        throw "No messages foudn for key " + key;
+      }
     });
   }
 };

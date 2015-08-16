@@ -3,7 +3,7 @@ var authToken = '0d7b1b491ca038d4ff4fdf674cd46aa1';
 var from = "18603814348";
 
 module.exports = {
-    accountSid: accountSid,
-    authToken: authToken,
-    from: from
+  accountSid: accountSid,
+  authToken: authToken,
+  from: from
 }

@@ -49,21 +49,16 @@ var Text = {
                 .from('messages')
                 .where('`key`=?', message_id);
 
-    return db.query(query).then(function(messages) {
-      if ( ! messages.length ) {
-        return Q.reject('An unknown error occurred; please try again later.');
-      } else {
-        var message = messages[0];
-        
-        params.body = sprintf.apply(null, [message.message].concat(message_options));
+    return Message.get(message_id).then(function(message) {
 
-        return client.messages.post(params).then(function(response) {
-          this.saveMessage(user, message.id, params.body, response);
-          // we don't wait for the db call to finish,
-          // this can fail and we still want to proceed
-          return response;
-        }.bind(this));
-      }
+      params.body = sprintf.apply(null, [message.message].concat(message_options));
+
+      return client.messages.post(params).then(function(response) {
+        this.saveMessage(user, message.id, params.body, response);
+        // we don't wait for the db call to finish,
+        // this can fail and we still want to proceed
+        return response;
+      }.bind(this));
     }.bind(this));
 
   },

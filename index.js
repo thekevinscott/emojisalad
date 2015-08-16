@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-var text = require('./text');
+//var text = require('./text');
 
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -17,6 +17,7 @@ app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   next();
 });
+
 app.get('/', function (req, res) {
   res.send('hello1');
 });
@@ -24,6 +25,7 @@ app.get('/', function (req, res) {
 // this creates a new game
 app.post('/new', require('./routes/new'));
 
+/*
 app.get('/goat/:number', function(req, res) {
   var msg = 'Are you ready to get GOATED???\n\nPlease reply yes or no';
   var to = req.params.number;
@@ -37,6 +39,7 @@ app.get('/goat/:number', function(req, res) {
     res.json(err);
   });
 });
+*/
 
 // this handles all replies
 app.post('/reply', require('./routes/reply'));

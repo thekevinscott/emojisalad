@@ -46,9 +46,6 @@ module.exports = function(req, res) {
           // success!
           //console.log('user invited, let them know', invitingUser.number);
           Text.send(number, 'intro_4', [ invitedUser.number ]);
-          console.log('invitingUser', invitingUser);
-          console.log('invitedUser', invitedUser);
-          // NEXT STEP: CREATE GAME
           Game.create([
             invitingUser,
             invitedUser
