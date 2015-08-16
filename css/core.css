@@ -1,28 +1,22 @@
 html,
 body {
-  background-color: core-color;
-  color: #fff;
+  background: #fff;
+  color: core-color;
   text-align: center;
 }
 h1 {
-  font-family: 'Big John', sans-serif;
-  font-size: 2em;
-  line-height: 1.4;
+  font: 2em/1.4em 'Big John', sans-serif;
   letter-spacing: 0.2em;
 }
 h1 .light {
   font-family: 'Slim Joe', sans-serif;
 }
 h2 {
-  font-family: 'Slim Joe', sans-serif;
-  font-size: 1.2em;
-  line-height: 1.4;
+  font: 1.2em/1.4em 'Slim Joe', sans-serif;
   letter-spacing: 0.2em;
 }
 p {
-  font-family: 'Josefin Slab', serif;
-  font-style: italic;
-  font-size: 1em;
+  font: italic 1em/1em 'Josefin Slab', serif;
   letter-spacing: 0.05em;
 }
 a {
@@ -35,80 +29,53 @@ a:hover {
   color: core-light;
   border-bottom: 1px dashed core-light;
 }
-button:focus {
+button:focus,
+input:focus {
   outline: 0;
-}
-section {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  text-align: center;
-}
-.description {
-  width: 100%;
-  background-color: core-light;
-}
-.phone-input {
-  width: 100%;
-  background-color: #fff;
-  color: core-color;
 }
 .container {
   width: 100%;
 }
-.container .venn {
-  margin-bottom: 15px;
+section {
+  width: 50%;
+  padding: 20px 25%;
 }
-.container .venn .rounded {
-  background-size: contain;
-  opacity: 0.4;
-  border-radius: 80px;
-  max-width: 30%;
-  height: 160px;
-  width: 160px;
+.header {
+  background: core-color;
+  color: #fff;
 }
-.container .venn .rounded.left {
-  opacity: 1;
-  margin-right: -20px;
+.description {
+  background: core-light;
+  color: #fff;
 }
-.container .venn .rounded.right {
-  opacity: 1;
-  margin-left: -20px;
-  padding-left: -20px;
-}
-.container .phone-input label {
-  font-family: 'Big John', sans-serif;
-  font-size: 0.9em;
-  line-height: 1.4;
+.phone-input label {
+  font: 0.9em/1.4em 'Big John', sans-serif;
   padding-bottom: 10px;
 }
-.container .phone-input input {
-  font-family: 'Slim Joe', sans-serif;
-  font-size: 1.2em;
-  line-height: 1.4;
-  text-align: center;
-  border-style: solid;
-  border-width: 1px;
-  border-color: core-color;
-  padding-top: 10px;
-  padding-bottom: 5px;
+.phone-input input {
+  max-width: 220px;
+  margin: auto;
+  font: 1.6em/1.4 'Slim Joe', sans-serif;
+  text-align: left;
+  border: 1px solid core-color;
+  padding: 10px 10px 5px 30px;
 }
-.container .phone-input input {
-  color: #000;
+.phone-input input:focus {
+  border-color: emoji-yellow;
 }
-.container .phone-input .submit {
-  background-color: core-color;
-  color: #fff;
-  -webkit-appearence: none;
-  border: none;
-  font-family: 'Big John', sans-serif;
-  font-size: 0.9em;
-  line-height: 0.9em;
-  padding: 15px 20px 10px 20px;
+.phone-input .submit {
+  max-width: 200px;
+  margin: auto;
   margin-bottom: 20px;
+  background: core-color;
+  color: #fff;
+  border: none;
+  font: 0.9em/0.9em 'Big John', sans-serif;
+  padding: 15px 15px 10px 15px;
 }
-.container .phone-input .submit:hover {
-  background-color: core-dark;
+.phone-input .submit:hover {
+  background: core-dark;
 }
-.container .phone-input .submit:active {
-  background-color: emoji-yellow;
+.phone-input .submit:active {
+  background: emoji-yellow;
 }
