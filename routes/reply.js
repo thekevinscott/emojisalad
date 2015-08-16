@@ -25,19 +25,53 @@
 var User = require('../models/user');
 var Message = require('../models/message');
 var Text = require('../models/text');
+var regex = require('../config/regex');
 module.exports = function(req, res) {
   var body = req.body.Body;
   var number = req.body.From;
 
   Text.saveResponse(req.body);
   // body can match a number of predetermined messages
-  if ( /^invite /i.test(body) ) {
-    console.log('INVITE FLOW');
+  if ( regex('invite').test(body) ) {
+    var invitingUserNumber = number;
+    var invitedUserNumber = body;
+
+    // Check that the user has completed the onboarding flow
+    User.onboarded(invitingUserNumber).then(function(onboarded) {
+      if ( onboarded ) {
+        console.log('inviting user has been onboarded, proceed');
+        User.invite(invitedUserNumber, invitingUserNumber).then(function(users) {
+          var invitingUser = users.invitingUser;
+          var invitedUser = users.invitedUser;
+          // success!
+          console.log('user invited, let them know', invitingUser.number);
+          Text.send(number, 'intro_4', [ invitingUser.number ]);
+          console.log('invitingUser', invitingUser);
+          console.log('invitedUser', invitedUser);
+          //Game.create([
+            //invitingUser,
+
+          //]);
+        }).fail(function(err) {
+          console.log('error inviting user, message: ', body, 'from:', number, 'err:', err);
+          if ( typeof err === 'object' && err.key ) {
+            Text.send(number, err.key, err.data);
+          } else {
+            Text.send(number, 'invite_error', [ err ]);
+          }
+        });
+      } else {
+        // The user has not completed onboarding
+        Text.send(number, 'intro_error', [ 'Plese respond to my previous text MESSAGE >:( (fix this later -ed)' ]);
+      }
+    }).fail(function(err) {
+      console.error('wtf error when checking user onboarded status', err);
+    });
   } else {
     // we look at the from message, and see in the database
     // what message you were last sent
 
-    User.lastStep(number).then(function(message_key) {
+    User.lastStep(number, ['intro_error']).then(function(message_key) {
       console.log('last step was', message_key);
       switch(message_key) {
         case 'intro' :
@@ -55,13 +89,6 @@ module.exports = function(req, res) {
           Text.send(number, 'intro_3', [body]);
         });
         break;
-        /*
-           case 'intro_3' :
-        // now we are inviting other people 
-        if ( /^invite /i.test(body) ) {
-        }
-        break;
-        */
         default:
           console.log('message key', message_key);
         break;

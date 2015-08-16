@@ -5,12 +5,6 @@ var db = require('db');
 var User = require('./user');
 
 var Message = {
-  regex: {
-    'invite': {
-      pattern: '^invite ' + User.regex,
-      flags: 'i'
-    }
-  },
   table: 'messages',
   get: function(key) {
     var query = squel

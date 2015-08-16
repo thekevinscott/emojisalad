@@ -3,15 +3,16 @@ var squel = require('squel');
 
 var db = require('db');
 var Message = require('./message');
+var Text;
+
+var regex = require('../config/regex');
 
 var User = {
   // valid phone number test
-  regex : /^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/,
   formatNumber: function(s) {
-    return s;
-    //var s2 = (""+s).replace(/\D/g, '');
-    //var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
-    //return (!m) ? null : '+1'+m[1]+m[2]+m[3];
+    var s2 = (""+s).replace(/\D/g, '');
+    var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+    return (!m) ? null : '+1'+m[1]+m[2]+m[3];
   },
   table: 'users',
 
@@ -21,12 +22,16 @@ var User = {
 
     if ( ! number ) {
       dfd.reject('You must provide a phone number');
-    } else if ( !this.regex.test(number) ) {
+    } else if ( !regex('phone').test(number) ) {
+      console.log('number', number, 'failed regex');
       dfd.reject('You must provide a valid phone number');
     } else {
       var user = {
-        number: this.formatNumber(number)
+        number: this.formatNumber(number),
+        origNumber: this.formatNumber(number)
       };
+
+      console.log('the user to insert', user);
       var query = squel
                   .insert()
                   .into(this.table)
@@ -51,7 +56,7 @@ var User = {
     }
     return dfd.promise;
   },
-  lastStep: function(number) {
+  lastStep: function(number, skip) {
     var query = squel
                 .select()
                 .field('m.key')
@@ -60,25 +65,36 @@ var User = {
                 .left_join("users", 'u', "u.id = t.user_id")
                 .where('u.number = ?', number)
                 .order('t.created', false)
-                .limit('1');
 
     return db.query(query).then(function(steps) {
       if ( steps.length ) {
-        return steps[0].key;
-        //return Message.get(steps[0].key);
+        if ( ! skip || ! skip.length ) {
+          return steps[0].key;
+        } else {
+          for ( var i=0;i<steps.length;i++ ) {
+            if ( skip.indexOf(steps[i].key) ) {
+              return steps[i].key;
+            }
+          }
+          return 'No last step found that was excluded by skip';
+        }
       } else {
         throw "No last step found";
       }
     });
   },
-  updatePhone: function(number, id) {
-    var query = squel
-                .update()
-                .table('users')
-                .set('number', number)
-                .where('id=?',id);
+  updatePhone: function(number, user) {
+    console.log(number, user);
+    if ( number !== user.number ) {
+      console.log('update hte phone');
+      var query = squel
+                  .update()
+                  .table('users')
+                  .set('number', number)
+                  .where('id=?',user.id);
 
-    return db.query(query);
+      return db.query(query);
+    }
   },
   updateNickname: function(nickname, number) {
     console.log('update nickname', nickname, number);
@@ -90,6 +106,89 @@ var User = {
                 console.log(query.toString());
 
     return db.query(query);
+  },
+  get: function(user) {
+    var dfd = Q.defer();
+    function fetchUser(key, val) {
+      var query = squel
+                  .select()
+                  //.field('id')
+                  .from('users')
+                  .where('`'+key+'`=?', val);
+      db.query(query).then(dfd.resolve).fail(dfd.reject);
+    }
+    if ( typeof user === 'object' ) {
+      // then we've passed a user object
+      if ( user.id ) {
+        fetchUser('id', user.id);
+      } else {
+        fetchUser('number', user.number);
+      }
+    } else {
+      // we've passed a number
+      fetchUser('number', user);
+    }
+    return dfd.promise;
+  },
+  // return the new user created
+  invite: function(msg, invitingUserNumber) {
+    if ( ! Text || ! Text.send ) {
+      Text = require('./text');
+    }
+    var invitedNumber = msg.split('invite ').pop();
+    return Q.allSettled([
+      User.create(invitedNumber),
+      User.get(invitingUserNumber)
+    ]).spread(function(invitedUserPromise, invitingUserPromise) {
+      /* 
+       * invitedUser { state: 'fulfilled', value: { id: 116, number: '4126382398' } }
+       * invitingUser { state: 'fulfilled',
+       *   value:
+       *      [ { id: 109,
+       *             number: '+18604608183',
+       *                    nickname: 'Kevin',
+       *                           created: Sun Aug 16 2015 11:30:00 GMT-0400 (EDT) } ] }
+       *                           */
+      if ( invitedUserPromise.state === 'rejected' ) {
+        switch(invitedUserPromise.reason) {
+          case 'Phone number is already registered' :
+            throw {
+              key: 'already_invited',
+              data: [invitedNumber]
+            };
+            break;
+          default:
+            throw invitedUserPromise.reason
+            break;
+        }
+      } else {
+        var invitedUser = invitedUserPromise.value;
+        var invitingUser = invitingUserPromise.value[0];
+        return Text.send(invitedUser, 'invite', [ invitingUser.nickname ]).fail(function(err) {
+          console.log('err back from twilio, process this', err);
+          throw err.message;
+        }).then(function(response) {
+          return {
+            invitedUser: invitedUser,
+            invitingUser: invitingUser
+          };
+        });
+      }
+    });
+  },
+  // check to see if a user has completed onboarding
+  onboarded: function(number) {
+    return this.lastStep(number).then(function(message_key) {
+      var onboardingSteps = [
+        'intro',
+        'intro_2'
+      ];
+      if ( onboardingSteps.indexOf(message_key) === -1 ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 };
 

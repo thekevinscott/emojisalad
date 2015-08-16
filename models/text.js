@@ -9,14 +9,16 @@ var db = require('db');
 
 var client = require('twilio')(config.accountSid, config.authToken); 
  
+var User = require('./user');
+//var Message = require('./message');
 
-function get(sid) {
-    if ( sid ) {
-        return client.messages(sid).get();
-    } else {
-        return client.messages.list();
-    }
-}
+//function get(sid) {
+    //if ( sid ) {
+        //return client.messages(sid).get();
+    //} else {
+        //return client.messages.list();
+    //}
+//}
 
 //function reply(messages) {
     //var twilio = require('twilio');
@@ -30,6 +32,7 @@ function get(sid) {
 var Text = {
   table: 'texts',
   send: function send(user, message_id, message_options) {
+    console.log('send to ', user);
     var params = {
       from: config.from
     };
@@ -41,7 +44,6 @@ var Text = {
       // we've passed a phone number string
       params.to = user;
     }
-
     var query = squel
                 .select()
                 .from('messages')
@@ -49,7 +51,6 @@ var Text = {
 
     return db.query(query).then(function(messages) {
       if ( ! messages.length ) {
-        console.error('no messages found for', message_id);
         return Q.reject('An unknown error occurred; please try again later.');
       } else {
         var message = messages[0];
@@ -57,29 +58,7 @@ var Text = {
         params.body = sprintf.apply(null, [message.message].concat(message_options));
 
         return client.messages.post(params).then(function(response) {
-          var user_id;
-          if ( typeof user === 'object' ) {
-            // then we've passed a user object
-            user_id = user.id;
-          } else {
-            // we've passed a phone number string
-            user_id = squel
-                      .select()
-                      .field('id')
-                      .from('users')
-                      .where('`number`=?', user);
-          }
-
-          var query = squel
-                      .insert()
-                      .into(this.table)
-                      .setFields({
-                        user_id: user_id,
-                        message: message.message,
-                        message_id: message.id,
-                        response: JSON.stringify(response)
-                      });
-          db.query(query.toString());
+          this.saveMessage(user, message.id, params.body, response);
           // we don't wait for the db call to finish,
           // this can fail and we still want to proceed
           return response;
@@ -88,18 +67,42 @@ var Text = {
     }.bind(this));
 
   },
+  saveMessage: function(userData, message_id, message, response) {
+    //console.log('save message');
+    return User.get(userData).then(function(users) {
+      if ( users.length ) {
+        var user = users[0];
+
+        // lets do a check that the number returned from twilio
+        // matches the number we thought it was. its possible twilio
+        // has changed the number to match its internal specifications.
+        User.updatePhone(response.to, user);
+
+        var query = squel
+                    .insert()
+                    .into(this.table)
+                    .setFields({
+                      user_id: user.id,
+                      message: message,
+                      message_id: message_id,
+                      response: JSON.stringify(response)
+                    });
+                    //console.log('save message query: ' , query.toString());
+        return db.query(query);
+      } else {
+      }
+
+    }.bind(this));
+
+  },
   saveResponse: function(response) {
-    var query = squel
-                .select()
-                .field('id')
-                .from('users')
-                .where('`number`=?', response.From);
-    return db.query(query).then(function(rows) {
-      query = squel
+    return User.get(response.From).then(function(users) {
+      var query = squel
               .insert()
               .into('replies');
-      if ( rows.length ) {
-        var user = rows[0];
+
+      if ( users.length ) {
+        var user = users[0];
         query.setFields({
           user_id: user.id,
           phone: response.From,
@@ -107,33 +110,34 @@ var Text = {
           response: JSON.stringify(response)
         });
       } else {
-        // we don't have this number in our database
         query.setFields({
           phone: req.body.From,
           message: req.body.Body,
           response: JSON.stringify(req.body)
         });
-        db.query(query);
       }
+      console.log('query to save', query.toString());
+      db.query(query);
+    }).fail(function(err) {
+      console.error('error getting user id when saving response', err);
     });
-
   },
-  /*
-  // just take the data object with body defined, or mediaUrl
-  sendRaw: function send(to, data) {
-    var params = _.extend({
-      to: to, 
-      from: config.from, 
-    }, data);
+/*
+// just take the data object with body defined, or mediaUrl
+sendRaw: function send(to, data) {
+var params = _.extend({
+to: to, 
+from: config.from, 
+}, data);
 
-    var query = squel
-                .insert()
-                .into(this.table)
-                .setFields({
-                  user_id: 1,
-                  message: 1,
-                  message_id: 1
-                });
+var query = squel
+          .insert()
+          .into(this.table)
+          .setFields({
+            user_id: 1,
+            message: 1,
+            message_id: 1
+          });
 
     db.query(query);
 
