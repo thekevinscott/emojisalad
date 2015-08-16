@@ -1,3 +1,41 @@
+.chat {
+  font-family: "Helvetica Neue";
+  color: #fff;
+  font-size: 15px;
+  font-weight: normal;
+  display: inline;
+  padding-top: 3px;
+  padding-bottom: 4px;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.chat.send {
+  background-color: #0083fc;
+}
+.chat:before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  bottom: -2px;
+  right: -7px;
+  height: 20px;
+  border-right: 20px solid #0b93f6;
+  border-bottom-left-radius: 16px 14px;
+  -webkit-transform: translate(0, -2px);
+}
+.chat:after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  bottom: -2px;
+  right: -56px;
+  width: 26px;
+  height: 20px;
+  background: #fff;
+  border-bottom-left-radius: 10px;
+  -webkit-transform: translate(-30px, -2px);
+}
 @import url("http://fonts.googleapis.com/css?family=Josefin+Slab:400,400italic");
 @font-face {
   font-family: 'Big John';
