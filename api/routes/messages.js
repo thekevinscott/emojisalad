@@ -1,5 +1,5 @@
 var squel = require('squel');
-var db = require('../db');
+var db = require('db');
 module.exports = function(app) {
   app.put('/api/messages', function(req, res) {
     var message = req.body.message;

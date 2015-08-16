@@ -6,7 +6,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var squel = require('squel');
 
-var db = require('./db');
+var db = require('db');
 
 var table = 'admins';
 

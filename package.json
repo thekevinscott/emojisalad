@@ -1,7 +1,7 @@
 {
-  "name": "Admin.EmojinaryFriend",
+  "name": "emojinaryfriend-admin",
   "version": "1.0.0",
-  "description": "The CMS for EmojinaryFriend",
+  "description": "The Admin CMS for EmojinaryFriend",
   "main": "index.js",
   "scripts": {
     "webpack": "webpack --progress --colors --watch",
@@ -15,6 +15,7 @@
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.3.5",
     "crypt3": "^0.1.8",
+    "db": "git+https://git@bitbucket.com/thekevinscott/emojinaryfriend-db.git",
     "express": "^4.13.2",
     "express-handlebars": "^2.0.1",
     "express-session": "^1.11.3",
@@ -42,5 +43,10 @@
     "style-loader": "^0.12.3",
     "webpack": "^1.10.5",
     "webpack-dev-server": "^1.10.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/thekevinscott/emojinaryfriend-admin"
+  },
+  "readme": "Readme.md"
 }
