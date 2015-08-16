@@ -29,6 +29,7 @@ gulp.task('watch', function () {
   gulp.watch(['stylus/*.styl'], ['stylus']);
   gulp.watch(['*.html'], ['html']);
   gulp.watch(['css/*'], ['html']);
+  gulp.watch(['js/*'], ['html']);
 });
 
 

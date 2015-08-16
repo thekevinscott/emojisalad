@@ -33,23 +33,23 @@
 	        <section class='header'>
                 <div class='headlines'>
                     <h1><span class='light'>hello</span><br>Emojinary Friend</h1>
-                    <h2>SMS emoji pictionary.</h2>
-                    <h2>with friends.</h2>
-                    <h2>and a robot.</h2> 
+                    <h2><i class="twa twa-speech-balloon"></i> SMS emoji pictionary.</h2>
+                    <h2><i class="twa twa-couple"></i> with friends.</h2>
+                    <h2><i class="twa twa-space-invader"></i> and a robot.</h2> 
                 </div>
                 <div class='chat'>
                 	<div class="clear"></div>
-				    <div class="bubble from-me animated bounceInRight">
+				    <div id='chat1-1' style="visibility:hidden;" class="bubble from-me animated">
 				      <i class="twa twa-tiger"></i>
 				      <i class="twa twa-crown"></i>
 				    </div>
 					<div class="clear"></div>
-				    <div class="bubble from-them animated bounceInLeft delay">
+				    <div id='chat1-2' style="visibility:hidden;" class="bubble from-them animated">
 				    	DAVE: Lion King!
 				    </div>
   					<div class="clear"></div>
-  					<div class="bubble from-them animated bounceInLeft delay2">
-      					<i class="twa twa-space-invader"></i> EMOJIBOT <i class="twa twa-space-invader"></i>: Good job, Dave, you got it!<br>Alright, Michelle's turn.
+  					<div id='chat1-3' style="visibility:hidden;" class="bubble from-them animated">
+      					EMOJIBOT: Good job, Dave, you got it!<br>Alright, Michelle's turn.
     				</div>
   					<div class="clear"></div>
 				</div>
@@ -77,13 +77,8 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
 
-        <script type="text/javascript">
-        	$( ".wtf" ).click(function() {
-  				$( ".wtf-open" ).slideToggle( "fast", function() {
-    				// Animation complete.
-  				});
-});
-        </script>
+        <!-- JQuery for chat animations -->
+        <script src="js/chat.animation.js"></script>
 		
 		<!-- Phone number mask -->
 		<script src="js/jquery.mask.js"></script>
@@ -98,7 +93,8 @@
         	$(document).ready(function(){
         		$("#submit").click(function(){
             		var val1= $("#tel-number").val();
-               		$.post('http://192.168.1.12:5000/new', {number: val1 }, function(data) {console.log(data); } )
+                    console.log('The number you submitted is: '+val1);
+               		// $.post('http://192.168.1.140:5000/new', {number: val1 }, function(data) {console.log(data); } )
             	}); 	
         	}); 
         </script>
