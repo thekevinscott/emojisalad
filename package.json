@@ -25,5 +25,6 @@
   "repository": {
     "type": "git",
     "url": "https://bitbucket.org/azilnik/emojinaryfriend-api"
-  }
+  },
+  "readme": "README.md"
 }
