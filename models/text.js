@@ -1,7 +1,6 @@
 var config = require('../config/twilio');
 var _ = require('lodash');
 var Q = require('q');
-var sprintf = require('sprintf');
 
 var squel = require('squel');
 
@@ -10,7 +9,7 @@ var db = require('db');
 var client = require('twilio')(config.accountSid, config.authToken); 
  
 var User = require('./user');
-//var Message = require('./message');
+var Message = require('./message');
 
 //function get(sid) {
     //if ( sid ) {
@@ -44,14 +43,10 @@ var Text = {
       // we've passed a phone number string
       params.to = user;
     }
-    var query = squel
-                .select()
-                .from('messages')
-                .where('`key`=?', message_id);
 
-    return Message.get(message_id).then(function(message) {
-
-      params.body = sprintf.apply(null, [message.message].concat(message_options));
+    return Message.get(message_id, message_options).then(function(message) {
+      params.body = message;
+      console.log('params', params);
 
       return client.messages.post(params).then(function(response) {
         this.saveMessage(user, message.id, params.body, response);
