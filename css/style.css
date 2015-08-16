@@ -1,20 +1,35 @@
+.delay {
+  animation-delay: 2s;
+}
+.delay2 {
+  animation-delay: 4s;
+}
 .chat {
   font-family: "Helvetica Neue";
-  color: #fff;
-  font-size: 15px;
+  font-size: 20px;
   font-weight: normal;
-  display: inline;
-  padding-top: 3px;
-  padding-bottom: 4px;
-  border-radius: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  max-width: 450px;
+  margin: 50px auto;
 }
-.chat.send {
-  background-color: #0083fc;
+section .bubble {
+  max-width: 255px;
+  word-wrap: break-word;
+  margin-bottom: 20px;
+  line-height: 24px;
 }
-.chat:before {
-  content: '';
+.clear {
+  clear: both;
+}
+.from-me {
+  position: relative;
+  padding: 10px 20px;
+  color: #fff;
+  background: #0b93f6;
+  border-radius: 25px;
+  float: right;
+}
+.from-me:before {
+  content: "";
   position: absolute;
   z-index: -1;
   bottom: -2px;
@@ -24,8 +39,8 @@
   border-bottom-left-radius: 16px 14px;
   -webkit-transform: translate(0, -2px);
 }
-.chat:after {
-  content: '';
+.from-me:after {
+  content: "";
   position: absolute;
   z-index: 1;
   bottom: -2px;
@@ -34,6 +49,37 @@
   height: 20px;
   background: #fff;
   border-bottom-left-radius: 10px;
+  -webkit-transform: translate(-30px, -2px);
+}
+.from-them {
+  position: relative;
+  padding: 10px 20px;
+  background: #e5e5ea;
+  border-radius: 25px;
+  color: #000;
+  float: left;
+}
+.from-them:before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  bottom: -2px;
+  left: -7px;
+  height: 20px;
+  border-left: 20px solid #e5e5ea;
+  border-bottom-right-radius: 16px 14px;
+  -webkit-transform: translate(0, -2px);
+}
+.from-them:after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  bottom: -2px;
+  left: 4px;
+  width: 26px;
+  height: 20px;
+  background: #fff;
+  border-bottom-right-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
 @import url("http://fonts.googleapis.com/css?family=Josefin+Slab:400,400italic");

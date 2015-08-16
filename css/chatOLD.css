@@ -11,20 +11,23 @@
   max-width: 450px;
   margin: 50px auto;
 }
-section .bubble {
+
+section div {
   max-width: 255px;
   word-wrap: break-word;
   margin-bottom: 20px;
   line-height: 24px;
 }
+
 .clear {
   clear: both;
 }
+
 .from-me {
   position: relative;
   padding: 10px 20px;
-  color: #fff;
-  background: #0b93f6;
+  color: white;
+  background: #0B93F6;
   border-radius: 25px;
   float: right;
 }
@@ -35,7 +38,7 @@ section .bubble {
   bottom: -2px;
   right: -7px;
   height: 20px;
-  border-right: 20px solid #0b93f6;
+  border-right: 20px solid #0B93F6;
   border-bottom-left-radius: 16px 14px;
   -webkit-transform: translate(0, -2px);
 }
@@ -47,16 +50,17 @@ section .bubble {
   right: -56px;
   width: 26px;
   height: 20px;
-  background: #fff;
+  background: white;
   border-bottom-left-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
+
 .from-them {
   position: relative;
   padding: 10px 20px;
-  background: #e5e5ea;
+  background: #E5E5EA;
   border-radius: 25px;
-  color: #000;
+  color: black;
   float: left;
 }
 .from-them:before {
@@ -66,7 +70,7 @@ section .bubble {
   bottom: -2px;
   left: -7px;
   height: 20px;
-  border-left: 20px solid #e5e5ea;
+  border-left: 20px solid #E5E5EA;
   border-bottom-right-radius: 16px 14px;
   -webkit-transform: translate(0, -2px);
 }
@@ -78,7 +82,7 @@ section .bubble {
   left: 4px;
   width: 26px;
   height: 20px;
-  background: #fff;
+  background: white;
   border-bottom-right-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
