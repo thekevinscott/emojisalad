@@ -8,10 +8,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <!-- Place favicon.ico in the root directory -->
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/animate.css">  
+        <!-- Place favicon.ico in the root directory --> 
+        
+        <!-- All of our CSS! -->
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/animate.css">
+        
+        <!-- FontAwesome! -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         
         <!-- Twimoji! -->
@@ -90,7 +93,7 @@
         	$(document).ready(function(){
         		$("#submit").click(function(){
             		var val1= $("#tel-number").val();
-               		$.post('http://192.168.1.3:5000/new', {number: val1 }, function(data) {console.log(data); } )
+               		$.post('http://192.168.1.12:5000/new', {number: val1 }, function(data) {console.log(data); } )
             	}); 	
         	}); 
         </script>

@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var stylus = require('gulp-stylus');
-connect = require('gulp-connect');
+var connect = require('gulp-connect');
 
 // Connect server, and make LiveReload happen
 gulp.task('connect', function() {
@@ -13,7 +13,7 @@ gulp.task('connect', function() {
 // Get all .styl files in one folder and render
 gulp.task('stylus', function () {
     console.log('Hello!')
-    gulp.src('./stylus/*.styl')
+    gulp.src('./stylus/style.styl')
         .pipe(stylus())
         .pipe(gulp.dest('css'));
 });
