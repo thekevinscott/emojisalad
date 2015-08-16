@@ -3,9 +3,9 @@ var Text = require('../models/text');
 
 module.exports = function(req, res) {
   var number = req.body.number;
-  Phone.create(number).then(function() {
+  Phone.create(number).then(function(userNumber) {
     // create a new game
-    Text.send(number, 'intro').then(function(message) {
+    Text.send(userNumber, 'intro').then(function(message) {
       res.json({});
     }).fail(function(err) {
       res.json(err);

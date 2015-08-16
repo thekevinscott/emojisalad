@@ -1,10 +1,11 @@
 var config = require('../config/twilio');
 var _ = require('lodash');
 var Q = require('q');
+var sprintf = require('sprintf');
 
 var squel = require('squel');
 
-var db = require('../db');
+var db = require('db');
 
 var client = require('twilio')(config.accountSid, config.authToken); 
  
@@ -28,8 +29,7 @@ function reply(messages) {
 
 var Text = {
   table: 'texts',
-  send: function send(number, message_id) {
-    console.log('send');
+  send: function send(number, message_id, message_options) {
     var params = {
       to: number, 
       from: config.from, 
@@ -46,8 +46,8 @@ var Text = {
         return Q.reject('An unknown error occurred; please try again later.');
       } else {
         var message = messages[0];
-        params.body = message.message;
-        console.log('params', params);
+        
+        params.body = sprintf.apply(null, [message.message].concat(message_options));
 
         return client.messages.post(params).then(function(response) {
 

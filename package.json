@@ -10,10 +10,12 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.3",
+    "db": "git+https://git@bitbucket.com/thekevinscott/emojinaryfriend-db.git",
     "express": "^4.13.3",
     "lodash": "^3.10.1",
     "mysql": "^2.8.0",
     "q": "^1.4.1",
+    "sprintf": "^0.1.5",
     "squel": "^4.0.0",
     "twilio": "^2.3.0"
   },

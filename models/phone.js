@@ -1,7 +1,8 @@
 var Q = require('q');
 var squel = require('squel');
 
-var db = require('../db');
+var db = require('db');
+var Message = require('./message');
 
 var Phone = {
   // valid phone number test
@@ -9,7 +10,7 @@ var Phone = {
   formatNumber: function(s) {
     var s2 = (""+s).replace(/\D/g, '');
     var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
-    return (!m) ? null : m[1]+m[2]+m[3];
+    return (!m) ? null : '+1'+m[1]+m[2]+m[3];
   },
   table: 'users',
 
@@ -30,7 +31,9 @@ var Phone = {
                   .into(this.table)
                   .setFields(user);
 
-      db.query(query).then(dfd.resolve).fail(function(err) {
+      db.query(query).then(function() {
+        dfd.resolve(user.number);
+      }).fail(function(err) {
         switch(err.errno) {
           case 1062:
             dfd.reject('Phone number is already registered');
@@ -43,6 +46,35 @@ var Phone = {
       });
     }
     return dfd.promise;
+  },
+  lastStep: function(number) {
+    var query = squel
+                .select()
+                .field('m.key')
+                .from('messages', 'm')
+                .left_join("texts", 't', "t.message_id = m.id")
+                .left_join("users", 'u', "u.id = t.user_id")
+                .where('u.number = ?', number)
+                .order('t.created', false)
+                .limit('1');
+
+    return db.query(query).then(function(steps) {
+      if ( steps.length ) {
+        return steps[0].key;
+        //return Message.get(steps[0].key);
+      } else {
+        throw "No last step found";
+      }
+    });
+  },
+  updateNickname: function(nickname, number) {
+    var query = squel
+                .update()
+                .table('users')
+                .set('nickname', nickname)
+                .where('number=?', number)
+
+    return db.query(query);
   }
 };
 
