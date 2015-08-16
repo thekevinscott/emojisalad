@@ -2,9 +2,13 @@
   font-family: "Helvetica Neue" !important;
   font-size: 20px;
   font-weight: normal;
-  max-width: 450px;
+  max-width: 500px;
   margin: 50px auto;
   text-align: left;
+  background-color: core-light;
+  padding-left: 30px;
+  padding-right: 30px;
+  overflow: hidden;
 }
 .chat .bubble {
   font-family: "Helvetica Neue" !important;
@@ -46,7 +50,7 @@
   right: -56px;
   width: 26px;
   height: 20px;
-  background: #26bafa;
+  background: core-light;
   border-bottom-left-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
@@ -77,7 +81,7 @@
   left: 4px;
   width: 26px;
   height: 20px;
-  background: #26bafa;
+  background: core-light;
   border-bottom-right-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }

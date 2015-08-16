@@ -32,8 +32,8 @@ a {
   border-bottom: 1px dashed core-color;
 }
 a:hover {
-  color: color-tint;
-  border-bottom: 1px dashed color-tint;
+  color: core-light;
+  border-bottom: 1px dashed core-light;
 }
 button:focus {
   outline: 0;
@@ -45,7 +45,7 @@ section {
 }
 .description {
   width: 100%;
-  background-color: color-tint;
+  background-color: core-light;
 }
 .phone-input {
   width: 100%;
@@ -105,4 +105,10 @@ section {
   line-height: 0.9em;
   padding: 15px 20px 10px 20px;
   margin-bottom: 20px;
+}
+.container .phone-input .submit:hover {
+  background-color: core-dark;
+}
+.container .phone-input .submit:active {
+  background-color: emoji-yellow;
 }

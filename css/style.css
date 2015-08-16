@@ -125,20 +125,26 @@
 @font-face {
   font-family: 'Big John';
   font-style: normal;
+  src: url("../fonts/BIGJOHN.eot");
   src: local('Big John'), url("../fonts/BIGJOHN.otf") format('opentype');
 }
 @font-face {
   font-family: 'Slim Joe';
   font-style: normal;
+  src: url("../fonts/SlimJoe.eot");
   src: local('Slim Joe'), url("../fonts/SlimJoe.otf") format('opentype');
 }
 .chat {
   font-family: "Helvetica Neue" !important;
   font-size: 20px;
   font-weight: normal;
-  max-width: 450px;
+  max-width: 500px;
   margin: 50px auto;
   text-align: left;
+  background-color: #58cafb;
+  padding-left: 30px;
+  padding-right: 30px;
+  overflow: hidden;
 }
 .chat .bubble {
   font-family: "Helvetica Neue" !important;
@@ -180,7 +186,7 @@
   right: -56px;
   width: 26px;
   height: 20px;
-  background: #26bafa;
+  background: #58cafb;
   border-bottom-left-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
@@ -211,7 +217,7 @@
   left: 4px;
   width: 26px;
   height: 20px;
-  background: #26bafa;
+  background: #58cafb;
   border-bottom-right-radius: 10px;
   -webkit-transform: translate(-30px, -2px);
 }
@@ -387,4 +393,10 @@ section {
   line-height: 0.9em;
   padding: 15px 20px 10px 20px;
   margin-bottom: 20px;
+}
+.container .phone-input .submit:hover {
+  background-color: #05a3e8;
+}
+.container .phone-input .submit:active {
+  background-color: #fec030;
 }
