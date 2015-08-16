@@ -6,11 +6,12 @@ var Message = require('./message');
 
 var User = {
   // valid phone number test
-  regex : '(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?',
+  regex : /^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/,
   formatNumber: function(s) {
-    var s2 = (""+s).replace(/\D/g, '');
-    var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
-    return (!m) ? null : '+1'+m[1]+m[2]+m[3];
+    return s;
+    //var s2 = (""+s).replace(/\D/g, '');
+    //var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+    //return (!m) ? null : '+1'+m[1]+m[2]+m[3];
   },
   table: 'users',
 
@@ -20,7 +21,7 @@ var User = {
 
     if ( ! number ) {
       dfd.reject('You must provide a phone number');
-    } else if ( !RegExp('^'+this.regex + '$').test(number) ) {
+    } else if ( !this.regex.test(number) ) {
       dfd.reject('You must provide a valid phone number');
     } else {
       var user = {
@@ -80,11 +81,13 @@ var User = {
     return db.query(query);
   },
   updateNickname: function(nickname, number) {
+    console.log('update nickname', nickname, number);
     var query = squel
                 .update()
                 .table('users')
                 .set('nickname', nickname)
-                .where('number=?', number)
+                .where('number=?', number);
+                console.log(query.toString());
 
     return db.query(query);
   }

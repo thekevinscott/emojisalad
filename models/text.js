@@ -18,22 +18,29 @@ function get(sid) {
     }
 }
 
-function reply(messages) {
-    var twilio = require('twilio');
-    var twiml = new twilio.TwimlResponse();
-    messages.map(function(message) {
-        twiml.message(message);
-    });
-    return twiml;
-}
+//function reply(messages) {
+    //var twilio = require('twilio');
+    //var twiml = new twilio.TwimlResponse();
+    //messages.map(function(message) {
+        //twiml.message(message);
+    //});
+    //return twiml;
+//}
 
 var Text = {
   table: 'texts',
-  send: function send(number, message_id, message_options) {
+  send: function send(user, message_id, message_options) {
     var params = {
-      to: number, 
-      from: config.from, 
+      from: config.from
     };
+
+    if ( typeof user === 'object' ) {
+      // then we've passed a user object
+      params.to = user.number;
+    } else {
+      // we've passed a phone number string
+      params.to = user;
+    }
 
     var query = squel
                 .select()
@@ -50,12 +57,18 @@ var Text = {
         params.body = sprintf.apply(null, [message.message].concat(message_options));
 
         return client.messages.post(params).then(function(response) {
-
-          var user_id = squel
-                        .select()
-                        .from('users')
-                        .field('id')
-                        .where('number LIKE ?', number);
+          var user_id;
+          if ( typeof user === 'object' ) {
+            // then we've passed a user object
+            user_id = user.id;
+          } else {
+            // we've passed a phone number string
+            user_id = squel
+                      .select()
+                      .field('id')
+                      .from('users')
+                      .where('`number`=?', user);
+          }
 
           var query = squel
                       .insert()
@@ -66,13 +79,46 @@ var Text = {
                         message_id: message.id,
                         response: JSON.stringify(response)
                       });
-
           db.query(query.toString());
+          // we don't wait for the db call to finish,
+          // this can fail and we still want to proceed
+          return response;
         }.bind(this));
       }
     }.bind(this));
 
   },
+  saveResponse: function(response) {
+    var query = squel
+                .select()
+                .field('id')
+                .from('users')
+                .where('`number`=?', response.From);
+    return db.query(query).then(function(rows) {
+      query = squel
+              .insert()
+              .into('replies');
+      if ( rows.length ) {
+        var user = rows[0];
+        query.setFields({
+          user_id: user.id,
+          phone: response.From,
+          message: response.Body,
+          response: JSON.stringify(response)
+        });
+      } else {
+        // we don't have this number in our database
+        query.setFields({
+          phone: req.body.From,
+          message: req.body.Body,
+          response: JSON.stringify(req.body)
+        });
+        db.query(query);
+      }
+    });
+
+  },
+  /*
   // just take the data object with body defined, or mediaUrl
   sendRaw: function send(to, data) {
     var params = _.extend({
@@ -92,9 +138,8 @@ var Text = {
     db.query(query);
 
     return client.messages.post(params);
-  },
-  get: get,
-  reply: reply
+  }
+  */
 }
 
 module.exports = Text;
