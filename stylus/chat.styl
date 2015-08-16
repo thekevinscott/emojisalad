@@ -1,8 +1,10 @@
+device-width = 250 //This is hard-coded. We need to figure out how to handle this based on device 
+
 .chat
   font-family "Helvetica Neue" !important
   font-size 20px
   font-weight normal
-  max-width 450px
+  max-width 250px
   margin 50px auto
   text-align left
   .bubble
@@ -11,7 +13,7 @@
     font-weight normal
     max-width 450px
     // margin 50px auto
-    max-width 255px
+    max-width device-width
     word-wrap break-word
     margin-bottom 20px
     line-height 24px

@@ -480,7 +480,7 @@ section {
   font-family: "Helvetica Neue" !important;
   font-size: 20px;
   font-weight: normal;
-  max-width: 450px;
+  max-width: 250px;
   margin: 50px auto;
   text-align: left;
 }
@@ -489,7 +489,7 @@ section {
   font-size: 20px;
   font-weight: normal;
   max-width: 450px;
-  max-width: 255px;
+  max-width: 250;
   word-wrap: break-word;
   margin-bottom: 20px;
   line-height: 24px;
