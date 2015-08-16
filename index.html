@@ -34,17 +34,17 @@
                 <h1><span class='light'>Hello,</span><br>Emojinary Friend</h1>
                 <div class='chat'>
                 	<div class="clear"></div>
-				    <div class="bubble from-me animated bounceInRight">
+				    <div id='chat1-1' style="visibility:hidden;" class="bubble from-me animated">
 				      <i class="twa twa-tiger"></i>
 				      <i class="twa twa-crown"></i>
 				    </div>
 					<div class="clear"></div>
-				    <div class="bubble from-them animated bounceInLeft delay">
-				    	<p>DAVE: Lion King!</p>
+				    <div id='chat1-2' style="visibility:hidden;" class="bubble from-them animated">
+				    	DAVE: Lion King!
 				    </div>
   					<div class="clear"></div>
-  					<div class="bubble from-them animated bounceInLeft delay2">
-      					<p>EMOJIBOT <i class="twa twa-space-invader"></i>: Good job, Dave, you got it!<br>Alright, Michelle's turn.</p>
+  					<div id='chat1-3' style="visibility:hidden;" class="bubble from-them animated">
+      					EMOJIBOT <i class="twa twa-space-invader"></i>: Good job, Dave, you got it!<br>Alright, Michelle's turn.
     				</div>
   					<div class="clear"></div>
 				</div>
@@ -68,13 +68,8 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
 
-        <script type="text/javascript">
-        	$( ".wtf" ).click(function() {
-  				$( ".wtf-open" ).slideToggle( "fast", function() {
-    				// Animation complete.
-  				});
-});
-        </script>
+        <!-- JQuery for chat animations -->
+        <script src="js/chat.animation.js"></script>
 		
 		<!-- Phone number mask -->
 		<script src="js/jquery.mask.js"></script>
@@ -89,7 +84,8 @@
         	$(document).ready(function(){
         		$("#submit").click(function(){
             		var val1= $("#tel-number").val();
-               		$.post('http://192.168.1.12:5000/new', {number: val1 }, function(data) {console.log(data); } )
+                    console.log('The number you submitted is: '+val1);
+               		// $.post('http://192.168.1.140:5000/new', {number: val1 }, function(data) {console.log(data); } )
             	}); 	
         	}); 
         </script>
