@@ -146,9 +146,12 @@ section {
   margin-bottom: 15px;
 }
 .container .venn .rounded {
+  background-size: contain;
   opacity: 0.4;
   border-radius: 80px;
   max-width: 30%;
+  height: 160px;
+  width: 160px;
 }
 .container .venn .rounded.left {
   opacity: 1;
