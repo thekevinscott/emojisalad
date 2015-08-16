@@ -1,32 +1,18 @@
-device-width = 400 //This is hard-coded. We need to figure out how to handle this based on device 
-
 .chat
-  font-family "Helvetica Neue" !important
-  font-size 20px
-  font-weight normal
-  max-width device-width
-  margin 50px auto
+  background core-light
+  font 1em/1.2em "Helvetica Neue" !important
   text-align left
-  background-color core-light
-  padding 30px
   overflow hidden
   .bubble
-    font-family "Helvetica Neue" !important
-    font-size 20px
-    font-weight normal
-    max-width 450px
-    // margin 50px auto
-    max-width device-width
-    word-wrap break-word
+    max-width 220px
     margin-bottom 20px
-    line-height 24px
   .clear
     clear both
   .from-me
     position relative
     padding 10px 20px
     color white
-    background #0B93F6
+    background chat-bubble-color1
     border-radius 25px
     float right
     &:before
@@ -36,7 +22,7 @@ device-width = 400 //This is hard-coded. We need to figure out how to handle thi
       bottom -2px
       right -7px
       height 20px
-      border-right 20px solid #0B93F6
+      border-right 20px solid chat-bubble-color1
       border-bottom-left-radius 16px 14px
       -webkit-transform translate(0, -2px)
     &:after
@@ -53,7 +39,7 @@ device-width = 400 //This is hard-coded. We need to figure out how to handle thi
   .from-them
     position relative
     padding 10px 20px
-    background #E5E5EA
+    background chat-bubble-color2
     border-radius 25px
     color black
     float left
@@ -64,7 +50,7 @@ device-width = 400 //This is hard-coded. We need to figure out how to handle thi
       bottom -2px
       left -7px
       height 20px
-      border-left 20px solid #E5E5EA
+      border-left 20px solid chat-bubble-color2
       border-bottom-right-radius 16px 14px
       -webkit-transform translate(0, -2px)
     &:after
@@ -83,5 +69,17 @@ device-width = 400 //This is hard-coded. We need to figure out how to handle thi
 
 .delay2
   animation-delay(4s)
+  
+@media (max-width: 480px)
+  .header
+    .chat
+      // background core-color
+      overflow visible
+      .from-me
+        &:after
+          // background core-color
+      .from-them
+        &:after
+          // background core-color
  
 

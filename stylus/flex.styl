@@ -5,34 +5,31 @@ flex()
 	display -webkit-flex
 	display flex
 
-flex-align(n)
-	-webkit-box-align n 
-	-moz-box-align n
-	-ms-flex-align n
-	-webkit-align-items n
-	align-items n
+flex-align(a)
+	-webkit-box-align a
+	-moz-box-align a
+	-ms-flex-align a
+	-webkit-align-items a
+	align-items a
 	
-flex-justify-content(a)
-	-webkit-box-pack a
-	-moz-box-pack a
-	-ms-flex-pack a
-	-webkit-justify-content a
-	justify-content a
-	
-flex-direction(b)
-	-webkit-flex-direction b
-	-moz-flex-direction b
-	-ms-flex-direction b
-	flex-direction b
-	
-flex-order(c)
-	-webkit-box-ordinal-group c
-	-moz-box-ordinal-group c
-	-ms-flex-order c
-	-webkit-order c    
-	order c
+flex-justify-content(b)
+	-webkit-box-pack b
+	-moz-box-pack b
+	-ms-flex-pack b
+	-webkit-justify-content b
+	justify-content b
 	
 flex-center()
 	flex()
-	align(center)
-	justify-content(center)
+	flex-align(center)
+	flex-justify-content(center)
+	
+flex-direction(c)
+	-webkit-flex-direction c
+	-moz-flex-direction c
+	-ms-flex-direction c
+	flex-direction c
+
+flex-wrap(d)
+	-webkit-flex-wrap d
+	flex-wrap d
