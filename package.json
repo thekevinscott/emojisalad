@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.3",
-    "db" : "git+https://x-oauth-basic:JUBMKdhM7YwztaW4gGsV7O5x21GIBKl7@bitbucket.org/thekevinscott/emojinaryfriend-db.git",
+    "db" : "git+https://slipper-siblings:JUBMKdhM7YwztaW4gGsV7O5x21GIBKl7@bitbucket.org/thekevinscott/emojinaryfriend-db.git",
+
     "express": "^4.13.3",
     "lodash": "^3.10.1",
     "mysql": "^2.8.0",
