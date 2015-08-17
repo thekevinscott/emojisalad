@@ -14,7 +14,7 @@ var content = [
  {
    emoji: "<i class='twa twa-hocho'></i><i class='twa twa-runner'></i>",
    phrase_1: "RINGO: Serial killer",
-   phrase_2: "EMOJIBOT: <i class='twa twa-rotating-light'></i>Wrong answer, Ringo!<i class='twa twa-rotating-light'></i><br><br>Does anyone else know it?"
+   phrase_2: "EMOJIBOT: <i class='twa twa-rotating-light'></i> Wrong answer, Ringo! <i class='twa twa-rotating-light'></i><br><br>Does anyone else know it?"
  },
  {
    emoji: "<i class='twa twa-tiger'></i><i class='twa twa-crown'></i>",

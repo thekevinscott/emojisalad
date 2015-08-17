@@ -99,6 +99,8 @@ section {
   -ms-flex-direction: row;
   flex-direction: row;
   -webkit-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   background: #26bafa;
   color: #fff;
@@ -116,9 +118,8 @@ section {
   border-bottom: 2px solid #fff;
 }
 .header .chat {
-  width: 100%;
-  min-width: 200px;
-  max-width: 350px;
+  min-width: 350px;
+  max-width: 480px;
   margin: 0px 40px;
   padding: 30px 30px 10px 30px;
 }
@@ -141,7 +142,7 @@ section {
   border: 2px solid #26bafa;
   transition: border 0.2s;
   border-radius: 3px;
-  padding: 12px 40px 5px 60px;
+  padding: 12px 10px 5px 30px;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -176,7 +177,7 @@ section {
   color: #58cafb;
   border-bottom: 1px dashed #fff;
 }
-@media (max-width: 1134px) {
+@media (max-width: 1088px) {
   .header {
     padding-top: 30px;
     padding-bottom: 50px;
@@ -185,17 +186,23 @@ section {
     text-align: center;
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 414px) {
   .header {
     width: 100%;
     padding: 0px 0% 20px 0%;
   }
   .header .chat {
+    width: 86%;
+    min-width: 280px;
+    max-width: 350px;
     margin: 0px;
-    padding: 15px 30px 0px 30px;
+    padding: 15px 7% 0px 7%;
   }
   .header .headlines h1 {
     padding-bottom: 20px;
+  }
+  .phone-input label {
+    max-width: 190px;
   }
   .subtitle {
     background: #26bafa;
