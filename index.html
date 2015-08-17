@@ -10,25 +10,18 @@
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
         <!-- Place favicon.ico in the root directory --> 
         
-        <!-- All of our CSS! -->
+        <link rel="stylesheet" href="css/reset.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/animate.css">
-        
-        <!-- FontAwesome! -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-        
         <!-- Twimoji! -->
         <link rel="stylesheet" href="css/twemoji-awesome.css">
 		<script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
-        
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
-        <!-- Add your site or application content here -->
         <div class='container'>
 	        <section class='header'>
                 <div class='headlines'>
@@ -40,16 +33,12 @@
                 <div class='chat'>
                 	<div class="clear"></div>
 				    <div id='chat1-1' style="visibility:hidden;" class="bubble from-me animated">
-				      <i class="twa twa-tiger"></i>
-				      <i class="twa twa-crown"></i>
 				    </div>
 					<div class="clear"></div>
 				    <div id='chat1-2' style="visibility:hidden;" class="bubble from-them animated">
-				    	DAVE: Lion King!
 				    </div>
   					<div class="clear"></div>
   					<div id='chat1-3' style="visibility:hidden;" class="bubble from-them animated">
-      					EMOJIBOT: Good job, Dave, you got it!<br>Alright, Michelle's turn.
     				</div>
   					<div class="clear"></div>
 				</div>
@@ -65,50 +54,20 @@
                 <p><a href='#'>WTF?</a></p>
 	        </section>
             <section class='footer'>
-                <p>This project was created with &nbsp;♥&nbsp; in New York City by
+                <p>This project was created with <i class="twa twa-hearts"></i> in New York City by
                     <a href="http://michellelew.com" target="_blank">Michelle Lew</a>, 
                     <a href="http://www.herdingpixels.com" target="_blank">Kevin Scott</a>, and 
                     <a href="http://ari.zilnik.com/" target="_blank">Ari Zilnik</a>.
                 </p>
             </section>
 	    </div>
+
+        <!-- js -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')</script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-
-        <!-- JQuery for chat animations -->
+        <script src="js/jquery.mask.js"></script>
         <script src="js/chat.animation.js"></script>
-		
-		<!-- Phone number mask -->
-		<script src="js/jquery.mask.js"></script>
-		<script type="text/javascript">
-			$(document).ready(function(){
-  				$('#tel-number').mask('(000) 000-0000');
-			});
-		</script>
-
-        <!-- Send request to server -->
-        <script type="text/javascript">
-        	$(document).ready(function(){
-        		$("#submit").click(function(){
-            		var val1= $("#tel-number").val();
-                    console.log('The number you submitted is: '+val1);
-               		// $.post('http://192.168.1.140:5000/new', {number: val1 }, function(data) {console.log(data); } )
-            	}); 	
-        	}); 
-        </script>
-
-        <!-- Submit the form on click enter -->
-        <script type="text/javascript">
-        	$('#tel-number').keypress(function (e) {
-  				if (e.which == 13) {
-  					$(this).blur();
-    				$('#submit').focus().click();
-    				return false;
-  				}
-			});
-        </script>
+        <script src="js/main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

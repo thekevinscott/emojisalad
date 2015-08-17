@@ -12,129 +12,6 @@
   src: local('Slim Joe'), url("../fonts/SlimJoe.otf") format('opentype');
 }
 html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-body {
-  line-height: 1;
-}
-ol,
-ul {
-  list-style: none;
-}
-blockquote,
-q {
-  quotes: none;
-}
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-html,
 body {
   background: #fff;
   color: #26bafa;
@@ -154,7 +31,7 @@ h2 {
   margin-bottom: 0.8em;
 }
 p {
-  font: italic 400 1em/1.5em 'Josefin Slab', serif;
+  font: italic 400 1.1em/1.5em 'Josefin Slab', serif;
   letter-spacing: 0.05em;
 }
 a {
@@ -168,7 +45,7 @@ a:hover {
   border-bottom: 1px dashed #58cafb;
 }
 button:focus,
-input:focus {
+input[type='tel']:focus {
   outline: 0;
 }
 .container {
@@ -236,7 +113,7 @@ section {
 .header .headlines h1 {
   padding-bottom: 15px;
   margin-bottom: 25px;
-  border-bottom: 1px solid #fff;
+  border-bottom: 2px solid #fff;
 }
 .header .chat {
   width: 100%;
@@ -256,25 +133,30 @@ section {
   font: 0.9em/1.4em 'Big John', sans-serif;
   padding-top: 20px;
 }
-.phone-input input {
+.phone-input input[type='tel'] {
   max-width: 220px;
   margin: 10px auto 15px auto;
   font: 1.6em/1.4 'Slim Joe', sans-serif;
   text-align: left;
-  border: 1px solid #26bafa;
-  padding: 10px 10px 5px 30px;
+  border: 2px solid #26bafa;
+  transition: border 0.2s;
+  border-radius: 3px;
+  padding: 12px 40px 5px 60px;
+  -webkit-appearance: none;
+  appearance: none;
 }
-.phone-input input:focus {
+.phone-input input[type='tel']:focus {
   border-color: #fec030;
 }
 .phone-input .submit {
-  max-width: 200px;
+  max-width: 230px;
   margin: 15px auto 40px auto;
   background: #26bafa;
   color: #fff;
   border: none;
+  border-radius: 3px;
   font: 0.9em/0.9em 'Big John', sans-serif;
-  padding: 15px 15px 10px 15px;
+  padding: 23px 28px 16px 28px;
 }
 .phone-input .submit:hover {
   background: #05a3e8;
@@ -283,7 +165,7 @@ section {
   background: #fec030;
 }
 .footer p {
-  max-width: 393px;
+  max-width: 412px;
   text-transform: lowercase;
 }
 .footer a {
