@@ -12,99 +12,137 @@ var User = {
   table: 'users',
 
   // create a new user number
-  create: function(number, state, entry, platform) {
+  create: function(number, entry, platform) {
     var dfd = Q.defer();
+    console.log('user create', number);
 
     if ( ! number ) {
-      dfd.reject('You must provide a phone number');
+      dfd.reject({
+        errno: 4,
+        message: 'You must provide a phone number'
+      });
     //} else if ( !regex('phone').test(number) ) {
       //console.log('number', number, 'failed regex');
       //dfd.reject('You must provide a valid phone number');
     } else {
-      var user = {
-        number: number,
-      };
-
-      var promises = [];
-
-      if ( platform ) {
-        promises.push(function() {
-          var platform_id = squel
-                           .select()
-                           .field('id')
-                           .from('platforms')
-                           .where('platform=?', platform);
-
-          return db.query(platform_id).then(function(platform_id) {
-            if ( platform_id.length ) {
-              platform_id = platform_id[0].id;
-              query.set('platform_id', platform_id);
-            } else {
-              throw "Platform does not exist " + platform;
-            }
-          });
-        }());
-      }
-
-      if ( entry ) {
-        promises.push(function() {
-          var entry_id = squel
-                         .select()
-                         .field('id')
-                         .from('user_entries')
-                         .where('entry=?', entry);
-          return db.query(entry_id).then(function(entry_id) {
-            if ( entry_id.length ) {
-              console.log('we have an entry id');
-              entry_id = entry_id[0].id;
-              query.set('entry_id', entry_id);
-            } else {
-              throw "Desired entry " + entry + " is not in the database";
-            }
-          });
-        }());
-      }
-
-      var query = squel
-                  .insert()
-                  .into(this.table)
-                  .setFields(user);
-
-      if ( ! state ) {
-        state = 'waiting-for-confirmation';
-      } 
-      promises.push(function() {
-        var user_state = squel
-                         .select()
-                         .field('id')
-                         .from('user_states')
-                         .where('state=?',state);
-        return db.query(user_state).then(function(state_id) {
-          if ( state_id.length ) {
-            state_id = state_id[0].id;
-            query.set('state_id', state_id);
+      console.log('get single');
+      this.getSingle({ number: number }).then(function(user) {
+        console.log('user?');
+        if ( user ) {
+          console.log('we have a user');
+          if ( user.state === 'do-not-contact' ) {
+            dfd.reject({
+              errno: 3,
+              message: 'Phone number is on the do not contact list'
+            });
+          } else {
+            dfd.reject({
+              errno: 2,
+              message: 'Phone number is already registered'
+            });
           }
-        });
-      }());
+        } else {
+          user = {
+            number: number,
+          };
 
-      Q.allSettled(promises).spread(function() {
-        db.query(query).then(function(rows) {
-          dfd.resolve({
-            id: rows.insertId,
-            number: user.number
-          });
-        }).fail(function(err) {
-          switch(err.errno) {
-            case 1062:
-              dfd.reject('Phone number is already registered');
-            break;
-            default: 
-              console.error('error registering phone number', err);
-            dfd.reject('There was an unknown error registering the phone number. Please try again later');
-            break;
+          var promises = [];
+
+          if ( platform ) {
+            promises.push(function() {
+              var platform_id = squel
+                               .select()
+                               .field('id')
+                               .from('platforms')
+                               .where('platform=?', platform);
+
+              return db.query(platform_id).then(function(platform_id) {
+                if ( platform_id.length ) {
+                  platform_id = platform_id[0].id;
+                  query.set('platform_id', platform_id);
+                } else {
+                  throw "Platform does not exist " + platform;
+                }
+              });
+            }());
           }
-        });
-      });
+
+          if ( entry ) {
+            promises.push(function() {
+              var entry_id = squel
+                             .select()
+                             .field('id')
+                             .from('user_entries')
+                             .where('entry=?', entry);
+              return db.query(entry_id).then(function(entry_id) {
+                if ( entry_id.length ) {
+                  entry_id = entry_id[0].id;
+                  query.set('entry_id', entry_id);
+                } else {
+                  throw "Desired entry " + entry + " is not in the database";
+                }
+              });
+            }());
+          }
+
+          console.log('user', user);
+          var query = squel
+                      .insert()
+                      .into('users')
+                      .setFields(user);
+                      console.log(query.toString());
+
+          var state = 'waiting-for-confirmation';
+          promises.push(function() {
+            var user_state = squel
+                             .select()
+                             .field('id')
+                             .from('user_states')
+                             .where('state=?',state);
+            return db.query(user_state).then(function(state_id) {
+              if ( state_id.length ) {
+                state_id = state_id[0].id;
+                query.set('state_id', state_id);
+              }
+            });
+          }());
+
+          Q.allSettled(promises).spread(function() {
+            console.log('all done with promises', query.toString());
+            db.query(query).then(function(rows) {
+              this.getSingle({
+                id: rows.insertId
+              }).then(function(user) {
+                dfd.resolve(user);
+              });
+
+            }.bind(this)).fail(function(err) {
+              console.log('failed in the db create, means there was a db error', err);
+              console.log(query.toString());
+              switch(err.errno) {
+                // at this point, they could be blacklisted
+                case 1062:
+                  console.error('This is fucked; we should have caught this when we did our initial user check above.');
+                  dfd.reject({
+                    errno: 2,
+                    message: 'Phone number is already registered'
+                  });
+                break;
+                default: 
+                  console.error('error registering phone number', err);
+                  dfd.reject({
+                    errno: 5,
+                    message: 'There was an unknown error registering the phone number. Please try again later'
+                  });
+                break;
+              }
+            });
+          }.bind(this)).fail(function(err) {
+            console.error('failed in the all settled', err);
+          });
+        }
+      }.bind(this));
+
     }
     return dfd.promise;
   },
@@ -143,6 +181,8 @@ var User = {
       } else {
         return null;
       }
+    }).fail(function(err) {
+      console.log('err', err);
     });
   },
   get: function(user) {
@@ -162,18 +202,20 @@ var User = {
                   .left_join('platforms', 'p', 'p.id = u.platform_id')
                   .left_join('user_states', 's', 's.id = u.state_id')
                   .where('u.`'+key+'`=?', val);
-      db.query(query.toString()).then(dfd.resolve).fail(dfd.reject);
+
+      return db.query(query.toString());
     }
+
     if ( typeof user === 'object' ) {
       // then we've passed a user object
       if ( user.id ) {
-        fetchUser('id', user.id);
+        return fetchUser('id', user.id);
       } else if ( user.number ) {
-        fetchUser('number', user.number);
+        return fetchUser('number', user.number);
       }
     } else {
       // we've passed a number
-      fetchUser('number', user);
+      return fetchUser('number', user);
     }
     return dfd.promise;
   },
@@ -255,13 +297,17 @@ var User = {
   },
   */
   update: function(user, params) {
-    return this.getSingle(user).then(function(user) {
+    var dfd = Q.defer();
+    console.log('user model update');
+    this.getSingle(user).then(function(user) {
+      console.log('got user');
       if ( user ) {
         return Q.resolve(user);
       } else {
         return Q.reject('no user found for user id ' + user_id);
       }
     }).then(function(user) {
+      console.log('user is resolved');
       // a whitelisted array of arguments we're allowed to update
       var whitelist = [
         'username',
@@ -289,18 +335,19 @@ var User = {
             query.set('state_id', state, { dontQuote: true });
             break;
           default:
-            console.log('update ',key );
             query.set(key, params[key]);
             break;
         }
       });
 
       return db.query(query).then(function(rows) {
-        return user;
+        dfd.resolve(user);
       });
     }).fail(function(err) {
       console.error('db error', err);
+      dfd.reject(err);
     });
+    return dfd.promise;
   },
   // set a user's status to onboarded being true
   updateState: function(state, number) {
@@ -338,10 +385,35 @@ var User = {
   message: function(user, message, options) {
     switch(user.platform) {
       case 'twilio':
+        console.log('its twilio');
         if ( ! Text || ! Text.send ) {
           Text = require('./text');
         }
-        return Text.send(user.number, message, options);
+        return Text.send(user.number, message, options).fail(function(err) {
+          if ( err && err.code ) {
+            switch(err.code) {
+              case 21608:
+                // this is an unverified number
+                throw {
+                  errno: 6,
+                  message: 'this is an unverified number'
+                }
+                break;
+              default:
+                console.error('error when sending message', err);
+                throw err;
+                break;
+            }
+          } else {
+            console.error('error when sending message', err);
+            throw {
+              message: err
+            };
+          }
+        });
+        break;
+      default:
+        return Q.reject('No platform specified');
         break;
     }
   }

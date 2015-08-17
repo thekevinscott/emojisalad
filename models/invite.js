@@ -3,8 +3,12 @@ var squel = require('squel');
 
 var db = require('db');
 
+var Phone = require('./phone');
+var User = require('./user');
+
 var Invite = {
   create: function(type, value, user) {
+    console.log('create an invite');
     var dfd = Q.defer();
     var acceptedTypes = [
       'twilio'
@@ -12,30 +16,57 @@ var Invite = {
     if ( acceptedTypes.indexOf(type) === -1 ) {
       dfd.reject('not an accepted type of invite');
     }
+    var invitingUser = user;
     switch(type) {
       case 'twilio':
         value = value.split('invite').pop();
+        console.log('value', value);
         Phone.parse(value).then(function(number) {
-
-          return User.create(invitedNumber, 'invited', 'text_invite');
+          console.log('number parsed', number);
+          return User.create(number, 'text_invite', 'twilio');
         }).then(function(invitedUser) {
+          console.log('created new user', invitedUser);
           var query = squel
                       .insert()
                       .into('invites')
                       .set('invited_id', invitedUser.id)
-                      .set('inviter_id', user.id);
+                      .set('inviter_id', invitingUser.id);
         
+                      console.log('perpare to insert query');
           return db.query(query).then(function() {
-            return invitedUser;
+            console.log('got the invited user', invitedUser);
+            // inform the invited user that they've been invited
+            return User.message(invitedUser, 'invite', [ invitingUser.username ]);
+          }).then(function() {
+            console.log('told the invited user they invited');
+            // inform the inviting user their buddy has been invited
+            return User.message(invitingUser, 'intro_4', [ invitedUser.number ]);
           });
-        }).then(function(invitedUser) {
-          return User.send(invitedUser, 'invite', [ invitingUser.username ]);
         }).fail(function(err) {
-          if ( err === 'Phone number is already registered' ) {
-            throw "Phone number has already been invited";
+          console.log('err', err);
+          if ( err && err.errno ) {
+            switch(err.errno) {
+              case 1: // invalid number
+                User.message(invitingUser, 'error-'+err.errno, [ value ]);
+                break;
+              case 2: // phone number already has been invited
+                User.message(invitingUser, 'error-'+err.errno, [ value ]);
+                break;
+              case 3: // user is on do-not-call list
+                User.message(invitingUser, 'error-'+err.errno, [ value ]);
+                break;
+              case 6: // user is unverified
+                User.message(invitingUser, 'error-'+err.errno, [ value ]);
+                break;
+            }
+            dfd.reject({ error: err.message });
           } else {
-            throw err;
+            dfd.reject(err);
           }
+          // three possible errors
+          // i think this might be 1062 to check for a duplicate
+
+          // it could also be that a user is blacklisted
         });
         break;
     }

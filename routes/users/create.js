@@ -18,14 +18,21 @@ module.exports = function(req, res) {
     entry = req.body.entry;
   }
   Phone.parse(passedNumber).then(function(number) {
-    return User.create(number, null, entry, platform);
+    return User.create(number, entry, platform);
   }).then(function(user) {
-    return Text.send(user, 'intro');
+    console.log('created the user', user);
+    return User.message(user, 'intro');
   }).then(function(response) {
+    console.log('got a response2 ', response);
     res.json({});
   }).fail(function(err) {
     console.log('error creating user / sending text', err);
-    // possible error - number is already registered.
-    res.json({ error: err });
+    if ( err.message ) {
+      // possible error - number is already registered.
+      res.json({ error: err.message });
+    } else {
+      // possible error - number is already registered.
+      res.json({ error: err });
+    }
   });
 }

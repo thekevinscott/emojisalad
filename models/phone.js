@@ -14,7 +14,10 @@ var Phone = {
     var dfd = Q.defer();
     client.phoneNumbers(number).get(function(err, number) {
       if ( err ) {
-        dfd.reject("Number is not a valid phone number: " + number);
+        dfd.reject({
+          message: "Number is not a valid phone number: " + number,
+          errno: 1
+        });
       } else {
         dfd.resolve(number.phoneNumber);
       }

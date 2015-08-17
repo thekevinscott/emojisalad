@@ -37,13 +37,17 @@ module.exports = function(req, res) {
 
   // first, we parse the Phone number
   Phone.parse(number).then(function(response) {
-    return User.getSingle({ number: number });
+    console.log('parsed the number', response);
+    return User.getSingle({ number: response });
   }).then(function(user) {
+    console.log('back from user get single');
     if ( user ) {
-      script(user, body, res);
+      console.log('user exists, proceed');
+      return script(user, body, res);
     } else {
+      console.log('user does not exist');
       // user does not yet exist; create the user
-      rp({
+      return rp({
         url: 'http://localhost:5000/users/create',
         method: 'POST',
         json: {
@@ -60,6 +64,6 @@ module.exports = function(req, res) {
     //
     // This could mean Twilio somehow fell down between requests, or there's a man
     // in the middle, or someone has gotten a hold of this URL and is trying to hack us.
-    console.error('There was an error parsing phone number', err);
+    console.error('some odd kind of twilio error', err);
   });
 }

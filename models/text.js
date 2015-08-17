@@ -45,17 +45,30 @@ var Text = {
       params.to = user;
     }
 
-    console.log('got messeage?');
+    console.log('prepare to send message');
     return Message.get(message_key, message_options).then(function(message) {
+      console.log('got message val');
       params.body = message.message;
 
+      console.log('prepare to send message');
+      try {
       return client.messages.post(params).then(function(response) {
+        console.log('sent message!');
         this.saveMessage(user, message.id, params.body, response);
+        console.log('saved message');
         // we don't wait for the db call to finish,
         // this can fail and we still want to proceed
         return response;
-      }.bind(this));
-    }.bind(this));
+      }.bind(this)).fail(function(err) {
+        console.log('client error', err);
+      });
+      } catch(e) {
+        console.log('e', e);
+      }
+    }.bind(this)).fail(function(err) {
+      console.log('error when sending message, or getting message', err);
+      throw err;
+    });
 
   },
   saveMessage: function(userData, message_id, message, response) {

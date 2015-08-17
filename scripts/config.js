@@ -5,9 +5,8 @@ var script = {
       regex: {
         pattern: '.*',
       },
-      actions: [
-      ]
-  }
+      actions: [ ]
+    }
   ],
   // waiting-for-confirmation
   'waiting-for-confirmation': [
@@ -19,7 +18,10 @@ var script = {
       actions: [
         {
           type: 'respond',
-          message: 'intro_2'
+          message: function(user, body) {
+            console.log('user', user);
+            return 'intro_2';
+          }
         },
         {
           type: 'request',
@@ -103,10 +105,6 @@ var script = {
         pattern: '^invite',
       },
       actions: [
-        {
-          type: 'respond',
-          message: 'wait-to-invite'
-        },
         {
           type: 'request',
           url: '/invites/new',
