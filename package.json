@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.3",
-    "db": "git+ssh://git@bitbucket.org/thekevinscott/emojinaryfriend-db.git",
+    "db": "git+https://slipper-siblings:vc42cihEXdAUibmnJmFcsspbf0gwEMRc@bitbucket.org/slipper-siblings/emojinaryfriend-db.git",
+
     "express": "^4.13.3",
     "lodash": "^3.10.1",
     "mysql": "^2.8.0",
