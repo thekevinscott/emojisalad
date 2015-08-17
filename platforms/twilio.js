@@ -44,8 +44,13 @@ module.exports = function(req, res) {
     } else {
       // user does not yet exist; create the user
       rp({
-        url: 'http://localhost:5000/users/create/'+number,
-        method: 'GET',
+        url: 'http://localhost:5000/users/create',
+        method: 'POST',
+        json: {
+          number: number,
+          entry: 'text',
+          platform: 'twilio'
+        }
       });
     }
   }).fail(function(err) {

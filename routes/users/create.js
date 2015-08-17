@@ -3,15 +3,22 @@ var Phone = require('../../models/phone');
 var Text = require('../../models/text');
 
 module.exports = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'POST');
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   // we support the old, /new route for Website
-  // but want to transition to new, /users/create/:number GET for new calls
-  if ( req.method === 'GET' ) {
-    var passedNumber = req.params.number;
-  } else {
-    var passedNumber = req.body.number;
+  // but want to transition to new, /users/create/ POST for new calls
+  var passedNumber = req.body.number;
+  var platform = req.body.platform;
+  if ( ! platform ) {
+    platform = 'twilio';
+  }
+  var entry = 'web';
+  if ( req.body.entry ) {
+    entry = req.body.entry;
   }
   Phone.parse(passedNumber).then(function(number) {
-    return User.create(number, 'web');
+    return User.create(number, null, entry, platform);
   }).then(function(user) {
     return Text.send(user, 'intro');
   }).then(function(response) {

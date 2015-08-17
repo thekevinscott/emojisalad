@@ -12,24 +12,20 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 //var text = require('./text');
 
 app.all('/test', function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   console.log('testing successful');
   res.json({ success: 1 });
 });
 
-app.all('*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
+//app.all('*', function(req, res, next) {
+  //res.header("Access-Control-Allow-Origin", "*");
+  //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  //res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  //next();
+//});
 
-app.get('/', function (req, res) {
-  res.send('hello1');
-});
-
-// this creates a new game
-app.post('/new', require('./routes/users/create'));
-app.get('/users/create/:number', require('./routes/users/create'));
 
 /*
 app.get('/goat/:number', function(req, res) {
@@ -47,10 +43,18 @@ app.get('/goat/:number', function(req, res) {
 });
 */
 
+// this creates a new game
+app.post('/new', require('./routes/users/create'));
+app.post('/users/create', require('./routes/users/create'));
+app.put('/users/:user_id', require('./routes/users/update'));
+app.post('/invites/new', require('./routes/invites/create'));
+
 // this handles all replies
-app.post('/reply', require('./routes/reply')); // old
 app.post('/platform/:platform', require('./platforms/'));
 
+// DEPRECATED
+
+app.post('/reply', require('./routes/reply')); // old
 app.listen(app.get('port'), function() {
   console.log('Example app listening on port', app.get('port'));
 });

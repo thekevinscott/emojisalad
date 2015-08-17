@@ -30,6 +30,9 @@ var Log = require('../models/log');
 var Phone = require('../models/phone');
 var regex = require('../config/regex');
 module.exports = function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'POST');
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   console.log('reply');
 
   Log.incoming(req.body);

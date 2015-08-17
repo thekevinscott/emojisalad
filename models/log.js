@@ -29,7 +29,6 @@ var Log = {
         });
       }
       
-      console.log('query', query.toString());
       db.query(query);
     }).fail(function(err) {
       console.error('error getting user id when saving response', err);

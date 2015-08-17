@@ -12,7 +12,7 @@ var User = {
   table: 'users',
 
   // create a new user number
-  create: function(number, state, inviter_number, entry) {
+  create: function(number, state, entry, platform) {
     var dfd = Q.defer();
 
     if ( ! number ) {
@@ -27,20 +27,20 @@ var User = {
 
       var promises = [];
 
-      if ( inviter_number ) {
+      if ( platform ) {
         promises.push(function() {
-          var inviter_id = squel
+          var platform_id = squel
                            .select()
                            .field('id')
-                           .from('users')
-                           .where('number=?', inviter_number);
+                           .from('platforms')
+                           .where('platform=?', platform);
 
-          return db.query(inviter_id).then(function(inviter_id) {
-            if ( inviter_id.length ) {
-              inviter_id = inviter_id[0].id;
-              query.set('inviter_id', inviter_id);
+          return db.query(platform_id).then(function(platform_id) {
+            if ( platform_id.length ) {
+              platform_id = platform_id[0].id;
+              query.set('platform_id', platform_id);
             } else {
-              throw "This should never happen - the user who invited this phone is not in databse" + inviter_id;
+              throw "Platform does not exist " + platform;
             }
           });
         }());
@@ -70,21 +70,22 @@ var User = {
                   .into(this.table)
                   .setFields(user);
 
-      if ( state ) {
-        promises.push(function() {
-          var user_state = squel
-                           .select()
-                           .field('id')
-                           .from('user_states')
-                           .where('state=?',state);
-          return db.query(user_state).then(function(state_id) {
-            if ( state_id.length ) {
-              state_id = state_id[0].id;
-              query.set('state_id', state_id);
-            }
-          });
-        }());
-      }
+      if ( ! state ) {
+        state = 'waiting-for-confirmation';
+      } 
+      promises.push(function() {
+        var user_state = squel
+                         .select()
+                         .field('id')
+                         .from('user_states')
+                         .where('state=?',state);
+        return db.query(user_state).then(function(state_id) {
+          if ( state_id.length ) {
+            state_id = state_id[0].id;
+            query.set('state_id', state_id);
+          }
+        });
+      }());
 
       Q.allSettled(promises).spread(function() {
         db.query(query).then(function(rows) {
@@ -118,7 +119,6 @@ var User = {
                 .order('t.created', false)
 
     return db.query(query).then(function(steps) {
-      console.log('got here');
       if ( steps.length ) {
         if ( ! skip || ! skip.length ) {
           return steps[0].key;
@@ -131,29 +131,10 @@ var User = {
           return 'No last step found that was excluded by skip';
         }
       } else {
+        console.log(query.toString());
         return null;
       }
     });
-  },
-  updatePhone: function(number, user) {
-    if ( number !== user.number ) {
-      var query = squel
-                  .update()
-                  .table('users')
-                  .set('number', number)
-                  .where('id=?',user.id);
-
-      return db.query(query);
-    }
-  },
-  updateNickname: function(nickname, number) {
-    var query = squel
-                .update()
-                .table('users')
-                .set('nickname', nickname)
-                .where('number=?', number);
-
-    return db.query(query);
   },
   getSingle: function(user) {
     return this.get(user).then(function(users) {
@@ -171,12 +152,15 @@ var User = {
                   .select()
                   .field('u.id')
                   .field('u.number')
-                  .field('u.nickname')
+                  .field('u.username')
                   .field('u.created')
-                  .field('u.inviter_id')
-                  .field('i.number', 'inviter_number')
+                  .field('i.inviter_id')
+                  .field('p.platform', 'platform')
+                  .field('s.state', 'state')
                   .from('users', 'u')
-                  .left_join('users', 'i', 'i.id = u.inviter_id')
+                  .left_join('invites', 'i', 'u.id = i.invited_id')
+                  .left_join('platforms', 'p', 'p.id = u.platform_id')
+                  .left_join('user_states', 's', 's.id = u.state_id')
                   .where('u.`'+key+'`=?', val);
       db.query(query.toString()).then(dfd.resolve).fail(dfd.reject);
     }
@@ -194,6 +178,7 @@ var User = {
     return dfd.promise;
   },
   // return the new user created
+   /*
   invite: function(msg, invitingUserNumber) {
     console.log('invite');
     if ( ! Text || ! Text.send ) {
@@ -201,18 +186,17 @@ var User = {
     }
     var invitedNumber = msg.split('invite ').pop();
     return Q.allSettled([
-      User.create(invitedNumber, 'invited', invitingUserNumber, 'text_invite'),
+      User.create(invitedNumber, 'invited', 'text_invite'),
       User.get(invitingUserNumber)
     ]).spread(function(invitedUserPromise, invitingUserPromise) {
-      /* 
-       * invitedUser { state: 'fulfilled', value: { id: 116, number: '4126382398' } }
-       * invitingUser { state: 'fulfilled',
-       *   value:
-       *      [ { id: 109,
-       *             number: '+18604608183',
-       *                    nickname: 'Kevin',
-       *                           created: Sun Aug 16 2015 11:30:00 GMT-0400 (EDT) } ] }
-       *                           */
+       //* invitedUser { state: 'fulfilled', value: { id: 116, number: '4126382398' } }
+       //* invitingUser { state: 'fulfilled',
+       //*   value:
+       //*      [ { id: 109,
+       //*             number: '+18604608183',
+       //*                    username: 'Kevin',
+       //*                           created: Sun Aug 16 2015 11:30:00 GMT-0400 (EDT) } ] }
+       //*                           
       if ( invitedUserPromise.state === 'rejected' ) {
         switch(invitedUserPromise.reason) {
           case 'Phone number is already registered' :
@@ -238,7 +222,7 @@ var User = {
         db.query(query);
 
         console.log('invitingUser', invitingUser);
-        return Text.send(invitedUser, 'invite', [ invitingUser.nickname ]).fail(function(err) {
+        return Text.send(invitedUser, 'invite', [ invitingUser.username ]).fail(function(err) {
           console.log('err back from twilio, process this', err);
           throw err.message;
         }).then(function(response) {
@@ -251,6 +235,8 @@ var User = {
       }
     });
   },
+  */
+ /*
   notifyInviter: function(invitedUser) {
     var query = squel
                 .select()
@@ -265,6 +251,55 @@ var User = {
       } else {
         throw "wtf, there should be a amtching user who invited the other user";
       }
+    });
+  },
+  */
+  update: function(user, params) {
+    return this.getSingle(user).then(function(user) {
+      if ( user ) {
+        return Q.resolve(user);
+      } else {
+        return Q.reject('no user found for user id ' + user_id);
+      }
+    }).then(function(user) {
+      // a whitelisted array of arguments we're allowed to update
+      var whitelist = [
+        'username',
+        'state'
+      ];
+
+      var query = squel
+                  .update()
+                  .table('users')
+                  .where('id=?', user.id);
+
+      Object.keys(params).filter(function(key) {
+        if ( whitelist.indexOf(key) !== -1 ) {
+          return true;
+        }
+      }).map(function(key) {
+        switch(key) {
+          case 'state' :
+            var state = squel
+                         .select()
+                         .field('id')
+                         .from('user_states')
+                         .where('state=?',params[key]);
+
+            query.set('state_id', state, { dontQuote: true });
+            break;
+          default:
+            console.log('update ',key );
+            query.set(key, params[key]);
+            break;
+        }
+      });
+
+      return db.query(query).then(function(rows) {
+        return user;
+      });
+    }).fail(function(err) {
+      console.error('db error', err);
     });
   },
   // set a user's status to onboarded being true
@@ -299,6 +334,16 @@ var User = {
         return false;
       }
     });
+  },
+  message: function(user, message, options) {
+    switch(user.platform) {
+      case 'twilio':
+        if ( ! Text || ! Text.send ) {
+          Text = require('./text');
+        }
+        return Text.send(user.number, message, options);
+        break;
+    }
   }
 };
 

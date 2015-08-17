@@ -4,113 +4,79 @@ var Game = require('../models/game');
 var Text = require('../models/text');
 var Phone = require('../models/phone');
 var regex = require('../config/regex');
-module.exports = function(body, res, user) {
-  // body can match a number of predetermined messages
-  if ( regex('invite').test(body) ) {
-    console.log('do we invite? yes we do');
-    var invitingUserNumber = user.number;
-    var invitedUserNumber = body;
+var rp = require('request-promise');
+var _ = require('lodash');
 
-    // Check that the user has completed the onboarding flow
-    User.onboarded(invitingUserNumber).then(function(response) {
-      if ( response ) {
-        // number is already parsed, get rid of this later
-        return Q.resolve(invitedUserNumber);
+var script = require('./config');
+
+function processAction(action, user, body) {
+  console.log('process action', body, action.type);
+  switch(action.type) {
+    // send the user a message
+    case 'respond':
+      console.log('respond', action.message, user.number);
+      var options = [];
+      if ( _.isFunction(action.options) ) {
+        options = action.options(user, body);
+      }
+      User.message(user, action.message, options);
+      break;
+    case 'request':
+      if ( ! action.url ) {
+        console.error('You must provide a URL');
+        throw 'Bad URL';
+      } else if ( typeof action.url === 'string' && action.url.substring(0,1) !== '/' ) {
+        console.error('You must provide a properly formatted URL');
+        throw 'Bad URL';
+      }
+      var url;
+      if ( _.isFunction(action.url) ) {
+        url = action.url(user, body);
       } else {
-        // The user has not completed onboarding
-        Text.send(number, 'not_yet_onboarded_error', [ response.last_step ]);
-        return Q.reject('user has not completed onboarding');
+        url = action.url;
       }
-    }).then(function(invitingUserNumberParsed) {
-        console.log('inviting user has been onboarded, proceed', invitingUserNumberParsed);
-        User.invite(invitedUserNumber, invitingUserNumberParsed).then(function(users) {
-          console.log('invited the user');
-          var invitingUser = users.invitingUser;
-          var invitedUser = users.invitedUser;
-          // let the user who invited this new user know they signed up
-          User.notifyInviter(invitedUser);
-          // success!
-          console.log('post sending text');
-          Game.create([
-            invitingUser,
-            invitedUser
-          ]);
-        }).fail(function(err) {
-          console.log('error inviting user, message: ', body, 'from:', user.number, 'err:', err);
-          if ( typeof err === 'object' && err.key ) {
-            Text.send(user.number, err.key, err.data);
-          } else {
-            Text.send(user.number, 'invite_error', [ err ]);
-          }
-        });
-    }).fail(function(err) {
-      console.error('wtf error when checking user onboarded status', err);
-    });
-  } else {
-    // we look at the from message, and see in the database
-    // what message you were last sent
 
-    var weDontCareAboutTheseSteps = [
-      'intro_error',
-      'not_yet_onboarded_error'
-    ];
-    console.log('a', user);
-    User.lastStep(user.number, weDontCareAboutTheseSteps).then(function(message_key) {
-      console.log('b');
-      console.log('last step was', message_key);
-      switch(message_key) {
-        case 'intro' :
-          if ( /^yes$|^yeah|^yea|^y/i.test(body) ) {
-          console.log('send step 2', user.number);
-          Text.send(user.number, 'intro_2');
-        }
-        break;
-        // if any other response, dont do anything
-        case 'intro_2' :
-          console.log('heres intro 2');
-        // we get their nickname here
-        User.updateNickname(body, user.number).then(function() {
-          console.log('send step 3');
-          Text.send(user.number, 'intro_3', [body]);
-          User.updateState('onboarded', user.number);
+      var data;
+      if ( _.isFunction(action.data) ) {
+        data = action.data(user, body);
+      } else {
+        data = action.data;
+      }
+
+      console.log('request', url);
+      rp({
+        url: 'http://localhost:5000'+url,
+        method: action.method || 'POST',
+        json: data
+      }).then(function(response) {
+        console.log('action request response from API call', response);
+      }).fail(function(err) {
+        console.error('error making the request', err);
+      });
+
+      break;
+  }
+}
+
+module.exports = function(user, body, res) {
+  var message_key = user.state;
+  if ( script[message_key] ) {
+    var step = script[message_key];
+    for ( var i=0, l=step.length; i<l; i++ ) {
+      var branch = step[i];
+      var regex;
+      if ( branch.regex.flags ) {
+        regex = RegExp(branch.regex.pattern, branch.regex.flags);
+      } else {
+        regex = RegExp(branch.regex.pattern);
+      }
+      if ( regex.test(body) ) {
+        console.log('number of actions', branch.actions.length);
+        branch.actions.map(function(action) {
+          processAction(action, user, body);
         });
         break;
-        case 'invite' :
-          if ( /^yes$|^yeah|^yea|^y/i.test(body) ) {
-            
-            console.log('send invite step 2', user.number);
-            Text.send(user.number, 'invite_2');
-          }
-        break;
-        case 'invite_2' :
-          console.log('heres invite 2');
-          var nickname = body;
-          console.log('upadte invited nick', nickname, user.number);
-          User.updateNickname(nickname, user.number).then(function() {
-            console.log('upadte invited state');
-            User.updateState('onboarded', user.number);
-            console.log('let inviter know');
-            User.get(user.number).then(function(users) {
-              if ( users.length ) {
-                var user = users[0];
-                console.log('user inviter', user, nickname);
-                // let the person who invited Ari know he joined
-                Text.send({
-                  id: user.inviter_id,
-                  number: user.inviter_number
-                }, 'accepted', [ nickname ]);
-                Game.update(user.inviter_id);
-              } else {
-                throw "wtf this should not happen, the inviter id returns a null user" + user.inviter_id;
-              }
-            });
-
-          });
-        break;
-        default:
-          console.log('message key', message_key);
-        break;
       }
-    });
+    }
   }
 };

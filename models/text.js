@@ -66,7 +66,7 @@ var Text = {
         // lets do a check that the number returned from twilio
         // matches the number we thought it was. its possible twilio
         // has changed the number to match its internal specifications.
-        User.updatePhone(response.to, user);
+        //User.updatePhone(response.to, user);
 
         var query = squel
                     .insert()
