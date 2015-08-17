@@ -40,7 +40,7 @@ module.exports = function(req, res) {
     return User.getSingle({ number: number });
   }).then(function(user) {
     if ( user ) {
-      script(number, body, res, user);
+      script(user, body, res);
     } else {
       // user does not yet exist; create the user
       rp({
