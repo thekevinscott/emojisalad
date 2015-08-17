@@ -26,5 +26,9 @@
     "type": "git",
     "url": "https://bitbucket.org/azilnik/emojinaryfriend-api"
   },
+  "engines": {
+   "node": "0.12.x",
+    "npm": "^2.11.0"
+  },
   "readme": "README.md"
 }

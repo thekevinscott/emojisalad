@@ -1,11 +1,12 @@
 var User = require('../models/user');
+var Phone = require('../models/phone');
 var Text = require('../models/text');
 
 module.exports = function(req, res) {
-  var number = req.body.number;
-  User.create(number).then(function(user) {
-    console.log('create a new game');
-    // create a new game
+  var passedNumber = req.body.number;
+  Phone.parse(passedNumber).then(function(number) {
+    return User.create(number, 'web');
+  }).then(function(user) {
     return Text.send(user, 'intro');
   }).then(function(response) {
     res.json({});

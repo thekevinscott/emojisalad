@@ -9,15 +9,10 @@ var regex = require('../config/regex');
 
 var User = {
   // valid phone number test
-  formatNumber: function(s) {
-    var s2 = (""+s).replace(/\D/g, '');
-    var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
-    return (!m) ? null : '+1'+m[1]+m[2]+m[3];
-  },
   table: 'users',
 
   // create a new user number
-  create: function(number, state, inviter_number) {
+  create: function(number, state, inviter_number, entry) {
     var dfd = Q.defer();
 
     if ( ! number ) {
@@ -27,8 +22,7 @@ var User = {
       //dfd.reject('You must provide a valid phone number');
     } else {
       var user = {
-        number: this.formatNumber(number),
-        origNumber: this.formatNumber(number)
+        number: number,
       };
 
       var promises = [];
@@ -47,6 +41,25 @@ var User = {
               query.set('inviter_id', inviter_id);
             } else {
               throw "This should never happen - the user who invited this phone is not in databse" + inviter_id;
+            }
+          });
+        }());
+      }
+
+      if ( entry ) {
+        promises.push(function() {
+          var entry_id = squel
+                         .select()
+                         .field('id')
+                         .from('user_entries')
+                         .where('entry=?', entry);
+          return db.query(entry_id).then(function(entry_id) {
+            if ( entry_id.length ) {
+              console.log('we have an entry id');
+              entry_id = entry_id[0].id;
+              query.set('entry_id', entry_id);
+            } else {
+              throw "Desired entry " + entry + " is not in the database";
             }
           });
         }());
@@ -172,12 +185,13 @@ var User = {
   },
   // return the new user created
   invite: function(msg, invitingUserNumber) {
+    console.log('invite');
     if ( ! Text || ! Text.send ) {
       Text = require('./text');
     }
     var invitedNumber = msg.split('invite ').pop();
     return Q.allSettled([
-      User.create(invitedNumber, 'invited', invitingUserNumber),
+      User.create(invitedNumber, 'invited', invitingUserNumber, 'text_invite'),
       User.get(invitingUserNumber)
     ]).spread(function(invitedUserPromise, invitingUserPromise) {
       /* 
@@ -202,17 +216,44 @@ var User = {
             break;
         }
       } else {
+
         var invitedUser = invitedUserPromise.value;
         var invitingUser = invitingUserPromise.value[0];
+        // add an entry in the invited table
+        var invited_query = squel
+                            .insert()
+                            .into('invites')
+                            .set('invited_id', invitedUser.id)
+                            .set('inviter_id', invitingUser.id);
+        db.query(query);
+
+        console.log('invitingUser', invitingUser);
         return Text.send(invitedUser, 'invite', [ invitingUser.nickname ]).fail(function(err) {
           console.log('err back from twilio, process this', err);
           throw err.message;
         }).then(function(response) {
+          //return invitedUser;
           return {
             invitedUser: invitedUser,
             invitingUser: invitingUser
           };
         });
+      }
+    });
+  },
+  notifyInviter: function(invitedUser) {
+    var query = squel
+                .select()
+                .from('invites', 'i')
+                .left_join('users', 'u', 'u.id = i.inviter_id')
+                .where('i.invited_id=?',invitedUser.id);
+
+    db.query(query).then(function(users) {
+      if ( users.length ) {
+        var invitingUser = users[0];
+        Text.send(invitingUser, 'intro_4', [ invitedUser.number ]);
+      } else {
+        throw "wtf, there should be a amtching user who invited the other user";
       }
     });
   },
