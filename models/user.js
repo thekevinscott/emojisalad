@@ -111,13 +111,14 @@ var User = {
     var query = squel
                 .select()
                 .field('m.key')
-                .from('texts', 't')
+                .from('outgoingMessages', 't')
                 .left_join('messages', 'm', 't.message_id = m.id')
                 .left_join('users', 'u', 'u.id = t.user_id')
                 .where('u.number = ?', number)
                 .order('t.created', false)
 
     return db.query(query).then(function(steps) {
+      console.log('got here');
       if ( steps.length ) {
         if ( ! skip || ! skip.length ) {
           return steps[0].key;
@@ -154,6 +155,15 @@ var User = {
 
     return db.query(query);
   },
+  getSingle: function(user) {
+    return this.get(user).then(function(users) {
+      if ( users.length ) {
+        return users[0];
+      } else {
+        return null;
+      }
+    });
+  },
   get: function(user) {
     var dfd = Q.defer();
     function fetchUser(key, val) {
@@ -174,7 +184,7 @@ var User = {
       // then we've passed a user object
       if ( user.id ) {
         fetchUser('id', user.id);
-      } else {
+      } else if ( user.number ) {
         fetchUser('number', user.number);
       }
     } else {

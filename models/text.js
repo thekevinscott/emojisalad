@@ -29,7 +29,7 @@ var Message = require('./message');
 //}
 
 var Text = {
-  table: 'texts',
+  table: 'outgoingMessages',
   send: function send(user, message_key, message_options) {
     var params = {
       from: config.from
@@ -70,7 +70,7 @@ var Text = {
 
         var query = squel
                     .insert()
-                    .into(this.table)
+                    .into('outgoingMessages')
                     .setFields({
                       user_id: user.id,
                       message: message,
@@ -89,7 +89,7 @@ var Text = {
     return User.get(response.From).then(function(users) {
       var query = squel
               .insert()
-              .into('replies');
+              .into('incomingMessages');
 
       if ( users.length ) {
         var user = users[0];
@@ -121,7 +121,7 @@ from: config.from,
 
 var query = squel
           .insert()
-          .into(this.table)
+          .into('outgoingMessages')
           .setFields({
             user_id: 1,
             message: 1,

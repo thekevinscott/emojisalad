@@ -1,52 +1,21 @@
-/*
- * A reply from Twilio will contain the following:
- *
- *
- * ToCountry: 'US',
- * ToState: 'CT',
- * SmsMessageSid: 'SMc96a588b2e08804bea6a8e721f2809dc',
- * NumMedia: '0',
- * ToCity: 'GALES FERRY',
- * FromZip: '06357',
- * SmsSid: 'SMc96a588b2e08804bea6a8e721f2809dc',
- * FromState: 'CT',
- * SmsStatus: 'received',
- * FromCity: 'NEW LONDON',
- * Body: 'yes',
- * FromCountry: 'US',
- * To: '+18603814348',
- * NumSegments: '1',
- * ToZip: '06382',
- * MessageSid: 'SMc96a588b2e08804bea6a8e721f2809dc',
- * AccountSid: 'ACf2076b907d44abdd8dc8d262ff941ee4',
- * From: '+18604608183',
- * ApiVersion: '2010-04-01'
- */
 var User = require('../models/user');
 var Message = require('../models/message');
 var Game = require('../models/game');
 var Text = require('../models/text');
-var Log = require('../models/log');
 var Phone = require('../models/phone');
 var regex = require('../config/regex');
-module.exports = function(req, res) {
-  console.log('reply');
-
-  Log.incoming(req.body);
-
-  var body = req.body.Body;
-  var number = req.body.From;
+module.exports = function(body, res, user) {
   // body can match a number of predetermined messages
   if ( regex('invite').test(body) ) {
     console.log('do we invite? yes we do');
-    var invitingUserNumber = number;
+    var invitingUserNumber = user.number;
     var invitedUserNumber = body;
 
     // Check that the user has completed the onboarding flow
     User.onboarded(invitingUserNumber).then(function(response) {
       if ( response ) {
-        console.log('parse the phone number', invitedUserNumber);
-        return Phone.parse(invitedUserNumber);
+        // number is already parsed, get rid of this later
+        return Q.resolve(invitedUserNumber);
       } else {
         // The user has not completed onboarding
         Text.send(number, 'not_yet_onboarded_error', [ response.last_step ]);
@@ -67,11 +36,11 @@ module.exports = function(req, res) {
             invitedUser
           ]);
         }).fail(function(err) {
-          console.log('error inviting user, message: ', body, 'from:', number, 'err:', err);
+          console.log('error inviting user, message: ', body, 'from:', user.number, 'err:', err);
           if ( typeof err === 'object' && err.key ) {
-            Text.send(number, err.key, err.data);
+            Text.send(user.number, err.key, err.data);
           } else {
-            Text.send(number, 'invite_error', [ err ]);
+            Text.send(user.number, 'invite_error', [ err ]);
           }
         });
     }).fail(function(err) {
@@ -85,41 +54,43 @@ module.exports = function(req, res) {
       'intro_error',
       'not_yet_onboarded_error'
     ];
-    User.lastStep(number, weDontCareAboutTheseSteps).then(function(message_key) {
+    console.log('a', user);
+    User.lastStep(user.number, weDontCareAboutTheseSteps).then(function(message_key) {
+      console.log('b');
       console.log('last step was', message_key);
       switch(message_key) {
         case 'intro' :
           if ( /^yes$|^yeah|^yea|^y/i.test(body) ) {
-          console.log('send step 2', number);
-          Text.send(number, 'intro_2');
+          console.log('send step 2', user.number);
+          Text.send(user.number, 'intro_2');
         }
         break;
         // if any other response, dont do anything
         case 'intro_2' :
           console.log('heres intro 2');
         // we get their nickname here
-        User.updateNickname(body, number).then(function() {
+        User.updateNickname(body, user.number).then(function() {
           console.log('send step 3');
-          Text.send(number, 'intro_3', [body]);
-          User.updateState('onboarded', number);
+          Text.send(user.number, 'intro_3', [body]);
+          User.updateState('onboarded', user.number);
         });
         break;
         case 'invite' :
           if ( /^yes$|^yeah|^yea|^y/i.test(body) ) {
             
-            console.log('send invite step 2', number);
-            Text.send(number, 'invite_2');
+            console.log('send invite step 2', user.number);
+            Text.send(user.number, 'invite_2');
           }
         break;
         case 'invite_2' :
           console.log('heres invite 2');
           var nickname = body;
-          console.log('upadte invited nick', nickname, number);
-          User.updateNickname(nickname, number).then(function() {
+          console.log('upadte invited nick', nickname, user.number);
+          User.updateNickname(nickname, user.number).then(function() {
             console.log('upadte invited state');
-            User.updateState('onboarded', number);
+            User.updateState('onboarded', user.number);
             console.log('let inviter know');
-            User.get(number).then(function(users) {
+            User.get(user.number).then(function(users) {
               if ( users.length ) {
                 var user = users[0];
                 console.log('user inviter', user, nickname);
@@ -142,4 +113,4 @@ module.exports = function(req, res) {
       }
     });
   }
-}
+};

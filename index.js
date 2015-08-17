@@ -11,6 +11,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 //var text = require('./text');
 
+app.all('/test', function(req, res) {
+  console.log('testing successful');
+  res.json({ success: 1 });
+});
+
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -23,7 +28,8 @@ app.get('/', function (req, res) {
 });
 
 // this creates a new game
-app.post('/new', require('./routes/new'));
+app.post('/new', require('./routes/users/create'));
+app.get('/users/create/:number', require('./routes/users/create'));
 
 /*
 app.get('/goat/:number', function(req, res) {
@@ -42,7 +48,8 @@ app.get('/goat/:number', function(req, res) {
 */
 
 // this handles all replies
-app.post('/reply', require('./routes/reply'));
+app.post('/reply', require('./routes/reply')); // old
+app.post('/platform/:platform', require('./platforms/'));
 
 app.listen(app.get('port'), function() {
   console.log('Example app listening on port', app.get('port'));

@@ -10,11 +10,12 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.3",
-    "db" : "ssh://git@bitbucket.org/thekevinscott/emojinaryfriend-db.git",
+    "db": "ssh://git@bitbucket.org/thekevinscott/emojinaryfriend-db.git",
     "express": "^4.13.3",
     "lodash": "^3.10.1",
     "mysql": "^2.8.0",
     "q": "^1.4.1",
+    "request-promise": "^0.4.3",
     "sprintf": "^0.1.5",
     "squel": "^4.0.0",
     "twilio": "^2.3.0"
@@ -27,7 +28,7 @@
     "url": "https://bitbucket.org/azilnik/emojinaryfriend-api"
   },
   "engines": {
-   "node": "0.12.x",
+    "node": "0.12.x",
     "npm": "^2.11.0"
   },
   "readme": "README.md"
