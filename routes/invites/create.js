@@ -1,6 +1,7 @@
 var User = require('../../models/user');
 var Phone = require('../../models/phone');
 var Text = require('../../models/text');
+var Game = require('../../models/game');
 var Invite = require('../../models/invite');
 
 module.exports = function(req, res) {
@@ -16,8 +17,14 @@ module.exports = function(req, res) {
   }
   console.log('user who is requesting to invite somebody', user);
 
-  Invite.create(type, value, user).then(function(response) {
-    res.json({});
+  Invite.create(type, value, user).then(function(invite) {
+    console.log('invite', invite);
+    return Game.add([
+      invite.invited_user,
+      invite.inviting_user
+    ]);
+  }).then(function(game) {
+    res.json(game);
   }).fail(function(err) {
     console.log('error inviting user', err);
     res.json({ error: err });

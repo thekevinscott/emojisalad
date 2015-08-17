@@ -47,6 +47,7 @@ app.get('/goat/:number', function(req, res) {
 app.post('/new', require('./routes/users/create'));
 app.post('/users/create', require('./routes/users/create'));
 app.put('/users/:user_id', require('./routes/users/update'));
+app.get('/users/:user_id/games', require('./routes/users/games'));
 app.post('/invites/new', require('./routes/invites/create'));
 
 // this handles all replies

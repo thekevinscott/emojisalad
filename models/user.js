@@ -3,9 +3,12 @@ var squel = require('squel');
 
 var db = require('db');
 var Message = require('./message');
+var Game = require('./game');
 var Text;
 
 var regex = require('../config/regex');
+
+Q.longStackTraces = true;
 
 var User = {
   // valid phone number test
@@ -338,9 +341,15 @@ var User = {
             query.set(key, params[key]);
             break;
         }
+        user[key] = params[key];
       });
 
       return db.query(query).then(function(rows) {
+        // if a user has specified they are ready to play,
+        // let the game know
+        if ( params.state === 'ready-for-game' ) {
+          Game.notify(user);
+        }
         dfd.resolve(user);
       });
     }).fail(function(err) {

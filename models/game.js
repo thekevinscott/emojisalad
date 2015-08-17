@@ -5,6 +5,111 @@ var db = require('db');
 var User = require('./user');
 
 var Game = {
+  notify: function(user) {
+    return this.getByUsers([user]).then(function(game) {
+      if ( game ) {
+        console.log('game', game);
+        // we need at least two players to be ready
+        
+        if ( game.players && game.players.length ) {
+          for ( var i=0,l=game.players.length;i<l;i++ ) {
+            var player = game.players[i];
+            console.log('player', player);
+          }
+        }
+      }
+    });
+  },
+  getPlayers: function(game) {
+    var query = squel
+                .select()
+                .field('u.id')
+                .field('u.username')
+                .field('u.created')
+                .field('s.state')
+                .field('p.platform as platform')
+                .from('game_participants', 'gp')
+                .left_join('games', 'g', 'gp.game_id = g.id')
+                .left_join('users', 'u', 'u.id = gp.user_id')
+                .left_join('user_states', 's', 's.id = u.state_id')
+                .left_join('platforms', 'p', 'p.id = u.platform_id')
+                .where('g.id=?', game.id);
+
+    return db.query(query);
+  },
+  getByUsers: function(users) {
+    var dfd = Q.defer();
+    var user_ids = users.map(function(user) {
+      return user.id;
+    });
+
+    var query = squel
+                .select()
+                .field('g.id')
+                .field('s.state')
+                .from('games', 'g')
+                .left_join('game_participants', 'p', 'p.game_id = g.id')
+                .left_join('game_states', 's', 's.id = g.state_id')
+                .where('p.user_id IN ? ',user_ids)
+                .order('g.created', false)
+                .limit(1);
+    db.query(query).then(function(rows) {
+      if ( rows.length ) {
+        var game = rows[0];
+        this.getPlayers(game).then(function(players) {
+          game.players = players;
+          dfd.resolve(game);
+        }).fail(dfd.reject);
+      } else {
+        dfd.resolve(null);
+      }
+    }.bind(this)).fail(dfd.reject);
+    return dfd.promise;
+  },
+  add: function(users) {
+    function addUsersToGame(game, users) {
+      var rows = users.map(function(user) {
+        return {
+          game_id: game.id,
+          user_id: user.id
+        }
+      });
+
+      query = squel
+              .insert()
+              .into('game_participants')
+              .setFieldsRows(rows);
+
+      return db.query(query).then(function(rows) {
+        return {
+          id: rows.insertId
+        }
+      });
+    }
+    // does a game exist for one of these users yet?
+    return this.getByUsers(users).then(function(game) {
+      if ( game ) {
+        return addUsersToGame(game, users);
+      } else {
+        // create a game
+        return this.create().then(function(game) {
+          return addUsersToGame(game, users);
+        });
+      }
+    }.bind(this));
+  },
+  create: function() {
+    var query = squel
+                .insert()
+                .into('games', 'g')
+                .setFields({ state_id: 1 });
+    return db.query(query).then(function(rows) {
+      return {
+        id: rows.insertId
+      }
+    });
+  }
+  /*
   table: 'games',
   update: function(user_id) {
 
@@ -129,6 +234,7 @@ var Game = {
     });
 
   }
+*/
 };
 
 module.exports = Game;

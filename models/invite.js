@@ -26,6 +26,7 @@ var Invite = {
           return User.create(number, 'text_invite', 'twilio');
         }).then(function(invitedUser) {
           console.log('created new user', invitedUser);
+          var invite_id;
           var query = squel
                       .insert()
                       .into('invites')
@@ -33,7 +34,8 @@ var Invite = {
                       .set('inviter_id', invitingUser.id);
         
                       console.log('perpare to insert query');
-          return db.query(query).then(function() {
+          return db.query(query).then(function(rows) {
+            invite_id = rows.insertId;
             console.log('got the invited user', invitedUser);
             // inform the invited user that they've been invited
             return User.message(invitedUser, 'invite', [ invitingUser.username ]);
@@ -41,6 +43,13 @@ var Invite = {
             console.log('told the invited user they invited');
             // inform the inviting user their buddy has been invited
             return User.message(invitingUser, 'intro_4', [ invitedUser.number ]);
+          }).then(function() {
+            // all done!
+            dfd.resolve({
+              id: invite_id,
+              invited_user: invitedUser,
+              inviting_user: invitingUser
+            });
           });
         }).fail(function(err) {
           console.log('err', err);
@@ -63,10 +72,6 @@ var Invite = {
           } else {
             dfd.reject(err);
           }
-          // three possible errors
-          // i think this might be 1062 to check for a duplicate
-
-          // it could also be that a user is blacklisted
         });
         break;
     }
