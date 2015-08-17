@@ -2,7 +2,7 @@
 // The chat content for the demo. Please feel free to add to this!
 var content = [
 {
-   emoji: "<i class='twa twa-arrow-up'></i><i class='twa twa-on'></i><i class='twa twa-house'></i><i class='twa twa-fire'></i>",
+   emoji: "<i class='twa twa-arrow-up'></i><i class='twa twa-house'></i><i class='twa twa-on'></i><i class='twa twa-fire'></i>",
    phrase_1: "GEORGE: The roof is on fire",
    phrase_2: "EMOJIBOT: Good job, George, you got it!<br><br>Alright, John\'s turn."
  },
