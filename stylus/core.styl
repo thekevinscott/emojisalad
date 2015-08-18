@@ -13,22 +13,27 @@ h1
 	padding-top 7px
 	letter-spacing 0.2em
 	.light
-		font italic 400 1.4em/1.4em serifed
+		font 400 1.4em/1.4em serifed
 h2	
-	font italic 400 1.3em/1.2em serifed
+	font 400 1.3em/1.2em serifed
 	letter-spacing 0.2em
 	margin-bottom 0.8em
 p
-	font italic 400 1.1em/1.5em serifed
+	font 400 1.1em/1.5em serifed
 	letter-spacing 0.05em
-a
+a, #wtf
+	font-weight 700
 	color core-color
 	text-decoration none
 	padding-bottom 1px
 	border-bottom 1px dashed core-color
+	cursor pointer
 	&:hover
-		color core-light
-		border-bottom 1px dashed core-light
+		color core-dark
+		border-bottom 1px dashed core-dark
+	&:active
+		color emoji-yellow
+		border-bottom 1px dashed emoji-yellow
 	
 button:focus, input[type='tel']:focus
 	outline 0	
@@ -54,14 +59,15 @@ section
 		padding-top 20px
 		text-align left
 		h1
-			padding-bottom 15px
+			padding-bottom 13px
 			margin-bottom 25px
 			border-bottom 2px solid white
 	.chat
+		overflow hidden
 		min-width 350px
 		max-width 480px
 		margin 0px 40px
-		padding 30px 30px 10px 30px
+		padding 30px 10px 10px 10px
 .subtitle, .footer
 	background core-light
 	color white
@@ -72,41 +78,94 @@ section
 		font .9em/1.4em chunky
 		padding-top 20px
 	input[type='tel']
-		max-width 220px
+		max-width 200px
 		margin 10px auto 15px auto
-		font 1.6em/1.4 slim
+		font 400 1.6em/1.4 serifed
 		text-align left
 		border 2px solid core-color
 		transition border 0.2s
 		border-radius 3px
-		padding 12px 10px 5px 30px
+		padding 12px 10px 8px 30px
 		-webkit-appearance none
 		appearance none
 		&:focus
 			border-color emoji-yellow
 	.submit
-		max-width 230px
+		width 260px
 		margin 15px auto 40px auto
 		background core-color
 		color white
 		border none
 		border-radius 3px
 		font .9em/.9em chunky
-		padding 23px 28px 16px 28px
+		padding 23px 0px 16px 0px
+		text-align center
 		&:hover
 			background core-dark
 		&:active
 			background emoji-yellow
+	.faq
+		display none
+		position relative
+		max-width 680px
+		p:nth-child(odd)
+			margin 30px 0px 20px 0px
+			font-weight 700
 .footer
 	p
-		max-width 412px
+		max-width 350px
 		text-transform lowercase
+		padding-bottom 10px
 	a
 		color white
 		border-bottom 1px dashed white
+		font-weight 700
 		&:hover
-			color core-light
-			border-bottom 1px dashed white
+			color core-dark
+			border-bottom 1px dashed core-dark
+		&:active
+			color emoji-yellow
+			border-bottom 1px dashed emoji-yellow
+
+// .spinner
+// 	margin 100px auto
+// 	width 50px
+//   	height 40px
+//   	text-align center
+//   	font-size 10px,
+// 	.spinner > div
+// 		background-color #fff
+// 		height 100%
+// 		width 6px
+// 		display inline-block
+// 		-webkit-animation sk-stretchdelay 1.2s infinite ease-in-out
+// 		animation sk-stretchdelay 1.2s infinite ease-in-out
+// 	.rect2
+// 		-webkit-animation-delay: -1.1s
+// 		animation-delay: -1.1s
+// 	.rect3
+// 		-webkit-animation-delay: -1.0s
+// 		animation-delay: -1.0s
+// 	.rect4
+// 		-webkit-animation-delay: -0.9s
+// 		animation-delay: -0.9s
+// 	.rect5
+// 		-webkit-animation-delay: -0.8s
+// 		animation-delay: -0.8s
+
+// @-webkit-keyframes sk-stretchdelay
+// 	0%, 40%, 100%
+// 		webkit-transform scaleY(0.4)
+// 	20%
+// 		-webkit-transform scaleY(1.0)
+
+// @keyframes sk-stretchdelay {
+// 	0%, 40%, 100%
+// 		transform scaleY(0.4)
+// 		-webkit-transform scaleY(0.4)
+// 	20%
+// 		transform scaleY(1.0)
+// 		-webkit-transform scaleY(1.0)
 
 // media queries
 @media (max-width: 1088px)
@@ -120,13 +179,14 @@ section
 		width 100%
 		padding 0px 0% 20px 0%
 		.chat
-			width 86%
+			overflow hidden
+			width 100%
 			min-width 280px
 			max-width 350px
 			margin 0px
-			padding 15px 7% 0px 7%
+			padding 15px 0px 0px 0px
 		.headlines h1
-			padding-bottom 20px
+			padding-bottom 12px
 	.phone-input	
 		label
 			max-width 190px

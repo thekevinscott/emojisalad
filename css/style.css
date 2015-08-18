@@ -1,4 +1,4 @@
-@import url("http://fonts.googleapis.com/css?family=Josefin+Slab:400,300,400italic,100italic");
+@import url("http://fonts.googleapis.com/css?family=Josefin+Slab:700,400,400italic");
 @font-face {
   font-family: 'Big John';
   font-style: normal;
@@ -23,26 +23,35 @@ h1 {
   letter-spacing: 0.2em;
 }
 h1 .light {
-  font: italic 400 1.4em/1.4em 'Josefin Slab', serif;
+  font: 400 1.4em/1.4em 'Josefin Slab', serif;
 }
 h2 {
-  font: italic 400 1.3em/1.2em 'Josefin Slab', serif;
+  font: 400 1.3em/1.2em 'Josefin Slab', serif;
   letter-spacing: 0.2em;
   margin-bottom: 0.8em;
 }
 p {
-  font: italic 400 1.1em/1.5em 'Josefin Slab', serif;
+  font: 400 1.1em/1.5em 'Josefin Slab', serif;
   letter-spacing: 0.05em;
 }
-a {
+a,
+#wtf {
+  font-weight: 700;
   color: #26bafa;
   text-decoration: none;
   padding-bottom: 1px;
   border-bottom: 1px dashed #26bafa;
+  cursor: pointer;
 }
-a:hover {
-  color: #58cafb;
-  border-bottom: 1px dashed #58cafb;
+a:hover,
+#wtf:hover {
+  color: #05a3e8;
+  border-bottom: 1px dashed #05a3e8;
+}
+a:active,
+#wtf:active {
+  color: #fec030;
+  border-bottom: 1px dashed #fec030;
 }
 button:focus,
 input[type='tel']:focus {
@@ -113,15 +122,16 @@ section {
   text-align: left;
 }
 .header .headlines h1 {
-  padding-bottom: 15px;
+  padding-bottom: 13px;
   margin-bottom: 25px;
   border-bottom: 2px solid #fff;
 }
 .header .chat {
+  overflow: hidden;
   min-width: 350px;
   max-width: 480px;
   margin: 0px 40px;
-  padding: 30px 30px 10px 30px;
+  padding: 30px 10px 10px 10px;
 }
 .subtitle,
 .footer {
@@ -135,14 +145,14 @@ section {
   padding-top: 20px;
 }
 .phone-input input[type='tel'] {
-  max-width: 220px;
+  max-width: 200px;
   margin: 10px auto 15px auto;
-  font: 1.6em/1.4 'Slim Joe', sans-serif;
+  font: 400 1.6em/1.4 'Josefin Slab', serif;
   text-align: left;
   border: 2px solid #26bafa;
   transition: border 0.2s;
   border-radius: 3px;
-  padding: 12px 10px 5px 30px;
+  padding: 12px 10px 8px 30px;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -150,14 +160,15 @@ section {
   border-color: #fec030;
 }
 .phone-input .submit {
-  max-width: 230px;
+  width: 260px;
   margin: 15px auto 40px auto;
   background: #26bafa;
   color: #fff;
   border: none;
   border-radius: 3px;
   font: 0.9em/0.9em 'Big John', sans-serif;
-  padding: 23px 28px 16px 28px;
+  padding: 23px 0px 16px 0px;
+  text-align: center;
 }
 .phone-input .submit:hover {
   background: #05a3e8;
@@ -165,17 +176,32 @@ section {
 .phone-input .submit:active {
   background: #fec030;
 }
+.phone-input .faq {
+  display: none;
+  position: relative;
+  max-width: 680px;
+}
+.phone-input .faq p:nth-child(odd) {
+  margin: 30px 0px 20px 0px;
+  font-weight: 700;
+}
 .footer p {
-  max-width: 412px;
+  max-width: 350px;
   text-transform: lowercase;
+  padding-bottom: 10px;
 }
 .footer a {
   color: #fff;
   border-bottom: 1px dashed #fff;
+  font-weight: 700;
 }
 .footer a:hover {
-  color: #58cafb;
-  border-bottom: 1px dashed #fff;
+  color: #05a3e8;
+  border-bottom: 1px dashed #05a3e8;
+}
+.footer a:active {
+  color: #fec030;
+  border-bottom: 1px dashed #fec030;
 }
 @media (max-width: 1088px) {
   .header {
@@ -192,14 +218,15 @@ section {
     padding: 0px 0% 20px 0%;
   }
   .header .chat {
-    width: 86%;
+    overflow: hidden;
+    width: 100%;
     min-width: 280px;
     max-width: 350px;
     margin: 0px;
-    padding: 15px 7% 0px 7%;
+    padding: 15px 0px 0px 0px;
   }
   .header .headlines h1 {
-    padding-bottom: 20px;
+    padding-bottom: 12px;
   }
   .phone-input label {
     max-width: 190px;
@@ -230,6 +257,7 @@ section {
   background: #e5e5ea;
   border-radius: 25px;
   float: right;
+  margin-right: 20px;
 }
 .chat .from-me:before {
   content: "";
@@ -261,6 +289,7 @@ section {
   border-radius: 25px;
   color: #000;
   float: left;
+  margin-left: 20px;
 }
 .chat .from-them:before {
   content: "";
@@ -298,9 +327,4 @@ section {
   -ms-animation-delay: 4s;
   -o-animation-delay: 4s;
   animation-delay: 4s;
-}
-@media (max-width: 480px) {
-  .header .chat {
-    overflow: visible;
-  }
 }
