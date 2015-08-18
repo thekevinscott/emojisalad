@@ -19,14 +19,6 @@ app.all('/test', function(req, res) {
   res.json({ success: 1 });
 });
 
-//app.all('*', function(req, res, next) {
-  //res.header("Access-Control-Allow-Origin", "*");
-  //res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  //res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  //next();
-//});
-
-
 /*
 app.get('/goat/:number', function(req, res) {
   var msg = 'Are you ready to get GOATED???\n\nPlease reply yes or no';
@@ -47,6 +39,7 @@ app.get('/goat/:number', function(req, res) {
 app.post('/new', require('./routes/users/create'));
 app.post('/users/create', require('./routes/users/create'));
 app.put('/users/:user_id', require('./routes/users/update'));
+app.get('/users/:user_id/games', require('./routes/users/games'));
 app.get('/users/:user_id/games', require('./routes/users/games'));
 app.post('/invites/new', require('./routes/invites/create'));
 

@@ -4,14 +4,13 @@
   "description": "API for EmojinaryFriend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.13.3",
     "db": "git+https://slipper-siblings:vc42cihEXdAUibmnJmFcsspbf0gwEMRc@bitbucket.org/slipper-siblings/emojinaryfriend-db.git",
-
     "express": "^4.13.3",
     "lodash": "^3.10.1",
     "mysql": "^2.8.0",
@@ -22,7 +21,11 @@
     "twilio": "^2.3.0"
   },
   "devDependencies": {
-    "ngrok": "^0.1.99"
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
+    "mockrequire": "0.0.4",
+    "ngrok": "^0.1.99",
+    "sinon": "^1.15.4"
   },
   "repository": {
     "type": "git",
