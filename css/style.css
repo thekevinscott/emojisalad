@@ -145,14 +145,14 @@ section {
   padding-top: 20px;
 }
 .phone-input input[type='tel'] {
-  max-width: 200px;
+  width: 180px;
   margin: 10px auto 15px auto;
   font: 400 1.6em/1.4 'Josefin Slab', serif;
   text-align: left;
   border: 2px solid #26bafa;
   transition: border 0.2s;
   border-radius: 3px;
-  padding: 12px 10px 8px 30px;
+  padding: 10px 60px 6px 60px;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -160,7 +160,7 @@ section {
   border-color: #fec030;
 }
 .phone-input .submit {
-  width: 260px;
+  width: 240px;
   height: 50px;
   margin: 15px auto 40px auto;
   background: #26bafa;
@@ -271,7 +271,7 @@ section {
 }
 @media (max-width: 414px) {
   .header {
-    wdth: 100%;
+    width: 100%;
     padding: 0px 0% 20px 0%;
   }
   .header .chat {
