@@ -169,6 +169,7 @@ section {
   font: 0.9em/0.9em 'Big John', sans-serif;
   padding: 23px 0px 16px 0px;
   text-align: center;
+  cursor: pointer;
 }
 .phone-input .submit:hover {
   background: #05a3e8;
@@ -221,7 +222,6 @@ section {
     overflow: hidden;
     width: 100%;
     min-width: 280px;
-    max-width: 350px;
     margin: 0px;
     padding: 15px 0px 0px 0px;
   }

@@ -100,6 +100,7 @@ section
 		font .9em/.9em chunky
 		padding 23px 0px 16px 0px
 		text-align center
+		cursor pointer
 		&:hover
 			background core-dark
 		&:active
@@ -126,54 +127,55 @@ section
 		&:active
 			color emoji-yellow
 			border-bottom 1px dashed emoji-yellow
-
 // .spinner
-// 	margin 100px auto
+// 	margin 0px auto
 // 	width 50px
-//   	height 40px
-//   	text-align center
-//   	font-size 10px,
-// 	.spinner > div
-// 		background-color #fff
-// 		height 100%
-// 		width 6px
-// 		display inline-block
-// 		-webkit-animation sk-stretchdelay 1.2s infinite ease-in-out
-// 		animation sk-stretchdelay 1.2s infinite ease-in-out
-// 	.rect2
-// 		-webkit-animation-delay: -1.1s
-// 		animation-delay: -1.1s
-// 	.rect3
-// 		-webkit-animation-delay: -1.0s
-// 		animation-delay: -1.0s
-// 	.rect4
-// 		-webkit-animation-delay: -0.9s
-// 		animation-delay: -0.9s
-// 	.rect5
-// 		-webkit-animation-delay: -0.8s
-// 		animation-delay: -0.8s
+// 	height 40px
+// 	text-align center
+// 	font-size 10px
+/*
+	.spinner > div
+		background-color #fff
+		height 100%
+		width 6px
+		display inline-block
+		-webkit-animation sk-stretchdelay 1.2s infinite ease-in-out
+		animation sk-stretchdelay 1.2s infinite ease-in-out
+	.rect2
+		-webkit-animation-delay: -1.1s
+		animation-delay: -1.1s
+	.rect3
+		-webkit-animation-delay: -1.0s
+		animation-delay: -1.0s
+	.rect4
+		-webkit-animation-delay: -0.9s
+		animation-delay: -0.9s
+	.rect5
+		-webkit-animation-delay: -0.8s
+		animation-delay: -0.8s
+@-webkit-keyframes sk-stretchdelay
+	0%, 40%, 100%
+		webkit-transform scaleY(0.4)
+	20%
+		-webkit-transform scaleY(1.0)
+@keyframes sk-stretchdelay {
+	0%, 40%, 100%
+		transform scaleY(0.4)
+		-webkit-transform scaleY(0.4)
+	20%
+		transform scaleY(1.0)
+		-webkit-transform scaleY(1.0)
 
-// @-webkit-keyframes sk-stretchdelay
-// 	0%, 40%, 100%
-// 		webkit-transform scaleY(0.4)
-// 	20%
-// 		-webkit-transform scaleY(1.0)
+media queries
+*/
 
-// @keyframes sk-stretchdelay {
-// 	0%, 40%, 100%
-// 		transform scaleY(0.4)
-// 		-webkit-transform scaleY(0.4)
-// 	20%
-// 		transform scaleY(1.0)
-// 		-webkit-transform scaleY(1.0)
-
-// media queries
 @media (max-width: 1088px)
 	.header
 		padding-top 30px
 		padding-bottom 50px
 		.headlines
 			text-align center
+			
 @media (max-width: 414px)
 	.header
 		width 100%
@@ -182,7 +184,7 @@ section
 			overflow hidden
 			width 100%
 			min-width 280px
-			max-width 350px
+			// max-width 350px
 			margin 0px
 			padding 15px 0px 0px 0px
 		.headlines h1
