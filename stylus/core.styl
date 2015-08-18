@@ -92,19 +92,23 @@ section
 			border-color emoji-yellow
 	.submit
 		width 260px
+		height 50px
 		margin 15px auto 40px auto
 		background core-color
 		color white
 		border none
 		border-radius 3px
 		font .9em/.9em chunky
-		padding 23px 0px 16px 0px
 		text-align center
 		cursor pointer
 		&:hover
 			background core-dark
 		&:active
 			background emoji-yellow
+		.submit-text
+			display inline-block
+			// display none
+			margin-top 7px
 	.faq
 		display none
 		position relative
@@ -127,38 +131,35 @@ section
 		&:active
 			color emoji-yellow
 			border-bottom 1px dashed emoji-yellow
-// .spinner
-// 	margin 0px auto
-// 	width 50px
-// 	height 40px
-// 	text-align center
-// 	font-size 10px
-/*
-	.spinner > div
-		background-color #fff
-		height 100%
-		width 6px
-		display inline-block
-		-webkit-animation sk-stretchdelay 1.2s infinite ease-in-out
-		animation sk-stretchdelay 1.2s infinite ease-in-out
+
+.spinner
+	display none
+	width 60px
+	height 20px
+	margin-top 5px
+	text-align center
+	font-size 12px
 	.rect2
-		-webkit-animation-delay: -1.1s
-		animation-delay: -1.1s
+		animation-delay(-0.9s)
 	.rect3
-		-webkit-animation-delay: -1.0s
-		animation-delay: -1.0s
+		animation-delay(-0.8s)
 	.rect4
-		-webkit-animation-delay: -0.9s
-		animation-delay: -0.9s
+		animation-delay(-0.7s)
 	.rect5
-		-webkit-animation-delay: -0.8s
-		animation-delay: -0.8s
+		animation-delay(-0.6s)
+.spinner > div
+	background-color #fff
+	height 100%
+	width 5px
+	display inline-block
+	-webkit-animation sk-stretchdelay 1.0s infinite ease-in-out
+	animation sk-stretchdelay 1.0s infinite ease-in-out
 @-webkit-keyframes sk-stretchdelay
 	0%, 40%, 100%
 		webkit-transform scaleY(0.4)
 	20%
 		-webkit-transform scaleY(1.0)
-@keyframes sk-stretchdelay {
+@keyframes sk-stretchdelay
 	0%, 40%, 100%
 		transform scaleY(0.4)
 		-webkit-transform scaleY(0.4)
@@ -166,9 +167,7 @@ section
 		transform scaleY(1.0)
 		-webkit-transform scaleY(1.0)
 
-media queries
-*/
-
+// media queries
 @media (max-width: 1088px)
 	.header
 		padding-top 30px
@@ -178,7 +177,7 @@ media queries
 			
 @media (max-width: 414px)
 	.header
-		width 100%
+		wdth 100%
 		padding 0px 0% 20px 0%
 		.chat
 			overflow hidden
@@ -196,5 +195,3 @@ media queries
 		background core-color
 		color white
 		padding-top 5px
-
- 
