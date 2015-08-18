@@ -1,4 +1,4 @@
-# ZDate App
+# EmojinaryFriend Admin
 
 So far, this is just a minimal user authentication setup. It's using [Passport](passportjs.org) and (Express](http://expressjs.com/).
 
