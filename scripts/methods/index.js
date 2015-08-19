@@ -1,6 +1,2 @@
-var methods = {
-  respond: require('./respond'),
-  request: require('./request')
-}
-
-module.exports = methods;
+module.exports.respond = require('./respond');
+module.exports.request = require('./request');

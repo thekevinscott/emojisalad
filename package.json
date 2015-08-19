@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
     "db": "git+https://slipper-siblings:vc42cihEXdAUibmnJmFcsspbf0gwEMRc@bitbucket.org/slipper-siblings/emojinaryfriend-db.git",
     "express": "^4.13.3",
@@ -25,7 +26,9 @@
     "mocha": "^2.2.5",
     "mockrequire": "0.0.4",
     "ngrok": "^0.1.99",
-    "sinon": "^1.15.4"
+    "proxyquire": "^1.7.0",
+    "sinon": "^1.15.4",
+    "squirejs": "^0.2.1"
   },
   "repository": {
     "type": "git",

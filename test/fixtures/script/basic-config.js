@@ -1,51 +1,3 @@
-var doNotContact = [
-  // what happens here?
-  {
-    regex: {
-      pattern: '.*',
-    },
-    scenarios: [ ]
-  }
-];
-
-var waitingForConfirmation = [
-  {
-    regex: {
-      pattern: '^yes$|^yeah|^yea|^y',
-      flags: 'i',
-    },
-    scenarios: [
-      {
-        type: 'respond',
-        message: 'intro_2',
-      },
-      {
-        type: 'request',
-        url: '/users/$(user.id)',
-        method: 'PUT',
-        data: {
-          state: 'waiting-for-nickname'
-        }
-      }
-    ]
-  },
-  {
-    regex: {
-      pattern: '.*',
-    },
-    scenarios: [
-      {
-        type: 'request',
-        url: '/users/$(user.id)',
-        method: 'PUT',
-        data: {
-          state: 'do-not-contact'
-        }
-      }
-    ]
-  }
-];
-
 var waitingForNickname = [
   {
     regex: {
@@ -69,7 +21,7 @@ var waitingForNickname = [
     scenarios: [
       {
         type: 'request',
-        url: '/users/$(user.id)',
+        url: '/users/$(user.id)s',
         method: 'PUT',
         data: function(user, body) {
           return {
@@ -83,8 +35,9 @@ var waitingForNickname = [
         url: '/users/$(user.id)/games',
         method: 'GET',
         callback: {
+          // this is a function for processing the return from the server
+          // its a preprocessor that translates the server response into a format that can be regex'd against
           fn: function(game) {
-            console.log('what is the game', game);
             if ( game && game.state ) {
               return game.state;
             } else {
@@ -145,26 +98,7 @@ var waitingForNickname = [
   },
 ];
 
-var waitingForInvites = [
-  {
-    regex: {
-      pattern: '^invite',
-    },
-    scenarios: [
-      {
-        type: 'request',
-        url: '/invites/new',
-        method: 'POST',
-        data: function(user, body) {
-          return {
-            user: user,
-            type: 'twilio',
-            value: body
-          };
-        }
-      }
-    ]
-  },
+var twoActions = [
   {
     regex: {
       pattern: '.*',
@@ -172,17 +106,18 @@ var waitingForInvites = [
     scenarios: [
       {
         type: 'respond',
-        message: 'wtf'
+        message: 'wait-to-invite'
+      },
+      {
+        type: 'request',
+        url: '/foo'
       },
     ]
-  },
+  }
 ];
-
-var script = {
-  'do-not-contact': doNotContact,
-  'waiting-for-confirmation': waitingForConfirmation ,
+var config = {
+  'foo': 'bar',
   'waiting-for-nickname': waitingForNickname,
-  'waiting-for-invites': waitingForInvites,
+  'two-actions': twoActions
 };
-
-module.exports = script;
+module.exports = config;

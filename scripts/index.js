@@ -1,22 +1,20 @@
-var User = require('../models/user');
-var rp = require('request-promise');
-var _ = require('lodash');
-var Q = require('q');
-var sprintf = require('sprintf');
+var Promise = require('bluebird');
+var config = require('./config');
+var mapScenarios = require('./mapScenarios');
 
-var script = require('./config');
-
-var methods = require('./methods');
-
-module.exports = function(user, message, res) {
-  var dfd = Q.defer();
-  console.log('the scripter');
-  var message_key = user.state;
-  console.log('message_key', message_key);
-  if ( script[message_key] ) {
-    var scenarios = script[message_key];
-    processScenarios(scenarios, message, user);
+module.exports = function(key, user, message) {
+  //var message_key = user.state;
+  if ( config[key] ) {
+    var data = {
+      user: user,
+      incomingPattern: message
+    }
+    return mapScenarios.call(null, config[key], data);
+  } else {
+    return Promise.reject({
+      message: 'No config element found for message key: ' + key
+    });
   }
-  dfd.resolve('huh');
-  return dfd.promise;
 };
+
+module.exports.config = config;
