@@ -1,6 +1,7 @@
 var platforms = {
   twilio: require('./twilio'),
-  messenger: require('./messenger')
+  messenger: require('./messenger'),
+  web: require('./web')
 };
 
 // route requests to a particular messaging platform

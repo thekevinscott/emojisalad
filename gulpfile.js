@@ -83,12 +83,14 @@ gulp.task('sync', function(cb) {
  * Testing Tasks
  */
 gulp.task('mocha', function() {
-  process.env.ENVIRONMENT = 'kevin-dev';
   return gulp.src(['test/index.js'], { read: false })
   .pipe(mocha({}))
   .on('error', gutil.log);
 });
+gulp.task('sync-testing-db', function() {
+});
 gulp.task('reset-testing-db', function() {
+  process.env.ENVIRONMENT = 'kevin-dev';
   var db = 'test/fixtures/test-db.sql';
   var config = require('db').config['kevin-test'];
   var importDB = [
@@ -103,6 +105,12 @@ gulp.task('reset-testing-db', function() {
   return exec(importDB.join(' '));
 });
 gulp.task('test', function(cb) {
+  process.env.ENVIRONMENT = 'kevin-dev';
   gulp.run(['reset-testing-db','mocha']);
   gulp.watch(['**'], ['mocha', 'reset-testing-db']);
+});
+
+/* Running server */
+gulp.task('default', function(cb) {
+  gulp.run(['start-server','ngrok']);
 });

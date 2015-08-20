@@ -15,19 +15,20 @@ var User = {
   table: 'users',
 
   // create a new user number
-  create: function(number, entry, platform) {
+  create: function(user, entry, platform) {
     var dfd = Q.defer();
-    console.log('user create', number);
+    console.log('user create', user);
+    var number = user.number;
 
-    if ( ! number ) {
+    if ( ! user || ! user.number ) {
       dfd.reject({
         errno: 4,
         message: 'You must provide a phone number'
       });
     } else {
       console.log('get single');
-      this.get({ number: number }).then(function(user) {
-        console.log('user?');
+      this.get(user).then(function(user) {
+        console.log('user?', user);
         if ( user ) {
           console.log('we have a user');
           if ( user.state === 'do-not-contact' ) {
@@ -109,19 +110,19 @@ var User = {
             console.log('all done with promises', query.toString());
             db.query(query).then(function(rows) {
               var user_id = rows.insertId;
-              var key_id = squel
-                           .select()
-                           .field('id')
-                           .from('user_attribute_keys')
-                           .where('`key`=?','number');
+              var attribute_id = squel
+                                 .select()
+                                 .field('id')
+                                 .from('user_attribute_keys')
+                                 .where('`key`=?','number');
 
               var attribute_query = squel
                                     .insert()
                                     .into('user_attributes')
                                     .setFields({
                                       user_id: user_id,
-                                      key_id: key_id,
-                                      value: number 
+                                      attribute_id: attribute_id,
+                                      attribute: number 
                                     });
               return db.query(attribute_query.toString()).then(function() {
                 return user_id;
@@ -170,7 +171,7 @@ var User = {
     var dfd = Q.defer();
     console.log('ready to get user');
     function fetchUser(key, val) {
-      console.log('fetch user!');
+      console.log('fetch user!', key, val);
       var query = squel
                   .select()
                   .field('u.id')
@@ -183,7 +184,15 @@ var User = {
                   .left_join('invites', 'i', 'u.id = i.invited_id')
                   .left_join('platforms', 'p', 'p.id = u.platform_id')
                   .left_join('user_states', 's', 's.id = u.state_id')
-                  .where('u.`'+key+'`=?', val);
+                  .left_join('user_attributes', 'a', 'a.user_id = u.id')
+                  .left_join('user_attribute_keys', 'k', 'a.attribute_id = k.id');
+      if ( key === 'id' || key === 'username' ) {
+        query = query.where('u.`'+key+'`=?', val);
+      } else {
+        query = query
+                .where('k.`key`=?', key)
+                .where('a.attribute=?', val);
+      }
 
       return db.query(query.toString()).then(function(users) {
         var user;
@@ -198,18 +207,18 @@ var User = {
 
         var query = squel
                     .select()
-                    .field('a.value')
+                    .field('a.attribute')
                     .field('k.`key`')
                     .from('user_attributes', 'a')
                     .left_join('users', 'u', 'u.id = a.user_id')
-                    .left_join('user_attribute_keys', 'k', 'k.id = a.key_id')
+                    .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
                     .where('u.`'+key+'`=?', val)
                     .where('a.user_id=?',user.id);
         return db.query(query).then(function(attributes) {
           console.log('the user at first', user);
           console.log('the attributes', attributes);
           attributes.map(function(attribute) {
-            user[attribute.key] = attribute.value;
+            user[attribute.key] = attribute.attribute;
           });
           console.log('the user afterwards', user);
           return user;
@@ -296,22 +305,6 @@ var User = {
     });
     return dfd.promise;
   },
-  // set a user's status to onboarded being true
-  updateState: function(state, number) {
-    var user_state = squel
-                     .select()
-                     .field('id')
-                     .from('user_states')
-                     .where('state=?',state);
-
-    var query = squel
-                .update()
-                .table('users')
-                .set('state_id', user_state, { dontQuote: true })
-                .where('number=?', number);
-
-    return db.query(query);
-  },
   message: function(user, message_key, options) {
     console.log('where we doing', user, message_key);
     switch(user.platform) {
@@ -329,32 +322,15 @@ var User = {
         });
         break;
       case 'twilio':
-        console.log('its twilio', user, message_key);
-        if ( ! Text || ! Text.send ) {
-          Text = require('./text');
+        return Message.get(message_key, options).then(function(message) {
+        if ( message && message.message ) {
+          return message.message;
+        } else {
+          throw new Error({
+            message: 'Message was not found for key: ' + message_key
+          });
         }
-        return Text.send(user.number, message_key, options).fail(function(err) {
-          if ( err && err.code ) {
-            switch(err.code) {
-              case 21608:
-                // this is an unverified number
-                throw {
-                  errno: 6,
-                  message: 'this is an unverified number'
-                }
-                break;
-              default:
-                console.error('error when sending message', err);
-                throw err;
-                break;
-            }
-          } else {
-            console.error('error when sending message', err);
-            throw {
-              message: err
-            };
-          }
-        });
+      });
         break;
       default:
         return Q.reject('No platform specified');

@@ -30,66 +30,67 @@ var Message = require('./message');
 
 var Text = {
   table: 'outgoingMessages',
-  send: function send(user, message_key, message_options) {
+  send: function send(user, message) {
     var params = {
       from: config.from
     };
 
-    if ( typeof user === 'object' ) {
-      console.log('user is an object', user);
-      // then we've passed a user object
-      params.to = user.number;
-    } else {
-      console.log('user is an string');
-      // we've passed a phone number string
-      params.to = user;
+    if ( typeof user !== 'object' ) {
+      throw "You must now provide a user object";
     }
+    console.log('user', user);
+    params.to = user.number;
+    params.body = message;
+
 
     console.log('prepare to send message');
-    return Message.get(message_key, message_options).then(function(message) {
-      console.log('got message val');
-      params.body = message.message;
-
-      console.log('prepare to send message');
-      try {
-      return client.messages.post(params).then(function(response) {
-        console.log('sent message!');
-        this.saveMessage(user, message.id, params.body, response);
-        console.log('saved message');
-        // we don't wait for the db call to finish,
-        // this can fail and we still want to proceed
-        return response;
-      }.bind(this)).fail(function(err) {
-        console.log('client error', err);
-      });
-      } catch(e) {
-        console.log('e', e);
-      }
+    return client.messages.post(params).then(function(response) {
+      console.log('sent message!');
+      //this.saveMessage(user, message.id, params.body, response);
+      console.log('saved message');
+      // we don't wait for the db call to finish,
+      // this can fail and we still want to proceed
+      return response;
     }.bind(this)).fail(function(err) {
-      console.log('error when sending message, or getting message', err);
-      throw err;
+      console.log('err', err);
+      if ( err && err.code ) {
+        switch(err.code) {
+          case 21608:
+            // this is an unverified number
+            throw {
+              errno: 6,
+              message: 'this is an unverified number'
+            }
+          break;
+          default:
+            console.error('error when sending message', err);
+            throw err;
+          break;
+        }
+      } else {
+        console.error('error when sending message', err);
+        throw {
+          message: err
+        };
+      }
     });
-
   },
   saveMessage: function(userData, message_id, message, response) {
-    return User.get(userData).then(function(users) {
-      if ( users.length ) {
-        var user = users[0];
-
-        // lets do a check that the number returned from twilio
-        // matches the number we thought it was. its possible twilio
-        // has changed the number to match its internal specifications.
-        //User.updatePhone(response.to, user);
+    console.log('prepare to save message');
+    console.log(userData, message_id, message);
+    return User.get(userData).then(function(user) {
+      if ( user ) {
+        console.log('got a user');
 
         var query = squel
-                    .insert()
-                    .into('outgoingMessages')
-                    .setFields({
-                      user_id: user.id,
-                      message: message,
-                      message_id: message_id,
-                      response: JSON.stringify(response)
-                    });
+        .insert()
+        .into('outgoingMessages')
+        .setFields({
+          user_id: user.id,
+          message: message,
+          message_id: message_id,
+          response: JSON.stringify(response)
+        });
         return db.query(query);
       } else {
         console.log('TODO: HANDLE THIS');
@@ -101,8 +102,8 @@ var Text = {
   saveResponse: function(response) {
     return User.get(response.From).then(function(users) {
       var query = squel
-              .insert()
-              .into('incomingMessages');
+      .insert()
+      .into('incomingMessages');
 
       if ( users.length ) {
         var user = users[0];
@@ -124,28 +125,6 @@ var Text = {
       console.error('error getting user id when saving response', err);
     });
   },
-/*
-// just take the data object with body defined, or mediaUrl
-sendRaw: function send(to, data) {
-var params = _.extend({
-to: to, 
-from: config.from, 
-}, data);
-
-var query = squel
-          .insert()
-          .into('outgoingMessages')
-          .setFields({
-            user_id: 1,
-            message: 1,
-            message_id: 1
-          });
-
-    db.query(query);
-
-    return client.messages.post(params);
-  }
-  */
 }
 
 module.exports = Text;
