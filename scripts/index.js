@@ -6,9 +6,13 @@ module.exports = function(key, user, message) {
   //var message_key = user.state;
   if ( config[key] ) {
     var data = {
-      user: user,
-      incomingPattern: message
-    }
+      args: [
+        {
+          user: user,
+          pattern: message
+        }
+      ]
+    };
     return mapScenarios.call(null, config[key], data);
   } else {
     return Promise.reject({

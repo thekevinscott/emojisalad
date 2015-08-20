@@ -10,7 +10,9 @@ var host = process.env.HOST || 'http://localhost';
  * Request takes a scenario, a user, and 
  * a text message and will initiate an http request.
  */
-function request(scenario, user, message) {
+function request(scenario, data) {
+  var user = data.user;
+  var message = data.pattern;
   // we make a dedicated promise, because request-promise uses its own non-Q promises
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");

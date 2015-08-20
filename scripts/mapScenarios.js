@@ -8,12 +8,10 @@ var mapActions = require('./mapActions');
  * and run the first one that passes a regex check
  * */
 function mapScenarios(scenarios, data) {
-  if ( ! data ) {
-    data = {};
-  }
   for ( var i=0, l=scenarios.length; i<l; i++ ) {
     var scenario = scenarios[i];
-    if ( checkScenario.call(null, scenario.regex, data.incomingPattern) ) {
+    var lastData = data.args[data.args.length - 1];
+    if ( checkScenario.call(null, scenario.regex, lastData.pattern) ) {
       return mapActions.call(null, scenario.actions, data, null);
       break;
     }

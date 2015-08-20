@@ -31,15 +31,8 @@ var waitingForNickname = [
         }
       },
       {
-        type: 'request',
-        url: '/users/$(user.id)s',
-        method: 'PUT',
-        data: function(user, body) {
-          return {
-            username: body,
-            state: 'ready-for-game'
-          };
-        }
+        type: 'respond',
+        message: 'foo',
       },
       {
         type: 'request',
@@ -49,11 +42,7 @@ var waitingForNickname = [
           // this is a function for processing the return from the server
           // its a preprocessor that translates the server response into a format that can be regex'd against
           fn: function(game) {
-            if ( game && game.state ) {
-              return game.state;
-            } else {
-              return 'waiting-for-players';
-            }
+            return 'waiting-for-players';
           },
           scenarios: [
             {
@@ -64,12 +53,12 @@ var waitingForNickname = [
                 {
                   type: 'respond',
                   message: 'intro_3',
-                  options: '$(message)s'
+                  options: '$(args[0].message)s'
                 },
                 {
                   type: 'respond',
                   message: 'intro_4',
-                  options: '$(message)s'
+                  options: '$(args[0].message)s'
                 },
                 {
                   type: 'request',
@@ -80,7 +69,30 @@ var waitingForNickname = [
                       state: 'waiting-for-invites',
                       username: origBody 
                     };
-                  }
+                  },
+
+                  callback: {
+                    fn: function() {
+                      return 'foo';
+                    },
+                    scenarios: [
+                      {
+                        regex: {
+                          pattern: '.*'
+                        },
+                        actions: [
+                          {
+                            type: 'respond',
+                            message: 'deepest message',
+                          },
+                          {
+                            type: 'respond',
+                            message: 'deepest message %(args[0].pattern)s %(args[1].pattern)s',
+                          },
+                        ]
+                      },
+                    ]
+                  },
                 }
               ]
             },
@@ -88,7 +100,7 @@ var waitingForNickname = [
               regex: {
                 pattern: '.*'
               },
-              scenarios: [
+              actions: [
                 {
                   type: 'respond',
                   message: 'game-on',
@@ -119,7 +131,7 @@ var twoActions = [
     regex: {
       pattern: '.*',
     },
-    scenarios: [
+    actions: [
       {
         type: 'respond',
         message: 'wait-to-invite'

@@ -9,10 +9,10 @@ describe('mapActions', function() {
 
   it('should throw errors for required data', function() {
     mapActions().catch(function(e) {
-      e.message.should.equal('You must provide scenarios');
+      e.message.should.equal('You must provide action');
     });
     mapActions('foo').catch(function(e) {
-      e.message.should.equal('You must provide a valid scenarios array');
+      e.message.should.equal('You must provide a valid actions array');
     });
   });
 
@@ -25,7 +25,7 @@ describe('mapActions', function() {
       {}
     ]).catch(function(e) {
       e.should.exist;
-      e.message.should.equal('You must provide a valid scenario type');
+      e.message.should.equal('You must provide a valid action type');
     });
   });
 
@@ -36,7 +36,7 @@ describe('mapActions', function() {
       }
     ]).catch(function(e) {
       e.should.exist;
-      e.message.should.equal('Scenario type does not exist: foo');
+      e.message.should.equal('Action type does not exist: foo');
     });
   });
 
@@ -60,12 +60,12 @@ describe('mapActions', function() {
   });
 
   it('should route parameters to the appropriate method handler', function() {
-    var stub = sinon.stub(methods, 'respond', function(scenario, user, pattern) {
+    var stub = sinon.stub(methods, 'respond', function(scenario, data) {
       stub.restore();
       return Promise.resolve({
         scenario: scenario,
-        user: user,
-        pattern: pattern
+        user: data.user,
+        pattern: data.pattern
       });
     });
     var scenario = [{
@@ -78,10 +78,9 @@ describe('mapActions', function() {
     pattern = 'foo';
     var data = {
       user: user,
-      incomingPattern: pattern
+      pattern: pattern
     }
     return mapActions(scenario, data).then(function(opts) {
-      // i guess we expect an array of returns
       opts = opts[0];
       opts.pattern.should.equal(pattern);
       opts.user.should.deep.equal(user);
@@ -119,8 +118,8 @@ describe('mapActions', function() {
 
           deferred.resolve({
             scenario: scenario,
-            user: user,
-            pattern: pattern 
+            user: data.user,
+            pattern: data.pattern 
           });
         }, 2);
         return deferred.promise;
@@ -139,11 +138,7 @@ describe('mapActions', function() {
       var data = {
         user: 'foo'
       }
-      return mapActions(scenarios, data).then(function(opts) {
-        // 2 scenarios
-        opts.length.should.equal(2);
-        opts = opts[0];
-      });
+      return mapActions(scenarios, data);
     });
 
     it('should run promises synchronously when passed a flag', function() {
@@ -155,7 +150,7 @@ describe('mapActions', function() {
         return Promise.resolve({
           scenario: scenario,
           user: data.user,
-          pattern: data.incomingPattern
+          pattern: data.pattern
         });
       }));
                   
@@ -168,7 +163,7 @@ describe('mapActions', function() {
           deferred.resolve({
             scenario: scenario,
             user: data.user,
-            pattern: data.incomingPattern
+            pattern: data.pattern
           });
         }, 2);
         return deferred.promise;
@@ -190,11 +185,7 @@ describe('mapActions', function() {
       var data = {
         user: 'foo'
       }
-      return mapActions(scenarios, data, flags).then(function(opts) {
-        // 2 scenarios
-        opts.length.should.equal(2);
-        opts = opts[0];
-      });
+      return mapActions(scenarios, data, flags);
     });
   });
 });

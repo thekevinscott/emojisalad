@@ -28,16 +28,20 @@ describe('mapScenarios', function() {
         regex: 'foo'
       }
     ];
-    return mapScenarios(scenarios).catch(function(e) {
+    var args = [
+      {
+      pattern: 'foo'
+    }
+    ];
+    return mapScenarios(scenarios, { args: args }).catch(function(e) {
       stub.restore();
       e.should.exist;
     });
   });
 
-  it.only('should return a result if a scenario passes', function() {
+  it('should return a result if a scenario passes', function() {
     var called = false;
     var actionStub = sinon.stub(mapActions, 'call', function(self, opts) {
-      opts.should.contain('baz');
       called = true;
       return Promise.resolve({
         success: 1
@@ -61,8 +65,12 @@ describe('mapScenarios', function() {
         ]
       }
     ];
-    return mapScenarios(scenarios, {}, 'baz').then(function(response) {
-      console.log('response', response);
+    var args = [
+      {
+      pattern: 'baz'
+    }
+    ];
+    return mapScenarios(scenarios, { args: args }).then(function(response) {
       response.success.should.equal(1);
       regexStub.restore();
       actionStub.restore();

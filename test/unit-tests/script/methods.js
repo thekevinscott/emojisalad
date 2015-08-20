@@ -30,10 +30,10 @@ describe('Script methods', function() {
         respond({ message: 'intro-1'}, 'foo' );
       }).should.throw(Error);
       (function() {
-        respond({ message: 'intro-1', options: 'foo'}, {id: 1} );
+        respond({ message: 'intro-1', options: 'foo'}, {user: {id: 1}} );
       }).should.throw(Error);
       (function() {
-        respond({ message: 'intro-1' }, {id: 1} );
+        respond({ message: 'intro-1' }, {user: {id: 1}} );
       }).should.not.throw(Error);
       stub.restore();
     });
@@ -46,7 +46,7 @@ describe('Script methods', function() {
         stub.restore();
       });
 
-      return respond({ message: key }, { id : 1 });
+      return respond({ message: key }, { user: {id : 1 }});
     });
 
     it('should initialize options to an empty array', function() {
@@ -55,7 +55,7 @@ describe('Script methods', function() {
         stub.restore();
       });
 
-      return respond({ message: 'foo' }, { id : 1 });
+      return respond({ message: 'foo' }, { user: { id : 1 }});
     });
 
     it('should initialize options with variables if scenario specifies them', function() {
@@ -71,7 +71,7 @@ describe('Script methods', function() {
         options: [ '%(message)s' ]
       };
 
-      return respond(scenario, { id : 1 }, text);
+      return respond(scenario, { user: { id : 1 }, pattern: text });
     });
   });
 
@@ -115,7 +115,7 @@ describe('Script methods', function() {
         request({ url: '/intro-1'}, 'foo' );
       }).should.throw(Error);
       (function() {
-        request({ url: '/intro-1' }, {id: 1} );
+        request({ url: '/intro-1' }, {user: { id: 1}} );
       }).should.not.throw(Error);
     });
 
@@ -131,7 +131,7 @@ describe('Script methods', function() {
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { id : 1 });
+        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
       });
 
       it('should prepend host to a URL that misses it but has a starting slash', function() {
@@ -145,7 +145,7 @@ describe('Script methods', function() {
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { id : 1 });
+        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
       });
 
       it('should not prepend host if it already exists on an http url', function() {
@@ -159,7 +159,7 @@ describe('Script methods', function() {
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { id : 1 });
+        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
       });
 
       it('should not prepend host if it already exists on an https url', function() {
@@ -173,7 +173,7 @@ describe('Script methods', function() {
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { id : 1 });
+        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
       });
 
       it('should parse the URL correctly based on parameters', function() {
@@ -193,7 +193,7 @@ describe('Script methods', function() {
           opts.url.should.equal('http://localhost:5000/foo/'+message+'/'+user_id);
         }
 
-        return request(scenario, user, message);
+        return request(scenario, { user: user, pattern: message});
       });
     });
 
@@ -213,7 +213,7 @@ describe('Script methods', function() {
           }
         }
 
-        return request(scenario, user).then(function(response) {
+        return request(scenario, { user: user }).then(function(response) {
           response.foo.should.exist;
         });
       });
@@ -225,7 +225,7 @@ describe('Script methods', function() {
           });
         };
 
-        return request(scenario, user).then(function(response) {
+        return request(scenario, { user: user }).then(function(response) {
           response.foo.should.exist;
         });
       });
@@ -237,7 +237,7 @@ describe('Script methods', function() {
           return 'foo';
         };
 
-        return request(scenario, user).catch(function(e) {
+        return request(scenario, { user: user }).catch(function(e) {
           e.should.exist;
         });
       });

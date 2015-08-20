@@ -21,7 +21,7 @@ var waitingForConfirmation = [
       },
       {
         type: 'request',
-        url: '/users/%(user.id)s',
+        url: '/users/%(args[0].user.id)s',
         method: 'PUT',
         data: {
           state: 'waiting-for-nickname'
@@ -36,7 +36,7 @@ var waitingForConfirmation = [
     actions: [
       {
         type: 'request',
-        url: '/users/%(user.id)s',
+        url: '/users/%(args[0].user.id)s',
         method: 'PUT',
         data: {
           state: 'do-not-contact'
@@ -69,7 +69,7 @@ var waitingForNickname = [
     actions: [
       {
         type: 'request',
-        url: '/users/%(user.id)s',
+        url: '/users/%(args[0].user.id)s',
         method: 'PUT',
         data: function(user, body) {
           return {
@@ -80,7 +80,7 @@ var waitingForNickname = [
       },
       {
         type: 'request',
-        url: '/users/%(user.id)s/games',
+        url: '/users/%(args[0].user.id)s/games',
         method: 'GET',
         callback: {
           fn: function(game) {
@@ -100,11 +100,11 @@ var waitingForNickname = [
                 {
                   type: 'respond',
                   message: 'intro_3',
-                  options: '%(message)s'
+                  options: '%(args[0].message)s'
                 },
                 {
                   type: 'request',
-                  url: '/users/%(user.id)s',
+                  url: '/users/%(args[0].user.id)s',
                   method: 'PUT',
                   data: function(user, body) {
                     return {
@@ -127,7 +127,7 @@ var waitingForNickname = [
                 // ACTUALLY, THE GAME SHOULD TAKE CARE OF UPDATING USER STATUSES
                 {
                   type: 'request',
-                  url: '/users/%(user.id)s',
+                  url: '/users/%(args[0].user.id)s',
                   method: 'PUT',
                   data: function(user, body) {
                     return {

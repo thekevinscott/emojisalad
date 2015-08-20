@@ -12,7 +12,9 @@ var sprintf = require('sprintf');
  * specified in the options
  *
  */
-function respond(scenario, user, messagePassedFromUser, origBody) {
+function respond(scenario, data) {
+  var user = data.user;
+  var messagePassedFromUser = data.pattern;
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
   } else if ( ! scenario.message ) {

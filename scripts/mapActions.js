@@ -10,37 +10,60 @@ function reject(message) {
   });
 }
 
-function processMethod(scenario, data) {
-  var type = scenario.type;
+function processMethod(action, data) {
+  var type = action.type;
   if ( ! type ) {
-    return reject('You must provide a valid scenario type');
+    return reject('You must provide a valid action type');
   } else if ( !methods[type] ) {
-    return reject('Scenario type does not exist: ' + type);
+    return reject('Action type does not exist: ' + type);
   } else {
-    if ( ! data ) {
-      data = {};
-    }
-    return methods[type](scenario, data.user, data.incomingPattern).then(function(response) {
-      if ( scenario.callback ) {
-        var pattern = scenario.callback.fn(response);
-        var actions = scenario.actions;
-        return mapScenarios.call(null, scenario.callback.actions, data, true).then(function(callback) {
+    return methods[type](action, data).then(function(response) {
+      // we get response back as an object, but we want to convert it to an array.
+      // this is so we can append any potential callback objects onto it.
+      // later on (after this call returns) we'll flatten the final array
+      response = [response];
+      if ( action.callback ) {
+        data.args.push({
+          pattern: action.callback.fn(response)
+        });
+        return mapScenarios.call(null, action.callback.scenarios, data).then(function(callback) {
           return callback;
         }).then(function(callback) {
-          console.log('what is cb', callback);
-          console.log('what is response', response);
-          return callback;
+          if ( action.type === 'respond' ) {
+            return response.concat(callback);
+          } else {
+            return [].concat(callback);
+          }
         });
-      } else if ( scenario.type === 'respond' ) {
-        return response;
-      }
-    }).then(function(response) {
-      //only certain types need to actually return their responses;
-      if ( scenario.type === 'respond' ) {
-        return response;
+      } else {
+        // only certain types need to actually return their responses;
+        if ( action.type === 'respond' ) {
+          return response;
+        }
       }
     });
   }
+}
+
+function flatten(ary) {
+    var ret = [];
+    for(var i = 0; i < ary.length; i++) {
+        if(Array.isArray(ary[i])) {
+            ret = ret.concat(flatten(ary[i]));
+        } else {
+            ret.push(ary[i]);
+        }
+    }
+    return ret;
+}
+function cleanArray(arr) {
+  return flatten(arr).filter(function(response) {
+    // only return valid responses, as some methods
+    // return nothing
+    if ( response ) {
+      return response;
+    }
+  });
 }
 
 function mapActions(actions, data, flags) {
@@ -58,6 +81,7 @@ function mapActions(actions, data, flags) {
   if ( ! flags ) {
     flags = {};
   }
+
 
   if ( flags.sync ) {
     /*
@@ -87,21 +111,13 @@ function mapActions(actions, data, flags) {
       values.shift();
       values.push(response);
       return values;
-    });
+    }).then(cleanArray);
     return promise;
   } else {
+    // this is the async version
     return Promise.all(actions.map(function(action) {
       return processMethod(action, data);
-    })).then(function(arr) {
-      return arr.filter(function(response) {
-        console.log('response', response);
-        // only return valid responses, as some methods
-        // return nothing
-        if ( response ) {
-          return response;
-        }
-      });
-    });
+    })).then(cleanArray);
   }
 
 }
