@@ -23,51 +23,51 @@ describe('Script methods', function() {
         respond({});
       }).should.throw(Error);
       (function() {
-        respond({ message_key: 'intro-1' });
+        respond({ message: 'intro-1' });
       }).should.throw(Error);
       (function() {
-        respond({ message_key: 'intro-1'}, 'foo' );
+        respond({ message: 'intro-1'}, 'foo' );
       }).should.throw(Error);
       (function() {
-        respond({ message_key: 'intro-1', options: 'foo'}, {id: 1} );
+        respond({ message: 'intro-1', options: 'foo'}, {id: 1} );
       }).should.throw(Error);
       (function() {
-        respond({ message_key: 'intro-1' }, {id: 1} );
+        respond({ message: 'intro-1' }, {id: 1} );
       }).should.not.throw(Error);
       stub.restore();
     });
 
     it('should correctly pass user and message to User.message', function() {
       var key = 'foo';
-      var stub = sinon.stub(User, 'message', function(user, message_key) {
+      var stub = sinon.stub(User, 'message', function(user, message) {
         user.should.deep.equal({ id : 1 });
-        message_key.should.equal(key);
+        message.should.equal(key);
 
         stub.restore();
       });
 
-      return respond({ message_key: key }, { id : 1 });
+      return respond({ message: key }, { id : 1 });
     });
 
     it('should initialize options to an empty array', function() {
-      var stub = sinon.stub(User, 'message', function(user, message_key, options) {
+      var stub = sinon.stub(User, 'message', function(user, message, options) {
         options.should.deep.equal([]);
         stub.restore();
       });
 
-      return respond({ message_key: 'foo' }, { id : 1 });
+      return respond({ message: 'foo' }, { id : 1 });
     });
 
     it('should initialize options with variables if scenario specifies them', function() {
       var myOptions = [ 'foo' ];
       var text = 'Dolly';
-      var stub = sinon.stub(User, 'message', function(user, message_key, options) {
+      var stub = sinon.stub(User, 'message', function(user, message, options) {
         options.should.deep.equal( [text] );
         stub.restore();
       });
 
       var scenario = {
-        message_key: 'foo',
+        message: 'foo',
         options: [ '%(message)s' ]
       };
 
@@ -119,18 +119,82 @@ describe('Script methods', function() {
       }).should.not.throw(Error);
     });
 
-    it('should make a correct request and parse URL correctly', function() {
-      var url = 'foo';
-      var method = 'PUT';
-      var json = { foo: 'bar' };
+    describe('URL parsing', function() {
+      it('should prepend host to a URL that misses it', function() {
+        var url = 'foo';
+        var method = 'PUT';
+        var json = { foo: 'bar' };
 
-      rp = function(opts) {
-        opts.url.should.equal('/'+url);
-        opts.method.should.equal(method);
-        opts.json.should.equal(json);
-      }
+        rp = function(opts) {
+          opts.url.should.equal('http://localhost:5000/'+url);
+          opts.method.should.equal(method);
+          opts.json.should.equal(json);
+        }
 
-      return request({ url: url, data: json, method: method }, { id : 1 });
+        return request({ url: url, data: json, method: method }, { id : 1 });
+      });
+
+      it('should prepend host to a URL that misses it but has a starting slash', function() {
+        var url = '/foo';
+        var method = 'PUT';
+        var json = { foo: 'bar' };
+
+        rp = function(opts) {
+          opts.url.should.equal('http://localhost:5000'+url);
+          opts.method.should.equal(method);
+          opts.json.should.equal(json);
+        }
+
+        return request({ url: url, data: json, method: method }, { id : 1 });
+      });
+
+      it('should not prepend host if it already exists on an http url', function() {
+        var url = 'http://www.google.com/foo';
+        var method = 'PUT';
+        var json = { foo: 'bar' };
+
+        rp = function(opts) {
+          opts.url.should.equal(url);
+          opts.method.should.equal(method);
+          opts.json.should.equal(json);
+        }
+
+        return request({ url: url, data: json, method: method }, { id : 1 });
+      });
+
+      it('should not prepend host if it already exists on an https url', function() {
+        var url = 'https://www.google.com/foo';
+        var method = 'PUT';
+        var json = { foo: 'bar' };
+
+        rp = function(opts) {
+          opts.url.should.equal(url);
+          opts.method.should.equal(method);
+          opts.json.should.equal(json);
+        }
+
+        return request({ url: url, data: json, method: method }, { id : 1 });
+      });
+
+      it('should parse the URL correctly based on parameters', function() {
+        var url = '/foo/%(message)s/%(user.id)s';
+        var user_id = 1;
+
+        var scenario = {
+          url: url,
+          data: {},
+        };
+        var user = { id : user_id };
+
+        var message = 'HELLO';
+
+        rp = function(opts) {
+          opts.url.should.exist;
+          opts.url.should.equal('http://localhost:5000/foo/'+message+'/'+user_id);
+        }
+
+        return request(scenario, user, message);
+      });
     });
 
     describe('parsing string responses', function() {
@@ -180,24 +244,5 @@ describe('Script methods', function() {
     });
 
 
-    it('should parse the URL correctly based on parameters', function() {
-      var url = '/foo/%(message)s/%(user.id)s';
-      var user_id = 1;
-
-      var scenario = {
-        url: url,
-        data: {},
-      };
-      var user = { id : user_id };
-
-      var message = 'HELLO';
-
-      rp = function(opts) {
-        opts.url.should.exist;
-        opts.url.should.equal('/foo/'+message+'/'+user_id);
-      }
-
-      return request(scenario, user, message);
-    });
   });
 });

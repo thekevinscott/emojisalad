@@ -11,7 +11,7 @@ var doNotContact = [
 var waitingForConfirmation = [
   {
     regex: {
-      pattern: '^yes$|^yeah|^yea|^y',
+      pattern: '^yes%|^yeah|^yea|^y',
       flags: 'i',
     },
     scenarios: [
@@ -21,7 +21,7 @@ var waitingForConfirmation = [
       },
       {
         type: 'request',
-        url: '/users/$(user.id)',
+        url: '/users/%(user.id)s',
         method: 'PUT',
         data: {
           state: 'waiting-for-nickname'
@@ -36,7 +36,7 @@ var waitingForConfirmation = [
     scenarios: [
       {
         type: 'request',
-        url: '/users/$(user.id)',
+        url: '/users/%(user.id)s',
         method: 'PUT',
         data: {
           state: 'do-not-contact'
@@ -69,7 +69,7 @@ var waitingForNickname = [
     scenarios: [
       {
         type: 'request',
-        url: '/users/$(user.id)',
+        url: '/users/%(user.id)s',
         method: 'PUT',
         data: function(user, body) {
           return {
@@ -80,7 +80,7 @@ var waitingForNickname = [
       },
       {
         type: 'request',
-        url: '/users/$(user.id)/games',
+        url: '/users/%(user.id)s/games',
         method: 'GET',
         callback: {
           fn: function(game) {
@@ -100,13 +100,13 @@ var waitingForNickname = [
                 {
                   type: 'respond',
                   message: 'intro_3',
-                  options: '$(message)'
+                  options: '%(message)s'
                 },
                 {
                   type: 'request',
-                  url: '/users/$(user.id)',
+                  url: '/users/%(user.id)s',
                   method: 'PUT',
-                  data: function(user, body, origBody) {
+                  data: function(user, body) {
                     return {
                       state: 'waiting-for-invites',
                       username: origBody 
@@ -127,7 +127,7 @@ var waitingForNickname = [
                 // ACTUALLY, THE GAME SHOULD TAKE CARE OF UPDATING USER STATUSES
                 {
                   type: 'request',
-                  url: '/users/$(user.id)',
+                  url: '/users/%(user.id)s',
                   method: 'PUT',
                   data: function(user, body) {
                     return {

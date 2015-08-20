@@ -14,7 +14,7 @@ var sprintf = require('sprintf');
 function respond(scenario, user, messagePassedFromUser, origBody) {
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
-  } else if ( ! scenario.message_key ) {
+  } else if ( ! scenario.message ) {
     throw new Error("You must provide a scenario message key");
   } else if ( scenario.options && !_.isArray(scenario.options) ) {
     throw new Error("Options must be an array");
@@ -24,7 +24,7 @@ function respond(scenario, user, messagePassedFromUser, origBody) {
     throw new Error("You must provide a user id");
   }
 
-  var message_key = scenario.message_key;
+  var key = scenario.message;
 
   if ( scenario.options ) {
     var options = scenario.options.map(function(option) {
@@ -38,7 +38,8 @@ function respond(scenario, user, messagePassedFromUser, origBody) {
     var options = [];
   }
 
-  return User.message(user, message_key, options);
+  var result = User.message(user, key, options);
+  return result;
 };
 
 module.exports = respond;

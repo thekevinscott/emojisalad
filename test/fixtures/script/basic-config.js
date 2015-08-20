@@ -32,7 +32,7 @@ var waitingForNickname = [
       },
       {
         type: 'request',
-        url: '/users/$(user.id)/games',
+        url: '/users/$(user.id)s/games',
         method: 'GET',
         callback: {
           // this is a function for processing the return from the server
@@ -53,11 +53,11 @@ var waitingForNickname = [
                 {
                   type: 'respond',
                   message: 'intro_3',
-                  options: '$(message)'
+                  options: '$(message)s'
                 },
                 {
                   type: 'request',
-                  url: '/users/$(user.id)',
+                  url: '/users/$(user.id)s',
                   method: 'PUT',
                   data: function(user, body, origBody) {
                     return {
@@ -80,7 +80,7 @@ var waitingForNickname = [
                 // ACTUALLY, THE GAME SHOULD TAKE CARE OF UPDATING USER STATUSES
                 {
                   type: 'request',
-                  url: '/users/$(user.id)',
+                  url: '/users/$(user.id)s',
                   method: 'PUT',
                   data: function(user, body) {
                     return {

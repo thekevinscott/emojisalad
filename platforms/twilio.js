@@ -1,5 +1,5 @@
 /*
- * A reply from Twilio will contain the following:
+ * An incoming text from Twilio will contain the following:
  *
  *
  * ToCountry: 'US',
@@ -38,12 +38,12 @@ module.exports = function(req, res) {
   // first, we parse the Phone number
   Phone.parse(number).then(function(response) {
     console.log('parsed the number', response);
-    return User.getSingle({ number: response });
+    return User.get({ number: response });
   }).then(function(user) {
     console.log('back from user get single');
     if ( user ) {
-      console.log('user exists, proceed');
-      return script(user, body, res);
+      console.log('user exists, proceed', user);
+      return script(user.state, user, body);
     } else {
       console.log('user does not exist');
       // user does not yet exist; create the user

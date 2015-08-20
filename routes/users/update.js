@@ -5,7 +5,9 @@ var Text = require('../../models/text');
 module.exports = function(req, res) {
   var user_id = req.params.user_id;
   var data = req.body;
+  console.log('data', data);
   console.log('begin the user update');
+  console.log('user id', user_id);
   User.update({ id: user_id }, data).then(function(result) {
     console.log('user update fine');
     res.json(result);

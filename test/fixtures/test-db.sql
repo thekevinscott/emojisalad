@@ -249,6 +249,7 @@ CREATE TABLE `platforms` (
 LOCK TABLES `platforms` WRITE;
 /*!40000 ALTER TABLE `platforms` DISABLE KEYS */;
 INSERT INTO `platforms` VALUES (1,'twilio');
+INSERT INTO `platforms` VALUES (2,'twilio');
 /*!40000 ALTER TABLE `platforms` ENABLE KEYS */;
 UNLOCK TABLES;
 

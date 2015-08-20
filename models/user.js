@@ -24,12 +24,9 @@ var User = {
         errno: 4,
         message: 'You must provide a phone number'
       });
-    //} else if ( !regex('phone').test(number) ) {
-      //console.log('number', number, 'failed regex');
-      //dfd.reject('You must provide a valid phone number');
     } else {
       console.log('get single');
-      this.getSingle({ number: number }).then(function(user) {
+      this.get({ number: number }).then(function(user) {
         console.log('user?');
         if ( user ) {
           console.log('we have a user');
@@ -45,9 +42,7 @@ var User = {
             });
           }
         } else {
-          user = {
-            number: number,
-          };
+          user = { };
 
           var promises = [];
 
@@ -88,7 +83,7 @@ var User = {
             }());
           }
 
-          console.log('user', user);
+          //console.log('user', user);
           var query = squel
                       .insert()
                       .into('users')
@@ -113,8 +108,30 @@ var User = {
           Q.allSettled(promises).spread(function() {
             console.log('all done with promises', query.toString());
             db.query(query).then(function(rows) {
-              this.getSingle({
-                id: rows.insertId
+              var user_id = rows.insertId;
+              var key_id = squel
+                           .select()
+                           .field('id')
+                           .from('user_attribute_keys')
+                           .where('`key`=?','number');
+
+              var attribute_query = squel
+                                    .insert()
+                                    .into('user_attributes')
+                                    .setFields({
+                                      user_id: user_id,
+                                      key_id: key_id,
+                                      value: number 
+                                    });
+              return db.query(attribute_query.toString()).then(function() {
+                return user_id;
+              }).catch(function(e) {
+                console.error(e);
+                return e;
+              });
+            }).then(function(user_id) {
+              this.get({
+                id: user_id
               }).then(function(user) {
                 dfd.resolve(user);
               });
@@ -149,52 +166,14 @@ var User = {
     }
     return dfd.promise;
   },
-  lastStep: function(number, skip) {
-    var query = squel
-                .select()
-                .field('m.key')
-                .from('outgoingMessages', 't')
-                .left_join('messages', 'm', 't.message_id = m.id')
-                .left_join('users', 'u', 'u.id = t.user_id')
-                .where('u.number = ?', number)
-                .order('t.created', false)
-
-    return db.query(query).then(function(steps) {
-      if ( steps.length ) {
-        if ( ! skip || ! skip.length ) {
-          return steps[0].key;
-        } else {
-          for ( var i=0;i<steps.length;i++ ) {
-            if ( skip.indexOf(steps[i].key) === -1 ) {
-              return steps[i].key;
-            }
-          }
-          return 'No last step found that was excluded by skip';
-        }
-      } else {
-        console.log(query.toString());
-        return null;
-      }
-    });
-  },
-  getSingle: function(user) {
-    return this.get(user).then(function(users) {
-      if ( users.length ) {
-        return users[0];
-      } else {
-        return null;
-      }
-    }).fail(function(err) {
-      console.log('err', err);
-    });
-  },
   get: function(user) {
     var dfd = Q.defer();
+    console.log('ready to get user');
     function fetchUser(key, val) {
+      console.log('fetch user!');
       var query = squel
                   .select()
                   .field('u.id')
-                  .field('u.number')
                   .field('u.username')
                   .field('u.created')
                   .field('i.inviter_id')
@@ -206,7 +185,36 @@ var User = {
                   .left_join('user_states', 's', 's.id = u.state_id')
                   .where('u.`'+key+'`=?', val);
 
-      return db.query(query.toString());
+      return db.query(query.toString()).then(function(users) {
+        var user;
+        console.log('here', users);
+        if ( users && users.length ) {
+          console.log('user exists');
+          user = users[0];
+        } else {
+          console.log('user does not exists');
+          return null;
+        }
+
+        var query = squel
+                    .select()
+                    .field('a.value')
+                    .field('k.`key`')
+                    .from('user_attributes', 'a')
+                    .left_join('users', 'u', 'u.id = a.user_id')
+                    .left_join('user_attribute_keys', 'k', 'k.id = a.key_id')
+                    .where('u.`'+key+'`=?', val)
+                    .where('a.user_id=?',user.id);
+        return db.query(query).then(function(attributes) {
+          console.log('the user at first', user);
+          console.log('the attributes', attributes);
+          attributes.map(function(attribute) {
+            user[attribute.key] = attribute.value;
+          });
+          console.log('the user afterwards', user);
+          return user;
+        });
+      });
     }
 
     if ( typeof user === 'object' ) {
@@ -215,6 +223,12 @@ var User = {
         return fetchUser('id', user.id);
       } else if ( user.number ) {
         return fetchUser('number', user.number);
+      } else if ( user.username ) {
+        return fetchUser('username', user.username);
+      } else {
+        dfd.reject(new Error({
+          message: 'Tried to select on an invalid user key'
+        }));
       }
     } else {
       // we've passed a number
@@ -222,87 +236,10 @@ var User = {
     }
     return dfd.promise;
   },
-  // return the new user created
-   /*
-  invite: function(msg, invitingUserNumber) {
-    console.log('invite');
-    if ( ! Text || ! Text.send ) {
-      Text = require('./text');
-    }
-    var invitedNumber = msg.split('invite ').pop();
-    return Q.allSettled([
-      User.create(invitedNumber, 'invited', 'text_invite'),
-      User.get(invitingUserNumber)
-    ]).spread(function(invitedUserPromise, invitingUserPromise) {
-       //* invitedUser { state: 'fulfilled', value: { id: 116, number: '4126382398' } }
-       //* invitingUser { state: 'fulfilled',
-       //*   value:
-       //*      [ { id: 109,
-       //*             number: '+18604608183',
-       //*                    username: 'Kevin',
-       //*                           created: Sun Aug 16 2015 11:30:00 GMT-0400 (EDT) } ] }
-       //*                           
-      if ( invitedUserPromise.state === 'rejected' ) {
-        switch(invitedUserPromise.reason) {
-          case 'Phone number is already registered' :
-            throw {
-              key: 'already_invited',
-              data: [invitedNumber]
-            };
-            break;
-          default:
-            throw invitedUserPromise.reason
-            break;
-        }
-      } else {
-
-        var invitedUser = invitedUserPromise.value;
-        var invitingUser = invitingUserPromise.value[0];
-        // add an entry in the invited table
-        var invited_query = squel
-                            .insert()
-                            .into('invites')
-                            .set('invited_id', invitedUser.id)
-                            .set('inviter_id', invitingUser.id);
-        db.query(query);
-
-        console.log('invitingUser', invitingUser);
-        return Text.send(invitedUser, 'invite', [ invitingUser.username ]).fail(function(err) {
-          console.log('err back from twilio, process this', err);
-          throw err.message;
-        }).then(function(response) {
-          //return invitedUser;
-          return {
-            invitedUser: invitedUser,
-            invitingUser: invitingUser
-          };
-        });
-      }
-    });
-  },
-  */
- /*
-  notifyInviter: function(invitedUser) {
-    var query = squel
-                .select()
-                .from('invites', 'i')
-                .left_join('users', 'u', 'u.id = i.inviter_id')
-                .where('i.invited_id=?',invitedUser.id);
-
-    db.query(query).then(function(users) {
-      if ( users.length ) {
-        var invitingUser = users[0];
-        Text.send(invitingUser, 'intro_4', [ invitedUser.number ]);
-      } else {
-        throw "wtf, there should be a amtching user who invited the other user";
-      }
-    });
-  },
-  */
   update: function(user, params) {
     var dfd = Q.defer();
     console.log('user model update');
-    this.getSingle(user).then(function(user) {
+    this.get(user).then(function(user) {
       console.log('got user');
       if ( user ) {
         return Q.resolve(user);
@@ -322,6 +259,7 @@ var User = {
                   .table('users')
                   .where('id=?', user.id);
 
+                  console.log('params', params);
       Object.keys(params).filter(function(key) {
         if ( whitelist.indexOf(key) !== -1 ) {
           return true;
@@ -374,31 +312,28 @@ var User = {
 
     return db.query(query);
   },
-  // check to see if a user has completed onboarding
-  onboarded: function(number) {
-    var query = squel
-                .select()
-                .field('s.state')
-                .from('users', 'u')
-                .left_join('user_states', 's', 's.id = u.state_id')
-                .where('u.number=?', number);
-
-    return db.query(query.toString()).then(function(state) {
-      if ( state !== 'created' && state !== 'invited' ) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  },
-  message: function(user, message, options) {
+  message: function(user, message_key, options) {
+    console.log('where we doing', user, message_key);
     switch(user.platform) {
+      case 'messenger': 
+
+        console.log('prepare to send message');
+        return Message.get(message_key, options).then(function(message) {
+          if ( message && message.message ) {
+            return message.message;
+          } else {
+            return new Error({
+              message: 'Message for key not found: '+ message_key
+            });
+          }
+        });
+        break;
       case 'twilio':
-        console.log('its twilio');
+        console.log('its twilio', user, message_key);
         if ( ! Text || ! Text.send ) {
           Text = require('./text');
         }
-        return Text.send(user.number, message, options).fail(function(err) {
+        return Text.send(user.number, message_key, options).fail(function(err) {
           if ( err && err.code ) {
             switch(err.code) {
               case 21608:

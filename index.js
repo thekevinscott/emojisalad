@@ -10,7 +10,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-//var text = require('./text');
+app.all('/', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:5003");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 
 app.all('/test', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -47,10 +51,7 @@ app.post('/invites/new', require('./routes/invites/create'));
 // this handles all replies
 app.post('/platform/:platform', require('./platforms/'));
 
-// DEPRECATED
-
-app.post('/reply', require('./routes/reply')); // old
 app.listen(app.get('port'), function() {
-  console.log('Example app listening on port', app.get('port'));
+  console.log('EmojinaryFriend API listening on port', app.get('port'));
   console.log('Using db', db.environment);
 });

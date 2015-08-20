@@ -4,6 +4,8 @@ var sprintf = require('sprintf');
 var User = require('../../models/user');
 var Promise = require('bluebird');
 
+var port = process.env.PORT || 5000;
+var host = process.env.HOST || 'http://localhost';
 /*
  * Request takes a scenario, a user, and 
  * a text message and will initiate an http request.
@@ -18,16 +20,30 @@ function request(scenario, user, message) {
     throw new Error('You must provide a user with an id');
   }
 
-  if ( scenario.url.substring(0, 1) !== '/' ) {
-    scenario.url = '/' + scenario.url;
+  if ( !/^https?:\/\//i.test(scenario.url) ) {
+    if ( !/^\//.test(scenario.url) ) {
+      scenario.url = '/' + scenario.url;
+    }
+    scenario.url = host+':'+port+scenario.url;
   }
+
+  console.log('scenario url', scenario.url);
+  console.log('user', user);
+  console.log('user id', user.id);
 
   var url = sprintf(scenario.url, {
     user: user,
     message: message
   });
+  console.log('url', url);
 
-  var data = scenario.data;
+  console.log('**** FIGURE THIS PART OUT****');
+  if ( _.isFunction(scenario.data) ) {
+    var data = scenario.data(user, message);
+  } else {
+    var data = scenario.data;
+  }
+  console.log('json', data);
 
   return rp.call(this, {
     url: url,

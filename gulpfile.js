@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var argv = require('yargs').argv;
 var mocha = require('gulp-mocha');
 var gutil = require('gulp-util');
-
+var env = require('gulp-env');
 
 function exec(command) {
   var deferred = Promise.pending();
@@ -83,6 +83,7 @@ gulp.task('sync', function(cb) {
  * Testing Tasks
  */
 gulp.task('mocha', function() {
+  process.env.ENVIRONMENT = 'kevin-dev';
   return gulp.src(['test/index.js'], { read: false })
   .pipe(mocha({}))
   .on('error', gutil.log);
@@ -102,7 +103,6 @@ gulp.task('reset-testing-db', function() {
   return exec(importDB.join(' '));
 });
 gulp.task('test', function(cb) {
-  var tasks = ['reset-testing-db','mocha'];
-  gulp.run(tasks);
-  gulp.watch(['**'], tasks);
+  gulp.run(['reset-testing-db','mocha']);
+  gulp.watch(['**'], ['mocha', 'reset-testing-db']);
 });

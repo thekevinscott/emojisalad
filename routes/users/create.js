@@ -3,9 +3,9 @@ var Phone = require('../../models/phone');
 var Text = require('../../models/text');
 
 module.exports = function(req, res) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'POST');
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  //res.header("Access-Control-Allow-Origin", "*");
+  //res.header('Access-Control-Allow-Methods', 'POST');
+  //res.header("Access-Control-Allow-Headers", "X-Requested-With");
   // we support the old, /new route for Website
   // but want to transition to new, /users/create/ POST for new calls
   var passedNumber = req.body.number;
