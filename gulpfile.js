@@ -26,13 +26,19 @@ gulp.task('sync', function(cb) {
   var zippedFile = 'db_backup.sql.gz';
   var importConfig;
   var keys = Object.keys(argv);
+  var importKey;
   for ( var i=0, l = keys.length; i<l;i++ ) {
     var val = keys[i];
     if ( config[val] ) {
-      importConfig = config[val];
+      importKey = val;
       break;
     }
   };
+  if ( importKey === 'production' ) {
+    throw "WHOA WHOA WHOA NO KILLING PRODUCTION";
+  } else {
+    importConfig = config[importKey];
+  }
   var importDB = [
     'mysql -u',
     importConfig.user,
