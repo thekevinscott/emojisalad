@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var db = require('db');
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -51,4 +52,5 @@ app.post('/platform/:platform', require('./platforms/'));
 app.post('/reply', require('./routes/reply')); // old
 app.listen(app.get('port'), function() {
   console.log('Example app listening on port', app.get('port'));
+  console.log('Using db', db.environment);
 });
