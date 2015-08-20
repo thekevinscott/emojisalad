@@ -41,7 +41,6 @@ app.get('/goat/:number', function(req, res) {
 */
 
 // this creates a new game
-app.post('/new', require('./routes/users/create'));
 app.put('/users/:user_id', require('./routes/users/update'));
 app.get('/users/:user_id/games', require('./routes/users/games'));
 app.get('/users/:user_id/games', require('./routes/users/games'));
