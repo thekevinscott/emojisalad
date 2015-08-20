@@ -68,6 +68,62 @@ gulp.task('sync', function(cb) {
   }).catch(function(e) {
     console.log('e', e);
   }).done(function() {
+    //exec('rm -rf '+tmp).then(function() {
+      process.exit(0);
+    //});
+  });
+});
+
+gulp.task('test', function(cb) {
+  var config = require('db').config;
+  var tmp = 'tmp/';
+  var destination = tmp+'production.sql.gz';
+  var file = 'db_backup.sql';
+  var zippedFile = 'db_backup.sql.gz';
+  var importConfig;
+  var keys = Object.keys(argv);
+  var importKey;
+  for ( var i=0, l = keys.length; i<l;i++ ) {
+    var val = keys[i];
+    if ( config[val] ) {
+      importKey = val;
+      break;
+    }
+  };
+  if ( importKey === 'production' ) {
+    throw "WHOA WHOA WHOA NO KILLING PRODUCTION";
+  } else {
+    importConfig = config[importKey];
+  }
+  var importDB = [
+    'mysql -u',
+    importConfig.user,
+    '-p' + importConfig.password,
+    '-h',
+    importConfig.host,
+    importConfig.database,
+    '<'+ tmp+file
+  ];
+  var dumpDB = [
+    'mysqldump -u',
+    config.production.user,
+    '-p' + config.production.password,
+    '-h',
+    config.production.host,
+    config.production.database,
+    '|',
+    'gzip >',
+    tmp+zippedFile
+  ];
+  exec('mkdir -p '+tmp).then(function() {
+    return exec(dumpDB.join(' '))
+  }).then(function(output) {
+    return exec('gunzip '+tmp+zippedFile);
+  }).then(function(output) {
+    return exec(importDB.join(' '));
+  }).catch(function(e) {
+    console.log('e', e);
+  }).done(function() {
     exec('rm -rf '+tmp).then(function() {
       process.exit(0);
     });
