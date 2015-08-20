@@ -5,6 +5,7 @@ var Promise = require('bluebird');
 var request = require('../../../scripts/methods/request');
 var respond = require('../../../scripts/methods/respond');
 var User = require('../../../models/user');
+var Message = require('../../../models/message');
 
 describe('Script methods', function() {
   it('should have respond and request methods', function() {
@@ -39,8 +40,7 @@ describe('Script methods', function() {
 
     it('should correctly pass user and message to User.message', function() {
       var key = 'foo';
-      var stub = sinon.stub(User, 'message', function(user, message) {
-        user.should.deep.equal({ id : 1 });
+      var stub = sinon.stub(Message, 'get', function(message) {
         message.should.equal(key);
 
         stub.restore();
@@ -50,7 +50,7 @@ describe('Script methods', function() {
     });
 
     it('should initialize options to an empty array', function() {
-      var stub = sinon.stub(User, 'message', function(user, message, options) {
+      var stub = sinon.stub(Message, 'get', function(message, options) {
         options.should.deep.equal([]);
         stub.restore();
       });
@@ -61,7 +61,7 @@ describe('Script methods', function() {
     it('should initialize options with variables if scenario specifies them', function() {
       var myOptions = [ 'foo' ];
       var text = 'Dolly';
-      var stub = sinon.stub(User, 'message', function(user, message, options) {
+      var stub = sinon.stub(Message, 'get', function(message, options) {
         options.should.deep.equal( [text] );
         stub.restore();
       });

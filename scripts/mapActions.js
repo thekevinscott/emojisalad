@@ -23,28 +23,36 @@ function processMethod(scenario, data) {
     return methods[type](scenario, data.user, data.incomingPattern).then(function(response) {
       if ( scenario.callback ) {
         var pattern = scenario.callback.fn(response);
-        var scenarios = scenario.scenarios;
-        return mapScenarios.call(null, scenario.callback.scenarios, data, true).then(function(callbackResponse) {
-          response.callbackResponse = callbackResponse;
-          return response;
+        var actions = scenario.actions;
+        return mapScenarios.call(null, scenario.callback.actions, data, true).then(function(callback) {
+          return callback;
+        }).then(function(callback) {
+          console.log('what is cb', callback);
+          console.log('what is response', response);
+          return callback;
         });
-      } else {
+      } else if ( scenario.type === 'respond' ) {
+        return response;
+      }
+    }).then(function(response) {
+      //only certain types need to actually return their responses;
+      if ( scenario.type === 'respond' ) {
         return response;
       }
     });
   }
 }
 
-function routeScenario(scenarios, data, flags) {
+function mapActions(actions, data, flags) {
   if ( ! mapScenarios ) {
     // lazy load mapScenarios to avoid a circular dependency issue
     mapScenarios = require('./mapScenarios');
   }
 
-  if ( ! scenarios ) {
-    return reject('You must provide scenarios');
-  } else if ( !_.isArray(scenarios) ) {
-    return reject('You must provide a valid scenarios array');
+  if ( ! actions ) {
+    return reject('You must provide action');
+  } else if ( !_.isArray(actions) ) {
+    return reject('You must provide a valid actions array');
   }
 
   if ( ! flags ) {
@@ -67,10 +75,10 @@ function routeScenario(scenarios, data, flags) {
     });
     var values = [];
 
-    scenarios.map(function(scenario) {
+    actions.map(function(action) {
       promise = promise.then(function(response) {
         values.push(response);
-        return processMethod(scenario, data);
+        return processMethod(action, data);
       });
     });
 
@@ -82,11 +90,20 @@ function routeScenario(scenarios, data, flags) {
     });
     return promise;
   } else {
-    return Promise.all(scenarios.map(function(scenario) {
-      return processMethod(scenario, data);
-    }));
+    return Promise.all(actions.map(function(action) {
+      return processMethod(action, data);
+    })).then(function(arr) {
+      return arr.filter(function(response) {
+        console.log('response', response);
+        // only return valid responses, as some methods
+        // return nothing
+        if ( response ) {
+          return response;
+        }
+      });
+    });
   }
 
 }
 
-module.exports = routeScenario;
+module.exports = mapActions;

@@ -2,26 +2,26 @@ var should = require('chai').should();
 var sinon = require('sinon');
 var Promise = require('bluebird');
 
-var routeScenario = require('../../../scripts/routeScenario');
+var mapActions = require('../../../scripts/mapActions');
 var methods = require('../../../scripts/methods');
 
-describe('routeScenario', function() {
+describe('mapActions', function() {
 
   it('should throw errors for required data', function() {
-    routeScenario().catch(function(e) {
+    mapActions().catch(function(e) {
       e.message.should.equal('You must provide scenarios');
     });
-    routeScenario('foo').catch(function(e) {
+    mapActions('foo').catch(function(e) {
       e.message.should.equal('You must provide a valid scenarios array');
     });
   });
 
   it('should return a promise', function() {
-    return routeScenario([]);
+    return mapActions([]);
   });
 
   it('should throw an error if no scenario type is provided', function() {
-    return routeScenario([
+    return mapActions([
       {}
     ]).catch(function(e) {
       e.should.exist;
@@ -30,7 +30,7 @@ describe('routeScenario', function() {
   });
 
   it('should throw an error if an unsupported scenario type is provided', function() {
-    return routeScenario([
+    return mapActions([
       {
         type: 'foo'
       }
@@ -50,7 +50,7 @@ describe('routeScenario', function() {
     var data = {
       user: 'foo'
     }
-    return routeScenario([
+    return mapActions([
       {
         type: 'respond'
       }
@@ -80,7 +80,7 @@ describe('routeScenario', function() {
       user: user,
       incomingPattern: pattern
     }
-    return routeScenario(scenario, data).then(function(opts) {
+    return mapActions(scenario, data).then(function(opts) {
       // i guess we expect an array of returns
       opts = opts[0];
       opts.pattern.should.equal(pattern);
@@ -139,7 +139,7 @@ describe('routeScenario', function() {
       var data = {
         user: 'foo'
       }
-      return routeScenario(scenarios, data).then(function(opts) {
+      return mapActions(scenarios, data).then(function(opts) {
         // 2 scenarios
         opts.length.should.equal(2);
         opts = opts[0];
@@ -190,7 +190,7 @@ describe('routeScenario', function() {
       var data = {
         user: 'foo'
       }
-      return routeScenario(scenarios, data, flags).then(function(opts) {
+      return mapActions(scenarios, data, flags).then(function(opts) {
         // 2 scenarios
         opts.length.should.equal(2);
         opts = opts[0];

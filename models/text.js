@@ -19,17 +19,16 @@ var Message = require('./message');
     //}
 //}
 
-//function reply(messages) {
-    //var twilio = require('twilio');
-    //var twiml = new twilio.TwimlResponse();
-    //messages.map(function(message) {
-        //twiml.message(message);
-    //});
-    //return twiml;
-//}
 
 var Text = {
-  table: 'outgoingMessages',
+  reply: function(responses) {
+    var twilio = require('twilio');
+    var twiml = new twilio.TwimlResponse();
+    responses.map(function(response) {
+      twiml.message(response.message);
+    });
+    return twiml;
+  },
   send: function send(user, message) {
     var params = {
       from: config.from
@@ -38,15 +37,16 @@ var Text = {
     if ( typeof user !== 'object' ) {
       throw "You must now provide a user object";
     }
+
     console.log('user', user);
     params.to = user.number;
-    params.body = message;
+    params.body = message.message;
 
 
     console.log('prepare to send message');
     return client.messages.post(params).then(function(response) {
       console.log('sent message!');
-      //this.saveMessage(user, message.id, params.body, response);
+      this.saveMessage(user, message.id, params.body, response);
       console.log('saved message');
       // we don't wait for the db call to finish,
       // this can fail and we still want to proceed

@@ -5,7 +5,7 @@ var Promise = require('bluebird');
 var mockrequire = require('mockrequire');
 var mapScenarios = require('../../../scripts/mapScenarios');
 var checkScenario = require('../../../scripts/checkScenario');
-var routeScenario = require('../../../scripts/routeScenario');
+var mapActions = require('../../../scripts/mapActions');
 var methods = require('../../../scripts/methods');
 
 var config = require('../../fixtures/script/basic-config') ;
@@ -40,14 +40,21 @@ describe('script index', function() {
 
     beforeEach(function() {
       ['respond', 'request'].map(function(method) {
-        stubs.push(sinon.stub(methods, method, function() {
+        stubs.push(sinon.stub(methods, method, function(scenario) {
+
+          var params = {
+              method: method
+          };
+          if ( method === 'request' ) {
+            params.url = scenario.url;
+          } else if ( method === 'respond' ) {
+            params.message = scenario.message;
+          }
+
           var deferred = Promise.pending();
           setTimeout(function() {
             called++;
-            deferred.resolve({
-              responseFromServer: 'foo',
-              method: method
-            });
+            deferred.resolve(params);
           }, 2);
           return deferred.promise;
         }));
@@ -67,7 +74,7 @@ describe('script index', function() {
         called.should.equal(2);
         response.should.deep.equal([
           { responseFromServer: 'foo', method: 'respond' },
-          { responseFromServer: 'foo', method: 'request' },
+          //{ responseFromServer: 'foo', method: 'request' },
         ]);
       });
     });
@@ -81,11 +88,19 @@ describe('script index', function() {
       return script(key, user, message).then(function(response) {
         called.should.equal(4);
         response.should.deep.equal([
-          { responseFromServer: 'foo', method: 'request' },
-          { responseFromServer: 'foo', method: 'request', callbackResponse: [
-            { responseFromServer: 'foo', method: 'respond' },
-            { responseFromServer: 'foo', method: 'request' },
-          ]},
+          //{ responseFromServer: 'foo', method: 'request' },
+          //{ responseFromServer: 'foo', method: 'request', callbackResponse: [
+            {
+              message: 'game-on',
+              method: 'respond'
+            },
+            {
+              message: 'game-on',
+              method: 'respond'
+            },
+            //{ responseFromServer: 'foo', method: 'request' },
+          //]
+      //},
         ]);
       });
     });

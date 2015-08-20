@@ -4,7 +4,7 @@ var doNotContact = [
     regex: {
       pattern: '.*',
     },
-    scenarios: [ ]
+    actions: [ ]
   }
 ];
 
@@ -14,7 +14,7 @@ var waitingForConfirmation = [
       pattern: '^yes%|^yeah|^yea|^y',
       flags: 'i',
     },
-    scenarios: [
+    actions: [
       {
         type: 'respond',
         message: 'intro_2',
@@ -33,7 +33,7 @@ var waitingForConfirmation = [
     regex: {
       pattern: '.*',
     },
-    scenarios: [
+    actions: [
       {
         type: 'request',
         url: '/users/%(user.id)s',
@@ -51,7 +51,7 @@ var waitingForNickname = [
     regex: {
       pattern: '^invite',
     },
-    scenarios: [
+    actions: [
       {
         type: 'respond',
         message: 'wait-to-invite'
@@ -66,7 +66,7 @@ var waitingForNickname = [
     regex: {
       pattern: '.*',
     },
-    scenarios: [
+    actions: [
       {
         type: 'request',
         url: '/users/%(user.id)s',
@@ -96,7 +96,7 @@ var waitingForNickname = [
               regex: {
                 pattern: '^waiting-for-players'
               },
-              scenarios: [
+              actions: [
                 {
                   type: 'respond',
                   message: 'intro_3',
@@ -119,7 +119,7 @@ var waitingForNickname = [
               regex: {
                 pattern: '.*'
               },
-              scenarios: [
+              actions: [
                 {
                   type: 'respond',
                   message: 'game-on',
@@ -150,7 +150,7 @@ var waitingForInvites = [
     regex: {
       pattern: '^invite',
     },
-    scenarios: [
+    actions: [
       {
         type: 'request',
         url: '/invites/new',
@@ -169,7 +169,7 @@ var waitingForInvites = [
     regex: {
       pattern: '.*',
     },
-    scenarios: [
+    actions: [
       {
         type: 'respond',
         message: 'wtf'

@@ -3,7 +3,7 @@ var waitingForNickname = [
     regex: {
       pattern: '^invite',
     },
-    scenarios: [
+    actions: [
       {
         type: 'respond',
         message: 'wait-to-invite'
@@ -18,7 +18,18 @@ var waitingForNickname = [
     regex: {
       pattern: '.*',
     },
-    scenarios: [
+    actions: [
+      {
+        type: 'request',
+        url: '/users/$(user.id)s',
+        method: 'PUT',
+        data: function(user, body) {
+          return {
+            username: body,
+            state: 'ready-for-game'
+          };
+        }
+      },
       {
         type: 'request',
         url: '/users/$(user.id)s',
@@ -49,10 +60,15 @@ var waitingForNickname = [
               regex: {
                 pattern: '^waiting-for-players'
               },
-              scenarios: [
+              actions: [
                 {
                   type: 'respond',
                   message: 'intro_3',
+                  options: '$(message)s'
+                },
+                {
+                  type: 'respond',
+                  message: 'intro_4',
                   options: '$(message)s'
                 },
                 {

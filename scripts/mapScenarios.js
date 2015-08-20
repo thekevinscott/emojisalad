@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var checkScenario = require('./checkScenario');
-var routeScenario = require('./routeScenario');
+var mapActions = require('./mapActions');
 
 
 /*
@@ -14,7 +14,7 @@ function mapScenarios(scenarios, data) {
   for ( var i=0, l=scenarios.length; i<l; i++ ) {
     var scenario = scenarios[i];
     if ( checkScenario.call(null, scenario.regex, data.incomingPattern) ) {
-      return routeScenario.call(null, scenario.scenarios, data, null);
+      return mapActions.call(null, scenario.actions, data, null);
       break;
     }
   }

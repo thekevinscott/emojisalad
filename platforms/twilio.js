@@ -27,18 +27,23 @@ var script = require('../scripts');
 var Log = require('../models/log');
 var Phone = require('../models/phone');
 var User = require('../models/user');
+var Message = require('../models/message');
+var Text = require('../models/text');
 module.exports = function(req, res) {
   console.log('reply');
 
   Log.incoming(req.body);
 
   var body = req.body.Body;
-  var number = req.body.From;
+  var number;
+  var platform = 'twilio';
+  var entry = 'text';
 
   // first, we parse the Phone number
-  Phone.parse(number).then(function(response) {
-    console.log('parsed the number', response);
-    return User.get({ number: response });
+  Phone.parse(req.body.From).then(function(parsedNumber) {
+    number = parsedNumber;
+    console.log('parsed the number', number);
+    return User.get({ number: number });
   }).then(function(user) {
     console.log('back from user get single');
     if ( user ) {
@@ -46,17 +51,28 @@ module.exports = function(req, res) {
       return script(user.state, user, body);
     } else {
       console.log('user does not exist');
+      // CHANGE THIS TO call User.create and then respond here
       // user does not yet exist; create the user
-      return rp({
-        url: 'http://localhost:5000/users/create',
-        method: 'POST',
-        json: {
-          number: number,
-          entry: 'text',
-          platform: 'twilio'
-        }
+      return User.create({ number: number }, entry, platform).then(function() {
+        return Message.get('intro');
       });
     }
+  }).then(function(response) {
+    response = [response];
+
+    console.log('yay response', response);
+    res.writeHead(200, {'Content-Type': 'text/xml'});
+    res.end(Text.reply(response).toString());
+      //return rp({
+        //url: 'http://localhost:5000/users/create',
+        //method: 'POST',
+        //json: {
+          //number: number,
+          //entry: 'text',
+          //platform: 'twilio'
+        //}
+      //});
+    //}
   }).fail(function(err) {
     // this should not notify the user. It means that the incoming request's number
     // somehow failed validation on Twilio's side, which would be odd because Twilio

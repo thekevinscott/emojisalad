@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 
 var mapScenarios = require('../../../scripts/mapScenarios');
 var checkScenario = require('../../../scripts/checkScenario');
-var routeScenario = require('../../../scripts/routeScenario');
+var mapActions = require('../../../scripts/mapActions');
 
 describe('mapScenarios', function() {
   it('should check valid input', function() {
@@ -34,9 +34,9 @@ describe('mapScenarios', function() {
     });
   });
 
-  it('should return a result if a scenario passes', function() {
+  it.only('should return a result if a scenario passes', function() {
     var called = false;
-    var routeStub = sinon.stub(routeScenario, 'call', function(self, opts) {
+    var actionStub = sinon.stub(mapActions, 'call', function(self, opts) {
       opts.should.contain('baz');
       called = true;
       return Promise.resolve({
@@ -62,9 +62,10 @@ describe('mapScenarios', function() {
       }
     ];
     return mapScenarios(scenarios, {}, 'baz').then(function(response) {
+      console.log('response', response);
       response.success.should.equal(1);
       regexStub.restore();
-      routeStub.restore();
+      actionStub.restore();
     });
   });
 });

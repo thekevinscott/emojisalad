@@ -7,6 +7,7 @@
 var User = require('../models/user');
 var Phone = require('../models/phone');
 var Text = require('../models/text');
+var Message = require('../models/message');
 
 module.exports = function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -25,7 +26,8 @@ module.exports = function(req, res) {
     return User.create({ number: number }, entry, platform);
   }).then(function(newUser) {
     user = newUser;
-    return User.message(user, 'intro');
+
+    return Message.get('intro');
   }).then(function(message) {
     return Text.send(user, message);
   }).then(function() {
@@ -35,9 +37,6 @@ module.exports = function(req, res) {
     if ( err.message ) {
       // possible error - number is already registered.
       res.json({ error: err.message });
-    } else {
-      // possible error - number is already registered.
-      res.json({ error: err });
     }
   });
 }

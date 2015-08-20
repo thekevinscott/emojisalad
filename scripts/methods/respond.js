@@ -1,4 +1,5 @@
 var User = require('../../models/user');
+var Message = require('../../models/message');
 var _ = require('lodash');
 var sprintf = require('sprintf');
 
@@ -38,7 +39,8 @@ function respond(scenario, user, messagePassedFromUser, origBody) {
     var options = [];
   }
 
-  var result = User.message(user, key, options);
+  var result = Message.get(key, options);
+  console.log('message result', result);
   return result;
 };
 

@@ -212,8 +212,10 @@ var User = {
                     .from('user_attributes', 'a')
                     .left_join('users', 'u', 'u.id = a.user_id')
                     .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
-                    .where('u.`'+key+'`=?', val)
+                    .where('k.`key`=?', key)
+                    .where('a.attribute=?', val)
                     .where('a.user_id=?',user.id);
+                    console.log(query.toString());
         return db.query(query).then(function(attributes) {
           console.log('the user at first', user);
           console.log('the attributes', attributes);
@@ -306,6 +308,13 @@ var User = {
     return dfd.promise;
   },
   message: function(user, message_key, options) {
+    throw "Dont use this anymore";
+    console.log('where we doing', user, message_key);
+  },
+  //this is the old message function that sends messages based on platform.
+  //deprecated
+  /*
+  message: function(user, message_key, options) {
     console.log('where we doing', user, message_key);
     switch(user.platform) {
       case 'messenger': 
@@ -337,6 +346,7 @@ var User = {
         break;
     }
   }
+  */
 };
 
 module.exports = User;
