@@ -2,6 +2,8 @@ var gulp = require('gulp');
 var childExec = require('child_process').exec;
 var Promise = require('bluebird');
 var argv = require('yargs').argv;
+var mocha = require('gulp-mocha');
+var gutil = require('gulp-util');
 
 
 function exec(command) {
@@ -76,7 +78,16 @@ gulp.task('sync', function(cb) {
   });
 });
 
-gulp.task('test', function(cb) {
+
+/*
+ * Testing Tasks
+ */
+gulp.task('mocha', function() {
+  return gulp.src(['test/index.js'], { read: false })
+  .pipe(mocha({}))
+  .on('error', gutil.log);
+});
+gulp.task('reset-testing-db', function() {
   var db = 'test/fixtures/test-db.sql';
   var config = require('db').config['kevin-test'];
   var importDB = [
@@ -88,11 +99,10 @@ gulp.task('test', function(cb) {
     config.database,
     '<'+ db
   ];
-  exec(importDB.join(' ')).then(function() {
-    return exec('mocha');
-  }).catch(function(e) {
-    console.log('e', e);
-  }).done(function() {
-    process.exit(0);
-  });
+  return exec(importDB.join(' '));
+});
+gulp.task('test', function(cb) {
+  var tasks = ['reset-testing-db','mocha'];
+  gulp.run(tasks);
+  gulp.watch(['**'], tasks);
 });
