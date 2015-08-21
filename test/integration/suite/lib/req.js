@@ -23,7 +23,6 @@ function req(options, params) {
     options.form[params.messageKey] = message;
   }
 
-  console.log(options);
   return request(options).then(function(response) {
     var resp = response[0];
     var body = response[1];
@@ -40,11 +39,12 @@ function req(options, params) {
     } else if (content_type.indexOf('text/html') !== -1 ) {
       console.log('wtf?');
       console.log('body', body);
-    } else {
-      console.log('content type', resp.headers['content-type']);
+    } else if ( content_type.indexOf('application/json') !== -1 ) {
       if ( _.isString(body) ) {
         body = JSON.parse(body);
       }
+    } else {
+      console.log('content type', resp.headers['content-type']);
     }
     return body;
   });

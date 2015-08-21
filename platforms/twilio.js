@@ -30,7 +30,7 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var Text = require('../models/text');
 module.exports = function(req, res) {
-  console.log('\n====================================\n');
+  //console.log('\n====================================\n');
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
   if ( ! req.body.From ) {
@@ -40,7 +40,7 @@ module.exports = function(req, res) {
   }
 
   var body = req.body.Body;
-  console.log('body', body);
+  //console.log('body', body);
   //Log.incoming(req.body);
 
   var number;
@@ -52,15 +52,15 @@ module.exports = function(req, res) {
     number = parsedNumber;
     return User.get({ number: number });
   }).then(function(user) {
-    console.log('back from user get single');
+    //console.log('back from user get single');
     if ( user ) {
-      console.log('user exists, proceed', user);
+      //console.log('user exists, proceed', user);
       return script(user.state, user, body);
     } else {
-      console.log('user does not exist');
+      //console.log('user does not exist');
       return User.create({ number: number }, entry, platform).then(function() {
         return Message.get('intro').then(function(data) {
-          console.log('message data', data);
+          //console.log('message data', data);
           // we wrap the response in an array to be consistent;
           // later responses could return multiple responses.
           return [data];
@@ -68,6 +68,7 @@ module.exports = function(req, res) {
       });
     }
   }).then(function(response) {
+    //console.log('what is the response', response);
     res.end(Text.reply(response).toString());
   }).fail(function(err) {
     // this should not notify the user. It means that the incoming request's number
@@ -76,6 +77,6 @@ module.exports = function(req, res) {
     //
     // This could mean Twilio somehow fell down between requests, or there's a man
     // in the middle, or someone has gotten a hold of this URL and is trying to hack us.
-    console.error('some odd kind of twilio error', err);
+    console.error('some odd kind of twilio error', err, number);
   });
 }

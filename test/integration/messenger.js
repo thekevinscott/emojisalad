@@ -1,5 +1,6 @@
+var should = require('chai').should();
+var _ = require('lodash');
 describe('Messenger', function() {
-  console.log('messenger');
   require('./suite')({
     url: '/platform/messenger',
 
@@ -8,6 +9,11 @@ describe('Messenger', function() {
     // callback for a test that passes no data
     reject: function(response) {
       response.error.should.exist;
+    },
+    // callback to test for an empty response
+    empty: function(response) {
+      response.should.be.empty;
+      //response.should.deep.equal([]);
     },
 
     getUser: function() {

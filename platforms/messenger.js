@@ -11,7 +11,7 @@ var Log = require('../models/log');
 var User = require('../models/user');
 var Message = require('../models/message');
 module.exports = function(req, res) {
-  console.log('\n====================================\n');
+  //console.log('\n====================================\n');
   //Log.incoming(req.body);
 
   var body = req.body.message;
