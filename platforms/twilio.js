@@ -51,16 +51,11 @@ module.exports = function(req, res) {
       return script(user.state, user, body);
     } else {
       console.log('user does not exist');
-      // CHANGE THIS TO call User.create and then respond here
-      // user does not yet exist; create the user
       return User.create({ number: number }, entry, platform).then(function() {
         return Message.get('intro');
       });
     }
   }).then(function(response) {
-    response = [response];
-
-    console.log('yay response', response);
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(Text.reply(response).toString());
       //return rp({

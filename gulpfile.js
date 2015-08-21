@@ -6,6 +6,7 @@ var mocha = require('gulp-mocha');
 var gutil = require('gulp-util');
 var env = require('gulp-env');
 var nodemon = require('gulp-nodemon');
+var chalk = require('chalk');
 
 function exec(command) {
   var deferred = Promise.pending();
@@ -21,12 +22,37 @@ function exec(command) {
   return deferred.promise;
 }
 
-gulp.task('sync', function(cb) {
+function pullDB() {
   var config = require('db').config;
   var tmp = 'tmp/';
   var destination = tmp+'production.sql.gz';
   var file = 'db_backup.sql';
   var zippedFile = 'db_backup.sql.gz';
+  var dumpDB = [
+    'mysqldump -u',
+    config.production.user,
+    '-p' + config.production.password,
+    '-h',
+    config.production.host,
+    config.production.database,
+    '|',
+    'gzip >',
+    tmp+zippedFile
+  ];
+  return exec('mkdir -p '+tmp).then(function() {
+    return exec('rm -f '+tmp+file);
+  }).then(function() {
+    return exec(dumpDB.join(' '))
+  }).then(function(output) {
+    return exec('gunzip '+tmp+zippedFile);
+  }).then(function() {
+    return tmp+file;
+  });
+}
+
+gulp.task('sync', function(cb) {
+  var tmp = 'tmp/';
+  var config = require('db').config;
   var importConfig;
   var keys = Object.keys(argv);
   var importKey;
@@ -42,40 +68,23 @@ gulp.task('sync', function(cb) {
   } else {
     importConfig = config[importKey];
   }
-  var importDB = [
-    'mysql -u',
-    importConfig.user,
-    '-p' + importConfig.password,
-    '-h',
-    importConfig.host,
-    importConfig.database,
-    '<'+ tmp+file
-  ];
-  var dumpDB = [
-    'mysqldump -u',
-    config.production.user,
-    '-p' + config.production.password,
-    '-h',
-    config.production.host,
-    config.production.database,
-    '|',
-    'gzip >',
-    tmp+zippedFile
-  ];
-  exec('mkdir -p '+tmp).then(function() {
-    return exec('rm -f '+tmp+file);
-  }).then(function() {
-    return exec(dumpDB.join(' '))
-  }).then(function(output) {
-    return exec('gunzip '+tmp+zippedFile);
-  }).then(function(output) {
+  pullDB().then(function(file) {
+    var importDB = [
+      'mysql -u',
+      importConfig.user,
+      '-p' + importConfig.password,
+      '-h',
+      importConfig.host,
+      importConfig.database,
+      '<'+ file
+    ];
     return exec(importDB.join(' '));
   }).catch(function(e) {
     console.log('e', e);
   }).done(function() {
-    //exec('rm -rf '+tmp).then(function() {
+    exec('rm -rf '+tmp).then(function() {
       process.exit(0);
-    //});
+    });
   });
 });
 
@@ -84,12 +93,28 @@ gulp.task('sync', function(cb) {
  * Testing Tasks
  */
 gulp.task('sync-testing-db', function() {
+  var tmp = 'tmp/';
+  var config = require('db').config;
+  importConfig = config['kevin-test'];
+  var testDB = 'test/fixtures/test-db.sql';
+  pullDB().then(function(file) {
+    return exec(['rm -f',testDB].join(' ')).then(function() {
+      return exec(['mv',file,testDB].join(' '));
+    });
+  }).catch(function(e) {
+    console.log('e', e);
+  }).done(function() {
+    exec('rm -rf '+tmp).then(function() {
+      process.exit(0);
+    });
+  });
 });
 gulp.task('mocha', function() {
 });
 
 function resetTestingDB() {
   process.env.ENVIRONMENT = 'kevin-test';
+  process.env.PORT = '5005';
   var db = 'test/fixtures/test-db.sql';
   var config = require('db').config['kevin-test'];
   var importDB = [
@@ -103,7 +128,15 @@ function resetTestingDB() {
   ];
   return exec(importDB.join(' '));
 }
-function startServer() {
+function startServer(server) {
+  if ( server === 'test' ) {
+    process.env.ENVIRONMENT = 'kevin-test';
+    process.env.PORT = '5005';
+  } else {
+    process.env.ENVIRONMENT = 'kevin-dev';
+    process.env.PORT = '5000';
+  }
+
   return nodemon({
     script: 'index.js',
     verbose: false,
@@ -112,8 +145,8 @@ function startServer() {
       //"restart": "osascript -e 'display notification \"app restarted\" with title \"nodemon\"'"
     },
     env: {
-      ENVIRONMENT : 'kevin-test',
-      PORT : '5005'
+      //ENVIRONMENT : 'kevin-test',
+      //PORT : '5005'
     },
     stdout: false
   });
@@ -131,32 +164,29 @@ function runTests() {
   return deferred.promise;
 }
 gulp.task('test', function(cb) {
+  return startServer('test').on('start', function() {
+    // process has started
+  }).on('stderr', function(data) {
+    data = data.toString().trim();
+    console.error(chalk.red(data));
+  }).on('stdout', function(data) {
+    data = data.toString().trim();
 
-  resetTestingDB().then(function() {
-    var deferred = Promise.pending();
-    startServer('test').on('stdout', function(data) {
-      data = data.toString().trim();
-      if ( data === 'EmojinaryFriend API' ) {
-        deferred.resolve();
-        runTests().then(function() {
-          return resetTestingDB();
-        });
-      } else {
-        process.stdout.write(data);
-      }
-    }).on('start', function() {
-      // process has started
-    }).on('readable', function() {
-      // stdout stream is readable
-    }).on('change', function() {
-      console.log('changed server');
-    }).on('restart', function() {
-      console.log('Rerunning tests...');
-      // server has restarted
-    });
-    return deferred.promise;
-  }).then(function() {
-    // test server has started
+    if ( data === 'EmojinaryFriend API' ) {
+      resetTestingDB().then(function() {
+        return runTests();
+      });
+    } else {
+      console.log(chalk.cyan(data));
+      //process.stdout.write(data);
+    }
+  }).on('readable', function() {
+    // stdout stream is readable
+  }).on('change', function() {
+    console.log('changed server');
+  }).on('restart', function() {
+    console.log('Rerunning tests...');
+    // server has restarted
   });
 });
 

@@ -187,7 +187,7 @@ CREATE TABLE `messages` (
   `comments` text COLLATE utf8mb4_unicode_ci,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +196,7 @@ CREATE TABLE `messages` (
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-INSERT INTO `messages` VALUES (1,'intro','? Hey! I’m Emojibot! I run a game called Emojifun!! - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-15 15:19:42'),(2,'intro_2','? I’m glad you said yes! First off, what should I call you?',NULL,'2015-08-15 23:35:18'),(6,'intro_3','? Nice to meet you, %1$s! Now we need to add some friends to play with. Text INVITE followed by a friend’s 10-digit phone number to invite them to the game.\n(e.g. ‘INVITE 555-555-5555’)',NULL,'2015-08-16 00:10:23'),(7,'invite','? Hi, I’m Emojibot! %1$s has invited you to play Emojifun - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-16 10:17:39'),(8,'intro_4','? %1$s has been invited. Now we just have to wait for slowpoke there to accept.',NULL,'2015-08-16 10:18:06'),(9,'invite_error','%1$s',NULL,'2015-08-16 10:24:50'),(10,'intro_error','Error %1$s',NULL,'2015-08-16 11:47:31'),(11,'already_invited','We already invited %1$s; slow yo\' roll',NULL,'2015-08-16 12:07:32'),(12,'not_yet_onboarded_error','Please CORRECTLY finish the onboarding process: %1$s','This is for when a user has begun onboarding, but has not yet completed (like giving a nickname or responding affirmatively with yes) and tries to invite someone','2015-08-16 14:35:23'),(13,'invite_2','? I’m glad you said yes! First off, what should I call you?',NULL,'2015-08-16 15:54:23'),(14,'accepted','? %1$s has accepted your invitation and joined the game! Game on!',NULL,'2015-08-16 16:00:14'),(15,'wait-to-invite','I understand you\'re excited to invite users to your game; I am too! But hold yo\' ride, first tell me your name.','If we\'re expecting a nickname but they ask to invite someone, tell them to slow their ride','2015-08-17 16:51:57'),(16,'wtf','come again? I didn\'t quite catch that',NULL,'2015-08-17 17:39:42'),(17,'error-1','You entered an invalid number: %1$s','This is for when a number is invalid format','2015-08-17 18:56:46'),(18,'error-2','Slow yo\' roll, the phone %1$s has already been invited.','This is for when a user has already invited another user','2015-08-17 18:57:08'),(19,'error-3','The number %1$s asked us not to contact us again. So we won\'t. If you want to reach out to them personally, you can.','User is on the do not call list.','2015-08-17 18:57:44'),(20,'error-4','You must provide a phone number',NULL,'2015-08-17 19:13:39'),(21,'error-5','There was an unknown error registering the phone number',NULL,'2015-08-17 19:13:55'),(22,'error-6','The number %1$s is unverified. Trial accounts cannot send messages to unverified numbers; verify +17243836654 at twilio.com/user/account/phone-numbers/verified, or purchase a Twilio number to send messages to unverified numbers.','This is what Twilio says when a number is unverified','2015-08-17 20:08:51'),(23,'game-on','GAME ON',NULL,'2015-08-17 20:58:02');
+INSERT INTO `messages` VALUES (1,'intro','? Hey! I’m Emojibot! I run a game called Emojifun!! - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-15 15:19:42'),(2,'intro_2','? I’m glad you said yes! First off, what should I call you?',NULL,'2015-08-15 23:35:18'),(6,'intro_3','? Nice to meet you, %1$s! Now we need to add some friends to play with. Text INVITE followed by a friend’s 10-digit phone number to invite them to the game.\n(e.g. ‘INVITE 555-555-5555’)',NULL,'2015-08-16 00:10:23'),(7,'invite','? Hi, I’m Emojibot! %1$s has invited you to play Emojifun - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-16 10:17:39'),(8,'intro_4','? %1$s has been invited. Now we just have to wait for slowpoke there to accept.',NULL,'2015-08-16 10:18:06'),(9,'invite_error','%1$s',NULL,'2015-08-16 10:24:50'),(10,'intro_error','Error %1$s',NULL,'2015-08-16 11:47:31'),(11,'already_invited','We already invited %1$s; slow yo\' roll',NULL,'2015-08-16 12:07:32'),(12,'not_yet_onboarded_error','Please CORRECTLY finish the onboarding process: %1$s','This is for when a user has begun onboarding, but has not yet completed (like giving a nickname or responding affirmatively with yes) and tries to invite someone','2015-08-16 14:35:23'),(13,'invite_2','? I’m glad you said yes! First off, what should I call you?',NULL,'2015-08-16 15:54:23'),(14,'accepted','? %1$s has accepted your invitation and joined the game! Game on!',NULL,'2015-08-16 16:00:14'),(15,'wait-to-invite','I understand you\'re excited to invite users to your game; I am too! But hold yo\' ride, first tell me your name.','If we\'re expecting a nickname but they ask to invite someone, tell them to slow their ride','2015-08-17 16:51:57'),(16,'wtf','come again? I didn\'t quite catch that',NULL,'2015-08-17 17:39:42'),(17,'error-1','You entered an invalid number: %1$s','This is for when a number is invalid format','2015-08-17 18:56:46'),(18,'error-2','Slow yo\' roll, the phone %1$s has already been invited.','This is for when a user has already invited another user','2015-08-17 18:57:08'),(19,'error-3','The number %1$s asked us not to contact us again. So we won\'t. If you want to reach out to them personally, you can.','User is on the do not call list.','2015-08-17 18:57:44'),(20,'error-4','You must provide a user with valid identifying info',NULL,'2015-08-17 19:13:39'),(21,'error-5','There was an unknown error registering the phone number',NULL,'2015-08-17 19:13:55'),(22,'error-6','The number %1$s is unverified. Trial accounts cannot send messages to unverified numbers; verify +17243836654 at twilio.com/user/account/phone-numbers/verified, or purchase a Twilio number to send messages to unverified numbers.','This is what Twilio says when a number is unverified','2015-08-17 20:08:51'),(23,'game-on','GAME ON',NULL,'2015-08-17 20:58:02'),(24,'error-7','You must provide a valid user',NULL,'2015-08-21 12:58:10');
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +239,7 @@ CREATE TABLE `platforms` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `platform` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,9 +248,58 @@ CREATE TABLE `platforms` (
 
 LOCK TABLES `platforms` WRITE;
 /*!40000 ALTER TABLE `platforms` DISABLE KEYS */;
-INSERT INTO `platforms` VALUES (1,'twilio');
-INSERT INTO `platforms` VALUES (2,'twilio');
+INSERT INTO `platforms` VALUES (1,'twilio'),(2,'messenger');
 /*!40000 ALTER TABLE `platforms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_attribute_keys`
+--
+
+DROP TABLE IF EXISTS `user_attribute_keys`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_attribute_keys` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_attribute_keys`
+--
+
+LOCK TABLES `user_attribute_keys` WRITE;
+/*!40000 ALTER TABLE `user_attribute_keys` DISABLE KEYS */;
+INSERT INTO `user_attribute_keys` VALUES (3,'number'),(4,'messenger-name'),(5,'test');
+/*!40000 ALTER TABLE `user_attribute_keys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_attributes`
+--
+
+DROP TABLE IF EXISTS `user_attributes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_attributes` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `attribute_id` int(11) DEFAULT NULL,
+  `attribute` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_attributes`
+--
+
+LOCK TABLES `user_attributes` WRITE;
+/*!40000 ALTER TABLE `user_attributes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -264,7 +313,7 @@ CREATE TABLE `user_entries` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entry` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -273,7 +322,7 @@ CREATE TABLE `user_entries` (
 
 LOCK TABLES `user_entries` WRITE;
 /*!40000 ALTER TABLE `user_entries` DISABLE KEYS */;
-INSERT INTO `user_entries` VALUES (1,'text'),(2,'web'),(3,'text_invite');
+INSERT INTO `user_entries` VALUES (1,'text'),(2,'web'),(3,'text_invite'),(4,'IM');
 /*!40000 ALTER TABLE `user_entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -314,7 +363,6 @@ CREATE TABLE `users` (
   `username` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `entry_id` int(11) DEFAULT NULL,
   `state_id` int(2) DEFAULT '1',
-  `inviter_id` int(11) DEFAULT NULL,
   `platform_id` int(11) DEFAULT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -340,4 +388,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-19 20:25:20
+-- Dump completed on 2015-08-21  9:34:36

@@ -18,12 +18,22 @@ var User = {
   create: function(user, entry, platform) {
     var dfd = Q.defer();
     console.log('user create', user);
-    var number = user.number;
+    var attributes = {};
+    if ( user.number ) {
+      attributes.number = user.number;
+    } else if ( user['messenger-name'] ) {
+      attributes['messenger-name'] = user['messenger-name'];
+    }
 
-    if ( ! user || ! user.number ) {
+    if ( ! user ) {
+      dfd.reject({
+        errno: 7,
+        message: 'You must provide a valid user'
+      });
+    } else if ( ! user.number && ! user['messenger-name'] ) {
       dfd.reject({
         errno: 4,
-        message: 'You must provide a phone number'
+        message: 'You must provide a user with valid contact info'
       });
     } else {
       console.log('get single');
@@ -110,20 +120,30 @@ var User = {
             console.log('all done with promises', query.toString());
             db.query(query).then(function(rows) {
               var user_id = rows.insertId;
-              var attribute_id = squel
-                                 .select()
-                                 .field('id')
-                                 .from('user_attribute_keys')
-                                 .where('`key`=?','number');
 
-              var attribute_query = squel
-                                    .insert()
-                                    .into('user_attributes')
-                                    .setFields({
-                                      user_id: user_id,
-                                      attribute_id: attribute_id,
-                                      attribute: number 
-                                    });
+              function getAttributeQuery(key) {
+                var attribute_id = squel
+                                   .select()
+                                   .field('id')
+                                   .from('user_attribute_keys')
+                                   .where('`key`=?',key);
+
+                return squel
+                        .insert()
+                        .into('user_attributes')
+                        .setFields({
+                          user_id: user_id,
+                          attribute_id: attribute_id,
+                          attribute: attributes[key] 
+                        });
+              }
+
+              if ( attributes.number ) {
+                var attribute_query = getAttributeQuery('number');
+              } else if ( attributes['messenger-name'] ) {
+                var attribute_query = getAttributeQuery('messenger-name');
+              }
+
               return db.query(attribute_query.toString()).then(function() {
                 return user_id;
               }).catch(function(e) {
@@ -194,6 +214,8 @@ var User = {
                 .where('a.attribute=?', val);
       }
 
+
+      console.log("get query", query.toString());
       return db.query(query.toString()).then(function(users) {
         var user;
         console.log('here', users);
@@ -234,6 +256,8 @@ var User = {
         return fetchUser('id', user.id);
       } else if ( user.number ) {
         return fetchUser('number', user.number);
+      } else if ( user['messenger-name'] ) {
+        return fetchUser('messenger-name', user['messenger-name']);
       } else if ( user.username ) {
         return fetchUser('username', user.username);
       } else {

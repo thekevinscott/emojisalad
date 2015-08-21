@@ -9,13 +9,14 @@ var rp = require('request-promise');
 var script = require('../scripts');
 var Log = require('../models/log');
 var User = require('../models/user');
+var Message = require('../models/message');
 module.exports = function(req, res) {
-  console.log('messenger reply');
-
   //Log.incoming(req.body);
 
   var body = req.body.message;
   var username = req.body.username;
+  var platform = 'messenger';
+  var entry = 'messenger';
 
   if ( ! username ) {
     return res.json({ error: "You must provide a username" });
@@ -24,6 +25,7 @@ module.exports = function(req, res) {
   }
 
   User.get({ username: username }).then(function(user) {
+    console.log('back from user')
     if ( user ) {
       console.log('got user', user);
       return script(user.state, user, body).then(function(response) {
@@ -41,23 +43,13 @@ module.exports = function(req, res) {
     } else {
       console.log('user does not exist');
       // user does not yet exist; create the user
-      return rp({
-        url: 'http://localhost:5000/users/create',
-        method: 'POST',
-        json: {
-          username: username,
-          entry: 'IM',
-          platform: 'messenger'
-        }
+      return User.create({ 'messenger-name': username }, entry, platform).then(function() {
+        return Message.get('intro');
       });
     }
+  }).then(function(response) {
+    res.json(response);
   }).fail(function(err) {
-    // this should not notify the user. It means that the incoming request's number
-    // somehow failed validation on Twilio's side, which would be odd because Twilio
-    // is providing us with that number.
-    //
-    // This could mean Twilio somehow fell down between requests, or there's a man
-    // in the middle, or someone has gotten a hold of this URL and is trying to hack us.
-    console.error('some odd kind of twilio error', err);
+    console.error('some odd kind of messenger error', err);
   });
 }
