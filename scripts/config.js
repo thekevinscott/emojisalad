@@ -11,7 +11,7 @@ var doNotContact = [
 var waitingForConfirmation = [
   {
     regex: {
-      pattern: '^yes%|^yeah|^yea|^y',
+      pattern: '^yes|^yeah|^yea|^y$',
       flags: 'i',
     },
     actions: [
@@ -100,7 +100,9 @@ var waitingForNickname = [
                 {
                   type: 'respond',
                   message: 'intro_3',
-                  options: '%(args[0].message)s'
+                  options: [
+                    '%(args[0].pattern)s'
+                  ]
                 },
                 {
                   type: 'request',
@@ -109,7 +111,7 @@ var waitingForNickname = [
                   data: function(user, body) {
                     return {
                       state: 'waiting-for-invites',
-                      username: origBody 
+                      username: body 
                     };
                   }
                 }

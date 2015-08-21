@@ -11,6 +11,7 @@ var Log = require('../models/log');
 var User = require('../models/user');
 var Message = require('../models/message');
 module.exports = function(req, res) {
+  console.log('\n====================================\n');
   //Log.incoming(req.body);
 
   var body = req.body.message;
@@ -24,27 +25,31 @@ module.exports = function(req, res) {
     return res.json({ error: "You must provide a message" });
   }
 
-  User.get({ username: username }).then(function(user) {
-    console.log('back from user')
+  User.get({ 'messenger-name': username }).then(function(user) {
+    //console.log('back from user')
     if ( user ) {
-      console.log('got user', user);
+      //console.log('got user in messenger', user);
       return script(user.state, user, body).then(function(response) {
-        var message;
-        response.map(function(r) {
+        //console.log('script back', response);
+        return response.map(function(r) {
           if ( typeof r === 'string' ) {
-            message = r;
+            return r;
+          } else if ( r.message ) {
+            return r.message;
           }
-        });
-        console.log('response', message);
-        res.json({
-          message: message
+        }).filter(function(el) {
+          return (el) ? el : null;
         });
       });
     } else {
-      console.log('user does not exist');
+      //console.log('user does not exist');
       // user does not yet exist; create the user
       return User.create({ 'messenger-name': username }, entry, platform).then(function() {
-        return Message.get('intro');
+        return Message.get('intro').then(function(response) {
+          // we wrap the response in an array to be consistent;
+          // later responses could return multiple responses.
+          return [response.message];
+        });
       });
     }
   }).then(function(response) {

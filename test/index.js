@@ -5,4 +5,5 @@ require('./unit-tests/script/mapActions');
 require('./unit-tests/script/mapScenarios');
 require('./unit-tests/script/index');
 
+// Integration tests
 require('./integration/messenger');

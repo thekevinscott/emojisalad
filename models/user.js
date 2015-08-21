@@ -17,7 +17,7 @@ var User = {
   // create a new user number
   create: function(user, entry, platform) {
     var dfd = Q.defer();
-    console.log('user create', user);
+    //console.log('user create', user);
     var attributes = {};
     if ( user.number ) {
       attributes.number = user.number;
@@ -36,11 +36,11 @@ var User = {
         message: 'You must provide a user with valid contact info'
       });
     } else {
-      console.log('get single');
+      //console.log('get single');
       this.get(user).then(function(user) {
-        console.log('user?', user);
+        //console.log('user?', user);
         if ( user ) {
-          console.log('we have a user');
+          //console.log('we have a user');
           if ( user.state === 'do-not-contact' ) {
             dfd.reject({
               errno: 3,
@@ -99,7 +99,7 @@ var User = {
                       .insert()
                       .into('users')
                       .setFields(user);
-                      console.log(query.toString());
+                      //console.log(query.toString());
 
           var state = 'waiting-for-confirmation';
           promises.push(function() {
@@ -117,7 +117,7 @@ var User = {
           }());
 
           Q.allSettled(promises).spread(function() {
-            console.log('all done with promises', query.toString());
+            //console.log('all done with promises', query.toString());
             db.query(query).then(function(rows) {
               var user_id = rows.insertId;
 
@@ -159,7 +159,7 @@ var User = {
 
             }.bind(this)).fail(function(err) {
               console.log('failed in the db create, means there was a db error', err);
-              console.log(query.toString());
+              //console.log(query.toString());
               switch(err.errno) {
                 // at this point, they could be blacklisted
                 case 1062:
@@ -189,9 +189,9 @@ var User = {
   },
   get: function(user) {
     var dfd = Q.defer();
-    console.log('ready to get user');
+    //console.log('ready to get user');
     function fetchUser(key, val) {
-      console.log('fetch user!', key, val);
+      //console.log('fetch user!', key, val);
       var query = squel
                   .select()
                   .field('u.id')
@@ -215,15 +215,15 @@ var User = {
       }
 
 
-      console.log("get query", query.toString());
+      //console.log("get query", query.toString());
       return db.query(query.toString()).then(function(users) {
         var user;
-        console.log('here', users);
+        //console.log('here', users);
         if ( users && users.length ) {
-          console.log('user exists');
+          //console.log('user exists');
           user = users[0];
         } else {
-          console.log('user does not exists');
+          //console.log('user does not exists');
           return null;
         }
 
@@ -237,14 +237,11 @@ var User = {
                     .where('k.`key`=?', key)
                     .where('a.attribute=?', val)
                     .where('a.user_id=?',user.id);
-                    console.log(query.toString());
         return db.query(query).then(function(attributes) {
-          console.log('the user at first', user);
-          console.log('the attributes', attributes);
           attributes.map(function(attribute) {
             user[attribute.key] = attribute.attribute;
           });
-          console.log('the user afterwards', user);
+          //console.log('the user afterwards', user);
           return user;
         });
       });
@@ -273,16 +270,16 @@ var User = {
   },
   update: function(user, params) {
     var dfd = Q.defer();
-    console.log('user model update');
+    //console.log('user model update');
     this.get(user).then(function(user) {
-      console.log('got user');
+      //console.log('got user');
       if ( user ) {
         return Q.resolve(user);
       } else {
         return Q.reject('no user found for user id ' + user_id);
       }
     }).then(function(user) {
-      console.log('user is resolved');
+      //console.log('user is resolved');
       // a whitelisted array of arguments we're allowed to update
       var whitelist = [
         'username',
@@ -294,7 +291,7 @@ var User = {
                   .table('users')
                   .where('id=?', user.id);
 
-                  console.log('params', params);
+                  //console.log('params', params);
       Object.keys(params).filter(function(key) {
         if ( whitelist.indexOf(key) !== -1 ) {
           return true;

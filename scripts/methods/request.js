@@ -10,9 +10,9 @@ var host = process.env.HOST || 'http://localhost';
  * Request takes a scenario, a user, and 
  * a text message and will initiate an http request.
  */
-function request(scenario, data) {
-  var user = data.user;
-  var message = data.pattern;
+function request(scenario, params) {
+  var user = params.args[0].user;
+  var message = params.args[0].pattern;
   // we make a dedicated promise, because request-promise uses its own non-Q promises
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
@@ -29,15 +29,16 @@ function request(scenario, data) {
     scenario.url = host+':'+port+scenario.url;
   }
 
-  console.log('scenario url', scenario.url);
-  console.log('user', user);
-  console.log('user id', user.id);
+  //console.log('scenario url', scenario.url);
+  //console.log('data', data);
+  //console.log('user id', user.id);
 
-  var url = sprintf(scenario.url, {
-    user: user,
-    message: message
-  });
-  console.log('url', url);
+  var url = sprintf(scenario.url, params);
+  //var url = sprintf(scenario.url, {
+    //user: user,
+    //message: message
+  //});
+  //console.log('url', url);
 
   console.log('**** FIGURE THIS PART OUT****');
   if ( _.isFunction(scenario.data) ) {
@@ -45,7 +46,7 @@ function request(scenario, data) {
   } else {
     var data = scenario.data;
   }
-  console.log('json', data);
+  //console.log('json', data);
 
   return rp.call(this, {
     url: url,

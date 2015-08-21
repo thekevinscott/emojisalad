@@ -109,8 +109,6 @@ gulp.task('sync-testing-db', function() {
     });
   });
 });
-gulp.task('mocha', function() {
-});
 
 function resetTestingDB() {
   process.env.ENVIRONMENT = 'kevin-test';

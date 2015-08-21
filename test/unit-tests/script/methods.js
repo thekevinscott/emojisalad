@@ -1,19 +1,29 @@
 var should = require('chai').should();
 var sinon = require('sinon');
 var Promise = require('bluebird');
+var _ = require('lodash');
 
 var request = require('../../../scripts/methods/request');
 var respond = require('../../../scripts/methods/respond');
 var User = require('../../../models/user');
 var Message = require('../../../models/message');
 
+var host = 'http://localhost:'+process.env.PORT;
+
 describe('Script methods', function() {
+  var user = { id: 1 };
+
   it('should have respond and request methods', function() {
     respond.should.exist;
     request.should.exist;
   });
 
   describe('Respond', function() {
+    var data = {
+      args: [
+        { user: user }
+      ]
+    };
 
     it('should require an action message and a user', function() {
       var stub = sinon.stub(User, 'message');
@@ -30,10 +40,10 @@ describe('Script methods', function() {
         respond({ message: 'intro-1'}, 'foo' );
       }).should.throw(Error);
       (function() {
-        respond({ message: 'intro-1', options: 'foo'}, {user: {id: 1}} );
+        respond({ message: 'intro-1', options: 'foo'}, data );
       }).should.throw(Error);
       (function() {
-        respond({ message: 'intro-1' }, {user: {id: 1}} );
+        respond({ message: 'intro-1' }, data );
       }).should.not.throw(Error);
       stub.restore();
     });
@@ -46,7 +56,7 @@ describe('Script methods', function() {
         stub.restore();
       });
 
-      return respond({ message: key }, { user: {id : 1 }});
+      return respond({ message: key }, data );
     });
 
     it('should initialize options to an empty array', function() {
@@ -55,7 +65,7 @@ describe('Script methods', function() {
         stub.restore();
       });
 
-      return respond({ message: 'foo' }, { user: { id : 1 }});
+      return respond({ message: 'foo' }, data);
     });
 
     it('should initialize options with variables if scenario specifies them', function() {
@@ -71,11 +81,16 @@ describe('Script methods', function() {
         options: [ '%(message)s' ]
       };
 
-      return respond(scenario, { user: { id : 1 }, pattern: text });
+      return respond(scenario, _.assign({}, data, { message: text }));
     });
   });
 
   describe('Request', function() {
+    var data = {
+      args: [
+        { user: user }
+      ]
+    };
     var requestPromise = require('request-promise');
     var rp_stub;
     // define callbacks here;
@@ -115,7 +130,7 @@ describe('Script methods', function() {
         request({ url: '/intro-1'}, 'foo' );
       }).should.throw(Error);
       (function() {
-        request({ url: '/intro-1' }, {user: { id: 1}} );
+        request({ url: '/intro-1' }, data );
       }).should.not.throw(Error);
     });
 
@@ -126,12 +141,12 @@ describe('Script methods', function() {
         var json = { foo: 'bar' };
 
         rp = function(opts) {
-          opts.url.should.equal('http://localhost:5000/'+url);
+          opts.url.should.equal(host+'/'+url);
           opts.method.should.equal(method);
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
+        return request({ url: url, data: json, method: method }, data);
       });
 
       it('should prepend host to a URL that misses it but has a starting slash', function() {
@@ -140,12 +155,12 @@ describe('Script methods', function() {
         var json = { foo: 'bar' };
 
         rp = function(opts) {
-          opts.url.should.equal('http://localhost:5000'+url);
+          opts.url.should.equal(host+url);
           opts.method.should.equal(method);
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
+        return request({ url: url, data: json, method: method }, data);
       });
 
       it('should not prepend host if it already exists on an http url', function() {
@@ -159,7 +174,7 @@ describe('Script methods', function() {
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
+        return request({ url: url, data: json, method: method }, data);
       });
 
       it('should not prepend host if it already exists on an https url', function() {
@@ -173,11 +188,11 @@ describe('Script methods', function() {
           opts.json.should.equal(json);
         }
 
-        return request({ url: url, data: json, method: method }, { user: { id : 1 }});
+        return request({ url: url, data: json, method: method }, data);
       });
 
       it('should parse the URL correctly based on parameters', function() {
-        var url = '/foo/%(message)s/%(user.id)s';
+        var url = '/foo/%(args[0].message)s/%(args[0].user.id)s';
         var user_id = 1;
 
         var scenario = {
@@ -190,10 +205,12 @@ describe('Script methods', function() {
 
         rp = function(opts) {
           opts.url.should.exist;
-          opts.url.should.equal('http://localhost:5000/foo/'+message+'/'+user_id);
+          opts.url.should.equal(host+'/foo/'+message+'/'+user_id);
         }
 
-        return request(scenario, { user: user, pattern: message});
+        var testData = _.assign({}, data);
+        testData.args[0].message = message;
+        return request(scenario, testData);
       });
     });
 
@@ -213,7 +230,7 @@ describe('Script methods', function() {
           }
         }
 
-        return request(scenario, { user: user }).then(function(response) {
+        return request(scenario, data).then(function(response) {
           response.foo.should.exist;
         });
       });
@@ -225,7 +242,7 @@ describe('Script methods', function() {
           });
         };
 
-        return request(scenario, { user: user }).then(function(response) {
+        return request(scenario, data).then(function(response) {
           response.foo.should.exist;
         });
       });
@@ -237,7 +254,7 @@ describe('Script methods', function() {
           return 'foo';
         };
 
-        return request(scenario, { user: user }).catch(function(e) {
+        return request(scenario, data).catch(function(e) {
           e.should.exist;
         });
       });
