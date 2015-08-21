@@ -15,10 +15,10 @@ module.exports = function(req, res) {
   } else if ( ! value ) {
     res.json({ error: 'You must provide a value' });
   }
-  console.log('user who is requesting to invite somebody', user);
+  //console.log('user who is requesting to invite somebody', user);
 
   Invite.create(type, value, user).then(function(invite) {
-    console.log('invite', invite);
+    //console.log('invite', invite);
     return Game.add([
       invite.invited_user,
       invite.inviting_user
@@ -26,7 +26,7 @@ module.exports = function(req, res) {
   }).then(function(game) {
     res.json(game);
   }).fail(function(err) {
-    console.log('error inviting user', err);
-    res.json({ error: err });
+    //console.log('error inviting user', err);
+    res.json( err );
   });
 };

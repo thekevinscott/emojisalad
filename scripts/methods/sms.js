@@ -1,21 +1,17 @@
 var User = require('../../models/user');
+var Text = require('../../models/text');
 var Message = require('../../models/message');
 var _ = require('lodash');
 var sprintf = require('sprintf');
 
 /*
- * Respond takes a scenario, a user, and a text message
- * from a user and sends a message to that user.
- *
- * It grabs the message key from the scenario's message key,
- * and will optionally sprintf replacements based on some rules
- * specified in the options
+ * SMS takes a scenario, a user, and a text message
+ * for a user and sends a message to that user.
  *
  */
-function respond(scenario, data) {
-  //console.log('responds data', data);
+function sms(scenario, data) {
   var user = data.args[0].user;
-  var messagePassedFromUser = data.args[0].pattern;
+  var message = data.args[0].pattern;
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
   } else if ( ! scenario.message ) {
@@ -46,7 +42,7 @@ function respond(scenario, data) {
 
   var result = Message.get(key, options);
   return result;
-  //return _.assign({}, result, {type: 'reply'});
+  //return _.assign({}, result, {type: 'sms'});
 };
 
-module.exports = respond;
+module.exports = sms;

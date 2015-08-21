@@ -12,16 +12,18 @@ function reject(message) {
 
 function processMethod(action, data) {
   var type = action.type;
+  console.log('type', type);
   if ( ! type ) {
     return reject('You must provide a valid action type');
   } else if ( !methods[type] ) {
     return reject('Action type does not exist: ' + type);
   } else {
     return methods[type](action, data).then(function(response) {
+      console.log('response back from type', type, response);
       // we get response back as an object, but we want to convert it to an array.
       // this is so we can append any potential callback objects onto it.
       // later on (after this call returns) we'll flatten the final array
-      response = [response];
+      response = [_.assign({},response,{type:type})];
       if ( action.callback ) {
         data.args.push({
           pattern: action.callback.fn(response)
@@ -29,7 +31,8 @@ function processMethod(action, data) {
         return mapScenarios.call(null, action.callback.scenarios, data).then(function(callback) {
           return callback;
         }).then(function(callback) {
-          if ( action.type === 'respond' ) {
+          console.log('action', action);
+          if ( action.type === 'respond' || action.type === 'sms' ) {
             return response.concat(callback);
           } else {
             return [].concat(callback);
@@ -37,7 +40,7 @@ function processMethod(action, data) {
         });
       } else {
         // only certain types need to actually return their responses;
-        if ( action.type === 'respond' ) {
+        if ( action.type === 'respond' || action.type === 'sms') {
           return response;
         }
       }

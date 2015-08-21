@@ -154,6 +154,7 @@ var User = {
               this.get({
                 id: user_id
               }).then(function(user) {
+                console.log('got user in create', user);
                 dfd.resolve(user);
               });
 
@@ -234,10 +235,12 @@ var User = {
                     .from('user_attributes', 'a')
                     .left_join('users', 'u', 'u.id = a.user_id')
                     .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
-                    .where('k.`key`=?', key)
-                    .where('a.attribute=?', val)
+                    //.where('k.`key`=?', key)
+                    //.where('a.attribute=?', val)
                     .where('a.user_id=?',user.id);
+
         return db.query(query).then(function(attributes) {
+          console.log('got the attributes', attributes);
           attributes.map(function(attribute) {
             user[attribute.key] = attribute.attribute;
           });

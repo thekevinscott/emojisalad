@@ -165,6 +165,7 @@ module.exports = function(params) {
   });
 
   describe('Invite flow', function() {
+    this.timeout(6000);
     var inviter = params.getUser();
     before(function() {
       return r.p({
@@ -183,8 +184,18 @@ module.exports = function(params) {
       });
     });
 
-    //it('should send a message to someone', function() {
-    //});
-    //function signUp
+    it('should get pissy if you don\'t send it a valid invite message', function() {
+      return Promise.join(
+        r.p({
+          username: inviter,
+          message: 'random foo'
+        }),
+        Message.get('wtf'),
+        function(response, message) {
+          response[0].should.equal(message.message);
+        }
+      );
+    });
+
   });
 }

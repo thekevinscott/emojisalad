@@ -10,12 +10,14 @@ var LookupsClient = require('twilio').LookupsClient;
 var client = new LookupsClient(config.accountSid, config.authToken);
 
 var Phone = {
-  parse: function(number) {
+  parse: function(passedNumber) {
     var dfd = Q.defer();
-    client.phoneNumbers(number).get(function(err, number) {
+    //console.log('input number', passedNumber);
+    client.phoneNumbers(passedNumber).get(function(err, number) {
       if ( err ) {
+        //console.log('there was an error', err);
         dfd.reject({
-          message: "Number is not a valid phone number: " + number,
+          message: "Number is not a valid phone number: " + passedNumber,
           errno: 1
         });
       } else {

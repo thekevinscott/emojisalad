@@ -29,6 +29,17 @@ var Text = {
     });
     return twiml;
   },
+  sms: function(messages) {
+    var twilio = require('twilio');
+    var twiml = new twilio.TwimlResponse();
+    messages.map(function(message) {
+      twiml.sms(message.message, {
+        number: message.number,
+        from: config.from
+      });
+    });
+    return twiml;
+  },
   send: function send(user, message) {
     var params = {
       from: config.from

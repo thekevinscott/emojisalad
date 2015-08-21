@@ -68,7 +68,11 @@ module.exports = function(req, res) {
       });
     }
   }).then(function(response) {
-    //console.log('what is the response', response);
+    console.log('respnose', response);
+    console.log('what is the response', Text.reply(response).toString());
+    console.log('THIS IS WHERE I NEED TO PICK UP');
+    // based on the type of message coming back, it either
+    // needs to write a reply or an SMS message. That will invite a user.
     res.end(Text.reply(response).toString());
   }).fail(function(err) {
     // this should not notify the user. It means that the incoming request's number

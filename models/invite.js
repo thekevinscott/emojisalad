@@ -5,10 +5,12 @@ var db = require('db');
 
 var Phone = require('./phone');
 var User = require('./user');
+var Text = require('./text');
+var Message = require('./message');
 
 var Invite = {
   create: function(type, value, user) {
-    console.log('create an invite');
+    //console.log('create an invite');
     var dfd = Q.defer();
     var acceptedTypes = [
       'twilio'
@@ -19,11 +21,19 @@ var Invite = {
     var invitingUser = user;
     switch(type) {
       case 'twilio':
-        value = value.split('invite').pop();
-        console.log('value', value);
+        value = value.split('invite').pop().trim();
+        //console.log('value', value);
+        if ( ! value ) {
+          //console.log('no value');
+          dfd.reject({ error: {
+            errno: 8,
+            message: 'You must provide a phone number'
+          }});
+          return dfd.promise;
+        }
         Phone.parse(value).then(function(number) {
           console.log('number parsed', number);
-          return User.create(number, 'text_invite', 'twilio');
+          return User.create({ number: number }, 'text_invite', 'twilio');
         }).then(function(invitedUser) {
           console.log('created new user', invitedUser);
           var invite_id;
@@ -38,12 +48,22 @@ var Invite = {
             invite_id = rows.insertId;
             console.log('got the invited user', invitedUser);
             // inform the invited user that they've been invited
-            return User.message(invitedUser, 'invite', [ invitingUser.username ]);
-          }).then(function() {
-            console.log('told the invited user they invited');
+            /*
+            return Message.get('invite', invitingUser.username).then(function(message) {
+              return Text.sms([{
+                message: message,
+                number: invitedUser.number
+              }]);
+            });
+            */
+
+            //return User.message(invitedUser, 'invite', [ invitingUser.username ]);
+          //}).then(function() {
+            //console.log('told the invited user they invited');
             // inform the inviting user their buddy has been invited
-            return User.message(invitingUser, 'intro_4', [ invitedUser.number ]);
+            //return User.message(invitingUser, 'intro_4', [ invitedUser.number ]);
           }).then(function() {
+            console.log('all done homey');
             // all done!
             dfd.resolve({
               id: invite_id,
@@ -52,6 +72,9 @@ var Invite = {
             });
           });
         }).fail(function(err) {
+          console.log('there was an error, return it', err);
+          return dfd.reject({ error: err });
+          /*
           console.log('err', err);
           if ( err && err.errno ) {
             switch(err.errno) {
@@ -70,8 +93,10 @@ var Invite = {
             }
             dfd.reject({ error: err.message });
           } else {
+
             dfd.reject(err);
           }
+          */
         });
         break;
     }

@@ -93,6 +93,8 @@ gulp.task('sync', function(cb) {
  * Testing Tasks
  */
 gulp.task('sync-testing-db', function() {
+  process.env.ENVIRONMENT = 'kevin-test';
+  process.env.PORT = '5005';
   var tmp = 'tmp/';
   var config = require('db').config;
   importConfig = config['kevin-test'];

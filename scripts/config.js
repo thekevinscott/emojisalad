@@ -84,7 +84,7 @@ var waitingForNickname = [
         method: 'GET',
         callback: {
           fn: function(game) {
-            console.log('what is the game', game);
+            //console.log('what is the game', game);
             if ( game && game.state ) {
               return game.state;
             } else {
@@ -163,7 +163,112 @@ var waitingForInvites = [
             type: 'twilio',
             value: body
           };
-        }
+        },
+        callback: {
+          fn: function(resp) {
+            //console.log('what is the response', resp);
+            if ( resp[0].error ) {
+              //console.log('error', resp[0].error);
+              return resp[0].error.errno;
+            } else {
+              return 0;
+            }
+            //return User.message(invitingUser, 'intro_4', [ invitedUser.number ]);
+            //console.log('what is the game', game);
+            //
+            //if ( game && game.state ) {
+              //return game.state;
+            //} else {
+              //return 'waiting-for-players';
+            //}
+          },
+          scenarios: [
+            {
+              regex: {
+                pattern: '^0$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'intro_4',
+                  options: [
+                    '%(args[0].pattern)s'
+                  ]
+                },
+                {
+                  type: 'sms',
+                  message: 'invite',
+                  options: [
+                    '%(args[0].pattern)s'
+                  ]
+                }
+              ]
+            },
+            // this implies an error
+            {
+              regex: {
+                pattern: '^1$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'error-1',
+                },
+              ]
+            },
+            // this implies an error
+            {
+              regex: {
+                pattern: '^2$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'error-2',
+                  options: [
+                    '%(args[0].pattern)s'
+                  ]
+                },
+              ]
+            },
+            // this implies an error
+            {
+              regex: {
+                pattern: '^3$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'error-3',
+                },
+              ]
+            },
+            // this implies an error
+            {
+              regex: {
+                pattern: '^6$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'error-6',
+                },
+              ]
+            },
+            // this implies an error
+            {
+              regex: {
+                pattern: '^8$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'error-8',
+                },
+              ]
+            },
+          ]
+        },
       }
     ]
   },
