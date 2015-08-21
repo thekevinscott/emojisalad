@@ -17,8 +17,15 @@ module.exports = function(req, res) {
   var body = req.body.message;
   var username = req.body.username;
 
-  User.getSingle({ username: username }).then(function(user) {
+  if ( ! username ) {
+    return res.json({ error: "You must provide a username" });
+  } else if ( ! body ) {
+    return res.json({ error: "You must provide a message" });
+  }
+
+  User.get({ username: username }).then(function(user) {
     if ( user ) {
+      console.log('got user', user);
       return script(user.state, user, body).then(function(response) {
         var message;
         response.map(function(r) {

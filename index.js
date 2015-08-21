@@ -16,11 +16,10 @@ app.all('/', function(req, res, next) {
   next();
 });
 
-app.all('/test', function(req, res) {
+app.get('/test', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  console.log('testing successful');
   res.json({ success: 1 });
 });
 
@@ -50,6 +49,6 @@ app.post('/invites/new', require('./routes/invites/create'));
 app.post('/platform/:platform', require('./platforms/'));
 
 app.listen(app.get('port'), function() {
-  console.log('EmojinaryFriend API listening on port', app.get('port'));
-  console.log('Using db', db.environment);
+  console.log('EmojinaryFriend API');
+  //console.log('listening on port', app.get('port'), 'with db', db.environment);
 });
