@@ -30,11 +30,19 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var Text = require('../models/text');
 module.exports = function(req, res) {
-  console.log('reply');
+  console.log('\n====================================\n');
+  res.writeHead(200, {'Content-Type': 'text/xml'});
 
-  Log.incoming(req.body);
+  if ( ! req.body.From ) {
+    return res.end(Text.reply([{ message: "You must provide a phone number" }]).toString());
+  } else if ( ! req.body.Body ) {
+    return res.end(Text.reply([{ message: "You must provide a message" }]).toString());
+  }
 
   var body = req.body.Body;
+  console.log('body', body);
+  //Log.incoming(req.body);
+
   var number;
   var platform = 'twilio';
   var entry = 'text';
@@ -42,7 +50,6 @@ module.exports = function(req, res) {
   // first, we parse the Phone number
   Phone.parse(req.body.From).then(function(parsedNumber) {
     number = parsedNumber;
-    console.log('parsed the number', number);
     return User.get({ number: number });
   }).then(function(user) {
     console.log('back from user get single');
@@ -52,22 +59,16 @@ module.exports = function(req, res) {
     } else {
       console.log('user does not exist');
       return User.create({ number: number }, entry, platform).then(function() {
-        return Message.get('intro');
+        return Message.get('intro').then(function(data) {
+          console.log('message data', data);
+          // we wrap the response in an array to be consistent;
+          // later responses could return multiple responses.
+          return [data];
+        });
       });
     }
   }).then(function(response) {
-    res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(Text.reply(response).toString());
-      //return rp({
-        //url: 'http://localhost:5000/users/create',
-        //method: 'POST',
-        //json: {
-          //number: number,
-          //entry: 'text',
-          //platform: 'twilio'
-        //}
-      //});
-    //}
   }).fail(function(err) {
     // this should not notify the user. It means that the incoming request's number
     // somehow failed validation on Twilio's side, which would be odd because Twilio

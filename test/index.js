@@ -7,3 +7,4 @@ require('./unit-tests/script/index');
 
 // Integration tests
 require('./integration/messenger');
+require('./integration/twilio');
