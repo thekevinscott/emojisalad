@@ -57,6 +57,9 @@ button:focus,
 input[type='tel']:focus {
   outline: 0;
 }
+.error {
+  color: #f00;
+}
 .container {
   width: 100%;
   display: -webkit-box;
@@ -146,13 +149,13 @@ section {
 }
 .phone-input input[type='tel'] {
   width: 180px;
+  padding: 10px 70px 6px 70px;
   margin: 10px auto 15px auto;
   font: 400 1.6em/1.4 'Josefin Slab', serif;
   text-align: left;
   border: 2px solid #26bafa;
   transition: border 0.2s;
   border-radius: 3px;
-  padding: 10px 60px 6px 60px;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -174,7 +177,8 @@ section {
 .phone-input .submit:hover {
   background: #05a3e8;
 }
-.phone-input .submit:active {
+.phone-input .submit:active,
+.phone-input .submit.highlight {
   background: #fec030;
 }
 .phone-input .submit .submit-text {
@@ -245,7 +249,7 @@ section {
   animation-delay: -0.6s;
 }
 .spinner > div {
-  background-color: #fff;
+  background: #fff;
   height: 100%;
   width: 5px;
   display: inline-block;
@@ -286,6 +290,13 @@ section {
   }
   .phone-input label {
     max-width: 190px;
+  }
+  .phone-input input[type='tel'] {
+    width: 180px;
+    padding: 10px 40px 6px 42px;
+  }
+  .phone-input .submit {
+    width: 264px;
   }
   .subtitle {
     background: #26bafa;

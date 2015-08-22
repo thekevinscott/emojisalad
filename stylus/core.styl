@@ -36,7 +36,10 @@ a, #wtf
 		border-bottom 1px dashed emoji-yellow
 	
 button:focus, input[type='tel']:focus
-	outline 0	
+	outline 0
+
+.error
+	color red
 
 .container
 	width 100%
@@ -79,13 +82,13 @@ section
 		padding-top 20px
 	input[type='tel']
 		width 180px
+		padding 10px 70px 6px 70px
 		margin 10px auto 15px auto
 		font 400 1.6em/1.4 serifed
 		text-align left
 		border 2px solid core-color
 		transition border 0.2s
 		border-radius 3px
-		padding 10px 60px 6px 60px
 		-webkit-appearance none
 		appearance none
 		&:focus
@@ -103,7 +106,7 @@ section
 		cursor pointer
 		&:hover
 			background core-dark
-		&:active
+		&:active, &.highlight
 			background emoji-yellow
 		.submit-text
 			display inline-block
@@ -148,7 +151,7 @@ section
 	.rect5
 		animation-delay(-0.6s)
 .spinner > div
-	background-color #fff
+	background #fff
 	height 100%
 	width 5px
 	display inline-block
@@ -191,6 +194,11 @@ section
 	.phone-input	
 		label
 			max-width 190px
+		input[type='tel']
+			width 180px
+			padding 10px 40px 6px 42px
+		.submit
+			width 264px
 	.subtitle
 		background core-color
 		color white
