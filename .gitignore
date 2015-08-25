@@ -1,1 +1,7 @@
 node_modules
+emojinaryfriend-admin.sublime-project
+emojinaryfriend-admin.sublime-workspace
+emojinaryfriend-website.sublime-project
+emojinaryfriend-website.sublime-workspace
+*.sublime-workspace
+*.sublime-project
