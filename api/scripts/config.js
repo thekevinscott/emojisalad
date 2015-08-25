@@ -180,6 +180,9 @@ var waitingForInvites = [
   {
     regex: {
       pattern: '^invite(.*)',
+      match: {
+        pattern: '^invite\\s*(.*)'
+      }
     },
     actions: [
       {
@@ -190,7 +193,7 @@ var waitingForInvites = [
           return {
             user: user,
             type: 'twilio',
-            value: body
+            value: body[1] // the first match in our regex above
           };
         },
         callback: {
@@ -234,7 +237,7 @@ var waitingForInvites = [
                   type: 'respond',
                   message: 'error-2',
                   options: [
-                    '%(args[0].pattern)s'
+                    '%(args[0].pattern[1])s'
                   ]
                 },
               ]
@@ -249,7 +252,7 @@ var waitingForInvites = [
                   type: 'respond',
                   message: 'error-3',
                   options: [
-                    '%(args[0].pattern)s'
+                    '%(args[0].pattern[1])s'
                   ]
                 },
               ]

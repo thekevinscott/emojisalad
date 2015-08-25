@@ -7,9 +7,6 @@ var checkScenario = require('../../../scripts/checkScenario');
 var mapActions = require('../../../scripts/mapActions');
 
 describe('mapScenarios', function() {
-  it('should check valid input', function() {
-  });
-
   it('should return a rejected promise if no scenarios are provided', function() {
     return mapScenarios([]).catch(function(e) {
       e.should.exist;

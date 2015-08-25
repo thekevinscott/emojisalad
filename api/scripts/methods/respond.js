@@ -13,9 +13,8 @@ var sprintf = require('sprintf');
  *
  */
 function respond(scenario, data) {
-  //console.log('responds data', data);
-  var user = data.args[0].user;
-  var messagePassedFromUser = data.args[0].pattern;
+  var user = data.user;
+  var messagePassedFromUser = data.inputs[0];
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
   } else if ( ! scenario.message ) {
@@ -32,12 +31,6 @@ function respond(scenario, data) {
 
   if ( scenario.options ) {
     var options = scenario.options.map(function(option) {
-      //console.log('option', option, data.args[0]);
-      var optionParams = {
-        user: data.args[0].user,
-        message: data.args[0].pattern 
-      }
-      //console.log('option', option);
       return sprintf(option, data)
     });
   } else {

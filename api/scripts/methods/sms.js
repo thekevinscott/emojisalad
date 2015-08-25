@@ -11,8 +11,8 @@ var sprintf = require('sprintf');
  */
 function sms(scenario, data) {
   console.log('**** sms');
-  var user = data.args[0].user;
-  var message = data.args[0].pattern;
+  var user = data.user;
+  var message = data.inputs[0];
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
   } else if ( ! scenario.message ) {
@@ -43,7 +43,7 @@ function sms(scenario, data) {
     var options = [];
   }
 
-  console.log('what is options here', data.args[1].pattern);
+  //console.log('what is options here', data.args[1].pattern);
   return Message.get(key, options).then(function(result) {
     return _.assign({}, result, {number: sprintf(scenario.to, data) });
   });

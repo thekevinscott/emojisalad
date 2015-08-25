@@ -12,26 +12,24 @@ function reject(message) {
 
 function processMethod(action, data) {
   var type = action.type;
-  console.log('type', type);
   if ( ! type ) {
     return reject('You must provide a valid action type');
   } else if ( !methods[type] ) {
     return reject('Action type does not exist: ' + type);
   } else {
     return methods[type](action, data).then(function(response) {
-      console.log('response back from type', type, response);
+      //console.log('response back from type', type, response);
       // we get response back as an object, but we want to convert it to an array.
       // this is so we can append any potential callback objects onto it.
       // later on (after this call returns) we'll flatten the final array
       response = [_.assign({},response,{type:type})];
       if ( action.callback ) {
-        data.args.push({
-          pattern: action.callback.fn(response)
-        });
+        data.inputs.push(
+          action.callback.fn(response)
+        );
         return mapScenarios.call(null, action.callback.scenarios, data).then(function(callback) {
           return callback;
         }).then(function(callback) {
-          console.log('action', action);
           if ( action.type === 'respond' || action.type === 'sms' ) {
             return response.concat(callback);
           } else {
@@ -48,13 +46,13 @@ function processMethod(action, data) {
   }
 }
 
-function flatten(ary) {
+function flatten(arr) {
     var ret = [];
-    for(var i = 0; i < ary.length; i++) {
-        if(Array.isArray(ary[i])) {
-            ret = ret.concat(flatten(ary[i]));
+    for(var i = 0; i < arr.length; i++) {
+        if(Array.isArray(arr[i])) {
+            ret = ret.concat(flatten(arr[i]));
         } else {
-            ret.push(ary[i]);
+            ret.push(arr[i]);
         }
     }
     return ret;
@@ -119,7 +117,9 @@ function mapActions(actions, data, flags) {
   } else {
     // this is the async version
     return Promise.all(actions.map(function(action) {
-      return processMethod(action, data);
+      return processMethod(action, data).then(function(resp) {
+        return resp;
+      });
     })).then(cleanArray);
   }
 

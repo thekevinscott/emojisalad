@@ -1,9 +1,9 @@
-function checkScenario(regex, pattern) {
+function checkScenario(scenarioRegex, pattern) {
   var regex;
-  if ( regex.flags ) {
-    regex = RegExp(regex.pattern, regex.flags);
+  if ( scenarioRegex.flags ) {
+    regex = RegExp(scenarioRegex.pattern, scenarioRegex.flags);
   } else {
-    regex = RegExp(regex.pattern);
+    regex = RegExp(scenarioRegex.pattern);
   }
   //console.log('the test', regex.test(pattern), regex);
   return regex.test(pattern);

@@ -45,13 +45,22 @@ describe('script index', function() {
         stubs.push(sinon.stub(methods, method, function(scenario, data) {
 
           var params = {
-              method: method
+              type: method
           };
           if ( method === 'request' ) {
             params.url = scenario.url;
           } else if ( method === 'respond' ) {
-            //console.log('data', scenario, data);
-            params.message = sprintf(scenario.message, data);
+
+            if ( scenario.options ) {
+              var options = scenario.options.map(function(option) {
+                return sprintf(option, data)
+              });
+            } else {
+              var options = [];
+            }
+
+            console.log('parse some options', scenario.message, options);
+            params.message = sprintf(scenario.message, options);
           }
 
           var deferred = Promise.pending();
@@ -78,7 +87,7 @@ describe('script index', function() {
         response.should.deep.equal([
           {
             message: 'wait-to-invite',
-            method: 'respond'
+            type: 'respond'
           },
         ]);
       });
@@ -95,25 +104,43 @@ describe('script index', function() {
         response.should.deep.equal([
           {
             message: 'foo',
-            method: 'respond'
+            type: 'respond'
           },
           {
             message: 'intro_3',
-            method: 'respond'
+            type: 'respond'
           },
           {
             message: 'intro_4',
-            method: 'respond'
+            type: 'respond'
           },
           {
             message: 'deepest message',
-            method: 'respond'
+            type: 'respond'
           },
           {
             message: 'deepest message '+message+' waiting-for-players',
-            method: 'respond'
+            type: 'respond'
           },
         ]);
+      });
+    });
+
+    describe.only('String processing', function() {
+      it('should parse one level of invites', function() {
+        var key = 'parsing-strings';
+        var user = {
+          id: 1
+        };
+        var message = 'invite       foo';
+        return script(key, user, message).then(function(response) {
+          response.should.deep.equal([
+            {
+              message: 'invited user: foo',
+              type: 'respond'
+            },
+          ]);
+        });
       });
     });
   });

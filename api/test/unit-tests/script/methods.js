@@ -20,13 +20,11 @@ describe('Script methods', function() {
 
   describe('Respond', function() {
     var data = {
-      args: [
-        { user: user }
-      ]
+      user: user,
+      inputs: []
     };
 
     it('should require an action message and a user', function() {
-      var stub = sinon.stub(User, 'message');
       (function() {
         respond();
       }).should.throw(Error);
@@ -45,7 +43,6 @@ describe('Script methods', function() {
       (function() {
         respond({ message: 'intro-1' }, data );
       }).should.not.throw(Error);
-      stub.restore();
     });
 
     it('should correctly pass user and message to User.message', function() {
@@ -87,9 +84,8 @@ describe('Script methods', function() {
 
   describe('Request', function() {
     var data = {
-      args: [
-        { user: user }
-      ]
+      user: user,
+      inputs: []
     };
     var requestPromise = require('request-promise');
     var rp_stub;
@@ -118,7 +114,6 @@ describe('Script methods', function() {
     });
 
     it('should require a valid scenario url and a user', function() {
-      var user_stub = sinon.stub(User, 'message');
 
       (function() {
         request();
@@ -192,7 +187,7 @@ describe('Script methods', function() {
       });
 
       it('should parse the URL correctly based on parameters', function() {
-        var url = '/foo/%(args[0].message)s/%(args[0].user.id)s';
+        var url = '/foo/%(inputs[0])s/%(user.id)s';
         var user_id = 1;
 
         var scenario = {
@@ -209,7 +204,7 @@ describe('Script methods', function() {
         }
 
         var testData = _.assign({}, data);
-        testData.args[0].message = message;
+        testData.inputs[0] = message;
         return request(scenario, testData);
       });
     });

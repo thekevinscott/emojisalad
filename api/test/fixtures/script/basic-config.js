@@ -53,12 +53,12 @@ var waitingForNickname = [
                 {
                   type: 'respond',
                   message: 'intro_3',
-                  options: '$(args[0].message)s'
+                  options: '$(inputs[0])s'
                 },
                 {
                   type: 'respond',
                   message: 'intro_4',
-                  options: '$(args[0].message)s'
+                  options: '$(inputs[0])s'
                 },
                 {
                   type: 'request',
@@ -87,7 +87,7 @@ var waitingForNickname = [
                           },
                           {
                             type: 'respond',
-                            message: 'deepest message %(args[0].pattern)s %(args[1].pattern)s',
+                            message: 'deepest message %(inputs[0])s %(inputs[1])s',
                           },
                         ]
                       },
@@ -143,9 +143,30 @@ var twoActions = [
     ]
   }
 ];
+
+var parsingStrings = [
+  {
+    regex: {
+      pattern: '^invite(.*)',
+      match: {
+        pattern: '^invite\\s*(.*)'
+      }
+    },
+    actions: [
+      {
+        type: 'respond',
+        message: 'invited user: %1$s',
+        options: [
+          '%(inputs[0])s'
+        ]
+      },
+    ]
+  }
+]
 var config = {
   'foo': 'bar',
   'waiting-for-nickname': waitingForNickname,
-  'two-actions': twoActions
+  'two-actions': twoActions,
+  'parsing-strings': parsingStrings
 };
 module.exports = config;
