@@ -47,7 +47,7 @@ describe('Twilio', function() {
   require('./suite')(params);
   describe('Invite flow', function() {
 
-    this.timeout(10000);
+    this.timeout(5000);
     var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
     before(function() {
       return signUp(inviter);
@@ -55,6 +55,7 @@ describe('Twilio', function() {
 
     describe('Invalid Phone Numbers', function() {
       it('should reject a nothing string', function() {
+
         return Promise.join(
           req.p({
             username: inviter,
@@ -66,7 +67,8 @@ describe('Twilio', function() {
           }
         );
       });
-      it('should reject a nothing string', function() {
+
+      it('should reject a nothing string, this time with white space', function() {
         return Promise.join(
           req.p({
             username: inviter,
@@ -105,13 +107,32 @@ describe('Twilio', function() {
     });
 
     describe('Valid numbers', function() {
-      return;
       it('should be able to invite someone', function() {
         var num = '+1'+getRand();
         return Promise.join(
           req.p({
             username: inviter,
             message: 'invite '+num,
+          }, params, true),
+          Message.get('intro_4', num),
+          Message.get('invite', inviter),
+          function(output, message, introMessage) {
+            output.Response.Message[0].should.equal(message.message);
+            output.Response.Sms[0]['_'].should.equal(introMessage.message);
+            output.Response.Sms[0]['$']['to'].should.equal(num);
+            // from is actually our config number. I don't think we need to test that.
+            //output.Response.Sms[0]['$']['from'].should.equal(inviter);
+          }
+        );
+      });
+
+      it('should be able to invite a formatted number', function() {
+        var end = Math.floor(1000 + Math.random() * 9000);
+        var num = '+1860460'+end;
+        return Promise.join(
+          req.p({
+            username: inviter,
+            message: 'invite (860) 460-'+end,
           }, params, true),
           Message.get('intro_4', num),
           Message.get('invite', inviter),
@@ -175,14 +196,12 @@ describe('Twilio', function() {
 
     describe('Invited User Onboarding', function() {
       var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
-      inviter = '+18604609999'; // number doign the inviting
       before(function() {
         return signUp(inviter);
       });
 
       it('should be able to onboard an invited user', function() {
         var num = '+1'+getRand();
-        num = '+18604601111' // number to invite
         return req.p({
           username: inviter,
           message: 'invite '+num,
@@ -238,3 +257,5 @@ function signUp(number) {
     }, params);
   });
 }
+
+require('./suite/game')(params);

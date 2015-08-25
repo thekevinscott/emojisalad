@@ -21,7 +21,7 @@ var waitingForConfirmation = [
       },
       {
         type: 'request',
-        url: '/users/%(args[0].user.id)s',
+        url: '/users/%(user.id)s',
         method: 'PUT',
         data: {
           state: 'waiting-for-nickname'
@@ -36,7 +36,7 @@ var waitingForConfirmation = [
     actions: [
       {
         type: 'request',
-        url: '/users/%(args[0].user.id)s',
+        url: '/users/%(user.id)s',
         method: 'PUT',
         data: {
           state: 'do-not-contact'
@@ -69,7 +69,7 @@ var waitingForNickname = [
     actions: [
       {
         type: 'request',
-        url: '/users/%(args[0].user.id)s',
+        url: '/users/%(user.id)s',
         method: 'PUT',
         data: function(user, body) {
           return {
@@ -80,7 +80,7 @@ var waitingForNickname = [
       },
       {
         type: 'request',
-        url: '/users/%(args[0].user.id)s/games',
+        url: '/users/%(user.id)s/games',
         method: 'GET',
         callback: {
           fn: function(games) {
@@ -103,12 +103,12 @@ var waitingForNickname = [
                   type: 'respond',
                   message: 'intro_3',
                   options: [
-                    '%(args[0].pattern)s'
+                    '%(inputs[0])s'
                   ]
                 },
                 {
                   type: 'request',
-                  url: '/users/%(args[0].user.id)s',
+                  url: '/users/%(user.id)s',
                   method: 'PUT',
                   data: function(user, body) {
                     return {
@@ -130,7 +130,7 @@ var waitingForNickname = [
                 },
                 {
                   type: 'request',
-                  url: '/users/%(args[0].user.id)s/inviter',
+                  url: '/users/%(user.id)s/inviter',
                   method: 'GET',
                   callback: {
                     fn: function(inviter) {
@@ -145,9 +145,9 @@ var waitingForNickname = [
                           {
                             type: 'sms',
                             message: 'accepted',
-                            to: '%(args[2].pattern)s',
+                            to: '%(inputs[2])s',
                             options: [
-                              '%(args[0].user.number)s',
+                              '%(user.number)s',
                               //'%(args[0].pattern)s'
                             ]
                           },
@@ -189,18 +189,19 @@ var waitingForInvites = [
         type: 'request',
         url: '/invites/new',
         method: 'POST',
-        data: function(user, body) {
+        data: function(user, input) {
+          console.log('user', user, input);
           return {
             user: user,
             type: 'twilio',
-            value: body[1] // the first match in our regex above
+            value: input // the first match in our regex above
           };
         },
         callback: {
           fn: function(resp) {
             console.log('what is the response', resp);
             if ( resp[0].error ) {
-              //console.log('error', resp[0].error);
+              console.log('error', resp[0]);
               return resp[0].error.errno;
             } else {
               return resp[0].invited_user.number;
@@ -237,7 +238,7 @@ var waitingForInvites = [
                   type: 'respond',
                   message: 'error-2',
                   options: [
-                    '%(args[0].pattern[1])s'
+                    '%(inputs[0])s'
                   ]
                 },
               ]
@@ -252,7 +253,7 @@ var waitingForInvites = [
                   type: 'respond',
                   message: 'error-3',
                   options: [
-                    '%(args[0].pattern[1])s'
+                    '%(inputs[0])s'
                   ]
                 },
               ]
@@ -283,6 +284,17 @@ var waitingForInvites = [
             },
             {
               regex: {
+                pattern: '^9$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'error-9',
+                },
+              ]
+            },
+            {
+              regex: {
                 pattern: '.*'
               },
               actions: [
@@ -290,15 +302,15 @@ var waitingForInvites = [
                   type: 'respond',
                   message: 'intro_4',
                   options: [
-                    '%(args[1].pattern)s'
+                    '%(inputs[1])s'
                   ]
                 },
                 {
                   type: 'sms',
                   message: 'invite',
-                  to: '%(args[1].pattern)s',
+                  to: '%(inputs[1])s',
                   options: [
-                    '%(args[0].user.number)s',
+                    '%(user.number)s',
                     //'%(args[0].pattern)s'
                   ]
                 }

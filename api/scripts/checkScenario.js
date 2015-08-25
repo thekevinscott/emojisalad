@@ -5,7 +5,7 @@ function checkScenario(scenarioRegex, pattern) {
   } else {
     regex = RegExp(scenarioRegex.pattern);
   }
-  //console.log('the test', regex.test(pattern), regex);
+  console.log('the test', regex.test(pattern), regex, pattern);
   return regex.test(pattern);
 }
 

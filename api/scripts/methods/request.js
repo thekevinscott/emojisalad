@@ -13,6 +13,7 @@ var host = process.env.HOST || 'http://localhost';
 function request(scenario, data) {
   var user = data.user;
   var message = data.inputs[0];
+  console.log('request message', message);
   // we make a dedicated promise, because request-promise uses its own non-Q promises
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
@@ -42,6 +43,8 @@ function request(scenario, data) {
 
   console.log('**** FIGURE THIS PART OUT****');
   if ( _.isFunction(scenario.data) ) {
+    console.log('tis a function', scenario);
+    console.log('function data', data);
     var data = scenario.data(user, message);
   } else {
     var data = scenario.data;

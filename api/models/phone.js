@@ -16,7 +16,7 @@ var Phone = {
     client.phoneNumbers(passedNumber).get(function(err, number) {
       console.log('back from client');
       if ( err ) {
-        console.error('there was an error', err);
+        //console.error('there was an error', err);
         dfd.reject({
           message: "Number is not a valid phone number: " + passedNumber,
           errno: 1

@@ -35,9 +35,9 @@ module.exports = function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
   if ( ! req.body.From ) {
-    return res.end(Text.respond([{ message: "You must provide a phone number" }]).toString());
+    return res.end(Text.respond([{ message: "You must provide a phone number", type: 'respond' }]).toString());
   } else if ( ! req.body.Body ) {
-    return res.end(Text.respond([{ message: "You must provide a message" }]).toString());
+    return res.end(Text.respond([{ message: "You must provide a message", type: 'respond' }]).toString());
   }
 
   var body = req.body.Body;

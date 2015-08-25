@@ -7,7 +7,6 @@ var xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // exampl
 var host = 'http://localhost:'+process.env.PORT;
 
 function req(options, params, raw) {
-  console.log("wussup raw", raw);
   options = _.assign({
     method: 'POST'
   }, params, options);
@@ -29,7 +28,6 @@ function req(options, params, raw) {
     var body = response[1];
     var content_type = resp.headers['content-type'];
     if ( content_type === 'text/xml' ) {
-      console.log(body);
       if ( raw ) {
         return xml2js(body);
       } else {

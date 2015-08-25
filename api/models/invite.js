@@ -21,7 +21,8 @@ var Invite = {
     var invitingUser = user;
     switch(type) {
       case 'twilio':
-        value = value.split('invite').pop().trim();
+        //console.log('value', value);
+        //value = value.split('invite').pop().trim();
         //console.log('value', value);
         if ( ! value ) {
           //console.log('no value');
@@ -63,7 +64,6 @@ var Invite = {
             // inform the inviting user their buddy has been invited
             //return User.message(invitingUser, 'intro_4', [ invitedUser.number ]);
           }).then(function() {
-            console.log('all done homey');
             // all done!
             dfd.resolve({
               id: invite_id,

@@ -3,6 +3,7 @@ var sinon = require('sinon');
 var Promise = require('bluebird');
 var sprintf = require('sprintf');
 
+console.log('i am index');
 var mockrequire = require('mockrequire');
 var mapScenarios = require('../../../scripts/mapScenarios');
 var checkScenario = require('../../../scripts/checkScenario');

@@ -1,5 +1,5 @@
 var Q = require('q');
-var squel = require('squel');
+var squel = require('squel').useFlavour('mysql');
 
 var db = require('db');
 var User = require('./user');
@@ -68,30 +68,38 @@ var Game = {
   },
   add: function(users) {
     function addUsersToGame(game, users) {
-      var rows = users.map(function(user) {
-        return {
+      console.log('add user to game', users);
+      return Promise.all(users.map(function(user) {
+        console.log('inner promise');
+        var row = {
           game_id: game.id,
           user_id: user.id
-        }
-      });
+        };
 
-      query = squel
-              .insert()
-              .into('game_participants')
-              .setFieldsRows(rows);
+        console.log('before query');
+        query = squel
+                .insert()
+                .into('game_participants')
+                .setFields(row)
+                .onDupUpdate('user_id', user.id);
 
-      return db.query(query).then(function(rows) {
-        return {
-          id: rows.insertId
-        }
-      });
+                console.log('do the query', query.toString());
+        return db.query(query).then(function(rows) {
+          console.log('back', rows);
+          return {
+            id: rows.insertId
+          }
+        });
+      }));
     }
     // does a game exist for one of these users yet?
     return this.getByUsers(users).then(function(game) {
       if ( game ) {
+        console.log('there is a game');
         return addUsersToGame(game, users);
       } else {
         // create a game
+        console.log('there is not a game');
         return this.create().then(function(game) {
           return addUsersToGame(game, users);
         });
