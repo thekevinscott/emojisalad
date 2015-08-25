@@ -1,13 +1,8 @@
 node_modules
-<<<<<<< HEAD
 tmp
 logs
 *.log
 npm-debug.log
 .jshintrc
 .vimrc
-public/*.hot-update.json
-public/*.hot-update.js
-=======
 .DS_Store
->>>>>>> 36732700a45880a3928874d4f00b3baab7d83e89
