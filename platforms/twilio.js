@@ -23,6 +23,7 @@
  * ApiVersion: '2010-04-01'
  */
 var rp = require('request-promise');
+var _ = require('lodash');
 var script = require('../scripts');
 var Log = require('../models/log');
 var Phone = require('../models/phone');
@@ -34,9 +35,9 @@ module.exports = function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
   if ( ! req.body.From ) {
-    return res.end(Text.reply([{ message: "You must provide a phone number" }]).toString());
+    return res.end(Text.respond([{ message: "You must provide a phone number" }]).toString());
   } else if ( ! req.body.Body ) {
-    return res.end(Text.reply([{ message: "You must provide a message" }]).toString());
+    return res.end(Text.respond([{ message: "You must provide a message" }]).toString());
   }
 
   var body = req.body.Body;
@@ -60,6 +61,7 @@ module.exports = function(req, res) {
       //console.log('user does not exist');
       return User.create({ number: number }, entry, platform).then(function() {
         return Message.get('intro').then(function(data) {
+          data = _.assign(data, { type: 'respond' });
           //console.log('message data', data);
           // we wrap the response in an array to be consistent;
           // later responses could return multiple responses.
@@ -68,12 +70,9 @@ module.exports = function(req, res) {
       });
     }
   }).then(function(response) {
-    console.log('respnose', response);
-    console.log('what is the response', Text.reply(response).toString());
-    console.log('THIS IS WHERE I NEED TO PICK UP');
-    // based on the type of message coming back, it either
-    // needs to write a reply or an SMS message. That will invite a user.
-    res.end(Text.reply(response).toString());
+    //console.log('respnose', response);
+    //console.log('what is the response', Text.respond(response).toString());
+    res.end(Text.respond(response).toString());
   }).fail(function(err) {
     // this should not notify the user. It means that the incoming request's number
     // somehow failed validation on Twilio's side, which would be odd because Twilio

@@ -6,7 +6,8 @@ var xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // exampl
 
 var host = 'http://localhost:'+process.env.PORT;
 
-function req(options, params) {
+function req(options, params, raw) {
+  console.log("wussup raw", raw);
   options = _.assign({
     method: 'POST'
   }, params, options);
@@ -28,6 +29,9 @@ function req(options, params) {
     var body = response[1];
     var content_type = resp.headers['content-type'];
     if ( content_type === 'text/xml' ) {
+      if ( raw ) {
+        return xml2js(body);
+      } else {
         return xml2js(body).then(function(data) {
           try {
             return data.Response.Message;
@@ -36,6 +40,7 @@ function req(options, params) {
             console.error(body);
           }
         });
+      }
     } else if (content_type.indexOf('text/html') !== -1 ) {
       console.log('wtf?');
       console.log('body', body);
@@ -50,10 +55,10 @@ function req(options, params) {
   });
 }
 
-function post(data, params) {
+function post(data, params, raw) {
   return req({
     form: data
-  }, params);
+  }, params, raw);
 }
 
 function Req() {

@@ -12,10 +12,11 @@ var client = new LookupsClient(config.accountSid, config.authToken);
 var Phone = {
   parse: function(passedNumber) {
     var dfd = Q.defer();
-    //console.log('input number', passedNumber);
+    console.log('input number', passedNumber);
     client.phoneNumbers(passedNumber).get(function(err, number) {
+      console.log('back from client');
       if ( err ) {
-        //console.log('there was an error', err);
+        console.error('there was an error', err);
         dfd.reject({
           message: "Number is not a valid phone number: " + passedNumber,
           errno: 1

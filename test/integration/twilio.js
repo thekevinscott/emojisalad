@@ -46,9 +46,10 @@ describe('Twilio', function() {
   require('./suite')(params);
   describe('Invite flow', function() {
 
-    this.timeout(6000);
+    this.timeout(10000);
     var inviter = params.getUser();
     before(function() {
+      // set up a new user
       return req.p({
         username: inviter,
         message: 'hi'
@@ -115,15 +116,20 @@ describe('Twilio', function() {
       });
     });
     describe('Valid numbers', function() {
-      it('should be able to invite someone', function() {
+      it.only('should be able to invite someone', function() {
         var num = getRand();
         return Promise.join(
           req.p({
             username: inviter,
-            message: 'invite '+num
-          }, params),
-          Message.get('intro_4', { args: [{pattern: num} ] }),
-          function(response, message) {
+            message: 'invite '+num,
+          }, params, true),
+          Message.get('intro_4', 'invite '+num),
+          function(output, message) {
+            console.log('NEED TO FIGURE THIS ONE OUT');
+            console.log('response', output.Response);
+            output.Response.Message[0].should.equal(message.message);
+            //output.Response.Sms[0].should.equal(message.message);
+            console.log('response', output.Response.Sms);
             //response[0].should.equal(message.message);
           }
         );

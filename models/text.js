@@ -11,6 +11,7 @@ var client = require('twilio')(config.accountSid, config.authToken);
 var User = require('./user');
 var Message = require('./message');
 
+var twilio = require('twilio');
 //function get(sid) {
     //if ( sid ) {
         //return client.messages(sid).get();
@@ -21,11 +22,23 @@ var Message = require('./message');
 
 
 var Text = {
-  reply: function(responses) {
-    var twilio = require('twilio');
+  respond: function(responses) {
     var twiml = new twilio.TwimlResponse();
     responses.map(function(response) {
-      twiml.message(response.message);
+      switch(response.type) {
+        case 'sms' :
+          twiml.sms(response.message, {
+            number: response.number,
+            from: config.from
+          });
+          break;
+        case 'respond' :
+          twiml.message(response.message);
+          break;
+        default:
+          console.error('uncaught response type', response);
+          break;
+      }
     });
     return twiml;
   },
