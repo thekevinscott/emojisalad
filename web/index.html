@@ -1,0 +1,102 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Emojinary Friend</title>
+        <meta name="apple-mobile-web-app-title" content="👾👫">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" >
+
+        <!-- Metatags -->
+        <!-- Facebook -->
+        <meta name="description" content="SMS emoji pictionary. With friends. And a robot.">
+        <meta property="og:title" content="Emojinary Friend"/>
+        <meta property="og:site_name" content="Emojinary Friend"/>
+        <meta property="og:description" content="SMS emoji pictionary. With friends. And a robot."/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:url" content="http://emojinaryfriend.com"/>
+        <!-- TO DO -->
+        <!-- <meta property="og:image" content=""/> -->
+
+        <!-- Twitter -->
+        <meta name="twitter:url" content="http://emojinaryfriend.com">
+        <!-- Title should be fewer than 70 chars -->
+        <meta name="twitter:title" content="Emojinary Friend - SMS emoji pictionary. With friends. And a robot.">
+        <meta name="twitter:description" content="Think Pictionary, but with emojis. Nothing to download, just sign up with your phone number and play with your friends over text. Yeah, it's that easy.">
+        <!-- TO DO -->
+        <!-- Image should be a square no smaller that 60x60px -->
+        <!-- <meta name="twitter:image" content=""> -->
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        
+        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/animate.css">
+
+        <!-- Twimoji! -->
+        <link rel="stylesheet" href="css/twemoji-awesome.css">
+		<script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class='container'>
+	        <section class='header'>
+                <div class='headlines'>
+                    <h1><span class='light'>hello</span><br>Emojinary Friend</h1>
+                    <h2><i class="twa twa-speech-balloon"></i> SMS emoji pictionary.</h2>
+                    <h2><i class="twa twa-couple"></i> with friends.</h2>
+                    <h2><i class="twa twa-space-invader"></i> and a robot.</h2> 
+                </div>
+                <div class='chat'>
+                	<div class="clear"></div>
+				    <div id='chat1-1' style="visibility:hidden;" class="bubble from-me animated">
+				    </div>
+					<div class="clear"></div>
+				    <div id='chat1-2' style="visibility:hidden;" class="bubble from-them animated">
+				    </div>
+  					<div class="clear"></div>
+  					<div id='chat1-3' style="visibility:hidden;" class="bubble from-them animated">
+    				</div>
+  					<div class="clear"></div>
+				</div>
+            </section>
+            <section class='subtitle'>
+                <h1>Ready to play?</h1>
+            </section>
+	        <section class='phone-input'>
+                <label for='tel-number'>Enter your phone # to get started</label>
+		        <input type='tel' id='tel-number' placeholder='(555) 555-1234' />
+                <p>no spam, we promise.</p>
+		        <button id='submit' class='submit'>Text me, Emojibot!</button>
+                <p><a href='#'>WTF?</a></p>
+	        </section>
+            <section class='footer'>
+                <p>This project was created with <i class="twa twa-hearts"></i> in New York City by
+                    <a href="http://michellelew.com" target="_blank">Michelle Lew</a>, 
+                    <a href="http://www.herdingpixels.com" target="_blank">Kevin Scott</a>, and 
+                    <a href="http://ari.zilnik.com/" target="_blank">Ari Zilnik</a>.
+                </p>
+            </section>
+	    </div>
+
+        <!-- js -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')</script>
+        <script src="js/jquery.mask.js"></script>
+        <script src="js/chat.animation.js"></script>
+        <script src="js/main.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='https://www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+        </script>
+    </body>
+</html>

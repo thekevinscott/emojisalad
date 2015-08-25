@@ -1,0 +1,138 @@
+chunky = 'Big John', sans-serif;
+slim = 'Slim Joe', sans-serif;
+serifed = 'Josefin Slab', serif;
+submit-button-height = 40px
+
+html, body
+	background white
+	color core-color
+	text-align center
+
+h1
+	font 2em/1.4em chunky
+	padding-top 7px
+	letter-spacing 0.2em
+	.light
+		font italic 400 1.4em/1.4em serifed
+h2	
+	font italic 400 1.3em/1.2em serifed
+	letter-spacing 0.2em
+	margin-bottom 0.8em
+p
+	font italic 400 1.1em/1.5em serifed
+	letter-spacing 0.05em
+a
+	color core-color
+	text-decoration none
+	padding-bottom 1px
+	border-bottom 1px dashed core-color
+	&:hover
+		color core-light
+		border-bottom 1px dashed core-light
+	
+button:focus, input[type='tel']:focus
+	outline 0	
+
+.container
+	width 100%
+	flex-center()
+	flex-direction(column)
+section
+	flex-center()
+	flex-direction(column)
+	width 90%
+	padding 30px 5%
+.header
+	flex-direction(row)
+	flex-wrap(wrap)
+	background core-color
+	color white
+	padding-top 150px
+	padding-bottom 100px
+	.headlines
+		margin 0px 20px 10px 20px
+		padding-top 20px
+		text-align left
+		h1
+			padding-bottom 15px
+			margin-bottom 25px
+			border-bottom 2px solid white
+	.chat
+		min-width 350px
+		max-width 480px
+		margin 0px 40px
+		padding 30px 30px 10px 30px
+.subtitle, .footer
+	background core-light
+	color white
+	padding-top 20px
+	padding-bottom 20px
+.phone-input	
+	label
+		font .9em/1.4em chunky
+		padding-top 20px
+	input[type='tel']
+		max-width 220px
+		margin 10px auto 15px auto
+		font 1.6em/1.4 slim
+		text-align left
+		border 2px solid core-color
+		transition border 0.2s
+		border-radius 3px
+		padding 12px 10px 5px 30px
+		-webkit-appearance none
+		appearance none
+		&:focus
+			border-color emoji-yellow
+	.submit
+		max-width 230px
+		margin 15px auto 40px auto
+		background core-color
+		color white
+		border none
+		border-radius 3px
+		font .9em/.9em chunky
+		padding 23px 28px 16px 28px
+		&:hover
+			background core-dark
+		&:active
+			background emoji-yellow
+.footer
+	p
+		max-width 412px
+		text-transform lowercase
+	a
+		color white
+		border-bottom 1px dashed white
+		&:hover
+			color core-light
+			border-bottom 1px dashed white
+
+// media queries
+@media (max-width: 1088px)
+	.header
+		padding-top 30px
+		padding-bottom 50px
+		.headlines
+			text-align center
+@media (max-width: 414px)
+	.header
+		width 100%
+		padding 0px 0% 20px 0%
+		.chat
+			width 86%
+			min-width 280px
+			max-width 350px
+			margin 0px
+			padding 15px 7% 0px 7%
+		.headlines h1
+			padding-bottom 20px
+	.phone-input	
+		label
+			max-width 190px
+	.subtitle
+		background core-color
+		color white
+		padding-top 5px
+
+ 
