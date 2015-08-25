@@ -53,12 +53,12 @@ var waitingForNickname = [
                 {
                   type: 'respond',
                   message: 'intro_3',
-                  options: '$(inputs[0])s'
+                  options: ['$(inputs[0])s']
                 },
                 {
                   type: 'respond',
                   message: 'intro_4',
-                  options: '$(inputs[0])s'
+                  options: [ '$(inputs[0])s']
                 },
                 {
                   type: 'request',
@@ -87,7 +87,11 @@ var waitingForNickname = [
                           },
                           {
                             type: 'respond',
-                            message: 'deepest message %(inputs[0])s %(inputs[1])s',
+                            message: 'deepest message %1$s %2$s',
+                            options: [
+                              '%(inputs[0])s',
+                              '%(inputs[1])s'
+                            ]
                           },
                         ]
                       },

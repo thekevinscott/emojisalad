@@ -25,12 +25,11 @@ describe('mapScenarios', function() {
         regex: 'foo'
       }
     ];
-    var args = [
-      {
-      pattern: 'foo'
-    }
-    ];
-    return mapScenarios(scenarios, { args: args }).catch(function(e) {
+    var data = {
+      user: {},
+      inputs: []
+    };
+    return mapScenarios(scenarios, data).catch(function(e) {
       stub.restore();
       e.should.exist;
     });
@@ -62,12 +61,11 @@ describe('mapScenarios', function() {
         ]
       }
     ];
-    var args = [
-      {
-      pattern: 'baz'
-    }
-    ];
-    return mapScenarios(scenarios, { args: args }).then(function(response) {
+    var data = {
+      user: {},
+      inputs: []
+    };
+    return mapScenarios(scenarios, data).then(function(response) {
       response.success.should.equal(1);
       regexStub.restore();
       actionStub.restore();

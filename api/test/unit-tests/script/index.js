@@ -51,16 +51,20 @@ describe('script index', function() {
             params.url = scenario.url;
           } else if ( method === 'respond' ) {
 
+            console.log('our scenario', scenario);
             if ( scenario.options ) {
               var options = scenario.options.map(function(option) {
-                return sprintf(option, data)
+                console.log(option, data);
+                var val = sprintf(option, data)
+                console.log('val', val);
+                return val;
               });
             } else {
               var options = [];
             }
 
-            console.log('parse some options', scenario.message, options);
-            params.message = sprintf(scenario.message, options);
+
+            params.message = sprintf.apply(null, [scenario.message].concat(options));
           }
 
           var deferred = Promise.pending();
@@ -126,7 +130,7 @@ describe('script index', function() {
       });
     });
 
-    describe.only('String processing', function() {
+    describe('String processing', function() {
       it('should parse one level of invites', function() {
         var key = 'parsing-strings';
         var user = {

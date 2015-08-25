@@ -12,9 +12,8 @@ var _ = require('lodash');
 function mapScenarios(scenarios, data) {
   for ( var i=0, l=scenarios.length; i<l; i++ ) {
     var scenario = scenarios[i];
-    var mostRecentInput = data.inputs.pop();
-    if ( checkScenario.call(null, scenario.regex, mostRecentInput) ) {
-      data.inputs.push(parseInput(scenario.regex, mostRecentInput));
+    if ( checkScenario.call(null, scenario.regex, _.last(data.inputs)) ) {
+      data.inputs.push(parseInput(scenario.regex, data.inputs.pop()));
 
       return mapActions.call(null, scenario.actions, data).then(function(resp) {
         return resp;

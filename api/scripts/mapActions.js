@@ -18,7 +18,6 @@ function processMethod(action, data) {
     return reject('Action type does not exist: ' + type);
   } else {
     return methods[type](action, data).then(function(response) {
-      //console.log('response back from type', type, response);
       // we get response back as an object, but we want to convert it to an array.
       // this is so we can append any potential callback objects onto it.
       // later on (after this call returns) we'll flatten the final array
