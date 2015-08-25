@@ -29,6 +29,7 @@ function req(options, params, raw) {
     var body = response[1];
     var content_type = resp.headers['content-type'];
     if ( content_type === 'text/xml' ) {
+      console.log(body);
       if ( raw ) {
         return xml2js(body);
       } else {

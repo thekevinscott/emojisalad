@@ -12,6 +12,17 @@ function mapScenarios(scenarios, data) {
     var scenario = scenarios[i];
     var lastData = data.args[data.args.length - 1];
     if ( checkScenario.call(null, scenario.regex, lastData.pattern) ) {
+      console.log('need to add tests for this, or refactor in some way');
+      //var regex;
+      //if ( scenario.regex.flags ) {
+        //regex = RegExp(scenario.regex.pattern, scenario.regex.flags);
+      //} else {
+        //regex = RegExp(scenario.regex.pattern);
+      //}
+      //if ( typeof lastData.pattern === 'string' ) {
+        //console.log('************ last data', lastData.pattern);
+        //lastData.pattern = lastData.pattern.match( regex )[0];
+      //}
       return mapActions.call(null, scenario.actions, data, null);
       break;
     }

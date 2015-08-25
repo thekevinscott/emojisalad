@@ -101,6 +101,43 @@ var Invite = {
         break;
     }
     return dfd.promise;
+  },
+  getInviter: function(inviter_id) {
+    var query = squel
+                .select()
+                .field('u.username')
+                .field('u.id')
+                .from('invites')
+                .where('invited_id=?', inviter_id)
+                .left_join('users', 'u', 'u.id=inviter_id');
+  
+                console.log('selecting the inviter user', query.toString());
+    return db.query(query).then(function(users) {
+      if ( users && users.length ) {
+        //console.log('user exists');
+        var user = users[0];
+      } else {
+        //console.log('user does not exists');
+        return null;
+      }
+
+      var query = squel
+                  .select()
+                  .field('a.attribute')
+                  .field('k.`key`')
+                  .from('user_attributes', 'a')
+                  .left_join('users', 'u', 'u.id = a.user_id')
+                  .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
+                  //.where('k.`key`=?', key)
+                  //.where('a.attribute=?', val)
+                  .where('a.user_id=?',user.id);
+      return db.query(query).then(function(attributes) {
+        attributes.map(function(attribute) {
+          user[attribute.key] = attribute.attribute;
+        });
+        return user;
+    });
+  });
   }
 };
 

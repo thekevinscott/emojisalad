@@ -22,9 +22,14 @@ module.exports = function(req, res) {
     return Game.add([
       invite.invited_user,
       invite.inviting_user
-    ]);
-  }).then(function(game) {
-    res.json(game);
+    ]).then(function(game) {
+      return {
+        invited_user: invite.invited_user,
+        inviting_user: invite.inviting_user,
+      };
+    });
+  }).then(function(users) {
+    res.json(users);
   }).fail(function(err) {
     //console.log('error inviting user', err);
     res.json( err );

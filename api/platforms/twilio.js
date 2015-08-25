@@ -70,7 +70,7 @@ module.exports = function(req, res) {
       });
     }
   }).then(function(response) {
-    //console.log('respnose', response);
+    console.log('respnose', response);
     //console.log('what is the response', Text.respond(response).toString());
     res.end(Text.respond(response).toString());
   }).fail(function(err) {

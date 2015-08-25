@@ -331,10 +331,6 @@ var User = {
     });
     return dfd.promise;
   },
-  message: function(user, message_key, options) {
-    throw "Dont use this anymore";
-    console.log('where we doing', user, message_key);
-  },
   //this is the old message function that sends messages based on platform.
   //deprecated
   /*

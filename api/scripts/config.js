@@ -83,11 +83,13 @@ var waitingForNickname = [
         url: '/users/%(args[0].user.id)s/games',
         method: 'GET',
         callback: {
-          fn: function(game) {
-            //console.log('what is the game', game);
-            if ( game && game.state ) {
-              return game.state;
+          fn: function(games) {
+            console.log('what is the game', games);
+            if ( games && games.length && games[0].state ) {
+              return games[0];
+              //return games[0].state;
             } else {
+              console.log('no game or no game state');
               return 'waiting-for-players';
             }
           },
@@ -126,18 +128,45 @@ var waitingForNickname = [
                   type: 'respond',
                   message: 'game-on',
                 },
-                // ACTUALLY, THE GAME SHOULD TAKE CARE OF UPDATING USER STATUSES
                 {
                   type: 'request',
-                  url: '/users/%(args[0].user.id)s',
-                  method: 'PUT',
-                  data: function(user, body) {
-                    return {
-                      state: 'game-lobby',
-                      username: body
-                    };
+                  url: '/users/%(args[0].user.id)s/inviter',
+                  method: 'GET',
+                  callback: {
+                    fn: function(inviter) {
+                      return inviter[0].number;
+                    },
+                    scenarios: [
+                      {
+                        regex: {
+                          pattern: '.*'
+                        },
+                        actions: [
+                          {
+                            type: 'sms',
+                            message: 'accepted',
+                            to: '%(args[2].pattern)s',
+                            options: [
+                              '%(args[0].user.number)s',
+                              //'%(args[0].pattern)s'
+                            ]
+                          },
+                        ]
+                      },
+                    ]
                   }
                 }
+                //{
+                  //type: 'request',
+                  //url: '/users/%(args[0].user.id)s',
+                  //method: 'PUT',
+                  //data: function(user, body) {
+                    //return {
+                      //state: 'game-lobby',
+                      //username: body
+                    //};
+                  //}
+                //}
               ]
             },
           ]
@@ -150,7 +179,7 @@ var waitingForNickname = [
 var waitingForInvites = [
   {
     regex: {
-      pattern: '^invite',
+      pattern: '^invite(.*)',
     },
     actions: [
       {
@@ -166,12 +195,12 @@ var waitingForInvites = [
         },
         callback: {
           fn: function(resp) {
-            //console.log('what is the response', resp);
+            console.log('what is the response', resp);
             if ( resp[0].error ) {
               //console.log('error', resp[0].error);
               return resp[0].error.errno;
             } else {
-              return 0;
+              return resp[0].invited_user.number;
             }
             //return User.message(invitingUser, 'intro_4', [ invitedUser.number ]);
             //console.log('what is the game', game);
@@ -183,27 +212,6 @@ var waitingForInvites = [
             //}
           },
           scenarios: [
-            {
-              regex: {
-                pattern: '^0$'
-              },
-              actions: [
-                {
-                  type: 'respond',
-                  message: 'intro_4',
-                  options: [
-                    '%(args[0].pattern)s'
-                  ]
-                },
-                {
-                  type: 'sms',
-                  message: 'invite',
-                  options: [
-                    '%(args[0].pattern)s'
-                  ]
-                }
-              ]
-            },
             // this implies an error
             {
               regex: {
@@ -240,6 +248,9 @@ var waitingForInvites = [
                 {
                   type: 'respond',
                   message: 'error-3',
+                  options: [
+                    '%(args[0].pattern)s'
+                  ]
                 },
               ]
             },
@@ -265,6 +276,29 @@ var waitingForInvites = [
                   type: 'respond',
                   message: 'error-8',
                 },
+              ]
+            },
+            {
+              regex: {
+                pattern: '.*'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'intro_4',
+                  options: [
+                    '%(args[1].pattern)s'
+                  ]
+                },
+                {
+                  type: 'sms',
+                  message: 'invite',
+                  to: '%(args[1].pattern)s',
+                  options: [
+                    '%(args[0].user.number)s',
+                    //'%(args[0].pattern)s'
+                  ]
+                }
               ]
             },
           ]

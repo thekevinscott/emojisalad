@@ -10,6 +10,7 @@ var sprintf = require('sprintf');
  *
  */
 function sms(scenario, data) {
+  console.log('**** sms');
   var user = data.args[0].user;
   var message = data.args[0].pattern;
   if ( ! scenario ) {
@@ -26,23 +27,26 @@ function sms(scenario, data) {
 
   var key = scenario.message;
 
+  console.log('**** sms 2');
   if ( scenario.options ) {
     var options = scenario.options.map(function(option) {
+      console.log('data', data);
       //console.log('option', option, data.args[0]);
-      var optionParams = {
-        user: data.args[0].user,
-        message: data.args[0].pattern 
-      }
-      //console.log('option', option);
-      return sprintf(option, data)
+      //var optionParams = {
+        //user: data.args[0].user,
+        //message: data.args[0].pattern 
+      //}
+      console.log('option', option, data);
+      return sprintf(option, data);
     });
   } else {
     var options = [];
   }
 
-  var result = Message.get(key, options);
-  return result;
-  //return _.assign({}, result, {type: 'sms'});
+  console.log('what is options here', data.args[1].pattern);
+  return Message.get(key, options).then(function(result) {
+    return _.assign({}, result, {number: sprintf(scenario.to, data) });
+  });
 };
 
 module.exports = sms;

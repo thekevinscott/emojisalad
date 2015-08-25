@@ -28,7 +28,7 @@ var Text = {
       switch(response.type) {
         case 'sms' :
           twiml.sms(response.message, {
-            number: response.number,
+            to: response.number,
             from: config.from
           });
           break;
