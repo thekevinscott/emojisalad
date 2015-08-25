@@ -1,2 +1,9 @@
 node_modules
 tmp
+logs
+*.log
+npm-debug.log
+.jshintrc
+.vimrc
+public/*.hot-update.json
+public/*.hot-update.js
