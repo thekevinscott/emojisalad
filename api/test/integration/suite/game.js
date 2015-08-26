@@ -13,9 +13,11 @@ module.exports = function(params) {
     }
   }
 
-  describe.only('Game', function() {
+  describe('Game', function() {
+    var JURASSIC_PARK = '⏰🐲🐊🐉   🌳🌳🌳';
+    var MIXED_EMOJI = '😀😀😀😀foo🚀🚀🚀🚀' ;
     var numbers = [];
-    this.timeout(10000);
+    this.timeout(15000);
 
     it('should initiate the game with the person who started it', function() {
       var users = getUsers();
@@ -56,7 +58,7 @@ module.exports = function(params) {
         return Promise.join(
           req.p({
             username: users.inviter.number,
-            message: '😀😀😀😀foo🚀🚀🚀🚀' 
+            message: MIXED_EMOJI
           }, params),
           Message.get('error-9'),
           function(response, message) {
@@ -70,7 +72,7 @@ module.exports = function(params) {
       var users = getUsers();
 
       return startGame(users).then(function() {
-        var msg = '😀';
+        var msg = JURASSIC_PARK;
         return Promise.join(
           req.p({
             username: users.inviter.number,
@@ -90,6 +92,61 @@ module.exports = function(params) {
           }
         );
       });
+    });
+
+    it('should allow other players to cross talk', function() {
+      var users = getUsers();
+      var msg = 'The fuck is that?';
+
+      return startGame(users).then(function() {
+        return req.p({
+          username: users.inviter.number,
+          message: JURASSIC_PARK 
+        }, params, true);
+      }).then(function() {
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: msg
+          }, params, true),
+          Message.get('says', [users.invited.username, msg]),
+          function(output, message) {
+            console.log('output', output);
+            var saySMS = output.Response.Sms[0];
+            saySMS['_'].should.equal(message.message);
+            saySMS['$']['to'].should.equal(users.inviter.number);
+          }
+        );
+      });
+    });
+
+    it.only('should allow other players to guess', function() {
+      var users = getUsers();
+      var msg = 'Jurassic Park';
+
+      return startGame(users).then(function() {
+        return req.p({
+          username: users.inviter.number,
+          message: JURASSIC_PARK 
+        }, params, true);
+      }).then(function() {
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: msg
+          }, params, true),
+          Message.get('correct-guess', [users.invited.username]),
+          function(output, message) {
+            console.log('output', output);
+            var saySMS = output.Response.Sms[0];
+            saySMS['_'].should.equal(message.message);
+            saySMS['$']['to'].should.equal(users.inviter.number);
+          }
+        );
+      });
+    });
+
+    it('should not allow the submitter to guess for their own submission', function() {
     });
   });
 

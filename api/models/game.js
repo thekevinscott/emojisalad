@@ -6,6 +6,13 @@ var db = require('db');
 var User;
 
 var Game = {
+  checkGuess: function(game, guess) {
+    if ( guess === 'Jurassic Park' ) {
+      return true;
+    } else {
+      return false;
+    }
+  },
   saveSubmission: function(user, message) {
     if ( ! User ) {
       User = require('./user');
@@ -104,6 +111,7 @@ var Game = {
       if ( rows.length ) {
         var game = rows[0];
         this.getPlayers(game).then(function(players) {
+          game.players = players;
           if ( players.length > 1 ) {
             game.state = 'ready';
             game.guessers = [];

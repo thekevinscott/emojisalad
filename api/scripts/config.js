@@ -453,14 +453,6 @@ var waitingForSubmission = [
                   message: 'game-submission-sent',
                 },
                 // update our guesser (first one's) state
-                //{
-                  //type: 'request',
-                  //url: '/users/%(inputs[1].guessers[0].id)s',
-                  //method: 'PUT',
-                  //data: {
-                    //state: 'guessing'
-                  //}
-                //},
                 {
                   type: 'sms',
                   message: 'says',
@@ -484,6 +476,116 @@ var waitingForSubmission = [
   },
 ];
 
+var guessing = [
+  {
+    regex: {
+      pattern: '.*',
+    },
+    actions: [
+      {
+        type: 'request',
+        url: '/games/guess',
+        method: 'POST',
+        data: function(user, input) {
+          return {
+            user_id: user.id,
+            message: input
+          };
+        },
+        callback: {
+          fn: function(resp) {
+            var result = (resp[0].result) ? 1 : 0;
+            return result;
+          },
+          scenarios: [
+            {
+              regex: {
+                pattern: '^0'
+              },
+              actions: [
+                {
+                  type: 'request',
+                  url: '/games/players',
+                  method: 'GET',
+                  data: function(user) {
+                    return {
+                      user_id: user.id
+                    }
+                  },
+                  callback: {
+                    fn: function(resp) {
+                      return resp[0].users;
+                    },
+                    scenarios: [
+                      {
+                        regex: {
+                          pattern: '.*'
+                        },
+                        actions: [
+                          {
+                            type: 'sms',
+                            message: 'says',
+                            //to: 'foo',
+                            to: '%(inputs[2][0].number)s',
+                            options: [
+                              '%(user.username)s',
+                              '%(inputs[0])s'
+                            ]
+                          },
+                        ]
+                      }
+                    ]
+                  }
+                },
+              ]
+            },
+            {
+              regex: {
+                pattern: '^1'
+              },
+              actions: [
+                {
+                  type: 'request',
+                  url: '/games/players',
+                  method: 'GET',
+                  data: function(user) {
+                    return {
+                      user_id: user.id
+                    }
+                  },
+                  callback: {
+                    fn: function(resp) {
+                      return resp[0].users;
+                    },
+                    scenarios: [
+                      {
+                        regex: {
+                          pattern: '.*'
+                        },
+                        actions: [
+                          {
+                            type: 'sms',
+                            message: 'correct-guess',
+                            //to: 'foo',
+                            to: '%(inputs[2][0].number)s',
+                            options: [
+                              '%(user.username)s',
+                            ]
+                          },
+                        ]
+                      }
+                    ]
+                  }
+                },
+              ]
+            },
+          ]
+        },
+      }
+    ]
+  },
+];
+
 var script = {
   'do-not-contact': doNotContact,
   'waiting-for-confirmation': waitingForConfirmation ,
@@ -491,6 +593,7 @@ var script = {
   'waiting-for-invites': waitingForInvites,
   'waiting-for-submission': waitingForSubmission,
   'waiting-for-round': waitingForRound,
+  'guessing': guessing
 };
 
 module.exports = script;
