@@ -47,13 +47,27 @@ describe('Twilio', function() {
   require('./suite')(params);
   describe('Invite flow', function() {
 
-    this.timeout(5000);
+    this.timeout(10000);
     var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
     before(function() {
       return signUp(inviter);
     });
 
     describe('Invalid Phone Numbers', function() {
+      it('should reject an invalid invite phrase', function() {
+
+        return Promise.join(
+          req.p({
+            username: inviter,
+            message: 'foobar'
+          }, params),
+          Message.get('error-8'),
+          function(response, message) {
+            response[0].should.equal(message.message);
+          }
+        );
+      });
+
       it('should reject a nothing string', function() {
 
         return Promise.join(
@@ -243,6 +257,7 @@ function getRand() {
 }
 
 function signUp(number, nickname) {
+  if ( ! nickname ) { nickname = number; }
   // set up a new user
   return req.p({
     username: number,

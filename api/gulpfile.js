@@ -107,7 +107,6 @@ gulp.task('sync-testing-db', function(cb) {
     // select, above, in mysqldump, table schemas and ONLY
     // data from the tables we want (such as messages).
   }).then(function() {
-    console.log('ready to rip out data');
     var squel = require('squel');
     var db = require('db');
     var tables = [

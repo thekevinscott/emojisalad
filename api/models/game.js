@@ -3,9 +3,27 @@ var squel = require('squel').useFlavour('mysql');
 var Promise = require('bluebird');
 
 var db = require('db');
-var User = require('./user');
+var User;
 
 var Game = {
+  saveSubmission: function(user, message) {
+    if ( ! User ) {
+      User = require('./user');
+    }
+    return User.update(user, {
+      state: 'waiting'
+    }).then(function() {
+      return this.getByUsers([user]);
+    }.bind(this)).then(function(game) {
+      return Promise.all(game.guessers.map(function(user) {
+        // also update user states to guessing
+        User.update(user, { state: 'guessing' });
+      })).then(function() {
+        return game;
+      })
+    });
+    // should save teh submission AND update the user state
+  },
   getPhrase: function(game_id) {
     return Promise.resolve('JURASSIC PARK');
   },
@@ -41,7 +59,30 @@ var Game = {
                 .left_join('platforms', 'p', 'p.id = u.platform_id')
                 .where('g.id=?', game.id);
 
-    return db.query(query);
+    return db.query(query).then(function(users) {
+      return Promise.all(users.map(function(user) {
+        var query = squel
+                    .select()
+                    .field('a.attribute')
+                    .field('k.`key`')
+                    .from('user_attributes', 'a')
+                    .left_join('users', 'u', 'u.id = a.user_id')
+                    .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
+                    //.where('k.`key`=?', key)
+                    //.where('a.attribute=?', val)
+                    .where('a.user_id=?',user.id);
+
+        return db.query(query).then(function(attributes) {
+          //console.log('got the attributes', attributes);
+          attributes.map(function(attribute) {
+            user[attribute.key] = attribute.attribute;
+          });
+          //console.log('the user afterwards', user);
+          return user;
+        });
+      }));
+
+    });
   },
   getByUsers: function(users) {
     var dfd = Q.defer();
@@ -52,10 +93,10 @@ var Game = {
     var query = squel
                 .select()
                 .field('g.id')
-                .field('s.state')
+                //.field('s.state')
                 .from('games', 'g')
                 .left_join('game_participants', 'p', 'p.game_id = g.id')
-                .left_join('game_states', 's', 's.id = g.state_id')
+                //.left_join('game_states', 's', 's.id = g.state_id')
                 .where('p.user_id IN ? ',user_ids)
                 .order('g.created', false)
                 .limit(1);
@@ -63,7 +104,21 @@ var Game = {
       if ( rows.length ) {
         var game = rows[0];
         this.getPlayers(game).then(function(players) {
-          game.players = players;
+          if ( players.length > 1 ) {
+            game.state = 'ready';
+            game.guessers = [];
+            for ( var i=0, l=players.length; i < l; i++ ) {
+              var player = players[i];
+              if ( player.state === 'waiting' ) {
+                game.submitter = player;
+              } else {
+                game.guessers.push(player);
+              }
+            }
+          } else {
+            game.state = 'waiting-for-players';
+            game.players = players;
+          }
           dfd.resolve(game);
         }).fail(dfd.reject);
       } else {

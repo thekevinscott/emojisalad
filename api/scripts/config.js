@@ -84,12 +84,9 @@ var waitingForNickname = [
         method: 'GET',
         callback: {
           fn: function(games) {
-            //console.log('what is the game', games);
             if ( games && games.length && games[0].state ) {
               return games[0];
-              //return games[0].state;
             } else {
-              //console.log('no game or no game state');
               return 'waiting-for-players';
             }
           },
@@ -139,6 +136,24 @@ var waitingForNickname = [
                           pattern: '.*'
                         },
                         actions: [
+                          // update states for two inviters
+                          {
+                            type: 'request',
+                            url: '/users/%(user.id)s',
+                            method: 'PUT',
+                            data: {
+                              state: 'waiting-for-round'
+                            }
+                          },
+                          // the person who kicked off the game starts
+                          {
+                            type: 'request',
+                            url: '/users/%(inputs[2].id)s',
+                            method: 'PUT',
+                            data: {
+                              state: 'waiting-for-submission'
+                            }
+                          },
                           {
                             type: 'respond',
                             message: 'accepted-inviter',
@@ -157,8 +172,13 @@ var waitingForNickname = [
                           },
                           {
                             type: 'request',
-                            url: '/games/%(inputs[1].id)s/phrase',
-                            method: 'GET',
+                            url: '/games/phrase',
+                            method: 'POST',
+                            data: function(user, input) {
+                              return {
+                                user_id: user.id
+                              };
+                            },
                             callback: {
                               fn: function(response) {
                                 return response[0];
@@ -361,8 +381,105 @@ var waitingForInvites = [
     actions: [
       {
         type: 'respond',
+        message: 'error-8'
+      },
+    ]
+  },
+];
+
+var waitingForRound = [
+  {
+    regex: {
+      pattern: '.*',
+    },
+    actions: [
+      {
+        type: 'respond',
         message: 'wtf'
       },
+    ]
+  },
+];
+
+var waitingForSubmission = [
+  {
+    regex: {
+      pattern: '.*',
+    },
+    actions: [
+      {
+        type: 'request',
+        url: '/games/submission',
+        method: 'POST',
+        data: function(user, input) {
+          return {
+            user_id: user.id,
+            message: input
+          };
+        },
+        callback: {
+          fn: function(resp) {
+            if ( resp[0].error ) {
+              //console.log('error', resp[0]);
+              return resp[0].error.errno;
+            } else {
+              // it returns a game
+              return resp[0];
+            }
+          },
+          scenarios: [
+            // this implies an error
+            {
+              regex: {
+                pattern: '^9$'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'error-9',
+                },
+              ]
+            },
+            // this is the correct response
+            {
+              regex: {
+                pattern: '.*'
+              },
+              actions: [
+                // the submitter has done his/her job and sent the clue
+                // they wait the rest of the round
+                {
+                  type: 'respond',
+                  message: 'game-submission-sent',
+                },
+                // update our guesser (first one's) state
+                //{
+                  //type: 'request',
+                  //url: '/users/%(inputs[1].guessers[0].id)s',
+                  //method: 'PUT',
+                  //data: {
+                    //state: 'guessing'
+                  //}
+                //},
+                {
+                  type: 'sms',
+                  message: 'says',
+                  to: '%(inputs[1].guessers[0].number)s',
+                  options: [
+                    '%(inputs[1].submitter.username)s',
+                    '%(inputs[0])s'
+                  ]
+                },
+                {
+                  type: 'sms',
+                  message: 'guessing-instructions',
+                  to: '%(inputs[1].guessers[0].number)s',
+                },
+              ]
+            },
+          ]
+        },
+      }
     ]
   },
 ];
@@ -372,6 +489,8 @@ var script = {
   'waiting-for-confirmation': waitingForConfirmation ,
   'waiting-for-nickname': waitingForNickname,
   'waiting-for-invites': waitingForInvites,
+  'waiting-for-submission': waitingForSubmission,
+  'waiting-for-round': waitingForRound,
 };
 
 module.exports = script;
