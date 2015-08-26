@@ -52,22 +52,20 @@ function pullDB() {
 
 gulp.task('sync', function(cb) {
   var tmp = 'tmp/';
-  var config = require('db').config;
-  var importConfig;
-  var keys = Object.keys(argv);
   var importKey;
-  for ( var i=0, l = keys.length; i<l;i++ ) {
-    var val = keys[i];
-    if ( config[val] ) {
-      importKey = val;
-      break;
-    }
-  };
+  var keys = Object.keys(argv);
+  // environment is 1
+  var importKey = keys[1];
   if ( importKey === 'production' ) {
     throw "WHOA WHOA WHOA NO KILLING PRODUCTION";
+    return;
   } else {
-    importConfig = config[importKey];
+    process.env.ENVIRONMENT = importKey;
   }
+  var config = require('db').config;
+  var importConfig;
+  importConfig = config[importKey];
+
   pullDB().then(function(file) {
     var importDB = [
       'mysql -u',
@@ -92,22 +90,46 @@ gulp.task('sync', function(cb) {
 /*
  * Testing Tasks
  */
-gulp.task('sync-testing-db', function() {
+gulp.task('sync-testing-db', function(cb) {
+
   process.env.ENVIRONMENT = 'kevin-test';
   process.env.PORT = '5005';
   var tmp = 'tmp/';
   var config = require('db').config;
   importConfig = config['kevin-test'];
   var testDB = 'test/fixtures/test-db.sql';
-  pullDB().then(function(file) {
+  return pullDB().then(function(file) {
     return exec(['rm -f',testDB].join(' ')).then(function() {
       return exec(['mv',file,testDB].join(' '));
     });
+    // remove worthless data from tables
+    // NOTE: A much better way to do this would be to only
+    // select, above, in mysqldump, table schemas and ONLY
+    // data from the tables we want (such as messages).
+  }).then(function() {
+    console.log('ready to rip out data');
+    var squel = require('squel');
+    var db = require('db');
+    var tables = [
+      'users',
+      'user_attributes',
+      'outgoingMessages',
+      'invites',
+      'incomingMessages',
+      'games',
+      'game_participants',
+    ];
+    return Promise.all(tables.map(function(table) {
+      var query = squel.remove().from(table);
+      return db.query(query);
+    }));
   }).catch(function(e) {
     console.log('e', e);
   }).done(function() {
-    exec('rm -rf '+tmp).then(function() {
+    return exec('rm -rf '+tmp).then(function() {
       process.exit(0);
+    }).then(function() {
+      cb();
     });
   });
 });

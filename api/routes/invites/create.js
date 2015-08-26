@@ -18,12 +18,12 @@ module.exports = function(req, res) {
   //console.log('user who is requesting to invite somebody', user);
 
   Invite.create(type, value, user).then(function(invite) {
-    console.log('invite', invite);
+    //console.log('invite', invite);
     return Game.add([
       invite.invited_user,
       invite.inviting_user
     ]).then(function(game) {
-      console.log('got the game back', game);
+      //console.log('got the game back', game);
       return {
         invited_user: invite.invited_user,
         inviting_user: invite.inviting_user,

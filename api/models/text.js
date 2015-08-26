@@ -53,7 +53,9 @@ var Text = {
     });
     return twiml;
   },
+  // DEPRECATED
   send: function send(user, message) {
+    return;
     var params = {
       from: config.from
     };
@@ -62,21 +64,21 @@ var Text = {
       throw "You must now provide a user object";
     }
 
-    console.log('user', user);
+    //console.log('user', user);
     params.to = user.number;
     params.body = message.message;
 
 
-    console.log('prepare to send message');
+    //console.log('prepare to send message');
     return client.messages.post(params).then(function(response) {
-      console.log('sent message!');
+      //console.log('sent message!');
       this.saveMessage(user, message.id, params.body, response);
-      console.log('saved message');
+      //console.log('saved message');
       // we don't wait for the db call to finish,
       // this can fail and we still want to proceed
       return response;
     }.bind(this)).fail(function(err) {
-      console.log('err', err);
+      //console.log('err', err);
       if ( err && err.code ) {
         switch(err.code) {
           case 21608:
@@ -100,11 +102,11 @@ var Text = {
     });
   },
   saveMessage: function(userData, message_id, message, response) {
-    console.log('prepare to save message');
-    console.log(userData, message_id, message);
+    //console.log('prepare to save message');
+    //console.log(userData, message_id, message);
     return User.get(userData).then(function(user) {
       if ( user ) {
-        console.log('got a user');
+        //console.log('got a user');
 
         var query = squel
         .insert()

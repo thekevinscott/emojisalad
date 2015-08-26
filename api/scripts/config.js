@@ -84,12 +84,12 @@ var waitingForNickname = [
         method: 'GET',
         callback: {
           fn: function(games) {
-            console.log('what is the game', games);
+            //console.log('what is the game', games);
             if ( games && games.length && games[0].state ) {
               return games[0];
               //return games[0].state;
             } else {
-              console.log('no game or no game state');
+              //console.log('no game or no game state');
               return 'waiting-for-players';
             }
           },
@@ -125,16 +125,13 @@ var waitingForNickname = [
               },
               actions: [
                 {
-                  type: 'respond',
-                  message: 'game-on',
-                },
-                {
                   type: 'request',
                   url: '/users/%(user.id)s/inviter',
                   method: 'GET',
                   callback: {
                     fn: function(inviter) {
-                      return inviter[0].number;
+                      return inviter[0];
+                      //return inviter[0].number;
                     },
                     scenarios: [
                       {
@@ -143,14 +140,50 @@ var waitingForNickname = [
                         },
                         actions: [
                           {
-                            type: 'sms',
-                            message: 'accepted',
-                            to: '%(inputs[2])s',
+                            type: 'respond',
+                            message: 'accepted-inviter',
                             options: [
-                              '%(user.number)s',
-                              //'%(args[0].pattern)s'
+                              '%(inputs[0])s',
+                              '%(inputs[2].username)s',
                             ]
                           },
+                          {
+                            type: 'sms',
+                            message: 'accepted-invited',
+                            to: '%(inputs[2].number)s',
+                            options: [
+                              '%(inputs[0])s',
+                            ]
+                          },
+                          {
+                            type: 'request',
+                            url: '/games/%(inputs[1].id)s/phrase',
+                            method: 'GET',
+                            callback: {
+                              fn: function(response) {
+                                return response[0];
+                                //return inviter[0];
+                              },
+                              scenarios: [
+                                {
+                                regex: {
+                                  pattern: '.*'
+                                },
+                                actions: [
+                                  {
+                                    type: 'sms',
+                                    message: 'game-start',
+                                    to: '%(inputs[2].number)s',
+                                    options: [
+                                      '%(inputs[2].username)s',
+                                      '%(inputs[3].phrase)s',
+                                    ]
+                                  },
+                                ]
+                              },
+                              ]
+                            }
+                          }
                         ]
                       },
                     ]
@@ -190,7 +223,7 @@ var waitingForInvites = [
         url: '/invites/new',
         method: 'POST',
         data: function(user, input) {
-          console.log('user', user, input);
+          //console.log('user', user, input);
           return {
             user: user,
             type: 'twilio',
@@ -199,9 +232,9 @@ var waitingForInvites = [
         },
         callback: {
           fn: function(resp) {
-            console.log('what is the response', resp);
+            //console.log('what is the response', resp);
             if ( resp[0].error ) {
-              console.log('error', resp[0]);
+              //console.log('error', resp[0]);
               return resp[0].error.errno;
             } else {
               return resp[0].invited_user.number;

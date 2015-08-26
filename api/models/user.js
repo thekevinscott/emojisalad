@@ -154,7 +154,7 @@ var User = {
               this.get({
                 id: user_id
               }).then(function(user) {
-                console.log('got user in create', user);
+                //console.log('got user in create', user);
                 dfd.resolve(user);
               });
 
@@ -240,7 +240,7 @@ var User = {
                     .where('a.user_id=?',user.id);
 
         return db.query(query).then(function(attributes) {
-          console.log('got the attributes', attributes);
+          //console.log('got the attributes', attributes);
           attributes.map(function(attribute) {
             user[attribute.key] = attribute.attribute;
           });

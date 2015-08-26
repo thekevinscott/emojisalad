@@ -12,9 +12,9 @@ var client = new LookupsClient(config.accountSid, config.authToken);
 var Phone = {
   parse: function(passedNumber) {
     var dfd = Q.defer();
-    console.log('input number', passedNumber);
+    //console.log('input number', passedNumber);
     client.phoneNumbers(passedNumber).get(function(err, number) {
-      console.log('back from client');
+      //console.log('back from client');
       if ( err ) {
         //console.error('there was an error', err);
         dfd.reject({

@@ -10,7 +10,7 @@ var sprintf = require('sprintf');
  *
  */
 function sms(scenario, data) {
-  console.log('**** sms');
+  //console.log('**** sms');
   var user = data.user;
   var message = data.inputs[0];
   if ( ! scenario ) {
@@ -27,16 +27,16 @@ function sms(scenario, data) {
 
   var key = scenario.message;
 
-  console.log('**** sms 2');
+  //console.log('**** sms 2');
   if ( scenario.options ) {
     var options = scenario.options.map(function(option) {
-      console.log('data', data);
+      //console.log('data', data);
       //console.log('option', option, data.args[0]);
       //var optionParams = {
         //user: data.args[0].user,
         //message: data.args[0].pattern 
       //}
-      console.log('option', option, data);
+      //console.log('option', option, data);
       return sprintf(option, data);
     });
   } else {

@@ -1,20 +1,26 @@
 var Q = require('q');
 var squel = require('squel').useFlavour('mysql');
+var Promise = require('bluebird');
 
 var db = require('db');
 var User = require('./user');
 
 var Game = {
+  getPhrase: function(game_id) {
+    return Promise.resolve('JURASSIC PARK');
+  },
+  // DEPRECATED
   notify: function(user) {
+    return;
     return this.getByUsers([user]).then(function(game) {
       if ( game ) {
-        console.log('game', game);
+        //console.log('game', game);
         // we need at least two players to be ready
         
         if ( game.players && game.players.length ) {
           for ( var i=0,l=game.players.length;i<l;i++ ) {
             var player = game.players[i];
-            console.log('player', player);
+            //console.log('player', player);
           }
         }
       }
@@ -68,24 +74,24 @@ var Game = {
   },
   add: function(users) {
     function addUsersToGame(game, users) {
-      console.log('add user to game', users);
+      //console.log('add user to game', users);
       return Promise.all(users.map(function(user) {
-        console.log('inner promise');
+        //console.log('inner promise');
         var row = {
           game_id: game.id,
           user_id: user.id
         };
 
-        console.log('before query');
+        //console.log('before query');
         query = squel
                 .insert()
                 .into('game_participants')
                 .setFields(row)
                 .onDupUpdate('user_id', user.id);
 
-                console.log('do the query', query.toString());
+                //console.log('do the query', query.toString());
         return db.query(query).then(function(rows) {
-          console.log('back', rows);
+          //console.log('back', rows);
           return {
             id: rows.insertId
           }
@@ -95,11 +101,11 @@ var Game = {
     // does a game exist for one of these users yet?
     return this.getByUsers(users).then(function(game) {
       if ( game ) {
-        console.log('there is a game');
+        //console.log('there is a game');
         return addUsersToGame(game, users);
       } else {
         // create a game
-        console.log('there is not a game');
+        //console.log('there is not a game');
         return this.create().then(function(game) {
           return addUsersToGame(game, users);
         });

@@ -33,10 +33,10 @@ var Invite = {
           return dfd.promise;
         }
         Phone.parse(value).then(function(number) {
-          console.log('number parsed', number);
+          //console.log('number parsed', number);
           return User.create({ number: number }, 'text_invite', 'twilio');
         }).then(function(invitedUser) {
-          console.log('created new user', invitedUser);
+          //console.log('created new user', invitedUser);
           var invite_id;
           var query = squel
                       .insert()
@@ -44,10 +44,10 @@ var Invite = {
                       .set('invited_id', invitedUser.id)
                       .set('inviter_id', invitingUser.id);
         
-                      console.log('perpare to insert query');
+                      //console.log('perpare to insert query');
           return db.query(query).then(function(rows) {
             invite_id = rows.insertId;
-            console.log('got the invited user', invitedUser);
+            //console.log('got the invited user', invitedUser);
             // inform the invited user that they've been invited
             /*
             return Message.get('invite', invitingUser.username).then(function(message) {
@@ -111,7 +111,7 @@ var Invite = {
                 .where('invited_id=?', inviter_id)
                 .left_join('users', 'u', 'u.id=inviter_id');
   
-                console.log('selecting the inviter user', query.toString());
+                //console.log('selecting the inviter user', query.toString());
     return db.query(query).then(function(users) {
       if ( users && users.length ) {
         //console.log('user exists');

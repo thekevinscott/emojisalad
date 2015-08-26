@@ -196,12 +196,14 @@ describe('Twilio', function() {
 
     describe('Invited User Onboarding', function() {
       var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
+      var inviterName = 'Inviting User';
       before(function() {
-        return signUp(inviter);
+        return signUp(inviter, inviterName);
       });
 
       it('should be able to onboard an invited user', function() {
         var num = '+1'+getRand();
+        var invitedName = 'Invited User';
         return req.p({
           username: inviter,
           message: 'invite '+num,
@@ -220,13 +222,13 @@ describe('Twilio', function() {
           return Promise.join(
             req.p({
               username: num,
-              message: num 
+              message: invitedName 
             }, params, true),
-            Message.get('game-on'),
-            Message.get('accepted', num),
-            function(output, message, acceptedMessage) {
-              output.Response.Message[0].should.equal(message.message);
-              output.Response.Sms[0]['_'].should.equal(acceptedMessage.message);
+            Message.get('accepted-inviter', [invitedName, inviterName]),
+            Message.get('accepted-invited', invitedName),
+            function(output, messageInviter, messageInvited) {
+              output.Response.Message[0].should.equal(messageInviter.message);
+              output.Response.Sms[0]['_'].should.equal(messageInvited.message);
               output.Response.Sms[0]['$']['to'].should.equal(inviter);
             }
           );
@@ -240,7 +242,7 @@ function getRand() {
   return '860460'+Math.floor(1000 + Math.random() * 9000);
 }
 
-function signUp(number) {
+function signUp(number, nickname) {
   // set up a new user
   return req.p({
     username: number,
@@ -253,7 +255,7 @@ function signUp(number) {
   }).then(function() {
     return req.p({
       username: number,
-      message: number // the nickname
+      message: nickname
     }, params);
   });
 }
