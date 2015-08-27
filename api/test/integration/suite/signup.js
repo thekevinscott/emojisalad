@@ -191,7 +191,7 @@ module.exports = function(params) {
           username: inviter,
           message: 'random foo'
         }),
-        Message.get('wtf'),
+        Message.get('error-8'),
         function(response, message) {
           response[0].should.equal(message.message);
         }

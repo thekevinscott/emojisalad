@@ -120,7 +120,7 @@ module.exports = function(params) {
       });
     });
 
-    it.only('should allow other players to guess', function() {
+    it('should allow other players to guess', function() {
       var users = getUsers();
       var msg = 'Jurassic Park';
 
