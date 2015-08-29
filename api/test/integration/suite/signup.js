@@ -94,7 +94,7 @@ module.exports = function(params) {
       });
     });
 
-    it.only('should prompt the user to invite friends', function() {
+    it('should prompt the user to invite friends', function() {
       var username = params.getUser();
       return r.p({
         username: username,

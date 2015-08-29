@@ -81,13 +81,12 @@ var waitingForNickname = [
           // this will determine what message to send back,
           // based on whether a game is happening or not
           fn: function(resp) {
-            console.log('hello guvnor');
-            return resp[0].state;
+            return resp[0].game_state;
           },
           scenarios: [
             {
               regex: {
-                pattern: '.*'
+                pattern: 'pending'
               },
               actions: [
                 {
@@ -96,6 +95,104 @@ var waitingForNickname = [
                   options: [
                     '%(inputs[0])s'
                   ]
+                },
+                {
+                  type: 'request',
+                  url: '/users/%(user.id)s',
+                  method: 'PUT',
+                  data: function(user, body) {
+                    return {
+                      state: 'waiting-for-invites',
+                      username: body 
+                    };
+                  }
+                },
+              ]
+            },
+            {
+              regex: {
+                pattern: 'ready-to-play'
+              },
+              actions: [
+                {
+                  type: 'request',
+                  url: '/users/%(user.id)s',
+                  method: 'PUT',
+                  data: function(user, body) {
+                    return {
+                      state: 'playing',
+                      username: body 
+                    };
+                  }
+                },
+                {
+                  type: 'request',
+                  url: '/users/%(user.id)s/inviter',
+                  method: 'GET',
+                  callback: {
+                    fn: function(inviter) {
+                      console.log('the inviter!!!zomg', inviter[0]);
+                      return inviter[0];
+                    },
+                    scenarios: [
+                      {
+                        regex: {
+                          pattern: '.*'
+                        },
+                        actions: [
+                          {
+                            type: 'respond',
+                            message: 'accepted-inviter',
+                            options: [
+                              '%(inputs[0])s',
+                              '%(inputs[2].username)s',
+                            ]
+                          },
+                          {
+                            type: 'sms',
+                            message: 'accepted-invited',
+                            to: '%(inputs[2].number)s',
+                            options: [
+                              '%(inputs[0])s',
+                            ]
+                          },
+                          //{
+                            //type: 'request',
+                            //url: '/games/phrase',
+                            //method: 'POST',
+                            //data: function(user, input) {
+                              //return {
+                                //user_id: user.id
+                              //};
+                            //},
+                            //callback: {
+                              //fn: function(response) {
+                                //return response[0];
+                              //},
+                              //scenarios: [
+                                //{
+                                //regex: {
+                                  //pattern: '.*'
+                                //},
+                                //actions: [
+                                  //{
+                                    //type: 'sms',
+                                    //message: 'game-start',
+                                    //to: '%(inputs[2].number)s',
+                                    //options: [
+                                      //'%(inputs[2].username)s',
+                                      //'%(inputs[3].phrase)s',
+                                    //]
+                                  //},
+                                //]
+                              //},
+                              //]
+                            //}
+                          //}
+                        ]
+                      }
+                    ]
+                  }
                 }
               ]
             }
@@ -112,17 +209,6 @@ var waitingForNickname = [
                   //options: [
                     //'%(inputs[0])s'
                   //]
-                //},
-                //{
-                  //type: 'request',
-                  //url: '/users/%(user.id)s',
-                  //method: 'PUT',
-                  //data: function(user, body) {
-                    //return {
-                      //state: 'waiting-for-invites',
-                      //username: body 
-                    //};
-                  //}
                 //},
               //]
             //},
@@ -172,55 +258,6 @@ var waitingForNickname = [
                               //state: 'waiting-for-submission'
                             //}
                           //},
-                          //{
-                            //type: 'respond',
-                            //message: 'accepted-inviter',
-                            //options: [
-                              //'%(inputs[0])s',
-                              //'%(inputs[2].username)s',
-                            //]
-                          //},
-                          //{
-                            //type: 'sms',
-                            //message: 'accepted-invited',
-                            //to: '%(inputs[2].number)s',
-                            //options: [
-                              //'%(inputs[0])s',
-                            //]
-                          //},
-                          //{
-                            //type: 'request',
-                            //url: '/games/phrase',
-                            //method: 'POST',
-                            //data: function(user, input) {
-                              //return {
-                                //user_id: user.id
-                              //};
-                            //},
-                            //callback: {
-                              //fn: function(response) {
-                                //return response[0];
-                              //},
-                              //scenarios: [
-                                //{
-                                //regex: {
-                                  //pattern: '.*'
-                                //},
-                                //actions: [
-                                  //{
-                                    //type: 'sms',
-                                    //message: 'game-start',
-                                    //to: '%(inputs[2].number)s',
-                                    //options: [
-                                      //'%(inputs[2].username)s',
-                                      //'%(inputs[3].phrase)s',
-                                    //]
-                                  //},
-                                //]
-                              //},
-                              //]
-                            //}
-                          //}
                         //]
                       //},
                     //]

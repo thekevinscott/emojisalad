@@ -5,9 +5,10 @@ var Text = require('../../models/text');
 module.exports = function(req, res) {
   var user_id = req.params.user_id;
   var data = req.body;
-  console.log('user update', user_id, data);
   User.update({ id: user_id }, data).then(function(result) {
-    res.json(result);
+    res.json({
+      game_state: result.game_state
+    });
   }).fail(function(err) {
     res.json({ error: err });
   });

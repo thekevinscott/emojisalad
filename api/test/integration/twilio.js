@@ -215,7 +215,7 @@ describe('Twilio', function() {
         return signUp(inviter, inviterName);
       });
 
-      it('should be able to onboard an invited user', function() {
+      it.only('should be able to onboard an invited user', function() {
         var num = '+1'+getRand();
         var invitedName = 'Invited User';
         console.log('\n\n\n\nprepare to invite user\n\n\n\n');
@@ -236,7 +236,6 @@ describe('Twilio', function() {
             }
           );
         }).then(function() {
-          console.log('got down here');
           return Promise.join(
             req.p({
               username: num,

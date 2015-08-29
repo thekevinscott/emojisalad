@@ -36,7 +36,9 @@ function respond(scenario, data) {
     var options = [];
   }
 
+
   var result = Message.get(key, options);
+  console.log('result', result);
   return result;
   //return _.assign({}, result, {type: 'reply'});
 };

@@ -333,14 +333,17 @@ var User = {
         if ( params.state && params.state === 'ready-for-game' ) {
           console.log('**** YAY');
           // add them to the game
-          /*
           Invite.getInviter(user.id).then(function(inviter) {
             console.log('inviters', inviter);
             if ( inviter && inviter.id ) {
               console.log('an inviter exists');
               return Game.getByUsers([inviter]).then(function(game) {
                 console.log('got the game', game, user);
-                return Game.add(game, [user]);
+                return Game.add(game, [user]).then(function() {
+                  dfd.resolve({
+                    game_state: 'ready-to-play'
+                  });
+                });
               }).catch(function(err) {
                 console.log('did not get the game');
                 console.error(err);
@@ -353,14 +356,25 @@ var User = {
                   return Game.create().then(function(game) {
                     console.log('got game back', game);
                     return Game.add(game, [user]);
+                  }).then(function() {
+                    dfd.resolve({
+                      game_state: 'pending'
+                    });
+                  });
+                } else {
+                  dfd.resolve({
+                    game_state: 'foo'
                   });
                 }
               });
             }
           });
-          */
+        } else {
+
+          dfd.resolve({
+            game_state: 'pending'
+          });
         }
-        dfd.resolve(user);
       });
     }).fail(function(err) {
       console.error('db error', err);
