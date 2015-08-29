@@ -218,10 +218,12 @@ describe('Twilio', function() {
       it('should be able to onboard an invited user', function() {
         var num = '+1'+getRand();
         var invitedName = 'Invited User';
+        console.log('\n\n\n\nprepare to invite user\n\n\n\n');
         return req.p({
           username: inviter,
           message: 'invite '+num,
         }, params).then(function(response) {
+          console.log('\n\n\n\ninvite user invited\n\n\n\n');
           return Promise.join(
             req.p({
               username: num,
@@ -229,10 +231,12 @@ describe('Twilio', function() {
             }, params),
             Message.get('intro_2'),
             function(response, message) {
+              console.log('\n\n\n\ninvite user said yes\n\n\n\n');
               response[0].should.equal(message.message);
             }
           );
         }).then(function() {
+          console.log('got down here');
           return Promise.join(
             req.p({
               username: num,
@@ -241,6 +245,7 @@ describe('Twilio', function() {
             Message.get('accepted-inviter', [invitedName, inviterName]),
             Message.get('accepted-invited', invitedName),
             function(output, messageInviter, messageInvited) {
+              console.log('got to end', output);
               output.Response.Message[0].should.equal(messageInviter.message);
               output.Response.Sms[0]['_'].should.equal(messageInvited.message);
               output.Response.Sms[0]['$']['to'].should.equal(inviter);
@@ -275,4 +280,4 @@ function signUp(number, nickname) {
   });
 }
 
-require('./suite/game')(params);
+//require('./suite/game')(params);

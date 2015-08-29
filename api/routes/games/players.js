@@ -10,7 +10,7 @@ module.exports = function(req, res) {
     });
     res.json({ users: users });
   }).catch(function(err) {
-    console.log('error getting phrase', err);
+    console.log('error getting phrase 3', err);
     res.json( err );
   });
 };

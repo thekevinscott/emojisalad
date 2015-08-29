@@ -15,7 +15,7 @@ function mapScenarios(scenarios, data) {
     if ( checkScenario.call(null, scenario.regex, _.last(data.inputs)) ) {
       data.inputs.push(parseInput(scenario.regex, data.inputs.pop()));
 
-      return mapActions.call(null, scenario.actions, data).then(function(resp) {
+      return mapActions.call(null, scenario.actions, data, scenario.flags).then(function(resp) {
         return resp;
       });
       break;

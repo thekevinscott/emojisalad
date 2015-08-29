@@ -26,7 +26,7 @@ var waitingForConfirmation = [
         data: {
           state: 'waiting-for-nickname'
         }
-      }
+      },
     ]
   },
   {
@@ -61,8 +61,8 @@ var waitingForNickname = [
   {
     // the user has passed their nickname
     // we now need to decide how to route them;
-    // prompt them to invite users, or allow the
-    // game to start?
+    // prompt them to invite users, or start the
+    // game?
     regex: {
       pattern: '.*',
     },
@@ -76,24 +76,18 @@ var waitingForNickname = [
             username: body,
             state: 'ready-for-game'
           };
-        }
-      },
-      {
-        type: 'request',
-        url: '/users/%(user.id)s/games',
-        method: 'GET',
+        },
         callback: {
-          fn: function(games) {
-            if ( games && games.length && games[0].state ) {
-              return games[0];
-            } else {
-              return 'waiting-for-players';
-            }
+          // this will determine what message to send back,
+          // based on whether a game is happening or not
+          fn: function(resp) {
+            console.log('hello guvnor');
+            return resp[0].state;
           },
           scenarios: [
             {
               regex: {
-                pattern: '^waiting-for-players'
+                pattern: '.*'
               },
               actions: [
                 {
@@ -102,127 +96,139 @@ var waitingForNickname = [
                   options: [
                     '%(inputs[0])s'
                   ]
-                },
-                {
-                  type: 'request',
-                  url: '/users/%(user.id)s',
-                  method: 'PUT',
-                  data: function(user, body) {
-                    return {
-                      state: 'waiting-for-invites',
-                      username: body 
-                    };
-                  }
                 }
               ]
-            },
-            {
-              regex: {
-                pattern: '.*'
-              },
-              actions: [
-                {
-                  type: 'request',
-                  url: '/users/%(user.id)s/inviter',
-                  method: 'GET',
-                  callback: {
-                    fn: function(inviter) {
-                      return inviter[0];
-                      //return inviter[0].number;
-                    },
-                    scenarios: [
-                      {
-                        regex: {
-                          pattern: '.*'
-                        },
-                        actions: [
-                          // update states for two inviters
-                          {
-                            type: 'request',
-                            url: '/users/%(user.id)s',
-                            method: 'PUT',
-                            data: {
-                              state: 'waiting-for-round'
-                            }
-                          },
-                          // the person who kicked off the game starts
-                          {
-                            type: 'request',
-                            url: '/users/%(inputs[2].id)s',
-                            method: 'PUT',
-                            data: {
-                              state: 'waiting-for-submission'
-                            }
-                          },
-                          {
-                            type: 'respond',
-                            message: 'accepted-inviter',
-                            options: [
-                              '%(inputs[0])s',
-                              '%(inputs[2].username)s',
-                            ]
-                          },
-                          {
-                            type: 'sms',
-                            message: 'accepted-invited',
-                            to: '%(inputs[2].number)s',
-                            options: [
-                              '%(inputs[0])s',
-                            ]
-                          },
-                          {
-                            type: 'request',
-                            url: '/games/phrase',
-                            method: 'POST',
-                            data: function(user, input) {
-                              return {
-                                user_id: user.id
-                              };
-                            },
-                            callback: {
-                              fn: function(response) {
-                                return response[0];
-                                //return inviter[0];
-                              },
-                              scenarios: [
-                                {
-                                regex: {
-                                  pattern: '.*'
-                                },
-                                actions: [
-                                  {
-                                    type: 'sms',
-                                    message: 'game-start',
-                                    to: '%(inputs[2].number)s',
-                                    options: [
-                                      '%(inputs[2].username)s',
-                                      '%(inputs[3].phrase)s',
-                                    ]
-                                  },
-                                ]
-                              },
-                              ]
-                            }
-                          }
-                        ]
-                      },
-                    ]
-                  }
-                }
+            }
+          ]
+          //scenarios: [
+            //{
+              //regex: {
+                //pattern: '^waiting-for-players'
+              //},
+              //actions: [
+                //{
+                  //type: 'respond',
+                  //message: 'intro_3',
+                  //options: [
+                    //'%(inputs[0])s'
+                  //]
+                //},
                 //{
                   //type: 'request',
-                  //url: '/users/%(args[0].user.id)s',
+                  //url: '/users/%(user.id)s',
                   //method: 'PUT',
                   //data: function(user, body) {
                     //return {
-                      //state: 'game-lobby',
-                      //username: body
+                      //state: 'waiting-for-invites',
+                      //username: body 
                     //};
                   //}
+                //},
+              //]
+            //},
+            //{
+              //regex: {
+                //pattern: '^pending'
+              //},
+              //actions: [
+                //{
+                  //type: 'request',
+                  //url: '/users/%(user.id)s/inviter',
+                  //method: 'GET',
+                  //callback: {
+                    //fn: function(inviter) {
+                      //console.log('the inviter');
+                      //return inviter[0];
+                    //},
+                    //scenarios: [
+                      //{
+                        //regex: {
+                          //pattern: '.*'
+                        //},
+                        //actions: [
+                          //{
+                            //type: 'request',
+                            //url: '/games/create',
+                            //method: 'POST',
+                            //data: function(user, body) {
+                              //return {
+                                //user_id: user.id
+                              //}
+                            //}
+                          //},
+                          //{
+                            //type: 'request',
+                            //url: '/users/%(user.id)s',
+                            //method: 'PUT',
+                            //data: {
+                              //state: 'waiting-for-round'
+                            //},
+                          //},
+                          //{
+                            //type: 'request',
+                            //url: '/users/%(inputs[2].id)s',
+                            //method: 'PUT',
+                            //data: {
+                              //state: 'waiting-for-submission'
+                            //}
+                          //},
+                          //{
+                            //type: 'respond',
+                            //message: 'accepted-inviter',
+                            //options: [
+                              //'%(inputs[0])s',
+                              //'%(inputs[2].username)s',
+                            //]
+                          //},
+                          //{
+                            //type: 'sms',
+                            //message: 'accepted-invited',
+                            //to: '%(inputs[2].number)s',
+                            //options: [
+                              //'%(inputs[0])s',
+                            //]
+                          //},
+                          //{
+                            //type: 'request',
+                            //url: '/games/phrase',
+                            //method: 'POST',
+                            //data: function(user, input) {
+                              //return {
+                                //user_id: user.id
+                              //};
+                            //},
+                            //callback: {
+                              //fn: function(response) {
+                                //return response[0];
+                              //},
+                              //scenarios: [
+                                //{
+                                //regex: {
+                                  //pattern: '.*'
+                                //},
+                                //actions: [
+                                  //{
+                                    //type: 'sms',
+                                    //message: 'game-start',
+                                    //to: '%(inputs[2].number)s',
+                                    //options: [
+                                      //'%(inputs[2].username)s',
+                                      //'%(inputs[3].phrase)s',
+                                    //]
+                                  //},
+                                //]
+                              //},
+                              //]
+                            //}
+                          //}
+                        //]
+                      //},
+                    //]
+                  //}
                 //}
-              ]
-            },
-          ]
+              //]
+            //},
+          //]
         },
       },
     ]
@@ -243,7 +249,7 @@ var waitingForInvites = [
         url: '/invites/new',
         method: 'POST',
         data: function(user, input) {
-          //console.log('user', user, input);
+          console.log('*********go send that invite');
           return {
             user: user,
             type: 'twilio',
@@ -252,9 +258,8 @@ var waitingForInvites = [
         },
         callback: {
           fn: function(resp) {
-            //console.log('what is the response', resp);
+            console.log('response from inviting', resp[0]);
             if ( resp[0].error ) {
-              //console.log('error', resp[0]);
               return resp[0].error.errno;
             } else {
               return resp[0].invited_user.number;
@@ -419,6 +424,7 @@ var waitingForSubmission = [
         },
         callback: {
           fn: function(resp) {
+            console.log('resp', resp[0]);
             if ( resp[0].error ) {
               //console.log('error', resp[0]);
               return resp[0].error.errno;
@@ -545,6 +551,13 @@ var guessing = [
               },
               actions: [
                 {
+                  type: 'respond',
+                  message: 'correct-guess',
+                  options: [
+                    '%(user.username)s',
+                  ]
+                },
+                {
                   type: 'request',
                   url: '/games/players',
                   method: 'GET',
@@ -572,6 +585,52 @@ var guessing = [
                               '%(user.username)s',
                             ]
                           },
+                          {
+                            type: 'sms',
+                            message: 'game-next-round',
+                            //to: 'foo',
+                            to: '%(inputs[2][0].number)s',
+                            options: [
+                              '%(user.username)s',
+
+                            ]
+                          },
+                          {
+                            type: 'request',
+                            url: '/games/phrase',
+                            method: 'POST',
+                            data: function(user, input) {
+                              return {
+                                user_id: user.id
+                              };
+                            },
+                            callback: {
+                              fn: function(response) {
+                                console.log(response[0]);
+                                return response[0];
+                                //return inviter[0];
+                              },
+                              scenarios: [
+                                {
+                                  regex: {
+                                    pattern: '.*'
+                                  },
+                                  actions: [
+                                    {
+                                      type: 'sms',
+                                      message: 'game-next-round-suggestion',
+                                      //to: 'foo',
+                                      to: '%(user.number)s',
+                                      options: [
+                                        '%(user.username)s',
+                                        '%(inputs[3].phrase)s',
+                                      ]
+                                    },
+                                  ]
+                                }
+                              ]
+                            }
+                          }
                         ]
                       }
                     ]
@@ -586,6 +645,96 @@ var guessing = [
   },
 ];
 
+var waiting = [
+  {
+    regex: {
+      pattern: '.*',
+    },
+    actions: [
+      {
+        type: 'request',
+        url: '/games/players',
+        method: 'GET',
+        data: function(user) {
+          return {
+            user_id: user.id
+          }
+        },
+        callback: {
+          fn: function(resp) {
+            console.log('somebody says something', resp);
+            return resp[0].users;
+          },
+          scenarios: [
+            {
+              regex: {
+                pattern: '.*'
+              },
+              actions: [
+                {
+                  type: 'sms',
+                  message: 'says',
+                  //to: 'foo',
+                  to: '%(inputs[1][0].number)s',
+                  options: [
+                    '%(user.username)s',
+                    '%(inputs[0])s'
+                  ]
+                },
+              ]
+            }
+          ]
+        }
+      },
+    ]
+  },
+];
+
+var newUser = [
+  {
+    regex: {
+      pattern: '.*',
+    },
+    actions: [
+      {
+        type: 'request',
+        url: '/users/create',
+        method: 'POST',
+        data: function(user, body) {
+          return {
+            number: user.number,
+            entry: 'text',
+            platform: 'twilio'
+          };
+        },
+        callback: {
+          fn: function(resp) {
+            if ( resp[0].error ) {
+              console.error('WTF', resp);
+              return resp[0].errno;
+            } else {
+              return '';
+            }
+          },
+          scenarios: [
+            {
+              regex: {
+                pattern: '.*'
+              },
+              actions: [
+                {
+                  type: 'respond',
+                  message: 'intro'
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
+
 var script = {
   'do-not-contact': doNotContact,
   'waiting-for-confirmation': waitingForConfirmation ,
@@ -593,7 +742,9 @@ var script = {
   'waiting-for-invites': waitingForInvites,
   'waiting-for-submission': waitingForSubmission,
   'waiting-for-round': waitingForRound,
-  'guessing': guessing
+  'guessing': guessing,
+  'waiting': waiting,
+  'new-user': newUser
 };
 
 module.exports = script;

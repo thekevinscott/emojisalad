@@ -41,7 +41,6 @@ module.exports = function(req, res) {
   }
 
   var body = req.body.Body;
-  //console.log('body', body);
   //Log.incoming(req.body);
 
   var number;
@@ -53,25 +52,14 @@ module.exports = function(req, res) {
     number = parsedNumber;
     return User.get({ number: number });
   }).then(function(user) {
-    //console.log('back from user get single');
-    if ( user ) {
-      //console.log('user exists, proceed', user);
-      return script(user.state, user, body);
-    } else {
-      //console.log('user does not exist');
-      return User.create({ number: number }, entry, platform).then(function() {
-        return Message.get('intro').then(function(data) {
-          data = _.assign(data, { type: 'respond' });
-          //console.log('message data', data);
-          // we wrap the response in an array to be consistent;
-          // later responses could return multiple responses.
-          return [data];
-        });
-      });
+    if ( !user ) {
+      user = {
+        number: number,
+        state: 'new-user'
+      }
     }
+    return script(user.state, user, body);
   }).then(function(response) {
-    //console.log('respnose', response);
-    //console.log('what is the response', Text.respond(response).toString());
     res.end(Text.respond(response).toString());
   }).fail(function(err) {
     // this should not notify the user. It means that the incoming request's number
@@ -80,6 +68,6 @@ module.exports = function(req, res) {
     //
     // This could mean Twilio somehow fell down between requests, or there's a man
     // in the middle, or someone has gotten a hold of this URL and is trying to hack us.
-    console.error('some odd kind of twilio error', err, number);
+    console.error('some odd kind of twilio error', JSON.stringify(err), number);
   });
 }

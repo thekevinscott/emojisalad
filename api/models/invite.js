@@ -4,13 +4,17 @@ var squel = require('squel');
 var db = require('db');
 
 var Phone = require('./phone');
-var User = require('./user');
+var User;
 var Text = require('./text');
 var Message = require('./message');
+var Game = require('./game');
 
 var Invite = {
   create: function(type, value, user) {
-    //console.log('create an invite');
+    if ( ! User ) {
+      User = require('./user');
+    }
+    console.log('create an invite');
     var dfd = Q.defer();
     var acceptedTypes = [
       'twilio'
@@ -33,10 +37,10 @@ var Invite = {
           return dfd.promise;
         }
         Phone.parse(value).then(function(number) {
-          //console.log('number parsed', number);
+          console.log('get ready to create user', User);
           return User.create({ number: number }, 'text_invite', 'twilio');
         }).then(function(invitedUser) {
-          //console.log('created new user', invitedUser);
+          console.log('created new user', invitedUser);
           var invite_id;
           var query = squel
                       .insert()
@@ -111,7 +115,7 @@ var Invite = {
                 .where('invited_id=?', inviter_id)
                 .left_join('users', 'u', 'u.id=inviter_id');
   
-                //console.log('selecting the inviter user', query.toString());
+                console.log('selecting the inviter user', query.toString());
     return db.query(query).then(function(users) {
       if ( users && users.length ) {
         //console.log('user exists');

@@ -4,6 +4,7 @@ var squel = require('squel');
 var db = require('db');
 var Message = require('./message');
 var Game = require('./game');
+var Invite = require('./invite');
 var Text;
 
 var regex = require('../config/regex');
@@ -16,9 +17,10 @@ var User = {
 
   // create a new user number
   create: function(user, entry, platform) {
+    console.log('top of user create');
     var dfd = Q.defer();
-    //console.log('user create', user);
     var attributes = {};
+    var game_id = user.game_id;
     if ( user.number ) {
       attributes.number = user.number;
     } else if ( user['messenger-name'] ) {
@@ -36,11 +38,8 @@ var User = {
         message: 'You must provide a user with valid contact info'
       });
     } else {
-      //console.log('get single');
       this.get(user).then(function(user) {
-        //console.log('user?', user);
         if ( user ) {
-          //console.log('we have a user');
           if ( user.state === 'do-not-contact' ) {
             dfd.reject({
               errno: 3,
@@ -94,12 +93,10 @@ var User = {
             }());
           }
 
-          //console.log('user', user);
           var query = squel
                       .insert()
                       .into('users')
                       .setFields(user);
-                      //console.log(query.toString());
 
           var state = 'waiting-for-confirmation';
           promises.push(function() {
@@ -116,8 +113,9 @@ var User = {
             });
           }());
 
+          console.log('user 1');
           Q.allSettled(promises).spread(function() {
-            //console.log('all done with promises', query.toString());
+            console.log('user 2');
             db.query(query).then(function(rows) {
               var user_id = rows.insertId;
 
@@ -144,17 +142,35 @@ var User = {
                 var attribute_query = getAttributeQuery('messenger-name');
               }
 
+            console.log('user 3');
               return db.query(attribute_query.toString()).then(function() {
                 return user_id;
               }).catch(function(e) {
                 console.error(e);
                 return e;
               });
+            //}).then(function(user_id) {
+              //if ( game_id ) {
+                //return Game.get(game_id).then(function(game) {
+                  //return Game.add(game, [{
+                    //id: user_id
+                  //}]);
+                //}).then(function() {
+                  //return user_id;
+                //});
+              //} else {
+                //return Game.create().then(function(game) {
+                  //return Game.add(game, [{
+                    //id: user_id
+                  //}]);
+                //}).then(function() {
+                  //return user_id;
+                //});
+              //}
             }).then(function(user_id) {
               this.get({
                 id: user_id
               }).then(function(user) {
-                //console.log('got user in create', user);
                 dfd.resolve(user);
               });
 
@@ -273,16 +289,13 @@ var User = {
   },
   update: function(user, params) {
     var dfd = Q.defer();
-    //console.log('user model update');
     this.get(user).then(function(user) {
-      //console.log('got user');
       if ( user ) {
         return Q.resolve(user);
       } else {
         return Q.reject('no user found for user id ' + user_id);
       }
     }).then(function(user) {
-      //console.log('user is resolved');
       // a whitelisted array of arguments we're allowed to update
       var whitelist = [
         'username',
@@ -294,7 +307,6 @@ var User = {
                   .table('users')
                   .where('id=?', user.id);
 
-                  //console.log('params', params);
       Object.keys(params).filter(function(key) {
         if ( whitelist.indexOf(key) !== -1 ) {
           return true;
@@ -318,10 +330,35 @@ var User = {
       });
 
       return db.query(query).then(function(rows) {
-        // if a user has specified they are ready to play,
-        // let the game know
-        if ( params.state === 'ready-for-game' ) {
-          Game.notify(user);
+        if ( params.state && params.state === 'ready-for-game' ) {
+          console.log('**** YAY');
+          // add them to the game
+          /*
+          Invite.getInviter(user.id).then(function(inviter) {
+            console.log('inviters', inviter);
+            if ( inviter && inviter.id ) {
+              console.log('an inviter exists');
+              return Game.getByUsers([inviter]).then(function(game) {
+                console.log('got the game', game, user);
+                return Game.add(game, [user]);
+              }).catch(function(err) {
+                console.log('did not get the game');
+                console.error(err);
+              });
+            } else {
+              console.log('no inviter for user', user);
+              return Game.getByUsers([user]).then(function(game) {
+                if ( !game ) {
+                  console.log('*****\n\n\n\n*******no game found either');
+                  return Game.create().then(function(game) {
+                    console.log('got game back', game);
+                    return Game.add(game, [user]);
+                  });
+                }
+              });
+            }
+          });
+          */
         }
         dfd.resolve(user);
       });

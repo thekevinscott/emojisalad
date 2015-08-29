@@ -12,11 +12,16 @@ module.exports = function(req, res) {
   ];
 
   return Game.getByUsers(users).then(function(game) {
-    res.json({ result: Game.checkGuess(game, message), users: game.players.filter(function(player) {
-      if ( player.id !== user_id ) { return true; }
-    })});
+    return Game.checkGuess(game, user_id, message).then(function(result) {
+      return Game.getPlayers(game).then(function(players) {
+        players = players.filter(function(player) {
+          if ( player.id !== user_id ) { return true; }
+        });
+        res.json({ result: result, users: players });
+      });
+    });
   }).catch(function(err) {
-    console.log('error getting phrase', err);
+    console.log('error getting phrase 1', err);
     res.json( err );
   });
 };

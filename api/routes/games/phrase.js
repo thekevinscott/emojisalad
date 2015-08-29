@@ -13,9 +13,9 @@ module.exports = function(req, res) {
   return Game.getByUsers(users).then(function(game) {
     return Game.getPhrase(game.id);
   }).then(function(phrase){
-    res.json({ phrase: phrase });
+    res.json( phrase );
   }).catch(function(err) {
-    console.log('error getting phrase', err);
+    console.log('error getting phrase 2', err);
     res.json( err );
   });
 };

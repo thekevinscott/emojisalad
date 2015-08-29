@@ -1,17 +1,102 @@
 var Q = require('q');
 var squel = require('squel').useFlavour('mysql');
 var Promise = require('bluebird');
+var _ = require('lodash');
 
 var db = require('db');
 var User;
 
 var Game = {
-  checkGuess: function(game, guess) {
-    if ( guess === 'Jurassic Park' ) {
-      return true;
-    } else {
-      return false;
+  update: function(game_id, data) {
+    console.log('game id', game_id);
+    var state_id = squel
+                  .select()
+                  .field('id')
+                  .from('game_states')
+                  .where('state=?',data.state);
+    var query = squel
+                .update()
+                .table('games')
+                .set('state_id', state_id)
+                .where('id=?',game_id);
+    return db.query(query);
+  },
+  get: function(game_id) {
+    var query = squel
+                .select()
+                .from('games')
+                .where('id=?',game_id);
+    return db.query(query).then(function(rows) {
+      if ( rows.length ) {
+        return rows[0];
+      } else {
+        return null;
+      }
+    });
+  },
+  getNextSubmitter: function(game) {
+    return this.getPlayers(game).then(function(users) {
+      for ( var i=0, l=users.length; i < l; i++ ) {
+        var user = users[i];
+        if ( user.state === 'waiting' ) {
+          // then the next user will be the next player
+          if ( users[i+1] ) {
+            return users[i+1];
+          } else {
+            // loop back to start
+            return users[0];
+          }
+        }
+      }
+      console.log('no next user found? wtf???');
+    });
+  },
+  checkGuess: function(game, user_id, guess) {
+    if ( ! User ) {
+      User = require('./user');
     }
+    var query = squel
+                .select()
+                .field('p.phrase')
+                .from('game_phrases', 'gp')
+                .left_join('phrases', 'p', 'p.id=gp.phrase_id')
+                .where('gp.game_id=?',game.id)
+                .order('gp.created', false)
+                .limit(1);
+
+    return db.query(query).then(function(rows) {
+      var result = guess.toLowerCase() == rows[0].phrase.toLowerCase();
+      if ( result ) {
+        // its a success!
+        var promises = [];
+        var nextSubmitter;
+        for ( var i=0, l=game.players.length; i<l; i++ ) {
+          promises.push(function() {
+            var user = game.players[i];
+
+            if ( user.state === 'waiting' ) {
+              // then the next user will be the next player
+              if ( game.players[i+1] ) {
+                nextSubmitter = i+1;
+              } else {
+                // loop back to start
+                nextSubmitter = 0;
+              }
+            }
+            return User.update({ id: user.id }, { state: 'waiting-for-round' });
+          }());
+        }
+        promises[nextSubmitter] = function() {
+          return User.update( game.players[nextSubmitter], { state: 'waiting-for-submission' });
+        }();
+
+        return Promise.all(promises).then(function() {
+          return result;
+        });
+      } else {
+        return result;
+      }
+    }.bind(this));
   },
   saveSubmission: function(user, message) {
     if ( ! User ) {
@@ -32,22 +117,35 @@ var Game = {
     // should save teh submission AND update the user state
   },
   getPhrase: function(game_id) {
-    return Promise.resolve('JURASSIC PARK');
-  },
-  // DEPRECATED
-  notify: function(user) {
-    return;
-    return this.getByUsers([user]).then(function(game) {
-      if ( game ) {
-        //console.log('game', game);
-        // we need at least two players to be ready
-        
-        if ( game.players && game.players.length ) {
-          for ( var i=0,l=game.players.length;i<l;i++ ) {
-            var player = game.players[i];
-            //console.log('player', player);
-          }
-        }
+    var game_phrases = squel
+                       .select()
+                       .field('phrase_id')
+                       .from('game_phrases')
+                       .where('game_id=?', game_id);
+    var query = squel
+                .select()
+                .from('phrases', 'p')
+                .field('p.phrase')
+                .field('p.id')
+                .where('p.id NOT IN ?', game_phrases)
+                .order('p.id')
+                .limit(1);
+
+    return db.query(query).then(function(rows) {
+      if ( rows ) {
+        var phrase = rows[0];
+        // mark this phrase as used
+        var markPhrase = squel
+                         .insert()
+                         .into('game_phrases')
+                         .setFields({
+                           game_id: game_id,
+                           phrase_id: phrase.id
+                         });
+        db.query(markPhrase);
+        return phrase;
+      } else {
+        console.error('Uh oh, out of phrases');
       }
     });
   },
@@ -92,6 +190,9 @@ var Game = {
     });
   },
   getByUsers: function(users) {
+    if ( !_.isArray(users) ) {
+      throw "You must provide users as an array";
+    }
     var dfd = Q.defer();
     var user_ids = users.map(function(user) {
       return user.id;
@@ -135,6 +236,27 @@ var Game = {
     }.bind(this)).fail(dfd.reject);
     return dfd.promise;
   },
+  add: function(game, users) {
+    return Promise.all(users.map(function(user) {
+      var row = {
+        game_id: game.id,
+        user_id: user.id
+      };
+
+      query = squel
+              .insert()
+              .into('game_participants')
+              .setFields(row)
+              .onDupUpdate('user_id', user.id);
+
+      return db.query(query).then(function(rows) {
+        return {
+          id: rows.insertId
+        }
+      });
+    }));
+  },
+  /*
   add: function(users) {
     function addUsersToGame(game, users) {
       //console.log('add user to game', users);
@@ -175,6 +297,7 @@ var Game = {
       }
     }.bind(this));
   },
+  */
   create: function() {
     var query = squel
                 .insert()

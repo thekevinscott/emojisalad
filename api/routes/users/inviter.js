@@ -4,11 +4,18 @@ var Invite = require('../../models/invite');
 
 module.exports = function(req, res) {
   var user_id = req.params.user_id;
-  Invite.getInviter(user_id).then(function(inviter) {
+  console.log('you ready');
+  return Invite.getInviter(user_id).then(function(inviter) {
+    console.log('got em', inviter);
     if ( inviter ) {
-      res.json(inviter);
+      return Game.getByUsers([inviter]).then(function(game) {
+        console.log('got the game');
+        inviter.game = game;
+        return res.json(inviter);
+      });
     } else {
-      res.json({});
+      console.log('nothing back');
+      return res.json({});
     }
   });
 }

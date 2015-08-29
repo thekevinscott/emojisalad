@@ -23,14 +23,13 @@ function respond(scenario, data) {
     throw new Error("Options must be an array");
   } else if ( ! user ) {
     throw new Error("You must provide a user");
-  } else if ( ! user.id ) {
-    throw new Error("You must provide a user id");
   }
 
   var key = scenario.message;
 
   if ( scenario.options ) {
     var options = scenario.options.map(function(option) {
+
       return sprintf(option, data)
     });
   } else {

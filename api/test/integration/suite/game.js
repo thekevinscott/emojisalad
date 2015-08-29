@@ -16,8 +16,9 @@ module.exports = function(params) {
   describe('Game', function() {
     var JURASSIC_PARK = '⏰🐲🐊🐉   🌳🌳🌳';
     var MIXED_EMOJI = '😀😀😀😀foo🚀🚀🚀🚀' ;
+    var SILENCE_OF_THE_LAMBS = '🙊  🐑       🔪🔫';
     var numbers = [];
-    this.timeout(15000);
+    this.timeout(30000);
 
     it('should initiate the game with the person who started it', function() {
       var users = getUsers();
@@ -97,6 +98,7 @@ module.exports = function(params) {
     it('should allow other players to cross talk', function() {
       var users = getUsers();
       var msg = 'The fuck is that?';
+      var msg2 = 'Shut up and guess';
 
       return startGame(users).then(function() {
         return req.p({
@@ -111,10 +113,22 @@ module.exports = function(params) {
           }, params, true),
           Message.get('says', [users.invited.username, msg]),
           function(output, message) {
-            console.log('output', output);
             var saySMS = output.Response.Sms[0];
             saySMS['_'].should.equal(message.message);
             saySMS['$']['to'].should.equal(users.inviter.number);
+          }
+        );
+      }).then(function() {
+        return Promise.join(
+          req.p({
+            username: users.inviter.number,
+            message: msg2
+          }, params, true),
+          Message.get('says', [users.inviter.username, msg2]),
+          function(output, message) {
+            var saySMS = output.Response.Sms[0];
+            saySMS['_'].should.equal(message.message);
+            saySMS['$']['to'].should.equal(users.invited.number);
           }
         );
       });
@@ -137,7 +151,6 @@ module.exports = function(params) {
           }, params, true),
           Message.get('correct-guess', [users.invited.username]),
           function(output, message) {
-            console.log('output', output);
             var saySMS = output.Response.Sms[0];
             saySMS['_'].should.equal(message.message);
             saySMS['$']['to'].should.equal(users.inviter.number);
@@ -146,8 +159,110 @@ module.exports = function(params) {
       });
     });
 
-    it('should not allow the submitter to guess for their own submission', function() {
+    it('should move to the second round on successful answer', function() {
+      var users = getUsers();
+      var msg = 'Jurassic Park';
+      var msg2 = 'SILENCE OF THE LAMBS';
+
+      return startGame(users).then(function() {
+        return req.p({
+          username: users.inviter.number,
+          message: JURASSIC_PARK 
+        }, params, true);
+      }).then(function() {
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: msg
+          }, params, true),
+          Message.get('game-next-round', [users.invited.username]),
+          Message.get('game-next-round-suggestion', [users.invited.username, msg2]),
+          function(output, inviterMessage, invitedMessage) {
+            //console.log('output', output.Response.Sms);
+            var inviterSms = output.Response.Sms[1];
+            inviterSms['_'].should.equal(inviterMessage.message);
+            inviterSms['$']['to'].should.equal(users.inviter.number);
+            var invitedSms = output.Response.Sms[2];
+            invitedSms['_'].should.equal(invitedMessage.message);
+            invitedSms['$']['to'].should.equal(users.invited.number);
+          }
+        );
+      });
     });
+
+    it.only('should allow the second round to take a guess and move to the third round', function() {
+      var users = getUsers();
+      var msg = 'Jurassic Park';
+      var msg2 = 'SILENCE OF THE LAMBS';
+      var msg3 = 'TIME AFTER TIME';
+
+      return startGame(users).then(function() {
+        return Promise.join(
+          req.p({
+            username: users.inviter.number,
+            message: JURASSIC_PARK 
+          }, params, true),
+          Message.get('game-submission-sent'),
+          function(response, gameSubmissionSent) {
+            response.Response.Message[0].should.equal(gameSubmissionSent.message);
+          }
+        );
+      }).then(function() {
+        // the invited user guesses the correct answer
+        return req.p({
+          username: users.invited.number,
+          message: msg
+        }, params, true);
+      }).then(function(response) {
+        // now its time for the invited user to send emojis
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: SILENCE_OF_THE_LAMBS 
+          }, params, true),
+          Message.get('game-submission-sent'),
+          function(response, gameSubmissionSent) {
+            //console.log('\n\n\n\n\n\n4\n\n\n\n\n\n\n');
+            //console.log('silence of lambs submission', JSON.stringify(response));
+            response.Response.Message[0].should.equal(gameSubmissionSent.message);
+          }
+        );
+      }).then(function() {
+        console.log('silence of the lambs prepare to guess');
+        return Promise.join(
+          req.p({
+            username: users.inviter.number,
+            message: msg2
+          }, params, true),
+          Message.get('correct-guess', [users.inviter.username]),
+          Message.get('game-next-round', [users.invited.username]),
+          Message.get('game-next-round-suggestion', [users.inviter.username, msg3]),
+          function(output, correctGuess, invitedMessage, inviterMessage) {
+            console.log('output', output.Response);
+            //output.Response.Message[0].should.equal(correctGuess.message);
+            console.log('1');
+            var correct = output.Response.Sms[0];
+            correct['_'].should.equal(correctGuess.message);
+            console.log('3');
+            correct['$']['to'].should.equal(users.invited.number);
+            console.log('4');
+            var invitedSms = output.Response.Sms[1];
+            console.log('5');
+            invitedSms['_'].should.equal(invitedMessage.message);
+            console.log('6');
+            invitedSms['$']['to'].should.equal(users.invited.number);
+            console.log('7');
+            var inviterSms = output.Response.Sms[2];
+            console.log('8');
+            inviterSms['_'].should.equal(inviterMessage.message);
+            console.log('9');
+            inviterSms['$']['to'].should.equal(users.inviter.number);
+            console.log('10');
+          }
+        );
+      });
+    });
+
   });
 
   function signUp(user) {
@@ -187,7 +302,8 @@ module.exports = function(params) {
     });
   }
 
-  function getUsers() {
+  function getUsers(numbers) {
+
     var inviter = {
       number: '+1'+params.getUser(), // add a +1 to simulate twilio
       username: 'Inviting User'

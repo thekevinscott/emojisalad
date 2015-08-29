@@ -13,14 +13,11 @@ var host = process.env.HOST || 'http://localhost';
 function request(scenario, data) {
   var user = data.user;
   var message = data.inputs[0];
-  //console.log('request message', message);
   // we make a dedicated promise, because request-promise uses its own non-Q promises
   if ( ! scenario ) {
     throw new Error("You must provide a scenario");
   } else if ( ! scenario.url ) {
     throw new Error("You must provide a URL");
-  } else if ( user && ! user.id ) {
-    throw new Error('You must provide a user with an id');
   }
 
   if ( !/^https?:\/\//i.test(scenario.url) ) {
@@ -30,7 +27,6 @@ function request(scenario, data) {
     scenario.url = host+':'+port+scenario.url;
   }
 
-  //console.log('scenario url', scenario.url);
   //console.log('data', data);
   //console.log('user id', user.id);
 
@@ -39,7 +35,6 @@ function request(scenario, data) {
     //user: user,
     //message: message
   //});
-  //console.log('url', url);
 
   console.log('**** FIGURE THIS PART OUT****');
   if ( _.isFunction(scenario.data) ) {
@@ -49,7 +44,6 @@ function request(scenario, data) {
   } else {
     var data = scenario.data;
   }
-  //console.log('json', data);
 
   return rp.call(this, {
     url: url,
@@ -66,9 +60,6 @@ function request(scenario, data) {
         });
       }
     }
-    //if ( scenario.callback ) {
-      //processScenarios(scenario.callback.scenarios, user, result, message);
-    //}
     return response;
   });
 }

@@ -11,7 +11,6 @@ module.exports = function(key, user, message) {
         message
       ]
     };
-    //console.log('data', data);
     return mapScenarios.call(null, config[key], data);
   } else {
     return Promise.reject({

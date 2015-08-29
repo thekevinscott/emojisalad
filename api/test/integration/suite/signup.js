@@ -94,9 +94,8 @@ module.exports = function(params) {
       });
     });
 
-    it('should prompt the user to invite friends', function() {
+    it.only('should prompt the user to invite friends', function() {
       var username = params.getUser();
-
       return r.p({
         username: username,
         message: 'hi'
@@ -108,13 +107,13 @@ module.exports = function(params) {
       }).then(function(response) {
         return Promise.join(
           r.p({
-          username: username,
-          message: username // the nickname
-        }),
-        Message.get('intro_3', username ),
-        function(response, message) {
-          response[0].should.equal(message.message);
-        }
+            username: username,
+            message: username // the nickname
+          }),
+          Message.get('intro_3', username ),
+          function(response, message) {
+            response[0].should.equal(message.message);
+          }
         );
       });
     });
