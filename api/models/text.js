@@ -156,3 +156,4 @@ var Text = {
 }
 
 module.exports = Text;
+

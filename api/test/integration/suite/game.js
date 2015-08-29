@@ -1,5 +1,6 @@
 var req = require('./lib/req');
 var Message = require('../../../models/Message');
+var Game = require('../../../models/Game');
 var sprint = require('sprintf');
 var Promise = require('bluebird');
 
@@ -26,12 +27,23 @@ module.exports = function(params) {
 
       return Promise.join(
         startGame(users),
-        Message.get('game-start', [users.inviter.username, phrase]),
         function(output, gameStartMessage) {
-          var Sms = output.Response.Sms[1];
-          Sms['_'].should.equal(gameStartMessage.message);
-          Sms['$']['to'].should.equal(users.inviter.number);
-          return output;
+          return Game.get(users).then(function(game) {
+            var submitting_user_id = game.round.submitter_id;
+            var submitting_user;
+            game.players.map(function(player) {
+              if ( player.id === submitting_user_id ) {
+                submitting_user = player;
+              }
+            });
+
+            return Message.get('game-start', [submitting_user.nickname, phrase]).then(function(gameStartMessage) {
+              var Sms = output.Response.Sms[1];
+              Sms['_'].should.equal(gameStartMessage.message);
+              Sms['$']['to'].should.equal(submitting_user.number);
+              return output;
+            });
+          });
         }
       );
     });
@@ -190,7 +202,7 @@ module.exports = function(params) {
       });
     });
 
-    it.only('should allow the second round to take a guess and move to the third round', function() {
+    it('should allow the second round to take a guess and move to the third round', function() {
       var users = getUsers();
       var msg = 'Jurassic Park';
       var msg2 = 'SILENCE OF THE LAMBS';

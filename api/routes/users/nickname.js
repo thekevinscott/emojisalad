@@ -15,10 +15,14 @@ module.exports = function(user, input) {
     //
     // A.K.A., it's time to associate you with a game.
     if ( user.inviter ) {
-      console.log('youve been invited', user.inviter_id);
       // if you've been invited, that means a
       // game already exists.
-      return Game.get({ user: { id: user.inviter.id }}).then(function(game) {
+      return User.update(user, {
+        nickname: input
+      }).then(function() {
+        return Game.get({ user: { id: user.inviter.id }});
+      }).then(function(game) {
+        //console.log('what is game', game);
         game.players.push(user);
         game.players.map(function(player) {
           // update each game player that its time to begin
@@ -28,17 +32,27 @@ module.exports = function(user, input) {
         });
         // add this invited user to the game
         return Promise.join(
-          Game.add(game, [user.inviter.nickname]),
+          Game.add(game, [user]),
+          Game.start(game),
           Message.get('accepted-invited', [input, user.inviter.nickname]),
           Message.get('accepted-inviter', [input, user.inviter.nickname]),
-          function(addResults, invitedMessage, inviterMessage) {
+          Game.newRound(game),
+          function(_1, _2, invitedMessage, inviterMessage, round) {
             inviterMessage.type = 'respond';
             invitedMessage.type = 'sms';
             invitedMessage.number = user.inviter.number;
-            return [
-              invitedMessage,
-              inviterMessage
-            ];
+
+            console.log(round);
+            
+            return Message.get('game-start', [round.submitter.nickname, round.phrase]).then(function(gameStart) {
+              gameStart.type = 'sms';
+              gameStart.number = round.submitter.number;
+              return [
+                invitedMessage,
+                inviterMessage,
+                gameStart 
+              ];
+            });
 
           }
         );

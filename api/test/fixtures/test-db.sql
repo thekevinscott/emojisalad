@@ -299,6 +299,83 @@ INSERT INTO `platforms` VALUES (1,'twilio'),(2,'messenger');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `player_order`
+--
+
+DROP TABLE IF EXISTS `player_order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `player_order` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `game_id` int(11) DEFAULT NULL,
+  `order` int(3) DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `player_order`
+--
+
+LOCK TABLES `player_order` WRITE;
+/*!40000 ALTER TABLE `player_order` DISABLE KEYS */;
+/*!40000 ALTER TABLE `player_order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `round_states`
+--
+
+DROP TABLE IF EXISTS `round_states`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `round_states` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `state` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `round_states`
+--
+
+LOCK TABLES `round_states` WRITE;
+/*!40000 ALTER TABLE `round_states` DISABLE KEYS */;
+INSERT INTO `round_states` VALUES (1,'pending'),(2,'waiting-for-submission');
+/*!40000 ALTER TABLE `round_states` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rounds`
+--
+
+DROP TABLE IF EXISTS `rounds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rounds` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `game_id` int(11) DEFAULT NULL,
+  `state_id` int(11) DEFAULT NULL,
+  `submitter_id` int(11) DEFAULT NULL,
+  `phrase_id` int(11) DEFAULT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rounds`
+--
+
+LOCK TABLES `rounds` WRITE;
+/*!40000 ALTER TABLE `rounds` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rounds` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user_attribute_keys`
 --
 
@@ -432,4 +509,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-29 13:20:34
+-- Dump completed on 2015-08-29 15:13:00
