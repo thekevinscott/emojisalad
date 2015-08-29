@@ -24,22 +24,24 @@ var twilio = require('twilio');
 var Text = {
   respond: function(responses) {
     var twiml = new twilio.TwimlResponse();
-    responses.map(function(response) {
-      switch(response.type) {
-        case 'sms' :
-          twiml.sms(response.message, {
+    if ( responses && responses.length ) {
+      responses.map(function(response) {
+        switch(response.type) {
+          case 'sms' :
+            twiml.sms(response.message, {
             to: response.number,
             from: config.from
           });
           break;
-        case 'respond' :
-          twiml.message(response.message);
+          case 'respond' :
+            twiml.message(response.message);
           break;
-        default:
-          console.error('uncaught response type', response);
+          default:
+            console.error('uncaught response type', response);
           break;
-      }
-    });
+        }
+      });
+    }
     return twiml;
   },
   sms: function(messages) {

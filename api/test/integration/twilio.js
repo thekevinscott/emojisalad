@@ -32,18 +32,6 @@ var params = {
 
 describe('Twilio', function() {
   // MOVE THIS TO THE WEB TESTS
-  describe('Phone Numbers', function() {
-    describe('Invalid', function() {
-      it('should reject a string', function() {
-      });
-      //'foo'
-      // 555-555-5555
-      // 123123
-    });
-
-    it('should accept valid phone numbers', function() {
-    });
-  });
   require('./suite')(params);
   describe('Invite flow', function() {
 
@@ -120,7 +108,7 @@ describe('Twilio', function() {
       });
     });
 
-    describe('Valid numbers', function() {
+    describe.only('Valid numbers', function() {
       it('should be able to invite someone', function() {
         var num = '+1'+getRand();
         return Promise.join(
@@ -207,50 +195,46 @@ describe('Twilio', function() {
         });
       });
     });
+  });
 
-    describe('Invited User Onboarding', function() {
-      var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
-      var inviterName = 'Inviting User';
-      before(function() {
-        return signUp(inviter, inviterName);
-      });
+  describe('Invited User Onboarding', function() {
+    var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
+    var inviterName = 'Inviting User';
+    before(function() {
+      return signUp(inviter, inviterName);
+    });
 
-      it.only('should be able to onboard an invited user', function() {
-        var num = '+1'+getRand();
-        var invitedName = 'Invited User';
-        console.log('\n\n\n\nprepare to invite user\n\n\n\n');
-        return req.p({
-          username: inviter,
-          message: 'invite '+num,
-        }, params).then(function(response) {
-          console.log('\n\n\n\ninvite user invited\n\n\n\n');
-          return Promise.join(
-            req.p({
-              username: num,
-              message: 'yes'
-            }, params),
-            Message.get('intro_2'),
-            function(response, message) {
-              console.log('\n\n\n\ninvite user said yes\n\n\n\n');
-              response[0].should.equal(message.message);
-            }
-          );
-        }).then(function() {
-          return Promise.join(
-            req.p({
-              username: num,
-              message: invitedName 
-            }, params, true),
-            Message.get('accepted-inviter', [invitedName, inviterName]),
-            Message.get('accepted-invited', invitedName),
-            function(output, messageInviter, messageInvited) {
-              console.log('got to end', output);
-              output.Response.Message[0].should.equal(messageInviter.message);
-              output.Response.Sms[0]['_'].should.equal(messageInvited.message);
-              output.Response.Sms[0]['$']['to'].should.equal(inviter);
-            }
-          );
-        });
+    it.only('should be able to onboard an invited user', function() {
+      var num = '+1'+getRand();
+      var invitedName = 'Invited User';
+      return req.p({
+        username: inviter,
+        message: 'invite '+num,
+      }, params).then(function(response) {
+        return Promise.join(
+          req.p({
+            username: num,
+            message: 'yes'
+          }, params),
+          Message.get('intro_2'),
+          function(response, message) {
+            response[0].should.equal(message.message);
+          }
+        );
+      }).then(function() {
+        return Promise.join(
+          req.p({
+            username: num,
+            message: invitedName 
+          }, params, true),
+          Message.get('accepted-inviter', [invitedName, inviterName]),
+          Message.get('accepted-invited', invitedName),
+          function(output, messageInviter, messageInvited) {
+            output.Response.Message[0].should.equal(messageInviter.message);
+            output.Response.Sms[0]['_'].should.equal(messageInvited.message);
+            output.Response.Sms[0]['$']['to'].should.equal(inviter);
+          }
+        );
       });
     });
   });
@@ -279,4 +263,4 @@ function signUp(number, nickname) {
   });
 }
 
-//require('./suite/game')(params);
+require('./suite/game')(params);

@@ -114,6 +114,9 @@ var waitingForNickname = [
                 pattern: 'ready-to-play'
               },
               actions: [
+                ////// THIS NEEDS TO UPDATE TEH GAME STATE
+                //THEN THE GAME STATE WILL UPDATE THE 
+                //PLAYER STATES
                 {
                   type: 'request',
                   url: '/users/%(user.id)s',
@@ -121,7 +124,6 @@ var waitingForNickname = [
                   data: function(user, body) {
                     return {
                       state: 'playing',
-                      username: body 
                     };
                   }
                 },

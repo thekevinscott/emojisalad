@@ -309,7 +309,7 @@ CREATE TABLE `user_attribute_keys` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +318,7 @@ CREATE TABLE `user_attribute_keys` (
 
 LOCK TABLES `user_attribute_keys` WRITE;
 /*!40000 ALTER TABLE `user_attribute_keys` DISABLE KEYS */;
-INSERT INTO `user_attribute_keys` VALUES (3,'number'),(4,'messenger-name');
+INSERT INTO `user_attribute_keys` VALUES (3,'number'),(4,'messenger-name'),(6,'nickname');
 /*!40000 ALTER TABLE `user_attribute_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -335,7 +335,8 @@ CREATE TABLE `user_attributes` (
   `attribute_id` int(11) DEFAULT NULL,
   `attribute` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`attribute_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -383,7 +384,7 @@ CREATE TABLE `user_states` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `state` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -392,7 +393,7 @@ CREATE TABLE `user_states` (
 
 LOCK TABLES `user_states` WRITE;
 /*!40000 ALTER TABLE `user_states` DISABLE KEYS */;
-INSERT INTO `user_states` VALUES (5,'waiting-for-confirmation'),(6,'waiting-for-nickname'),(7,'do-not-contact'),(8,'waiting-for-invites'),(9,'waiting'),(10,'ready-for-game'),(11,'waiting-for-round'),(12,'waiting-for-submission'),(13,'guessing'),(14,'playing');
+INSERT INTO `user_states` VALUES (5,'waiting-for-confirmation'),(6,'waiting-for-nickname'),(7,'do-not-contact'),(8,'waiting-for-invites'),(9,'waiting'),(10,'ready-for-game'),(11,'waiting-for-round'),(12,'waiting-for-submission'),(13,'guessing'),(14,'playing'),(15,'uncreated');
 /*!40000 ALTER TABLE `user_states` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -405,7 +406,6 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `entry_id` int(11) DEFAULT NULL,
   `state_id` int(2) DEFAULT '1',
   `platform_id` int(11) DEFAULT NULL,
@@ -432,4 +432,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-28 21:01:03
+-- Dump completed on 2015-08-29 13:20:34

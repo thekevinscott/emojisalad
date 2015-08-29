@@ -1,6 +1,6 @@
 var config = require('../config/twilio');
 var _ = require('lodash');
-var Q = require('q');
+var Promise = require('bluebird');
 
 var squel = require('squel');
 
@@ -8,24 +8,25 @@ var db = require('db');
 
 var LookupsClient = require('twilio').LookupsClient;
 var client = new LookupsClient(config.accountSid, config.authToken);
+//var phoneNumbers = Promise.promisify(client.phoneNumbers.get);
 
 var Phone = {
   parse: function(passedNumber) {
-    var dfd = Q.defer();
+    var deferred = Promise.pending();
     //console.log('input number', passedNumber);
     client.phoneNumbers(passedNumber).get(function(err, number) {
-      //console.log('back from client');
       if ( err ) {
         //console.error('there was an error', err);
-        dfd.reject({
-          message: "Number is not a valid phone number: " + passedNumber,
-          errno: 1
-        });
+        throw new Error(1);
+        //deferred.reject({
+          //message: "Number is not a valid phone number: " + passedNumber,
+          //errno: 1
+        //});
       } else {
-        dfd.resolve(number.phoneNumber);
+        deferred.resolve(number.phoneNumber);
       }
     });
-    return dfd.promise;
+    return deferred.promise;
   }
 };
 

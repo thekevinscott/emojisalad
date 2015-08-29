@@ -8,7 +8,6 @@ var User;
 
 var Game = {
   update: function(game_id, data) {
-    console.log('game id', game_id);
     var state_id = squel
                   .select()
                   .field('id')
@@ -20,19 +19,6 @@ var Game = {
                 .set('state_id', state_id)
                 .where('id=?',game_id);
     return db.query(query);
-  },
-  get: function(game_id) {
-    var query = squel
-                .select()
-                .from('games')
-                .where('id=?',game_id);
-    return db.query(query).then(function(rows) {
-      if ( rows.length ) {
-        return rows[0];
-      } else {
-        return null;
-      }
-    });
   },
   getNextSubmitter: function(game) {
     return this.getPlayers(game).then(function(users) {
@@ -48,7 +34,6 @@ var Game = {
           }
         }
       }
-      console.log('no next user found? wtf???');
     });
   },
   checkGuess: function(game, user_id, guess) {
@@ -153,7 +138,6 @@ var Game = {
     var query = squel
                 .select()
                 .field('u.id')
-                .field('u.username')
                 .field('u.created')
                 .field('s.state')
                 .field('p.platform as platform')
@@ -190,28 +174,34 @@ var Game = {
     });
   },
   getByUsers: function(users) {
-    if ( !_.isArray(users) ) {
-      throw "You must provide users as an array";
-    }
-    var dfd = Q.defer();
-    var user_ids = users.map(function(user) {
-      return user.id;
-    });
-
+    return this.get({ users: users });
+  },
+  get: function(params) {
     var query = squel
                 .select()
                 .field('g.id')
-                //.field('s.state')
+                .field('s.state')
                 .from('games', 'g')
                 .left_join('game_participants', 'p', 'p.game_id = g.id')
-                //.left_join('game_states', 's', 's.id = g.state_id')
-                .where('p.user_id IN ? ',user_ids)
+                .left_join('game_states', 's', 's.id = g.state_id')
                 .order('g.created', false)
                 .limit(1);
-    db.query(query).then(function(rows) {
+
+    if ( params.user ) {
+      query.where('p.user_id=?',params.user.id)
+    } else if ( params.users ) {
+      var user_ids = params.users.map(function(user) {
+        return user.id;
+      });
+      query.where('p.user_id IN ? ',user_ids)
+    } else if ( params.id ) {
+      query.where('g.id=?',params.id);
+    }
+    
+    return db.query(query.toString()).then(function(rows) {
       if ( rows.length ) {
         var game = rows[0];
-        this.getPlayers(game).then(function(players) {
+        return this.getPlayers(game).then(function(players) {
           game.players = players;
           if ( players.length > 1 ) {
             game.state = 'ready';
@@ -228,13 +218,12 @@ var Game = {
             game.state = 'waiting-for-players';
             game.players = players;
           }
-          dfd.resolve(game);
-        }).fail(dfd.reject);
+          return game;
+        });
       } else {
-        dfd.resolve(null);
+        return null;
       }
-    }.bind(this)).fail(dfd.reject);
-    return dfd.promise;
+    }.bind(this));
   },
   add: function(game, users) {
     return Promise.all(users.map(function(user) {
@@ -247,7 +236,7 @@ var Game = {
               .insert()
               .into('game_participants')
               .setFields(row)
-              .onDupUpdate('user_id', user.id);
+              //.onDupUpdate('user_id', user.id);
 
       return db.query(query).then(function(rows) {
         return {
@@ -256,48 +245,6 @@ var Game = {
       });
     }));
   },
-  /*
-  add: function(users) {
-    function addUsersToGame(game, users) {
-      //console.log('add user to game', users);
-      return Promise.all(users.map(function(user) {
-        //console.log('inner promise');
-        var row = {
-          game_id: game.id,
-          user_id: user.id
-        };
-
-        //console.log('before query');
-        query = squel
-                .insert()
-                .into('game_participants')
-                .setFields(row)
-                .onDupUpdate('user_id', user.id);
-
-                //console.log('do the query', query.toString());
-        return db.query(query).then(function(rows) {
-          //console.log('back', rows);
-          return {
-            id: rows.insertId
-          }
-        });
-      }));
-    }
-    // does a game exist for one of these users yet?
-    return this.getByUsers(users).then(function(game) {
-      if ( game ) {
-        //console.log('there is a game');
-        return addUsersToGame(game, users);
-      } else {
-        // create a game
-        //console.log('there is not a game');
-        return this.create().then(function(game) {
-          return addUsersToGame(game, users);
-        });
-      }
-    }.bind(this));
-  },
-  */
   create: function() {
     var query = squel
                 .insert()
@@ -309,132 +256,6 @@ var Game = {
       }
     });
   }
-  /*
-  table: 'games',
-  update: function(user_id) {
-
-    var query = squel
-                .select()
-                .field('g.id')
-                .from('games', 'g')
-                .left_join('game_participants', 'p', 'p.game_id = g.id')
-                .where('p.user_id=?',user_id)
-                .order('g.created', false)
-                .limit(1);
-
-    return db.query(query).then(function(games) {
-      if ( games.length ) {
-        var game = games[0];
-        // grab all the participants in a particular game
-        var participants_query = squel
-                                  .select()
-                                  .field('g.id', 'game_id')
-                                  .field('u.*')
-                                  .field('s.state')
-                                  .from('game_participants', 'p')
-                                  .left_join('games', 'g', 'p.game_id = g.id')
-                                  .left_join('users', 'u', 'u.id = p.user_id')
-                                  .left_join('user_states', 's', 's.id = u.state_id')
-                                  .where('g.id=?',game.id);
-        return db.query(participants_query);
-      } else {
-        throw "No games found, wtf is going on" + query.toString();
-      }
-    }).then(function(users) {
-      var pending_users = users.filter(function(user) {
-        if ( user.state === 'created' || user.state === 'invited' ) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-
-      if ( pending_users.length ) {
-        console.log('there are still pending users', pending_users);
-      } else {
-        Game.start(users[0].game_id);
-      }
-    });
-  },
-  start: function(game_id) {
-    var in_progress = squel
-                      .select()
-                      .field('id')
-                      .from('game_states')
-                      .where('state="in_progress"');
-
-    var query = squel
-                .update()
-                .table('games')
-                .set('state_id', in_progress);
-
-    return db.query(query.toString());
-  },
-  create: function(users) {
-    console.log('create game');
-    function addParticipants(game_id, usersToExclude) {
-      if ( ! usersToExclude ) { usersToExclude = []; }
-      console.log('add participarnts');
-      console.log('users', users);
-
-      console.log('users to exclude', usersToExclude);
-      var rows = users.map(function(user) {
-        return {
-          game_id: game_id,
-          user_id: user.id
-        }
-      }).filter(function(row) {
-        if ( usersToExclude.indexOf(row.user_id) !== -1 ) {
-          return false;
-        } else {
-          return true;
-        }
-      });
-
-      if ( rows.length ) {
-        query = squel
-                .insert()
-                .into('game_participants')
-                .setFieldsRows(rows);
-
-        return db.query(query);
-      } else {
-        return Q.resolve(true);
-      }
-    }
-
-    var game_query = squel
-                     .select()
-                     .field('g.id', 'game_id')
-                     .field('p.user_id')
-                     .from('games', 'g')
-                     .left_join('game_participants', 'p', 'p.game_id = g.id')
-                     .where('p.user_id IN ?', users.map(function(user) {
-                       return user.id;
-                     }));
-
-    return db.query(game_query).then(function(games) {
-      if ( games.length ) {
-        var usersToExclude = games.map(function(row) {
-          return row.user_id;
-        });
-        // game already exists, just add onto it
-        return addParticipants(games[0].game_id, usersToExclude);
-      } else {
-        var query = squel
-                    .insert()
-                    .into('games', 'g')
-                    .setFields({ state_id: 1 });
-        return db.query(query).then(function(game) {
-          return addParticipants(game.insertId);
-        }).fail(function(err) {
-          console.error('error when creating game', err);
-        });
-      }
-    });
-
-  }
-*/
 };
 
 module.exports = Game;

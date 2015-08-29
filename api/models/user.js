@@ -1,15 +1,11 @@
-var Q = require('q');
-var squel = require('squel');
-
+var squel = require('squel').useFlavour('mysql');
 var db = require('db');
-var Message = require('./message');
 var Game = require('./game');
+var Promise = require('bluebird');
 var Invite = require('./invite');
 var Text;
 
 var regex = require('../config/regex');
-
-Q.longStackTraces = true;
 
 var User = {
   // valid phone number test
@@ -17,202 +13,63 @@ var User = {
 
   // create a new user number
   create: function(user, entry, platform) {
-    console.log('top of user create');
-    var dfd = Q.defer();
     var attributes = {};
-    var game_id = user.game_id;
-    if ( user.number ) {
-      attributes.number = user.number;
-    } else if ( user['messenger-name'] ) {
-      attributes['messenger-name'] = user['messenger-name'];
+
+    var query = squel
+                .insert()
+                .into('users');
+
+    if ( platform ) {
+      query.setFields({'platform_id': squel
+                    .select()
+                    .field('id')
+                    .from('platforms')
+                    .where('platform=?', platform)});
     }
 
-    if ( ! user ) {
-      dfd.reject({
-        errno: 7,
-        message: 'You must provide a valid user'
-      });
-    } else if ( ! user.number && ! user['messenger-name'] ) {
-      dfd.reject({
-        errno: 4,
-        message: 'You must provide a user with valid contact info'
-      });
-    } else {
-      this.get(user).then(function(user) {
-        if ( user ) {
-          if ( user.state === 'do-not-contact' ) {
-            dfd.reject({
-              errno: 3,
-              message: 'Phone number is on the do not contact list'
-            });
-          } else {
-            dfd.reject({
-              errno: 2,
-              message: 'Phone number is already registered'
-            });
-          }
-        } else {
-          user = { };
-
-          var promises = [];
-
-          if ( platform ) {
-            promises.push(function() {
-              var platform_id = squel
-                               .select()
-                               .field('id')
-                               .from('platforms')
-                               .where('platform=?', platform);
-
-              return db.query(platform_id).then(function(platform_id) {
-                if ( platform_id.length ) {
-                  platform_id = platform_id[0].id;
-                  query.set('platform_id', platform_id);
-                } else {
-                  throw "Platform does not exist " + platform;
-                }
-              });
-            }());
-          }
-
-          if ( entry ) {
-            promises.push(function() {
-              var entry_id = squel
-                             .select()
-                             .field('id')
-                             .from('user_entries')
-                             .where('entry=?', entry);
-              return db.query(entry_id).then(function(entry_id) {
-                if ( entry_id.length ) {
-                  entry_id = entry_id[0].id;
-                  query.set('entry_id', entry_id);
-                } else {
-                  throw "Desired entry " + entry + " is not in the database";
-                }
-              });
-            }());
-          }
-
-          var query = squel
-                      .insert()
-                      .into('users')
-                      .setFields(user);
-
-          var state = 'waiting-for-confirmation';
-          promises.push(function() {
-            var user_state = squel
-                             .select()
-                             .field('id')
-                             .from('user_states')
-                             .where('state=?',state);
-            return db.query(user_state).then(function(state_id) {
-              if ( state_id.length ) {
-                state_id = state_id[0].id;
-                query.set('state_id', state_id);
-              }
-            });
-          }());
-
-          console.log('user 1');
-          Q.allSettled(promises).spread(function() {
-            console.log('user 2');
-            db.query(query).then(function(rows) {
-              var user_id = rows.insertId;
-
-              function getAttributeQuery(key) {
-                var attribute_id = squel
-                                   .select()
-                                   .field('id')
-                                   .from('user_attribute_keys')
-                                   .where('`key`=?',key);
-
-                return squel
-                        .insert()
-                        .into('user_attributes')
-                        .setFields({
-                          user_id: user_id,
-                          attribute_id: attribute_id,
-                          attribute: attributes[key] 
-                        });
-              }
-
-              if ( attributes.number ) {
-                var attribute_query = getAttributeQuery('number');
-              } else if ( attributes['messenger-name'] ) {
-                var attribute_query = getAttributeQuery('messenger-name');
-              }
-
-            console.log('user 3');
-              return db.query(attribute_query.toString()).then(function() {
-                return user_id;
-              }).catch(function(e) {
-                console.error(e);
-                return e;
-              });
-            //}).then(function(user_id) {
-              //if ( game_id ) {
-                //return Game.get(game_id).then(function(game) {
-                  //return Game.add(game, [{
-                    //id: user_id
-                  //}]);
-                //}).then(function() {
-                  //return user_id;
-                //});
-              //} else {
-                //return Game.create().then(function(game) {
-                  //return Game.add(game, [{
-                    //id: user_id
-                  //}]);
-                //}).then(function() {
-                  //return user_id;
-                //});
-              //}
-            }).then(function(user_id) {
-              this.get({
-                id: user_id
-              }).then(function(user) {
-                dfd.resolve(user);
-              });
-
-            }.bind(this)).fail(function(err) {
-              console.log('failed in the db create, means there was a db error', err);
-              //console.log(query.toString());
-              switch(err.errno) {
-                // at this point, they could be blacklisted
-                case 1062:
-                  console.error('This is fucked; we should have caught this when we did our initial user check above.');
-                  dfd.reject({
-                    errno: 2,
-                    message: 'Phone number is already registered'
-                  });
-                break;
-                default: 
-                  console.error('error registering phone number', err);
-                  dfd.reject({
-                    errno: 5,
-                    message: 'There was an unknown error registering the phone number. Please try again later'
-                  });
-                break;
-              }
-            });
-          }.bind(this)).fail(function(err) {
-            console.error('failed in the all settled', err);
-          });
-        }
-      }.bind(this));
-
+    if ( entry ) {
+      query.setFields({'entry_id': squel
+                                 .select()
+                                 .field('id')
+                                 .from('user_entries')
+                                 .where('entry=?', entry)});
     }
-    return dfd.promise;
+
+    query.setFields({ 'state_id': squel
+                                 .select()
+                                 .field('id')
+                                 .from('user_states')
+                                 .where('state=?','waiting-for-confirmation')});
+
+    return db.query(query.toString()).then(function(rows) {
+      var user_id = rows.insertId;
+
+      var attribute_id = squel
+                         .select()
+                         .field('id')
+                         .from('user_attribute_keys')
+                         .where('`key`=?','number');
+      var attb = squel
+                 .insert()
+                 .into('user_attributes')
+                 .setFields({
+                   user_id: user_id,
+                   attribute_id: attribute_id,
+                   attribute: user['number']
+                 });
+
+
+       return db.query(attb.toString()).then(function() {
+         user.id = user_id;
+         return user;
+       });
+    });
   },
   get: function(user) {
-    var dfd = Q.defer();
-    //console.log('ready to get user');
     function fetchUser(key, val) {
-      //console.log('fetch user!', key, val);
       var query = squel
                   .select()
                   .field('u.id')
-                  .field('u.username')
                   .field('u.created')
                   .field('i.inviter_id')
                   .field('p.platform', 'platform')
@@ -223,113 +80,128 @@ var User = {
                   .left_join('user_states', 's', 's.id = u.state_id')
                   .left_join('user_attributes', 'a', 'a.user_id = u.id')
                   .left_join('user_attribute_keys', 'k', 'a.attribute_id = k.id');
-      if ( key === 'id' || key === 'username' ) {
+      if ( key === 'id' ) {
         query = query.where('u.`'+key+'`=?', val);
+      } else if ( key === 'invited_id' ) {
+        query = query.where('i.invited_id=?', val)
       } else {
         query = query
                 .where('k.`key`=?', key)
                 .where('a.attribute=?', val);
       }
 
-
-      //console.log("get query", query.toString());
       return db.query(query.toString()).then(function(users) {
-        var user;
-        //console.log('here', users);
-        if ( users && users.length ) {
-          //console.log('user exists');
-          user = users[0];
-        } else {
-          //console.log('user does not exists');
+        if ( ! users.length ) {
           return null;
-        }
+        } else {
 
-        var query = squel
-                    .select()
-                    .field('a.attribute')
-                    .field('k.`key`')
-                    .from('user_attributes', 'a')
-                    .left_join('users', 'u', 'u.id = a.user_id')
-                    .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
-                    //.where('k.`key`=?', key)
-                    //.where('a.attribute=?', val)
-                    .where('a.user_id=?',user.id);
+          var user = users[0];
 
-        return db.query(query).then(function(attributes) {
-          //console.log('got the attributes', attributes);
-          attributes.map(function(attribute) {
-            user[attribute.key] = attribute.attribute;
+          var promises = [
+            function() {
+              var query = squel
+                          .select()
+                          .field('a.attribute')
+                          .field('k.`key`')
+                          .from('user_attributes', 'a')
+                          .left_join('users', 'u', 'u.id = a.user_id')
+                          .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
+                          .where('a.user_id=?',user.id);
+
+              return db.query(query);
+            }(),
+          ];
+
+          if ( user.inviter_id ) {
+            promises.push(User.get({ id: user.inviter_id }));
+          }
+
+          return Promise.all(promises).then(function(results) {
+            results[0].map(function(attribute) {
+              user[attribute.key] = attribute.attribute;
+            });
+            if ( results[1] ) {
+              user.inviter = results[1];
+            }
+            //user.game = game;
+            return user;
           });
-          //console.log('the user afterwards', user);
-          return user;
-        });
+
+        }
       });
     }
 
     if ( typeof user === 'object' ) {
-      // then we've passed a user object
       if ( user.id ) {
         return fetchUser('id', user.id);
       } else if ( user.number ) {
         return fetchUser('number', user.number);
       } else if ( user['messenger-name'] ) {
         return fetchUser('messenger-name', user['messenger-name']);
-      } else if ( user.username ) {
-        return fetchUser('username', user.username);
+      } else if ( user.nickname ) {
+        return fetchUser('nickname', user.nickname);
+      } else if ( user.invited_id ) {
+        return fetchUser('invited_id', user.invited_id);
       } else {
-        dfd.reject(new Error({
+        throw new Error({
           message: 'Tried to select on an invalid user key'
-        }));
+        });
       }
     } else {
       // we've passed a number
       return fetchUser('number', user);
     }
-    return dfd.promise;
   },
   update: function(user, params) {
-    var dfd = Q.defer();
-    this.get(user).then(function(user) {
-      if ( user ) {
-        return Q.resolve(user);
-      } else {
-        return Q.reject('no user found for user id ' + user_id);
+    // a whitelisted array of arguments we're allowed to update
+
+    var queries = [];
+
+    Object.keys(params).map(function(key) {
+      switch(key) {
+        case 'state' :
+          var state = squel
+                       .select()
+                       .field('id')
+                       .from('user_states')
+                       .where('state=?',params[key]);
+
+
+          var query = squel
+                      .update()
+                      .table('users')
+                      .where('id=?', user.id);
+          query.set('state_id', state, { dontQuote: true });
+          queries.push(db.query(query));
+          break;
+        default:
+          var attribute_id = squel
+                             .select()
+                             .field('id')
+                             .from('user_attribute_keys')
+                             .where('`key`=?',key);
+          var query = squel
+                     .insert()
+                     .into('user_attributes')
+                     .setFields({
+                       user_id: user.id,
+                       attribute_id: attribute_id,
+                       attribute: params[key]
+                     })
+                     .onDupUpdate('attribute', params[key]);
+
+         queries.push(db.query(query.toString()));
+          break;
       }
-    }).then(function(user) {
-      // a whitelisted array of arguments we're allowed to update
-      var whitelist = [
-        'username',
-        'state'
-      ];
+      user[key] = params[key];
+    });
 
-      var query = squel
-                  .update()
-                  .table('users')
-                  .where('id=?', user.id);
+    return Promise.all(queries).then(function() {
+      return user;
+    });
 
-      Object.keys(params).filter(function(key) {
-        if ( whitelist.indexOf(key) !== -1 ) {
-          return true;
-        }
-      }).map(function(key) {
-        switch(key) {
-          case 'state' :
-            var state = squel
-                         .select()
-                         .field('id')
-                         .from('user_states')
-                         .where('state=?',params[key]);
-
-            query.set('state_id', state, { dontQuote: true });
-            break;
-          default:
-            query.set(key, params[key]);
-            break;
-        }
-        user[key] = params[key];
-      });
-
-      return db.query(query).then(function(rows) {
+    //return db.query(query).then(function(rows) {
+      /*
         if ( params.state && params.state === 'ready-for-game' ) {
           console.log('**** YAY');
           // add them to the game
@@ -375,12 +247,8 @@ var User = {
             game_state: 'pending'
           });
         }
-      });
-    }).fail(function(err) {
-      console.error('db error', err);
-      dfd.reject(err);
-    });
-    return dfd.promise;
+        */
+    //});
   },
   //this is the old message function that sends messages based on platform.
   //deprecated

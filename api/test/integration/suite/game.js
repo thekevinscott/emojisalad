@@ -20,7 +20,7 @@ module.exports = function(params) {
     var numbers = [];
     this.timeout(30000);
 
-    it('should initiate the game with the person who started it', function() {
+    it.only('should initiate the game with the person who started it', function() {
       var users = getUsers();
       var phrase = 'JURASSIC PARK';
 

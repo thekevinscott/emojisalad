@@ -1,16 +1,14 @@
 var User = require('../../models/user');
+var Message = require('../../models/message');
+var Promise = require('bluebird');
 
-module.exports = function(req, res) {
-  var number = req.body.number;
-  console.log('USER 1', number);
-  return User.create({ number: number }).then(function(user) {
-    console.log('2', user);
-    return res.json({
-      id: user.id,
-      number: user.number
-    });
-  }).catch(function(err) {
-    console.log('all done!');
-    return res.json(err);
-  });
+module.exports = function(user, message) {
+  return Promise.join(
+    User.create({ number: user.number }),
+    Message.get('intro'),
+    function(user, message) {
+      message.type = 'respond';
+      return [message];
+    }
+  );
 }

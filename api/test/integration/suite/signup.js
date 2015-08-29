@@ -24,7 +24,6 @@ module.exports = function(params) {
 
 
     describe('Test a brand new user', function() {
-
       it('should introduce itself when contacting for the first time', function() {
         return Promise.join(
           r.p({
@@ -33,6 +32,7 @@ module.exports = function(params) {
           }),
           Message.get('intro'),
           function(response, message) {
+            console.log('response', response);
             response[0].should.equal(message.message);
           }
         );
@@ -182,19 +182,6 @@ module.exports = function(params) {
           message: inviter // the nickname
         });
       });
-    });
-
-    it('should get pissy if you don\'t send it a valid invite message', function() {
-      return Promise.join(
-        r.p({
-          username: inviter,
-          message: 'random foo'
-        }),
-        Message.get('error-8'),
-        function(response, message) {
-          response[0].should.equal(message.message);
-        }
-      );
     });
 
   });

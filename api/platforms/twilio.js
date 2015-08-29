@@ -24,7 +24,7 @@
  */
 var rp = require('request-promise');
 var _ = require('lodash');
-var script = require('../scripts');
+var router = require('../routes');
 var Log = require('../models/log');
 var Phone = require('../models/phone');
 var User = require('../models/user');
@@ -50,24 +50,33 @@ module.exports = function(req, res) {
   // first, we parse the Phone number
   Phone.parse(req.body.From).then(function(parsedNumber) {
     number = parsedNumber;
-    return User.get({ number: number });
-  }).then(function(user) {
-    if ( !user ) {
-      user = {
-        number: number,
-        state: 'new-user'
+    return User.get({ number: number }).then(function(user) {
+      if ( !user ) {
+        user = {
+          number: number,
+          state: 'uncreated',
+          entry: entry,
+          platform: platform
+        }
       }
-    }
-    return script(user.state, user, body);
+      return router(user, body);
+    });
   }).then(function(response) {
-    res.end(Text.respond(response).toString());
-  }).fail(function(err) {
+    return Text.respond(response).toString();
+  }).then(function(response) {
+    return res.end(response);
+  }).catch(function(err) {
     // this should not notify the user. It means that the incoming request's number
     // somehow failed validation on Twilio's side, which would be odd because Twilio
     // is providing us with that number.
     //
     // This could mean Twilio somehow fell down between requests, or there's a man
     // in the middle, or someone has gotten a hold of this URL and is trying to hack us.
-    console.error('some odd kind of twilio error', JSON.stringify(err), number);
+    console.error('twilio error for number', number);
+    console.error(err.stack);
+    if ( err.sql ) {
+      console.error(err.sql);
+    }
+    res.end();
   });
 }
