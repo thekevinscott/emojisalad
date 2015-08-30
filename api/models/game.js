@@ -10,6 +10,7 @@ var Round = require('./round');
 
 var Game = {
   update: function(game, data) {
+    console.log('update game', game.id, data);
     var state_id = squel
                   .select()
                   .field('id')
@@ -29,10 +30,9 @@ var Game = {
     return Promise.join(
       Round.getLast(game),
       this.getBattingOrder(game),
-      function(rounds, order) {
+      function(round, order) {
         var next;
-        if ( rounds.length ) {
-          var round = rounds[0];
+        if ( round ) {
           for ( var i=0,l=order.length; i<l; i++ ) {
             if ( order[i].user_id === round.submitter_id ) {
               if ( i < l-1 ) {
@@ -173,20 +173,7 @@ var Game = {
     });
   },
   getRound: function(game) {
-    var query = squel
-                .select()
-                .from('rounds')
-                .where('game_id=?',game.id)
-                .order('id', false)
-                .limit(1);
-
-    return db.query(query).then(function(rows) {
-      if ( rows ) {
-        return rows[0];
-      } else {
-        return null;
-      }
-    });
+    return Round.getLast(game);
   },
   get: function(params) {
     var query = squel

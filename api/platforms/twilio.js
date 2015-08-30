@@ -59,7 +59,7 @@ module.exports = function(req, res) {
           platform: platform
         }
       }
-      //console.log(req.body.From, '|', req.body.Body, '|', user.state);
+      console.log(req.body.From, '|', req.body.Body, '|', user.state);
       return router(user, body);
     });
   }).then(function(response) {

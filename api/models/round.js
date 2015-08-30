@@ -79,12 +79,27 @@ var Round = {
   getLast: function(game) {
     var query = squel
                 .select()
-                .from('rounds')
-                .where('game_id=?',game.id)
-                .order('id', false)
+                .field('r.id')
+                .field('r.submitter_id')
+                .field('r.phrase_id')
+                .field('r.winner_id')
+                .field('r.created')
+                .field('p.phrase')
+                .field('s.state')
+                .from('rounds', 'r')
+                .left_join('round_states', 's', 's.id=r.state_id')
+                .left_join('phrases', 'p', 'p.id=r.phrase_id')
+                .where('r.game_id=?',game.id)
+                .order('r.id', false)
                 .limit(1);
                         
-    return db.query(query);
+    return db.query(query).then(function(rounds) {
+      if ( rounds.length ) {
+        return rounds[0];
+      } else {
+        return null;
+      }
+    });
   },
   create: function(game) {
     if ( ! Game ) {

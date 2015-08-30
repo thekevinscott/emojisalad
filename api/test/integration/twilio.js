@@ -266,3 +266,4 @@ function signUp(number, nickname) {
 }
 
 require('./suite/game')(params);
+require('./suite/game-three')(params);

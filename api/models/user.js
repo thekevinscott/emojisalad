@@ -172,6 +172,7 @@ var User = {
                       .table('users')
                       .where('id=?', user.id);
           query.set('state_id', state, { dontQuote: true });
+          console.log('update user', user.id, params[key]);
           queries.push(query);
           break;
         default:
