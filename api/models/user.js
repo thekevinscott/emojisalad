@@ -157,6 +157,7 @@ var User = {
 
     var queries = [];
 
+    console.log('user id', user.id);
     Object.keys(params).map(function(key) {
       switch(key) {
         case 'state' :
@@ -172,7 +173,7 @@ var User = {
                       .table('users')
                       .where('id=?', user.id);
           query.set('state_id', state, { dontQuote: true });
-          queries.push(db.query(query));
+          queries.push(query);
           break;
         default:
           var attribute_id = squel
@@ -190,13 +191,18 @@ var User = {
                      })
                      .onDupUpdate('attribute', params[key]);
 
-         queries.push(db.query(query.toString()));
-          break;
+         queries.push(query);
+         break;
       }
       user[key] = params[key];
     });
 
-    return Promise.all(queries).then(function() {
+    return Promise.all(queries.map(function(query) {
+      return db.query(query.toString()).then(function() {
+        //console.log('done with query', query.toString());
+      });
+    })).then(function() {
+      //console.log('all queries are done!!!');
       return user;
     });
 

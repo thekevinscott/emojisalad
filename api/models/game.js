@@ -2,6 +2,7 @@ var Q = require('q');
 var squel = require('squel').useFlavour('mysql');
 var Promise = require('bluebird');
 var _ = require('lodash');
+var EmojiData = require('emoji-data');
 
 var db = require('db');
 var User;
@@ -22,6 +23,35 @@ var Game = {
     return db.query(query);
   },
   getNextSubmitter: function(game) {
+    if ( ! User ) {
+      User = require('./user');
+    }
+    return Promise.join(
+      Round.getLast(game),
+      this.getBattingOrder(game),
+      function(rounds, order) {
+        var next;
+        if ( rounds.length ) {
+          var round = rounds[0];
+          for ( var i=0,l=order.length; i<l; i++ ) {
+            if ( order[i].user_id === round.submitter_id ) {
+              if ( i < l-1 ) {
+                // grab the next one
+                next = order[i + 1];
+              } else {
+                next = order[0];
+              }
+              // else, just use the first user
+              break;
+            }
+          }
+        } else {
+          next = order[0];
+        }
+        console.log('the returned submitter', next.user_id);
+        return User.get({ id: next.user_id });
+      }
+    );
     return this.getPlayers(game).then(function(users) {
       return users[0];
       /*
@@ -40,75 +70,29 @@ var Game = {
       */
     });
   },
-  /*
-  checkGuess: function(game, user_id, guess) {
-    if ( ! User ) {
-      User = require('./user');
-    }
-    var query = squel
-                .select()
-                .field('p.phrase')
-                .from('game_phrases', 'gp')
-                .left_join('phrases', 'p', 'p.id=gp.phrase_id')
-                .where('gp.game_id=?',game.id)
-                .order('gp.created', false)
-                .limit(1);
-
-    return db.query(query).then(function(rows) {
-      var result = guess.toLowerCase() == rows[0].phrase.toLowerCase();
-      if ( result ) {
-        // its a success!
-        var promises = [];
-        var nextSubmitter;
-        for ( var i=0, l=game.players.length; i<l; i++ ) {
-          promises.push(function() {
-            var user = game.players[i];
-
-            if ( user.state === 'waiting' ) {
-              // then the next user will be the next player
-              if ( game.players[i+1] ) {
-                nextSubmitter = i+1;
-              } else {
-                // loop back to start
-                nextSubmitter = 0;
-              }
-            }
-            return User.update({ id: user.id }, { state: 'waiting-for-round' });
-          }());
-        }
-        promises[nextSubmitter] = function() {
-          return User.update( game.players[nextSubmitter], { state: 'waiting-for-submission' });
-        }();
-
-        return Promise.all(promises).then(function() {
-          return result;
-        });
-      } else {
-        return result;
-      }
-    }.bind(this));
+  checkGuess: function(game, user, guess) {
+    return Round.checkGuess(game, user, guess);
   },
-  */
- /*
+  checkInput: function(str) {
+    var FBS_REGEXP = new RegExp("(?:" + (EmojiData.chars({
+      include_variants: true
+    }).join("|")) + ")", "g");
+
+    str = str.replace(FBS_REGEXP, '').trim();
+    if ( str.length > 0 ) {
+      // this means non-emoji characters exist in the string
+      return false;
+    } else {
+      return true;
+    }
+  },
   saveSubmission: function(user, message) {
-    if ( ! User ) {
-      User = require('./user');
-    }
-    return User.update(user, {
-      state: 'waiting'
-    }).then(function() {
-      return this.getByUsers([user]);
-    }.bind(this)).then(function(game) {
-      return Promise.all(game.guessers.map(function(user) {
-        // also update user states to guessing
-        User.update(user, { state: 'guessing' });
-      })).then(function() {
+    return this.get({ user: user }).then(function(game) {
+      return Round.saveSubmission(game, user, message).then(function() {
         return game;
-      })
+      });
     });
-    // should save teh submission AND update the user state
   },
-  */
   newRound: function(game) {
     return Round.create(game);
   },
@@ -189,7 +173,9 @@ var Game = {
                 .select()
                 .from('rounds')
                 .where('game_id=?',game.id)
-                .order('created')
+                .order('created', false)
+                .limit(1);
+                console.log(query.toString());
     return db.query(query).then(function(rows) {
       if ( rows ) {
         return rows[0];
@@ -229,11 +215,18 @@ var Game = {
           function(round, players) {
             game.round = round;
             game.players = players;
-            game.players.map(function(player) {
-              //if ( player.id === game.round.submitter_id ) {
-                //game.round.submitter = player;
-              //}
-            });
+
+            if ( game.round ) {
+              console.log('set players for round', game.players.length, game.round.submitter_id, game.round.id);
+              game.players.map(function(player) {
+                if ( player.id === game.round.submitter_id ) {
+                  game.round.submitter = player;
+                } else {
+                  if ( ! game.round.players ) { game.round.players = []; }
+                  game.round.players.push(player);
+                }
+              });
+            }
             return game;
           }
         );
@@ -284,12 +277,15 @@ var Game = {
                 .field('order')
                 .from('player_order')
                 .where('game_id=?',game.id);
+                //console.log('query', query.toString());
     return db.query(query);
   },
   addToBattingOrder: function(game, user) {
-    console.log('add user', user, 'to game', game);
+    //console.log('add user', user, 'to game', game);
     return this.getBattingOrder(game).then(function(order) {
-      console.log('last', order);
+      //console.log('****');
+      //console.log('got the batting order', order);
+      //console.log('last', order);
       if ( order.length ) {
         var nextOrder = order.pop().order + 1;
       } else {
@@ -321,6 +317,7 @@ var Game = {
   add: function(game, users) {
     //console.log('**** NEED TO CHECK HERE - if a game is in progress, append them to the batting order', game);
     return Promise.all(users.map(function(user) {
+      //console.log('dealing with user', user.id);
       var row = {
         game_id: game.id,
         user_id: user.id
@@ -336,10 +333,16 @@ var Game = {
           id: rows.insertId
         }
       }).then(function() {
-        if ( game.state && game.state !== 'waiting-for-players' ) {
+        //console.log('should we add user to game?', user.id, game.id);
+        //if ( game.state && game.state !== 'waiting-for-players' ) {
+          //console.log('we should add this user to the game', user.id);
           // game is in progress
-          this.addToBattingOrder(game, user);
-        }
+          this.addToBattingOrder(game, user).then(function() {
+            //console.log('added user to abtting order', user);
+          }).catch(function(err) {
+            console.log('error adding user ot batting order',  user);
+          });
+        //}
       }.bind(this));
     }.bind(this)));
   },

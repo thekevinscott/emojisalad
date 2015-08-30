@@ -42,7 +42,9 @@ module.exports = function(user, input) {
             invitedMessage.type = 'sms';
             invitedMessage.number = user.inviter.number;
 
-            console.log(round);
+            User.update(round.submitter, {
+              state: 'waiting-for-submission',
+            });
             
             return Message.get('game-start', [round.submitter.nickname, round.phrase]).then(function(gameStart) {
               gameStart.type = 'sms';
@@ -60,6 +62,8 @@ module.exports = function(user, input) {
     } else {
       Game.create().then(function(game) {
         return Game.add(game, [user]);
+      }).catch(function(err) {
+        console.log('error adding user', err, user);
       });
 
       User.update(user, {

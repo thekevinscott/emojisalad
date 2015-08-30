@@ -4,11 +4,42 @@ var Promise = require('bluebird');
 
 var db = require('db');
 
-var User = require('./user');
+var User;
 var Message = require('./message');
 var Game;
 
 var Round = {
+  checkGuess: function(game, user, guess) {
+    var query = squel
+                .select()
+                .from('phrases')
+                .where('id=?', game.round.phrase_id);
+                        
+    return db.query(query.toString()).then(function(phrases) {
+      var phrase = phrases[0].phrase;
+      var regex = new RegExp('^'+phrase, 'i');
+      if ( regex.test(guess) ) {
+        var state_id = squel
+                       .select()
+                       .field('id')
+                       .from('round_states')
+                       .where('state=?', 'won');
+
+        var query = squel
+                    .update()
+                    .table('rounds')
+                    .set('winner_id',user.id)
+                    .set('state_id',state_id)
+                    .where('id=?',game.round.id);
+        return db.query(query.toString()).then(function() {
+          return true;
+        });
+      } else {
+        return false;
+      }
+    });
+
+  },
   getPhrase: function(game) {
     if ( ! Game ) {
       Game = require('./game');
@@ -45,6 +76,16 @@ var Round = {
       }
     });
   },
+  getLast: function(game) {
+    var query = squel
+                .select()
+                .from('rounds')
+                .where('game_id=?',game.id)
+                .order('created', false)
+                .limit(1);
+                        
+    return db.query(query);
+  },
   create: function(game) {
     if ( ! Game ) {
       Game = require('./game');
@@ -75,11 +116,36 @@ var Round = {
             phrase: phrase.phrase,
             submitter: submitter,
             game: game,
-            state: state
+            state: state,
+            players: game.players.filter(function(player) {
+              if ( player.id !== submitter.id ) {
+                return player;
+              }
+            })
           }
         });
       }
     );
+  },
+  saveSubmission: function(game, user, message) {
+    if ( ! User ) {
+      User = require('./user');
+    }
+
+    //console.log('*** implement save submission');
+    //console.log('save submission');
+    // all other users who are not submitter (not the user)
+    // should be switched to guessing
+    console.log('these should not match', game.round.players, user);
+    if ( game.round.players.id === user.id ) {
+      throw "These should not match";
+    }
+    var promises = game.round.players.map(function(player) {
+      console.log('player id', player.id);
+      return User.update(player, {state: 'guessing' });
+    });
+    promises.push(User.update(user, {state: 'submitted'}));
+    return Promise.all(promises);
   }
 }
 
