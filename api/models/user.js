@@ -157,7 +157,6 @@ var User = {
 
     var queries = [];
 
-    console.log('user id', user.id);
     Object.keys(params).map(function(key) {
       switch(key) {
         case 'state' :
@@ -199,40 +198,29 @@ var User = {
 
     return Promise.all(queries.map(function(query) {
       return db.query(query.toString()).then(function() {
-        //console.log('done with query', query.toString());
+        return user;
       });
-    })).then(function() {
-      //console.log('all queries are done!!!');
-      return user;
-    });
+    }));
 
     //return db.query(query).then(function(rows) {
       /*
         if ( params.state && params.state === 'ready-for-game' ) {
-          console.log('**** YAY');
           // add them to the game
           Invite.getInviter(user.id).then(function(inviter) {
-            console.log('inviters', inviter);
             if ( inviter && inviter.id ) {
-              console.log('an inviter exists');
               return Game.getByUsers([inviter]).then(function(game) {
-                console.log('got the game', game, user);
                 return Game.add(game, [user]).then(function() {
                   dfd.resolve({
                     game_state: 'ready-to-play'
                   });
                 });
               }).catch(function(err) {
-                console.log('did not get the game');
                 console.error(err);
               });
             } else {
-              console.log('no inviter for user', user);
               return Game.getByUsers([user]).then(function(game) {
                 if ( !game ) {
-                  console.log('*****\n\n\n\n*******no game found either');
                   return Game.create().then(function(game) {
-                    console.log('got game back', game);
                     return Game.add(game, [user]);
                   }).then(function() {
                     dfd.resolve({
@@ -260,11 +248,9 @@ var User = {
   //deprecated
   /*
   message: function(user, message_key, options) {
-    console.log('where we doing', user, message_key);
     switch(user.platform) {
       case 'messenger': 
 
-        console.log('prepare to send message');
         return Message.get(message_key, options).then(function(message) {
           if ( message && message.message ) {
             return message.message;

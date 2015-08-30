@@ -36,9 +36,15 @@ var Game = {
           for ( var i=0,l=order.length; i<l; i++ ) {
             if ( order[i].user_id === round.submitter_id ) {
               if ( i < l-1 ) {
+                console.log('grab the next one');
+                console.log('order length', order.length);
+                console.log('i', i);
+                console.log('the next one', order[i+1]);
+                console.log('the submitter', order[i]);
                 // grab the next one
                 next = order[i + 1];
               } else {
+                console.log('loop back to start');
                 next = order[0];
               }
               // else, just use the first user
@@ -46,9 +52,9 @@ var Game = {
             }
           }
         } else {
+          console.log('just take the first, no order');
           next = order[0];
         }
-        console.log('the returned submitter', next.user_id);
         return User.get({ id: next.user_id });
       }
     );
@@ -157,11 +163,9 @@ var Game = {
                     .where('a.user_id=?',user.id);
 
         return db.query(query).then(function(attributes) {
-          //console.log('got the attributes', attributes);
           attributes.map(function(attribute) {
             user[attribute.key] = attribute.attribute;
           });
-          //console.log('the user afterwards', user);
           return user;
         });
       }));
@@ -173,9 +177,9 @@ var Game = {
                 .select()
                 .from('rounds')
                 .where('game_id=?',game.id)
-                .order('created', false)
+                .order('id', false)
                 .limit(1);
-                console.log(query.toString());
+
     return db.query(query).then(function(rows) {
       if ( rows ) {
         return rows[0];
@@ -217,7 +221,6 @@ var Game = {
             game.players = players;
 
             if ( game.round ) {
-              console.log('set players for round', game.players.length, game.round.submitter_id, game.round.id);
               game.players.map(function(player) {
                 if ( player.id === game.round.submitter_id ) {
                   game.round.submitter = player;
@@ -266,9 +269,6 @@ var Game = {
       state: 'playing'
     });
     return this.generateBattingOrder(game);
-    //.then(function() {
-      //return this.getNextSubmitter(game);
-    //}.bind(this));
   },
   getBattingOrder: function(game) {
     var query = squel
@@ -277,15 +277,10 @@ var Game = {
                 .field('order')
                 .from('player_order')
                 .where('game_id=?',game.id);
-                //console.log('query', query.toString());
     return db.query(query);
   },
   addToBattingOrder: function(game, user) {
-    //console.log('add user', user, 'to game', game);
     return this.getBattingOrder(game).then(function(order) {
-      //console.log('****');
-      //console.log('got the batting order', order);
-      //console.log('last', order);
       if ( order.length ) {
         var nextOrder = order.pop().order + 1;
       } else {
@@ -295,7 +290,6 @@ var Game = {
     }.bind(this));
   },
   generateBattingOrder: function(game) {
-    //console.log('generate batting order for game', game);
     return this.getPlayers(game).then(function(players) {
       return Promise.all(_.shuffle(players).map(function(player, i) {
         return this.addBatter(game, player, i);
@@ -311,13 +305,10 @@ var Game = {
       user_id: player.id,
       order: order
     });
-    //console.log(query.toString());
     return db.query(query);
   },
   add: function(game, users) {
-    //console.log('**** NEED TO CHECK HERE - if a game is in progress, append them to the batting order', game);
     return Promise.all(users.map(function(user) {
-      //console.log('dealing with user', user.id);
       var row = {
         game_id: game.id,
         user_id: user.id
@@ -333,12 +324,9 @@ var Game = {
           id: rows.insertId
         }
       }).then(function() {
-        //console.log('should we add user to game?', user.id, game.id);
         //if ( game.state && game.state !== 'waiting-for-players' ) {
-          //console.log('we should add this user to the game', user.id);
           // game is in progress
           this.addToBattingOrder(game, user).then(function() {
-            //console.log('added user to abtting order', user);
           }).catch(function(err) {
             console.log('error adding user ot batting order',  user);
           });

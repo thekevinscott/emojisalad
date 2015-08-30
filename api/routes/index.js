@@ -24,7 +24,7 @@ var Router = function(user, message) {
   for ( var i=0,l=routes.length; i<l; i++ ) {
     var route = routes[i];
     if ( route.regex.test(state) ) {
-      console.log('state', state, user.id);
+      //console.log('state', state, user.id);
       return route.fn(user, message);
       break;
     }

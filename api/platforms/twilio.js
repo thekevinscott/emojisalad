@@ -31,7 +31,7 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var Text = require('../models/text');
 module.exports = function(req, res) {
-  console.log('\n====================================\n');
+  //console.log('\n====================================\n');
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
   if ( ! req.body.From ) {
@@ -47,7 +47,6 @@ module.exports = function(req, res) {
   var platform = 'twilio';
   var entry = 'text';
 
-  console.log(req.body.From, req.body.Body);
   // first, we parse the Phone number
   Phone.parse(req.body.From).then(function(parsedNumber) {
     number = parsedNumber;
@@ -60,6 +59,7 @@ module.exports = function(req, res) {
           platform: platform
         }
       }
+      //console.log(req.body.From, '|', req.body.Body, '|', user.state);
       return router(user, body);
     });
   }).then(function(response) {

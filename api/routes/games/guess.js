@@ -8,7 +8,6 @@ module.exports = function(user, input) {
   var promises = [];
 
   if ( /^guess(.*)/.test(input) ) {
-    input = input.split('guess').pop().trim();
     return Promise.join(
       Game.get({ user: user }),
       Message.get('says', [user.nickname, input]),
@@ -24,8 +23,8 @@ module.exports = function(user, input) {
           }
         });
 
-        return Game.checkGuess(game, user, input).then(function(result) {
-          console.log('guess result?', result);
+        var guess = input.split('guess').pop().trim();
+        return Game.checkGuess(game, user, guess).then(function(result) {
           if ( result ) {
 
             correct.type = 'sms';
@@ -35,18 +34,17 @@ module.exports = function(user, input) {
 
             promises.push(Game.newRound(game).then(function(round) {
 
-              //console.log('round', round);
 
               round.players.map(function(player) {
-                //console.log('user', player.id, 'waiting-for-round');
+                console.log('player', player.id, 'waiting-for-round update');
                 User.update(player, {
                   state: 'waiting-for-round',
                 });
               });
+              console.log('player', round.submitter.id, 'waiting-for-submission update');
               User.update(round.submitter, {
                 state: 'waiting-for-submission',
               });
-              //console.log('user', round.submitter.id, 'waiting-for-submission');
               
               return Promise.join(
                 Message.get('game-next-round-suggestion', [round.submitter.nickname, round.phrase]),

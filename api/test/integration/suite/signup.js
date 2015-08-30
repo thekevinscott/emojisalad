@@ -17,7 +17,6 @@ module.exports = function(params) {
     this.timeout(6000);
     it('should reject if no identifier is provided', function() {
       return r.q().then(function(response) {
-        console.log('response back', response);
         params.reject(response);
       });
     });
@@ -32,7 +31,6 @@ module.exports = function(params) {
           }),
           Message.get('intro'),
           function(response, message) {
-            console.log('response', response);
             response[0].should.equal(message.message);
           }
         );

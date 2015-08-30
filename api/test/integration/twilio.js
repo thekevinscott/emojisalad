@@ -31,11 +31,11 @@ var params = {
 };
 
 describe('Twilio', function() {
+  this.timeout(10000);
   // MOVE THIS TO THE WEB TESTS
   require('./suite')(params);
   describe('Invite flow', function() {
 
-    this.timeout(10000);
     var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
     before(function() {
       return signUp(inviter);
@@ -82,13 +82,14 @@ describe('Twilio', function() {
           }
         );
       });
+
       it('should reject a string as number', function() {
         return Promise.join(
           req.p({
             username: inviter,
             message: 'invite foo'
           }, params),
-          Message.get('error-1'),
+          Message.get('error-1', ['foo']),
           function(response, message) {
             response[0].should.equal(message.message);
           }
@@ -100,7 +101,7 @@ describe('Twilio', function() {
             username: inviter,
             message: 'invite 860460'
           }, params),
-          Message.get('error-1'),
+          Message.get('error-1', '860460'),
           function(response, message) {
             response[0].should.equal(message.message);
           }
@@ -108,7 +109,8 @@ describe('Twilio', function() {
       });
     });
 
-    describe.only('Valid numbers', function() {
+    describe('Valid numbers', function() {
+      this.timeout(10000);
       it('should be able to invite someone', function() {
         var num = '+1'+getRand();
         return Promise.join(
@@ -204,7 +206,7 @@ describe('Twilio', function() {
       return signUp(inviter, inviterName);
     });
 
-    it.only('should be able to onboard an invited user', function() {
+    it('should be able to onboard an invited user', function() {
       var num = '+1'+getRand();
       var invitedName = 'Invited User';
       return req.p({

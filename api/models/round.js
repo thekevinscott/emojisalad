@@ -81,7 +81,7 @@ var Round = {
                 .select()
                 .from('rounds')
                 .where('game_id=?',game.id)
-                .order('created', false)
+                .order('id', false)
                 .limit(1);
                         
     return db.query(query);
@@ -132,19 +132,22 @@ var Round = {
       User = require('./user');
     }
 
-    //console.log('*** implement save submission');
-    //console.log('save submission');
+    //console.log('game', game.round);
+    //console.log('incoming user', user);
     // all other users who are not submitter (not the user)
     // should be switched to guessing
-    console.log('these should not match', game.round.players, user);
-    if ( game.round.players.id === user.id ) {
+    if ( game.round.players[0].id === user.id ) {
       throw "These should not match";
     }
     var promises = game.round.players.map(function(player) {
-      console.log('player id', player.id);
+      //console.log('player', player.id, 'guessing update');
       return User.update(player, {state: 'guessing' });
     });
-    promises.push(User.update(user, {state: 'submitted'}));
+    promises.push(function() {
+
+      //console.log('player', user.id, 'submitted update');
+      return User.update(user, {state: 'submitted'})
+    }());
     return Promise.all(promises);
   }
 }
