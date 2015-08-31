@@ -15,9 +15,11 @@ var Round = {
                 .from('phrases')
                 .where('id=?', game.round.phrase_id);
                         
+                console.log('game round', game.round);
     return db.query(query.toString()).then(function(phrases) {
       var phrase = phrases[0].phrase;
       var regex = new RegExp('^'+phrase, 'i');
+      console.log('regex', regex, guess);
       if ( regex.test(guess) ) {
         var state_id = squel
                        .select()
@@ -143,6 +145,7 @@ var Round = {
     );
   },
   saveSubmission: function(game, user, message) {
+    console.log('SUBMISSION IS ABOUT TO BE SAVED');
     if ( ! User ) {
       User = require('./user');
     }
@@ -159,11 +162,31 @@ var Round = {
       return User.update(player, {state: 'guessing' });
     });
     promises.push(function() {
-
-      //console.log('player', user.id, 'submitted update');
       return User.update(user, {state: 'submitted'})
     }());
+    //console.log('get ready to push a promise #####\n\n\n\n\n');
+    promises.push(function() {
+      //console.log('update round', this, game.round);
+      return this.update(game.round, { state: 'playing' });
+    }.bind(this)());
     return Promise.all(promises);
+  },
+  update: function(round, data) {
+    var query = squel
+                .update()
+                .table('rounds', 'r')
+                .where('r.id=?',round.id);
+    if ( data.state ) {
+      var state_id = squel
+                     .select()
+                     .field('id')
+                     .from('round_states')
+                     .where('state=?',data.state);
+      query.set('state_id', state_id);
+    }
+
+    console.log('query', query.toString());
+    return db.query(query.toString());
   }
 }
 

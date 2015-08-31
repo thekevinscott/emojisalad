@@ -26,9 +26,18 @@ module.exports = function(user, input) {
         if ( game.state === 'pending' ) {
           return startGame(game, user, input);
         } else if ( game.state === 'playing' ) {
-
-          console.log('game', game);
-          console.log('round', game.round);
+          //console.log('\n\n\n######');
+          //console.log('what is teh state of hte round', game.round);
+          if ( game.round.state === 'pending' ) {
+            // the user can jump in.
+            // the round has yet to begin!
+            return addPlayerToRound(game, user, input);
+          } else if ( game.round.state === 'playing' ) {
+            return addPlayerToBench(game, user, input);
+          } else {
+            console.log('game', game);
+            console.log('round', game.round);
+          }
         }
       });
     } else {
@@ -37,42 +46,80 @@ module.exports = function(user, input) {
   }
 }
 
+function addPlayerToBench(game, user, input) {
+  // this means the invited user can join immediately
+  game.players.push(user);
+
+  User.update(user, {
+    state: 'bench',
+  });
+
+  // add this invited user to the game
+  return Promise.join(
+    Game.add(game, [user]),
+    Message.get('accepted-invited-next-round', [input, user.inviter.nickname]),
+    Message.get('accepted-inviter-next-round', [input, user.inviter.nickname]),
+    Message.get('join-game-next-round', [input]),
+    function(_1, invitedMessage, inviterMessage, joinMessage) {
+      inviterMessage.type = 'respond';
+      invitedMessage.type = 'sms';
+      joinMessage.type = 'sms';
+      invitedMessage.number = user.inviter.number;
+
+      var messages = [inviterMessage, invitedMessage];
+
+      console.log('game players', game.players);
+
+      messages.push(_.assign({}, inviterMessage, {
+        number: user.inviter.number
+      }));
+
+      game.players.map(function(player) {
+        if ( player.id !== user.id ) {
+          messages.push(_.assign({}, joinMessage, {
+            number: player.number
+          }));
+        }
+      });
+
+      return messages;
+    }
+  );
+}
+
 function addPlayerToRound(game, user, input) {
-  console.log('what is state of the game', game.state);
-  if ( game.state === 'pending' ) {
-    // this means the invited user can join immediately
-    game.players.push(user);
+  // this means the invited user can join immediately
+  game.players.push(user);
 
-    User.update(user, {
-      state: 'ready-for-game',
-    });
+  User.update(user, {
+    state: 'ready-for-game',
+  });
 
-    // add this invited user to the game
-    return Promise.join(
-      Game.add(game, [user]),
-      Message.get('accepted-invited', [input, user.inviter.nickname]),
-      Message.get('accepted-inviter', [input, user.inviter.nickname]),
-      Message.get('join-game', [input]),
-      function(_1, invitedMessage, inviterMessage, joinMessage) {
-        inviterMessage.type = 'respond';
-        invitedMessage.type = 'sms';
-        joinMessage.type = 'sms';
-        invitedMessage.number = user.inviter.number;
+  // add this invited user to the game
+  return Promise.join(
+    Game.add(game, [user]),
+    Message.get('accepted-invited', [input, user.inviter.nickname]),
+    Message.get('accepted-inviter', [input, user.inviter.nickname]),
+    Message.get('join-game', [input]),
+    function(_1, invitedMessage, inviterMessage, joinMessage) {
+      inviterMessage.type = 'respond';
+      invitedMessage.type = 'sms';
+      joinMessage.type = 'sms';
+      invitedMessage.number = user.inviter.number;
 
-        var messages = [inviterMessage, invitedMessage];
+      var messages = [inviterMessage, invitedMessage];
 
-        game.players.map(function(player) {
-          if ( player.id !== user.inviter.id && player.id !== user.id ) {
-            messages.push(_.assign({}, joinMessage, {
-              number: player.number
-            }));
-          }
-        });
+      game.players.map(function(player) {
+        if ( player.id !== user.inviter.id && player.id !== user.id ) {
+          messages.push(_.assign({}, joinMessage, {
+            number: player.number
+          }));
+        }
+      });
 
-        return messages;
-      }
-    );
-  }
+      return messages;
+    }
+  );
 }
 
 function startGame(game, user, input) {

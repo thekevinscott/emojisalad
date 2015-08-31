@@ -2,6 +2,7 @@ var User = require('../../models/user');
 var Game = require('../../models/game');
 var Message = require('../../models/message');
 var Promise = require('bluebird');
+var _ = require('lodash');
 
 module.exports = function(user, input) {
   if ( /^invite(.*)/.test(input) ) {
@@ -19,23 +20,17 @@ module.exports = function(user, input) {
         Message.get('says', [game.round.submitter.nickname, input]),
         Message.get('guessing-instructions'),
         function(message, forwardedMessage, guessingInstructions) {
-          console.log('saved submission');
+          //console.log('saved submission');
           message.type = 'respond';
           var messages = [message];
           forwardedMessage.type = 'sms';
           guessingInstructions.type = 'sms';
-          console.log('the players', game.round.players);
+          //console.log('the players', game.round.players);
           game.round.players.map(function(player) {
-            forwardedMessage.number = player.number;
-            guessingInstructions.number = player.number;
-            messages.push(forwardedMessage);
-            messages.push(guessingInstructions);
+            messages.push(_.assign({}, forwardedMessage, { number: player.number }));
+            messages.push(_.assign({}, guessingInstructions, { number: player.number }));
           });
-          return [
-            message,
-            forwardedMessage,
-            guessingInstructions
-          ];
+          return messages;
         }
       );
       //res.json(game);

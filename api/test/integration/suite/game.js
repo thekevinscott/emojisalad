@@ -300,7 +300,7 @@ module.exports = function(params) {
       });
     });
 
-    it.only('should allow the second round to take a guess and move to the third round with the first submitter guessing in a two person game', function() {
+    it('should allow the second round to take a guess and move to the third round with the first submitter guessing in a two person game', function() {
       var users = getUsers();
       var msg = 'Jurassic Park';
       var msg2 = 'SILENCE OF THE LAMBS';
