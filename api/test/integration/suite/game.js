@@ -59,65 +59,118 @@ module.exports = function(params) {
       });
     });
 
-    it('should get pissy if you try and send nothing as a clue', function() {
-      var users = getUsers();
+    describe('Submissions', function() {
 
-      return startGame(users).then(function(game) {
-        return Promise.join(
-          req.p({
-            username: game.round.submitter.number,
-            message: '' 
-          }, params),
-          function(response) {
-            response[0].should.equal('You must provide a message');
-          }
-        );
+      it('should get pissy if you try and send nothing as a submission', function() {
+        var users = getUsers();
+
+        return startGame(users).then(function(game) {
+          return Promise.join(
+            req.p({
+              username: game.round.submitter.number,
+              message: '' 
+            }, params),
+            function(response) {
+              response[0].should.equal('You must provide a message');
+            }
+          );
+        });
       });
-    });
 
-    it('should get pissy if you try and send a non-emoji clue', function() {
-      var users = getUsers();
+      it('should get pissy if you try and send a non-emoji submission', function() {
+        var users = getUsers();
 
-      return startGame(users).then(function(game) {
-        return Promise.join(
-          req.p({
-            username: game.round.submitter.number,
-            message: MIXED_EMOJI
-          }, params),
-          Message.get('error-9'),
-          function(response, message) {
-            response[0].should.equal(message.message);
-          }
-        );
+        return startGame(users).then(function(game) {
+          return Promise.join(
+            req.p({
+              username: game.round.submitter.number,
+              message: MIXED_EMOJI
+            }, params),
+            Message.get('error-9'),
+            function(response, message) {
+              response[0].should.equal(message.message);
+            }
+          );
+        });
       });
-    });
 
-    it('should forward the submission to other players', function() {
-      var users = getUsers();
+      it('should forward the submission to other players', function() {
+        var users = getUsers();
 
-      return startGame(users).then(function(game) {
-        var msg = JURASSIC_PARK;
-        return Promise.join(
-          req.p({
-            username: game.round.submitter.number,
-            message: msg
-          }, params, true),
-          Message.get('game-submission-sent'),
-          Message.get('says', [game.round.submitter.nickname, msg]),
-          Message.get('guessing-instructions'),
-          function(output, message, forwardedMessage, guessingInstructions) {
-            output.Response.Message[0].should.equal(message.message);
-            game.round.players.map(function(player, i) {
-              var saySMS = output.Response.Sms[i+0];
-              var instructionsSMS = output.Response.Sms[i+1];
-              saySMS['_'].should.equal(forwardedMessage.message);
-              saySMS['$']['to'].should.equal(player.number);
-              instructionsSMS['_'].should.equal(guessingInstructions.message);
-              instructionsSMS['$']['to'].should.equal(player.number);
-            });
-          }
-        );
+        return startGame(users).then(function(game) {
+          var msg = JURASSIC_PARK;
+          return Promise.join(
+            req.p({
+              username: game.round.submitter.number,
+              message: msg
+            }, params, true),
+            Message.get('game-submission-sent'),
+            Message.get('says', [game.round.submitter.nickname, msg]),
+            Message.get('guessing-instructions'),
+            function(output, message, forwardedMessage, guessingInstructions) {
+              output.Response.Message[0].should.equal(message.message);
+              game.round.players.map(function(player, i) {
+                var saySMS = output.Response.Sms[i+0];
+                var instructionsSMS = output.Response.Sms[i+1];
+                saySMS['_'].should.equal(forwardedMessage.message);
+                saySMS['$']['to'].should.equal(player.number);
+                instructionsSMS['_'].should.equal(guessingInstructions.message);
+                instructionsSMS['$']['to'].should.equal(player.number);
+              });
+            }
+          );
+        });
       });
+
+      describe('Valid Emoji', function() {
+        function checkValidEmoji(emoji) {
+          var users = getUsers();
+          return startGame(users).then(function(game) {
+            return Promise.join(
+              req.p({
+              username: game.round.submitter.number,
+              message: emoji
+            }, params, true),
+            Message.get('game-submission-sent'),
+            Message.get('says', [game.round.submitter.nickname, emoji]),
+            Message.get('guessing-instructions'),
+            function(output, message, forwardedMessage, guessingInstructions) {
+              output.Response.Message[0].should.equal(message.message);
+              game.round.players.map(function(player, i) {
+                var saySMS = output.Response.Sms[i+0];
+                var instructionsSMS = output.Response.Sms[i+1];
+                saySMS['_'].should.equal(forwardedMessage.message);
+                saySMS['$']['to'].should.equal(player.number);
+                instructionsSMS['_'].should.equal(guessingInstructions.message);
+                instructionsSMS['$']['to'].should.equal(player.number);
+              });
+            }
+            );
+          });
+        }
+
+        it('should check a smiley', function() {
+          return checkValidEmoji('😀');
+        });
+
+        it('should check a rocket', function() {
+          return checkValidEmoji('🚀');
+        });
+
+        it('should check a filling hourglass', function() {
+          return checkValidEmoji('⏳');
+        });
+
+        it('should check a hourglass', function() {
+          return checkValidEmoji('⌛️');
+        });
+
+        it('should check a back', function() {
+          return checkValidEmoji('🔙');
+        });
+
+      });
+
     });
 
     it('should allow other players to cross talk', function() {
