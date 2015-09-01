@@ -7,7 +7,7 @@ var _ = require('lodash');
 module.exports = function(user, input) {
   var promises = [];
 
-  if ( /^guess(.*)/.test(input) ) {
+  if ( /^guess(.*)/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
       return Promise.join(
         Message.get('says', [user.nickname, input]),
