@@ -6,7 +6,6 @@
  * body: 'yes'
  */
 var rp = require('request-promise');
-var script = require('../scripts');
 var Log = require('../models/log');
 var User = require('../models/user');
 var Message = require('../models/message');
@@ -14,6 +13,7 @@ module.exports = function(req, res) {
   //console.log('\n====================================\n');
   //Log.incoming(req.body);
 
+  /*
   var body = req.body.message;
   var username = req.body.username;
   var platform = 'messenger';
@@ -57,4 +57,5 @@ module.exports = function(req, res) {
   }).fail(function(err) {
     console.error('some odd kind of messenger error', err);
   });
+  */
 }

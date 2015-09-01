@@ -491,7 +491,7 @@ module.exports = function(params) {
       });
     });
 
-    it.only('should loop back to first user after a full round', function() {
+    it('should loop back to first user after a full round', function() {
       var users = getUsers();
       var sendInvite = 'invite '+users.secondInvited.number;
       var msg2 = 'SILENCE OF THE LAMBS';
@@ -604,298 +604,48 @@ module.exports = function(params) {
       });
     });
 
-    return;
-
-    it('should forward the submission to other players', function() {
+    it('should allow cross talk between rounds', function() {
       var users = getUsers();
-
-      return startGame(users).then(function(game) {
-        var msg = JURASSIC_PARK;
-        return Promise.join(
-          req.p({
-            username: game.round.submitter.number,
-            message: msg
-          }, params, true),
-          Message.get('game-submission-sent'),
-          Message.get('says', [game.round.submitter.nickname, msg]),
-          Message.get('guessing-instructions'),
-          function(output, message, forwardedMessage, guessingInstructions) {
-            output.Response.Message[0].should.equal(message.message);
-            game.round.players.map(function(player, i) {
-              var saySMS = output.Response.Sms[i+0];
-              var instructionsSMS = output.Response.Sms[i+1];
-              saySMS['_'].should.equal(forwardedMessage.message);
-              saySMS['$']['to'].should.equal(player.number);
-              instructionsSMS['_'].should.equal(guessingInstructions.message);
-              instructionsSMS['$']['to'].should.equal(player.number);
-            });
-          }
-        );
-      });
-    });
-
-    it('should allow other players to cross talk', function() {
-      var users = getUsers();
-      var preMsg = 'FUCK';
-      var msg = 'The fuck is that?';
-      var msg2 = 'Shut up and guess';
-
-      return startGame(users).then(function(game) {
-        // try cross talking before the submission is back
-        return Promise.join(
-          req.p({
-            username: game.round.players[0].number,
-            message: preMsg 
-          }, params, true),
-          Message.get('says', [game.round.players[0].nickname, preMsg]),
-          function(output, says) {
-            var i = 0;
-            game.players.map(function(player) {
-              if ( player.id === game.round.players[0].id ) {
-                // msg should not exist
-              } else {
-                var saySMS = output.Response.Sms[i];
-                saySMS['_'].should.equal(says.message);
-                saySMS['$']['to'].should.equal(player.number);
-                i++;
-              }
-            });
-            return game;
-          }
-        );
-      }).then(function(game) {
-        return req.p({
-          username: game.round.submitter.number,
-          message: JURASSIC_PARK 
-        }, params, true).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        return Promise.join(
-          req.p({
-            username: game.round.players[0].number,
-            message: msg
-          }, params, true),
-          Message.get('says', [game.round.players[0].nickname, msg]),
-          function(output, message) {
-            var i = 0;
-            game.players.map(function(player) {
-              if ( player.id !== game.round.players[0].id ) {
-                var saySMS = output.Response.Sms[i];
-                saySMS['_'].should.equal(message.message);
-                saySMS['$']['to'].should.equal(player.number);
-                i++;
-              }
-            });
-            return game;
-          }
-        );
-      }).then(function(game) {
-        return Promise.join(
-          req.p({
-            username: game.round.submitter.number,
-            message: msg2
-          }, params, true),
-          Message.get('says', [game.round.submitter.nickname, msg2]),
-          function(output, message) {
-            game.round.players.map(function(player, i) {
-              if ( player.id !== game.round.submitter.id ) {
-                var saySMS = output.Response.Sms[i];
-                saySMS['_'].should.equal(message.message);
-                saySMS['$']['to'].should.equal(player.number);
-              }
-            });
-          }
-        );
-      });
-    });
-
-    it('should allow other players to guess', function() {
-      var users = getUsers();
-      var msg = 'guess foo';
-
-      return startGame(users).then(function(game) {
-        return req.p({
-          username: game.round.submitter.number,
-          message: JURASSIC_PARK 
-        }, params, true).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        return Promise.join(
-          req.p({
-            username: game.round.players[0].number,
-            message: msg
-          }, params, true),
-          Message.get('says', [game.round.players[0].nickname, msg]),
-          Message.get('incorrect-guess', []),
-          function(output, says, message) {
-            // every player in the game should receive this message
-
-            var i = 0;
-            game.players.map(function(player) {
-              if ( player.id !== game.round.players[0].id ) {
-                var saySMS = output.Response.Sms[i];
-                saySMS['_'].should.equal(says.message);
-                saySMS['$']['to'].should.equal(player.number);
-                i++;
-              }
-            });
-
-            var count = i;
-
-            game.players.map(function(player, i) {
-              var resultSMS = output.Response.Sms[count+i];
-              resultSMS['_'].should.equal(message.message);
-              resultSMS['$']['to'].should.equal(player.number);
-            });
-          }
-        );
-      });
-    });
-
-    it('should move to the second round on successful answer', function() {
-      var users = getUsers();
-      var msg = 'Jurassic Park';
-      var msg2 = 'SILENCE OF THE LAMBS';
-
-      return startGame(users).then(function(game) {
-        return req.p({
-          username: game.round.submitter.number,
-          message: JURASSIC_PARK 
-        }, params, true).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        return Promise.join(
-          req.p({
-            username: game.round.players[0].number,
-            message: 'guess '+msg
-          }, params, true),
-          Message.get('says', [game.round.players[0].nickname, 'guess '+msg]),
-          Message.get('correct-guess', [game.round.players[0].nickname]),
-          Message.get('game-next-round', [users.invited.username]),
-          Message.get('game-next-round-suggestion', [users.invited.username, msg2]),
-          function(output, says, correct, nextRound, suggestion) {
-            // every player in the game should receive this message
-            var count = 0;
-            var count2 = 0;
-            var i = 0;
-            game.players.map(function(player) {
-              if ( player.id !== game.round.players[0].id ) {
-                count++;
-                var saySMS = output.Response.Sms[i];
-                saySMS['_'].should.equal(says.message);
-                saySMS['$']['to'].should.equal(player.number);
-                i++;
-              }
-            });
-
-            game.players.map(function(player, i) {
-              count2++;
-              var resultSMS = output.Response.Sms[count+i];
-              resultSMS['_'].should.equal(correct.message);
-              resultSMS['$']['to'].should.equal(player.number);
-            });
-
-            output.Response.Sms.slice(count+count2).map(function(message) {
-              game.players.map(function(player) {
-                if ( player.number === message['$']['to'] ) {
-                  if ( player.id === game.round.players[0].id ) {
-                    message['_'].should.equal(suggestion.message);
-                  } else {
-                    message['_'].should.equal(nextRound.message);
-                  }
-                }
-              });
-            });
-          }
-        );
-      });
-    });
-
-    it('should allow the second round to take a guess and move to the third round with the first submitter guessing in a two person game', function() {
-      var users = getUsers();
-      var msg = 'Jurassic Park';
+      var sendInvite = 'invite '+users.secondInvited.number;
       var msg2 = 'SILENCE OF THE LAMBS';
       var msg3 = 'TIME AFTER TIME';
 
-      var firstSubmitter;
-      var secondSubmitter;
-
-      return startGame(users).then(function(game) {
-        firstSubmitter = game.round.submitter;
-        secondSubmitter = game.round.players[0];
-        console.log('first', firstSubmitter.id);
-        console.log('second', secondSubmitter.id);
+      return jumpIntoThirdRound(users).then(function(game) {
+        var correct = 'guess TIME AFTER TIME';
         return req.p({
-          username: firstSubmitter.number,
-          message: JURASSIC_PARK 
-        }, params, true).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        console.log('395 should have guessed jurassic park');
-        return req.p({
-          username: secondSubmitter.number,
-          message: 'guess '+msg 
-        }, params, true).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        console.log('395 is now to send emoji for silence of lambs');
-        return req.p({
-          username: secondSubmitter.number,
-          message: SILENCE_OF_THE_LAMBS
-        }, params, true).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        console.log('394 must now guess silence of the lambs');
+          username: users.invited.number,
+          message: correct 
+        }, params, true);
+      }).then(function() {
+        // invited should be in a waiting-for-round state
         return Promise.join(
           req.p({
-            username: firstSubmitter.number,
-            message: 'guess ' + msg2
-          }, params, true),
-          Message.get('says', [firstSubmitter.nickname, 'guess ' +msg2]),
-          Message.get('correct-guess', [firstSubmitter.nickname]),
-          Message.get('game-next-round', [firstSubmitter.nickname]),
-          Message.get('game-next-round-suggestion', [firstSubmitter.nickname, msg3]),
-          function(output, says, correct, nextRound, suggestion) {
-            console.log('394 should now be the submitter');
-            // every player in the game should receive this message
-            var saySMS = output.Response.Sms[0];
-            saySMS['_'].should.equal(says.message);
-            saySMS['$']['to'].should.equal(secondSubmitter.number);
+          username: users.invited.number,
+          message: 'foo' 
+        }, params, true),
+        Message.get('says', [users.invited.nickname, 'foo']),
+        function(output, says) {
+          console.log('response back', output.Response);
+          // we expect these to be in order, too
+          output.Response.Sms.length.should.equal(2);
 
-            var count = 1;
-            game.players.map(function(player, i) {
-              count++;
-              var resultSMS = output.Response.Sms[i+1];
-              resultSMS['_'].should.equal(correct.message);
-              resultSMS['$']['to'].should.equal(player.number);
-            });
+          var expectations = [
+              users.inviter.number,
+              users.secondInvited.number,
+          ];
+          output.Response.Sms.splice(0, 2).map(function(sms) {
+            says.message.should.equal(sms['_']);
+            expect(expectations).to.contain(sms['$']['to']);
+            // once a user has been messaged, they shouldn't
+            // receive it a second time
+            if ( sms['$']['to'] === users.inviter.number ) {
+              delete expectations[0];
+            } else if ( sms['$']['to'] === users.inviter.number ) {
+              delete expectations[1];
+            }
+          });
 
-            console.log('output', output.Response.Sms.slice(count));
-            console.log('\n\n\n');
-            output.Response.Sms.slice(count).map(function(message) {
-              game.players.map(function(player) {
-                if ( player.number === message['$']['to'] ) {
-                  if ( player.id === firstSubmitter.id ) {
-                    console.log('incoming Message', suggestion);
-                    console.log('expected message', message);
-                    console.log('player', player);
-                    message['_'].should.equal(suggestion.message);
-                  } else {
-                    console.log('incoming message', nextRound);
-                    console.log('expected message', message);
-                    console.log('player', player);
-                    message['_'].should.equal(nextRound.message);
-                  }
-                }
-              });
-            });
-          }
+        }
         );
       });
     });

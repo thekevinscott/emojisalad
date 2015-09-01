@@ -1,4 +1,3 @@
-var Q = require('q');
 var squel = require('squel').useFlavour('mysql');
 var Promise = require('bluebird');
 var _ = require('lodash');

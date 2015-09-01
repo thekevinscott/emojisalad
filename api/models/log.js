@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var Q = require('q');
 
 var squel = require('squel');
 

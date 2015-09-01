@@ -1,4 +1,3 @@
-var Q = require('q');
 var squel = require('squel');
 var sprintf = require('sprintf');
 

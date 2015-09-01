@@ -1,6 +1,5 @@
 var config = require('../config/twilio');
 var _ = require('lodash');
-var Q = require('q');
 
 var squel = require('squel');
 

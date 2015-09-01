@@ -1,7 +1,6 @@
 // a separate router. all routes come in to platforms which then routes them here.
 
 var Promise = require('bluebird');
-var script = require('../scripts');
 var routes = [];
 function addRoute(path, fn) {
   routes.push({

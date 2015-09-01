@@ -31,7 +31,7 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var Text = require('../models/text');
 module.exports = function(req, res) {
-  //console.log('\n====================================\n');
+  console.log('\n====================================\n');
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
   if ( ! req.body.From ) {
