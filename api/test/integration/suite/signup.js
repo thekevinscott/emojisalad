@@ -69,6 +69,11 @@ module.exports = function(params) {
             response[0].should.equal(message);
           });
         });
+        it('should start the onboarding with a case sensitive "Yes" response', function() {
+          return sayYes('Yes').then(function(response) {
+            response[0].should.equal(message);
+          });
+        });
         it('should start the onboarding with a "y" response', function() {
           return sayYes('y').then(function(response) {
             response[0].should.equal(message);
