@@ -548,62 +548,6 @@ module.exports = function(params) {
       });
     });
 
-    it('should alert everyone when a wrong guess has been made', function() {
-      var users = getUsers();
-      var sendInvite = 'invite '+users.secondInvited.number;
-      var msg2 = 'SILENCE OF THE LAMBS';
-      var msg3 = 'TIME AFTER TIME';
-
-      return jumpIntoThirdRound(users).then(function(game) {
-        var correct = 'guess TIME AFTER TIME';
-        return Promise.join(
-          req.p({
-          username: users.invited.number,
-          message: correct 
-        }, params, true),
-        Message.get('says', [users.invited.nickname, correct]),
-        Message.get('correct-guess', [users.invited.nickname]),
-        Message.get('game-next-round', [users.inviter.nickname]),
-        Message.get('game-next-round-suggestion', [users.inviter.nickname, msg3]),
-        function(output, says, correct, nextRound, suggestion) {
-          console.log('response back', output.Response);
-          // we expect these to be in order, too
-          output.Response.Sms.length.should.equal(8);
-
-          output.Response.Sms.splice(0, 2).map(function(sms) {
-            says.message.should.equal(sms['_']);
-            expect([
-              users.inviter.number,
-              users.secondInvited.number,
-            ]).to.contain(sms['$']['to']);
-          });
-
-          output.Response.Sms.splice(0, 3).map(function(sms) {
-            correct.message.should.equal(sms['_']);
-            expect([
-              users.inviter.number,
-              users.invited.number,
-              users.secondInvited.number,
-            ]).to.contain(sms['$']['to']);
-          });
-
-          output.Response.Sms.splice(0, 3).map(function(sms) {
-            expect([
-              suggestion.message,
-              nextRound.message
-            ]).to.contain(sms['_']);
-
-            expect([
-              users.inviter.number,
-              users.invited.number,
-              users.secondInvited.number,
-            ]).to.contain(sms['$']['to']);
-          });
-        }
-        );
-      });
-    });
-
     it('should allow cross talk between rounds', function() {
       var users = getUsers();
       var sendInvite = 'invite '+users.secondInvited.number;
