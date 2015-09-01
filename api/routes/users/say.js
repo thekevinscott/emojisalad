@@ -17,8 +17,8 @@ module.exports = function(user, input) {
         var messages = [];
         game.players.map(function(player) {
           if ( player.id !== user.id ) {
-            console.log('forward to user: ', user.id, user.number);
-            messages.push(_.assign({}, message, { number: number }));
+            console.log('forward to user: ', player.id, player.number);
+            messages.push(_.assign({}, message, { number: player.number }));
           }
         });
         return messages;
