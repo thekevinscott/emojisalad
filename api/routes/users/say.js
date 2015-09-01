@@ -6,7 +6,7 @@ var _ = require('lodash');
 
 module.exports = function(user, input) {
 
-  if ( /^invite(.*)/.test(input) ) {
+  if ( /^invite(.*)/i.test(input) ) {
     return require('../users/invite')(user, input);
   } else {
     return Promise.join(

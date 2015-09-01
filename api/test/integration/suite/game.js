@@ -47,7 +47,6 @@ module.exports = function(params) {
           message: users.invited.username 
         }, params, true);
       }).then(function(output) {
-        //console.log('output', output);
         return Game.get(users).then(function(game) {
           return Message.get('game-start', [game.round.submitter.nickname, phrase]).then(function(gameStartMessage) {
             var Sms = output.Response.Sms[1];
@@ -437,6 +436,123 @@ module.exports = function(params) {
           }
         );
       });
+    });
+
+    it('should be able to invite at each step of the process', function() {
+      var users = getUsers();
+
+      var randos = [
+        '+1'+params.getUser(),
+        '+1'+params.getUser(),
+        '+1'+params.getUser(),
+        '+1'+params.getUser(),
+        '+1'+params.getUser(),
+        '+1'+params.getUser(),
+      ];
+
+      return startGame(users).then(function(game) {
+        // clue is out for submission
+        return Promise.join(
+          req.p({
+            username: users.inviter.number,
+            message: 'Invite '+randos[0]
+          }, params, true),
+          Message.get('intro_4', [randos[0]]),
+          Message.get('invite', [users.inviter.username]),
+          function(output, invited, invite) {
+            output.Response.Message[0].should.equal(invited.message);
+            output.Response.Sms[0]['_'].should.equal(invite.message);
+            output.Response.Sms[0]['$']['to'].should.equal(randos[0]);
+          }
+        );
+      }).then(function() {
+        // clue is out for submission
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: 'Invite '+randos[1]
+          }, params, true),
+          Message.get('intro_4', [randos[1]]),
+          Message.get('invite', [users.invited.username]),
+          function(output, invited, invite) {
+            output.Response.Message[0].should.equal(invited.message);
+            output.Response.Sms[0]['_'].should.equal(invite.message);
+            output.Response.Sms[0]['$']['to'].should.equal(randos[1]);
+          }
+        );
+      }).then(function() {
+        // submit clue
+        return req.p({
+          username: users.inviter.number,
+          message: JURASSIC_PARK
+        }, params);
+      }).then(function() {
+        // round is live
+        return Promise.join(
+          req.p({
+            username: users.inviter.number,
+            message: 'Invite '+randos[2]
+          }, params, true),
+          Message.get('intro_4', [randos[2]]),
+          Message.get('invite', [users.inviter.username]),
+          function(output, invited, invite) {
+            output.Response.Message[0].should.equal(invited.message);
+            output.Response.Sms[0]['_'].should.equal(invite.message);
+            output.Response.Sms[0]['$']['to'].should.equal(randos[2]);
+          }
+        );
+      }).then(function() {
+        // round is live
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: 'Invite '+randos[3]
+          }, params, true),
+          Message.get('intro_4', [randos[3]]),
+          Message.get('invite', [users.invited.username]),
+          function(output, invited, invite) {
+            output.Response.Message[0].should.equal(invited.message);
+            output.Response.Sms[0]['_'].should.equal(invite.message);
+            output.Response.Sms[0]['$']['to'].should.equal(randos[3]);
+          }
+        );
+      }).then(function() {
+        // answer the round
+        return req.p({
+          username: users.invited.number,
+          message: 'guess jurassic park'
+        }, params);
+      }).then(function() {
+        // correct, next clue
+        return Promise.join(
+          req.p({
+            username: users.inviter.number,
+            message: 'Invite '+randos[4]
+          }, params, true),
+          Message.get('intro_4', [randos[4]]),
+          Message.get('invite', [users.inviter.username]),
+          function(output, invited, invite) {
+            output.Response.Message[0].should.equal(invited.message);
+            output.Response.Sms[0]['_'].should.equal(invite.message);
+            output.Response.Sms[0]['$']['to'].should.equal(randos[4]);
+          }
+        );
+      }).then(function() {
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: 'Invite '+randos[5]
+          }, params, true),
+          Message.get('intro_4', [randos[5]]),
+          Message.get('invite', [users.invited.username]),
+          function(output, invited, invite) {
+            output.Response.Message[0].should.equal(invited.message);
+            output.Response.Sms[0]['_'].should.equal(invite.message);
+            output.Response.Sms[0]['$']['to'].should.equal(randos[5]);
+          }
+        );
+      });
+
     });
 
   });

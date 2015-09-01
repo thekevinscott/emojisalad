@@ -7,7 +7,9 @@ var _ = require('lodash');
 module.exports = function(user, input) {
   var promises = [];
 
-  if ( /^guess(.*)/i.test(input) ) {
+  if ( /^invite(.*)/i.test(input) ) {
+    return require('../users/invite')(user, input);
+  } else if ( /^guess(.*)/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
       return Promise.join(
         Message.get('says', [user.nickname, input]),
@@ -94,20 +96,7 @@ module.exports = function(user, input) {
       });
     });
   } else {
-    return Promise.join(
-      Message.get('says', [user.nickname, input]),
-      Game.get({ user: user }),
-      function(says, game) {
-        says.type = 'sms';
-        var messages = [];
-        game.players.map(function(player) {
-          if ( player.id !== user.id ) {
-            messages.push(_.assign({}, says, { number: player.number }));
-          }
-        });
-        return messages;
-      }
-    );
+    return require('../users/say')(user, input);
   }
 }
 

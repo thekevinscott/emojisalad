@@ -594,6 +594,72 @@ module.exports = function(params) {
       });
     });
 
+    it.only('should allow a fourth player to join', function() {
+      var users = getUsers();
+      users.thirdInvited = {
+        number: '+1'+params.getUser(),
+        nickname: 'Dave'
+      };
+
+      var sendInvite = 'invite '+users.secondInvited.number;
+      var msg2 = 'SILENCE OF THE LAMBS';
+      var msg3 = 'TIME AFTER TIME';
+
+      return jumpIntoThirdRound(users).then(function(game) {
+        return Promise.join(
+          req.p({
+            username: users.inviter.number,
+            message: 'invite '+users.thirdInvited.number
+          }, params,true),
+          Message.get('intro_4', [users.thirdInvited.number]),
+          Message.get('invite', [users.inviter.nickname]),
+          function(output, invited, invite) {
+            output.Response.Message[0].should.equal(invited.message);
+            output.Response.Sms[0]['_'].should.equal(invite.message);
+            output.Response.Sms[0]['$']['to'].should.equal(users.thirdInvited.number);
+          }
+        );
+      }).then(function() {
+        return req.p({
+          username: users.thirdInvited.number,
+          message: 'Yes'
+        }, params);
+      }).then(function() {
+        return Promise.join(
+          req.p({
+            username: users.thirdInvited.number,
+            message: users.thirdInvited.nickname
+          }, params, true),
+          Message.get('accepted-inviter-next-round', [users.thirdInvited.nickname]),
+          Message.get('accepted-invited-next-round', [users.thirdInvited.nickname]),
+          Message.get('join-game-next-round', [users.thirdInvited.nickname]),
+          function(output, invitedMsg, inviterMsg, joined) {
+            output.Response.Message[0].should.equal(invitedMsg.message);
+            output.Response.Sms.length.should.equal(4);
+            var inviterExpectations = [
+              inviterMsg.message,
+              joined.message,
+            ];
+            output.Response.Sms.map(function(sms) {
+              if ( sms['$']['to'] === users.inviter.number ) {
+                expect(inviterExpectations).to.contain(sms['_']);
+                // once a message has been received, it shouldn't come
+                // a second time
+                if ( sms['_'] === inviterMsg.message ) {
+                  delete inviterExpectations[0];
+                } else {
+                  delete inviterExpectations[1];
+                }
+
+              } else if ( sms['$']['to'] === users.invited.number || sms['$']['to'] === users.secondInvited.number ) {
+                sms['_'].should.equal(joined.message);
+              }
+            });
+          }
+        );
+      });
+    });
+
   });
 
   function signUp(user) {
