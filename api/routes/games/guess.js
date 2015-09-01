@@ -29,6 +29,7 @@ module.exports = function(user, input) {
           function(incorrect, correct) {
             var guess = input.split('guess').pop().trim();
             return Game.checkGuess(game, user, guess).then(function(result) {
+              console.log('the guess was', result);
               if ( result ) {
 
                 correct.type = 'sms';
