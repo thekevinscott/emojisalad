@@ -5,7 +5,7 @@ var Invite = require('../../models/invite');
 var Promise = require('bluebird');
 
 module.exports = function(invitingUser, input) {
-  if ( /^invite(.*)/.test(input) ) {
+  if ( /^invite(.*)/i.test(input) ) {
     var type = 'twilio';
     input = input.split('invite').pop().trim();
     return Phone.parse(input).then(function(phone) {
