@@ -8,15 +8,23 @@ var User = require('./user');
 var Message = require('./message');
  
 var Log = {
-  incoming: function(response) {
+  incoming: function(response, platform) {
     return User.get({ number: response.From }).then(function(user) {
       try {
+        var platform_id = squel
+                          .select()
+                          .field('id')
+                          .from('platforms')
+                          .where('platform=?',platform);
+        platform_id = 1;
+
       var query = squel
                   .insert()
                   .into('incomingMessages') 
                   .setFields({
                     message: response.Body,
-                    response: JSON.stringify(response)
+                    response: JSON.stringify(response),
+                    platform_id: platform_id
                   });
 
 
@@ -33,12 +41,20 @@ var Log = {
       }
     });
   },
-  outgoing: function(responses, user) {
+  outgoing: function(responses, user, platform) {
     /// IM TRACKING OUTGOING MESSAGES HERE
     try {
     if ( responses && responses.length ) {
       Promise.all(responses.map(function(message) {
         console.log('message', message);
+        var platform_id = squel
+                          .select()
+                          .field('id')
+                          .from('platforms')
+                          .where('platform=?',platform);
+
+        platform_id = 1;
+
         var query = squel
                     .insert()
                     .into('outgoingMessages')
@@ -46,7 +62,8 @@ var Log = {
                       message_key: message.key,
                       options: JSON.stringify(message.options),
                       message: message.message,
-                      type: message.type
+                      type: message.type,
+                      platform_id: platform_id
                     });
 
         if ( message.type === 'respond' && user ) {

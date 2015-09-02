@@ -157,6 +157,7 @@ CREATE TABLE `incomingMessages` (
   `message` text COLLATE utf8mb4_unicode_ci,
   `response` text COLLATE utf8mb4_unicode_ci,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `platform_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -167,7 +168,7 @@ CREATE TABLE `incomingMessages` (
 
 LOCK TABLES `incomingMessages` WRITE;
 /*!40000 ALTER TABLE `incomingMessages` DISABLE KEYS */;
-INSERT INTO `incomingMessages` VALUES (1,NULL,'Kevin','{\"From\":\"+18604601825\",\"Body\":\"Kevin\"}','2015-09-01 22:47:30');
+INSERT INTO `incomingMessages` VALUES (1,NULL,'Kevin','{\"From\":\"+18604601825\",\"Body\":\"Kevin\"}','2015-09-01 22:47:30',NULL);
 /*!40000 ALTER TABLE `incomingMessages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,6 +240,7 @@ CREATE TABLE `outgoingMessages` (
   `options` text COLLATE utf8mb4_unicode_ci,
   `message` text COLLATE utf8mb4_unicode_ci,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `platform_id` int(11) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -520,4 +522,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-02 14:04:00
+-- Dump completed on 2015-09-02 14:09:26

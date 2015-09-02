@@ -41,7 +41,7 @@ module.exports = function(req, res) {
   }
 
   var body = req.body.Body;
-  Log.incoming(req.body);
+  Log.incoming(req.body, 'twilio');
 
   var number;
   var platform = 'twilio';
@@ -88,7 +88,7 @@ module.exports = function(req, res) {
 
   function end(response, user) {
     return Message.parse(response).then(function(messages) {
-      Log.outgoing(messages, user);
+      Log.outgoing(messages, user, 'twilio');
       return Twilio.parse(messages);
     }).then(function(twiml) {
       return res.end(twiml.toString());
