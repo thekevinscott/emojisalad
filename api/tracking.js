@@ -3,9 +3,9 @@ var Mixpanel = require('mixpanel');
 
 var mixpanel = Mixpanel.init('95ea55113750200c91effcaade70941b');
 
-module.exports = function(state, user_id, input) {
-  if ( 1 || process.env.ENVIRONMENT === 'production' ) {
-    var visitor = ua('UA-67117728-1', user_id, {
+module.exports = function(state, user, input) {
+  if ( process.env.ENVIRONMENT === 'production' ) {
+    var visitor = ua('UA-67117728-1', user.id, {
       strictCidFormat: false,
       https: true
     });
@@ -16,7 +16,7 @@ module.exports = function(state, user_id, input) {
     }).send();
 
     mixpanel.track(state, {
-      user_id: user_id,
+      user_id: user.id,
       input: input,
       platform: 'twilio'
     });
