@@ -37,14 +37,7 @@ var Log = {
     /// IM TRACKING OUTGOING MESSAGES HERE
     try {
     if ( responses && responses.length ) {
-      //var options = 
-        //responses.map(function(response) {
-      //});
-      //return Message.get(responses.map(function(response) {
-        //return response.key;
-      //}).then(function(messages) {
-      //});
-      Promise.all(messages.map(function(message) {
+      Promise.all(responses.map(function(message) {
         console.log('message', message);
         var query = squel
                     .insert()
@@ -52,7 +45,8 @@ var Log = {
                     .setFields({
                       message_key: message.key,
                       options: JSON.stringify(message.options),
-                      //message: 'foobar'
+                      message: message.message,
+                      type: message.type
                     });
 
         if ( message.type === 'respond' && user ) {

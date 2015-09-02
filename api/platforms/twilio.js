@@ -87,15 +87,11 @@ module.exports = function(req, res) {
   });
 
   function end(response, user) {
-    //Twilio.respond(response).then(function(twiml) {
-      //console.log('what is twiml', twiml);
-    //});
-
-    return new Promise(function(resolve) {
-      //Log.outgoing(response, user);
-      resolve(Twilio.respond(response));
-    }).then(function(response) {
-      return res.end(response.toString());
+    return Message.parse(response).then(function(messages) {
+      Log.outgoing(messages, user);
+      return Twilio.parse(messages);
+    }).then(function(twiml) {
+      return res.end(twiml.toString());
     });
   }
 }

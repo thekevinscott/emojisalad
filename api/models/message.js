@@ -1,5 +1,8 @@
 var squel = require('squel');
+var config = require('../config/twilio');
 var sprintf = require('sprintf');
+var _ = require('lodash');
+var Promise = require('bluebird');
 
 var db = require('db');
 
@@ -38,6 +41,64 @@ var Message = {
         throw "No messages found for key " + key;
       }
     });
+  },
+  parse: function(responses) {
+    if ( responses && responses.length ) {
+      var messages = {};
+      var options = {};
+      //console.log('incoming responses', responses);
+      responses.map(function(response) {
+        if ( response.options ) {
+          options[response.key] = response.options;
+        }
+      });
+
+      return Message.get(responses.map(function(response) {
+        if ( ! response.key ) {
+          throw new Error("Every response must have a key: " + JSON.stringify(response));
+        }
+        return response.key;
+      }), options, 1).then(function(rows) {
+        return rows.map(function(row) {
+          //var key = row.key;
+          //if ( ! messages[key] ) { messages[key] = {}; }
+          messages[row.key] = row.message;
+        });
+      }).then(function() {
+        return responses.map(function(response) {
+          switch(response.type) {
+            case 'sms' :
+              if ( response.user ) {
+                var number = response.user.number
+              } else {
+                console.log('##### deprecate passing number directly', response);
+                var number = response.number;
+              }
+
+              //console.log('sms response', response, messages[response.key]);
+
+              return _.assign({
+                message: messages[response.key],
+                to: number,
+                from: config.from
+              }, response);
+            break;
+            case 'respond' :
+              return _.assign({
+                message: messages[response.key],
+              }, response);
+            break;
+            default:
+              console.error('uncaught response type', response);
+            break;
+          }
+        });
+      });
+    } else {
+      return new Promise(function(resolve) {
+        resolve([]);
+      });
+    }
   }
 };
 
