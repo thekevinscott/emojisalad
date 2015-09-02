@@ -372,6 +372,7 @@ module.exports = function(params) {
             Message.get('game-next-round-suggestion', [users.invited.nickname, msg2]),
             function(output, says, correct, nextRound, suggestion) {
               // every player in the game should receive this message
+              //console.log(output.Response.Sms);
               output.Response.Sms.length.should.equal(8);
 
               output.Response.Sms.map(function(sms) {

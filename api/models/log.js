@@ -30,20 +30,20 @@ var Log = {
     /// IM TRACKING OUTGOING MESSAGES HERE
     // messages should pass along their options as well
     // messages should pass along their target user id as well
-      /*
-    return Promise.all(messages.map(function(message) {
-      console.log('message', message);
-      var query = squel
-                  .insert()
-                  .into('outgoingMessages')
-                  .setFields({
-                    user_id: '1',//message.user_id,
-                    message_id: message.id,
-                    options: JSON.stringify([])
-                  });
-      return db.query(query);
-    }()));
-      */
+    if ( messages && messages.length ) {
+      //return Promise.all(messages.map(function(message) {
+        //console.log('message', message);
+        //var query = squel
+                    //.insert()
+                    //.into('outgoingMessages')
+                    //.setFields({
+                      //user_id: '1',//message.user_id,
+                      //message_id: message.id,
+                      //options: JSON.stringify([])
+                    //});
+        //return db.query(query);
+      //}()));
+    }
   }
 }
 

@@ -1,15 +1,15 @@
 var User = require('../../models/user');
 var Game = require('../../models/game');
-var Message = require('../../models/message');
+//var Message = require('../../models/message');
 var Promise = require('bluebird');
 var _ = require('lodash');
 
 module.exports = function(user, input) {
   if ( /^invite/.test(input) ) {
-    return Message.get('wait-to-invite').then(function(message) {
-      message.type = 'respond';
-      return [message];
-    });
+    return [{
+      type: 'respond',
+      key: 'wait-to-invite'
+    }];
   } else {
     // Once you set a nickname, we presume you're ready for
     // the big leagues.
@@ -57,37 +57,44 @@ function addPlayerToBench(game, user, input) {
   // add this invited user to the game
   return Promise.join(
     Game.add(game, [user]),
-    Message.get('accepted-inviter-next-round', [input, user.inviter.nickname]),
-    Message.get('accepted-invited-next-round', [input, user.inviter.nickname]),
-    Message.get('join-game-next-round', [input]),
+    //Message.get('accepted-inviter-next-round', [input, user.inviter.nickname]),
+    //Message.get('accepted-invited-next-round', [input, user.inviter.nickname]),
+    //Message.get('join-game-next-round', [input]),
     function(_1, inviterMessage, invitedMessage, joinMessage) {
-      inviterMessage.type = 'respond';
-      inviterMessage.options = [
-        input,
-        user.inviter.nickname
-      ];
+      inviterMessage = {
+        key: 'accepted-inviter-next-round',
+        type: 'respond',
+        options: [ 
+          input,
+          user.inviter.nickname
+        ]
+      }
 
-      invitedMessage.type = 'sms';
-      invitedMessage.number = user.inviter.number;
-      invitedMessage.user = user.inviter;
+      invitedMessage = {
+        key: 'accepted-invited-next-round',
+        type: 'sms',
+        user: user.inviter,
+        options: [
+          input,
+          user.inviter.nickname
+        ]
+      }
 
-      joinMessage.type = 'sms';
+      joinMessage = {
+        key: 'join-game-next-round',
+        type: 'sms',
+        options: [
+          input
+        ]
+      }
 
       var messages = [inviterMessage, invitedMessage];
 
-      //console.log('game players', game.players);
-
-      //messages.push(_.assign({}, inviterMessage, {
-        //user: user.inviter,
-        //number: user.inviter.number
-      //}));
-
       game.players.map(function(player) {
         if ( player.id !== user.id ) {
-          messages.push(_.assign({}, joinMessage, {
+          messages.push(_.assign({
             user: player,
-            number: player.number
-          }));
+          }, joinMessage));
         }
       });
 
@@ -107,24 +114,43 @@ function addPlayerToRound(game, user, input) {
   // add this invited user to the game
   return Promise.join(
     Game.add(game, [user]),
-    Message.get('accepted-invited', [input, user.inviter.nickname]),
-    Message.get('accepted-inviter', [input, user.inviter.nickname]),
-    Message.get('join-game', [input]),
+    //Message.get('accepted-invited', [input, user.inviter.nickname]),
+    //Message.get('accepted-inviter', [input, user.inviter.nickname]),
+    //Message.get('join-game', [input]),
     function(_1, invitedMessage, inviterMessage, joinMessage) {
-      inviterMessage.type = 'respond';
-      invitedMessage.type = 'sms';
-      joinMessage.type = 'sms';
-      invitedMessage.number = user.inviter.number;
-      invitedMessage.user = user.inviter;
+      inviterMessage = {
+        key: 'accepted-inviter',
+        type: 'respond',
+        options: [
+          input,
+          user.inviter.nickname
+        ]
+      };
+      invitedMessage = {
+        key: 'accepted-invited',
+        type: 'sms',
+        options: [
+          input,
+          user.inviter.nickname
+        ],
+        user: user.inviter
+      };
+      joinMessage = {
+        key: 'join-game',
+        type: 'sms',
+        options: [
+          input
+        ]
+      }
 
       var messages = [inviterMessage, invitedMessage];
 
       game.players.map(function(player) {
         if ( player.id !== user.inviter.id && player.id !== user.id ) {
-          messages.push(_.assign({}, joinMessage, {
+          messages.push(_.assign({
             user: player,
-            number: player.number
-          }));
+            //number: player.number
+          }, joinMessage));
         }
       });
 
@@ -146,28 +172,55 @@ function startGame(game, user, input) {
   return Promise.join(
     Game.add(game, [user]),
     Game.start(game),
-    Message.get('accepted-invited', [input, user.inviter.nickname]),
-    Message.get('accepted-inviter', [input, user.inviter.nickname]),
+    //Message.get('accepted-invited', [input, user.inviter.nickname]),
+    //Message.get('accepted-inviter', [input, user.inviter.nickname]),
     Game.newRound(game),
-    function(_1, _2, invitedMessage, inviterMessage, round) {
-      inviterMessage.type = 'respond';
-      invitedMessage.type = 'sms';
-      invitedMessage.number = user.inviter.number;
+    function(_1, _2, /*invitedMessage, inviterMessage,*/ round) {
+      invitedMessage = {
+        key: 'accepted-invited',
+        options: [
+          input,
+          user.inviter.nickname
+        ],
+        type: 'sms',
+        user: user.inviter
+      };
+      inviterMessage = {
+        type: 'respond',
+        key: 'accepted-inviter',
+        options: [
+          input,
+          user.inviter.nickname
+        ]
+      }
 
-      console.log('set user to waiting-for-submission', round.submitter);
+      //console.log('set user to waiting-for-submission', round.submitter);
       User.update(round.submitter, {
         state: 'waiting-for-submission',
       });
 
-      return Message.get('game-start', [round.submitter.nickname, round.phrase]).then(function(gameStart) {
-        gameStart.type = 'sms';
-        gameStart.number = round.submitter.number;
-        return [
-          invitedMessage,
-          inviterMessage,
-          gameStart 
-        ];
-      });
+      return [
+        invitedMessage,
+        inviterMessage,
+        {
+          type: 'sms',
+          key: 'game-start',
+          user: round.submitter,
+          options: [
+            round.submitter.nickname,
+            round.phrase
+          ]
+        }
+      ];
+      //return Message.get('game-start', [round.submitter.nickname, round.phrase]).then(function(gameStart) {
+        //gameStart.type = 'sms';
+        //gameStart.number = round.submitter.number;
+        //return [
+          //invitedMessage,
+          //inviterMessage,
+          //gameStart 
+        //];
+      //});
 
     }
   );
@@ -185,8 +238,16 @@ function createGame(user, input) {
     state: 'waiting-for-invites',
     nickname: input
   });
-  return Message.get('intro_3', [input]).then(function(message) {
-    message.type = 'respond';
-    return [message];
+  console.log('this is what we return');
+  return new Promise(function(resolve) {
+    resolve([{
+      type: 'respond',
+      key: 'intro_3',
+      options: [input]
+    }]);
   });
+  //return Message.get('intro_3', [input]).then(function(message) {
+    //message.type = 'respond';
+    //return [message];
+  //});
 }

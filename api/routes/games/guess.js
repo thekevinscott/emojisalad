@@ -1,5 +1,5 @@
 var User = require('../../models/user');
-var Message = require('../../models/message');
+//var Message = require('../../models/message');
 var Game = require('../../models/game');
 var Promise = require('bluebird');
 var _ = require('lodash');
@@ -11,24 +11,39 @@ module.exports = function(user, input) {
     return require('../users/invite')(user, input);
   } else if ( /^guess(.*)/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
-      return Promise.join(
-        Message.get('says', [user.nickname, input]),
-        function(says) {
-          var promises = [];
-          var messages = [];
-          says.type = 'sms';
-          game.players.map(function(player) {
+      //return Promise.join(
+        //Message.get('says', [user.nickname, input]),
+        //function(says) {
+          //var promises = [];
+          //says.type = 'sms';
+          var messages = game.players.map(function(player) {
             if ( player.id !== user.id ) {
-              messages.push(_.assign({}, says, { number: player.number }));
+              return {
+                key: 'says',
+                type: 'sms',
+                user: player,
+                options: [
+                  user.nickname,
+                  input
+                ]
+              };
+              //messages.push(_.assign({}, says, { number: player.number }));
             }
-          });
-          return messages;
-        }
-      ).then(function(messages) {
-        return Promise.join(
-          Message.get('incorrect-guess', []),
-          Message.get('correct-guess', [user.nickname]),
-          function(incorrect, correct) {
+          }).filter(function(el) { return el; });
+          //return messages;
+        //}
+      //).then(function(messages) {
+        //return Promise.join(
+          //Message.get('incorrect-guess', []),
+          //Message.get('correct-guess', [user.nickname]),
+          //function(incorrect, correct) {
+          var incorrect = {
+            key: 'incorrect-guess'
+          };
+          var correct ={
+            key: 'correct-guess',
+            options: user.nickname
+          }
             var guess = input.split('guess').pop().trim();
             return Game.checkGuess(game, user, guess).then(function(result) {
               console.log('the guess was', result);
@@ -36,7 +51,7 @@ module.exports = function(user, input) {
 
                 correct.type = 'sms';
                 game.players.map(function(player) {
-                  messages.push(_.assign({}, correct, { number: player.number }));
+                  messages.push(_.assign({ number: player.number }, correct));
                 });
 
                 promises.push(Game.newRound(game).then(function(round) {
@@ -53,37 +68,56 @@ module.exports = function(user, input) {
                     state: 'waiting-for-submission',
                   });
 
-                  return Promise.join(
-                    Message.get('game-next-round-suggestion', [round.submitter.nickname, round.phrase]),
-                    Message.get('game-next-round', [round.submitter.nickname]),
-                    function(suggestion, nextRoundInstructions) {
-                      suggestion.type = 'sms';
-                      nextRoundInstructions.type = 'sms';
+                  //return Promise.join(
+                    //Message.get('game-next-round-suggestion', [round.submitter.nickname, round.phrase]),
+                    //Message.get('game-next-round', [round.submitter.nickname]),
+                    //function(suggestion, nextRoundInstructions) {
+                  var suggestion = {
+                    type: 'sms',
+                    key: 'game-next-round-suggestion',
+                    options: [
+                      round.submitter.nickname,
+                      round.phrase
+                    ]
+                  };
 
-                      suggestion.number = round.submitter.number;
+                  var nextRoundInstructions = {
+                    type: 'sms',
+                    key: 'game-next-round',
+                    options: [
+                      round.submitter.nickname,
+                    ]
+                  };
+                      //suggestion.type = 'sms';
+                      //nextRoundInstructions.type = 'sms';
+
+                      suggestion.user = round.submitter;
+                      //suggestion.number = round.submitter.number;
                       messages.push(suggestion);
                       round.game.players.map(function(player) {
                         if ( player.id !== round.submitter.id ) {
-                          messages.push(_.assign({}, nextRoundInstructions, { number: player.number }));
+                          messages.push(_.assign( { user: player }, nextRoundInstructions));
                         }
                       });
                       return '';
-                    }
-                  );
-                  return Message.get('game-start', [game.round.submitter.nickname, game.round.phrase]).then(function(gameStart) {
-                    gameStart.type = 'sms';
-                    gameStart.number = game.round.submitter.number;
-                    return [
-                      invitedMessage,
-                      inviterMessage,
-                      gameStart 
-                    ];
-                  });
+                    //}
+                  //);
+                      
+                  // I DONT THINK THIS DOES ANYTHING
+                  //return Message.get('game-start', [game.round.submitter.nickname, game.round.phrase]).then(function(gameStart) {
+                    //gameStart.type = 'sms';
+                    //gameStart.number = game.round.submitter.number;
+                    //return [
+                      //invitedMessage,
+                      //inviterMessage,
+                      //gameStart 
+                    //];
+                  //});
                 }));
               } else {
                 incorrect.type = 'sms';
                 game.players.map(function(player) {
-                  messages.push(_.assign({}, incorrect, { number: player.number }));
+                  messages.push(_.assign({ user: player },incorrect));
                 });
               }
 
@@ -91,9 +125,9 @@ module.exports = function(user, input) {
                 return messages;
               });
             });
-          }
-        );
-      });
+          //}
+        //);
+      //});
     });
   } else {
     return require('../users/say')(user, input);

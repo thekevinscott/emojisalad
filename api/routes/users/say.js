@@ -1,5 +1,5 @@
 var User = require('../../models/user');
-var Message = require('../../models/message');
+//var Message = require('../../models/message');
 var Game = require('../../models/game');
 var Promise = require('bluebird');
 var _ = require('lodash');
@@ -10,22 +10,31 @@ module.exports = function(user, input) {
     return require('../users/invite')(user, input);
   } else {
     return Promise.join(
-      Message.get('says', [user.nickname, input]),
+      //Message.get('says', [user.nickname, input]),
       Game.get({ user: user }),
-      function(message, game) {
-        message.type = 'sms';
-        message.options = [
-          user.nickname,
-          input
-        ];
-        var messages = [];
-        game.players.map(function(player) {
+      function(game) {
+        var message = {
+          type: 'sms',
+          key: 'says',
+          options: [
+            user.nickname,
+            input
+          ]
+        };
+        //message.type = 'sms';
+        //message.options = [
+          //user.nickname,
+          //input
+        //];
+        return game.players.map(function(player) {
           if ( player.id !== user.id ) {
-            //console.log('forward to user: ', player.id, player.number);
-            messages.push(_.assign({}, message, { number: player.number, user: player }));
+            return _.assign({
+              //number: player.number,
+              user: player
+            },
+            message);
           }
-        });
-        return messages;
+        }).filter(function(el) { return el });
       }
     );
   }
