@@ -7,31 +7,43 @@ var User = require('./user');
  
 var Log = {
   incoming: function(response) {
-    return User.get(response.From).then(function(users) {
+    return User.get({ number: response.From }).then(function(user) {
       var query = squel
-              .insert()
-              .into('incomingMessages');
+                  .insert()
+                  .into('incomingMessages') 
+                  .setFields({
+                    message: response.Body,
+                    response: JSON.stringify(response)
+                  });
 
-      if ( users.length ) {
-        var user = users[0];
+
+      if ( user ) {
         query.setFields({
           user_id: user.id,
-          phone: response.From,
-          message: response.Body,
-          response: JSON.stringify(response)
-        });
-      } else {
-        query.setFields({
-          phone: response.From,
-          message: response.Body,
-          response: JSON.stringify(response)
         });
       }
       
-      db.query(query);
-    }).fail(function(err) {
-      console.error('error getting user id when saving response', err);
+      return db.query(query);
     });
+  },
+  outgoing: function(messages) {
+    /// IM TRACKING OUTGOING MESSAGES HERE
+    // messages should pass along their options as well
+    // messages should pass along their target user id as well
+      /*
+    return Promise.all(messages.map(function(message) {
+      console.log('message', message);
+      var query = squel
+                  .insert()
+                  .into('outgoingMessages')
+                  .setFields({
+                    user_id: '1',//message.user_id,
+                    message_id: message.id,
+                    options: JSON.stringify([])
+                  });
+      return db.query(query);
+    }()));
+      */
   }
 }
 

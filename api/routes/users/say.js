@@ -14,11 +14,15 @@ module.exports = function(user, input) {
       Game.get({ user: user }),
       function(message, game) {
         message.type = 'sms';
+        message.options = [
+          user.nickname,
+          input
+        ];
         var messages = [];
         game.players.map(function(player) {
           if ( player.id !== user.id ) {
-            console.log('forward to user: ', player.id, player.number);
-            messages.push(_.assign({}, message, { number: player.number }));
+            //console.log('forward to user: ', player.id, player.number);
+            messages.push(_.assign({}, message, { number: player.number, user: player }));
           }
         });
         return messages;

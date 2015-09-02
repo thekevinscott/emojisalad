@@ -57,26 +57,35 @@ function addPlayerToBench(game, user, input) {
   // add this invited user to the game
   return Promise.join(
     Game.add(game, [user]),
-    Message.get('accepted-invited-next-round', [input, user.inviter.nickname]),
     Message.get('accepted-inviter-next-round', [input, user.inviter.nickname]),
+    Message.get('accepted-invited-next-round', [input, user.inviter.nickname]),
     Message.get('join-game-next-round', [input]),
-    function(_1, invitedMessage, inviterMessage, joinMessage) {
+    function(_1, inviterMessage, invitedMessage, joinMessage) {
       inviterMessage.type = 'respond';
+      inviterMessage.options = [
+        input,
+        user.inviter.nickname
+      ];
+
       invitedMessage.type = 'sms';
-      joinMessage.type = 'sms';
       invitedMessage.number = user.inviter.number;
+      invitedMessage.user = user.inviter;
+
+      joinMessage.type = 'sms';
 
       var messages = [inviterMessage, invitedMessage];
 
-      console.log('game players', game.players);
+      //console.log('game players', game.players);
 
-      messages.push(_.assign({}, inviterMessage, {
-        number: user.inviter.number
-      }));
+      //messages.push(_.assign({}, inviterMessage, {
+        //user: user.inviter,
+        //number: user.inviter.number
+      //}));
 
       game.players.map(function(player) {
         if ( player.id !== user.id ) {
           messages.push(_.assign({}, joinMessage, {
+            user: player,
             number: player.number
           }));
         }
@@ -106,12 +115,14 @@ function addPlayerToRound(game, user, input) {
       invitedMessage.type = 'sms';
       joinMessage.type = 'sms';
       invitedMessage.number = user.inviter.number;
+      invitedMessage.user = user.inviter;
 
       var messages = [inviterMessage, invitedMessage];
 
       game.players.map(function(player) {
         if ( player.id !== user.inviter.id && player.id !== user.id ) {
           messages.push(_.assign({}, joinMessage, {
+            user: player,
             number: player.number
           }));
         }

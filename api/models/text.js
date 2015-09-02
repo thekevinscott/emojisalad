@@ -1,5 +1,6 @@
 var config = require('../config/twilio');
 var _ = require('lodash');
+var Promise = require('bluebird');
 
 var squel = require('squel');
 
@@ -23,25 +24,31 @@ var twilio = require('twilio');
 var Text = {
   respond: function(responses) {
     var twiml = new twilio.TwimlResponse();
+    var promises = [];
     if ( responses && responses.length ) {
-      responses.map(function(response) {
-        switch(response.type) {
-          case 'sms' :
-            twiml.sms(response.message, {
-            to: response.number,
-            from: config.from
-          });
-          break;
-          case 'respond' :
-            twiml.message(response.message);
-          break;
-          default:
-            console.error('uncaught response type', response);
-          break;
-        }
+      promises = responses.map(function(response) {
+        return function() {
+          switch(response.type) {
+            case 'sms' :
+              twiml.sms(response.message, {
+                to: response.number,
+                from: config.from
+              });
+            break;
+            case 'respond' :
+              twiml.message(response.message);
+            break;
+            default:
+              console.error('uncaught response type', response);
+            break;
+          }
+        }();
       });
     }
-    return twiml;
+
+    return Promise.all(promises).then(function() {
+      return twiml;
+    });
   },
   sms: function(messages) {
     var twilio = require('twilio');

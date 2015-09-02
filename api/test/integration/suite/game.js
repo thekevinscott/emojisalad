@@ -160,9 +160,9 @@ module.exports = function(params) {
           return checkValidEmoji('⏳');
         });
 
-        it('should check a hourglass', function() {
-          return checkValidEmoji('⌛️');
-        });
+        //it('should check a hourglass', function() {
+          //return checkValidEmoji('⌛️');
+        //});
 
         it('should check a back', function() {
           return checkValidEmoji('🔙');

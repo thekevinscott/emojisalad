@@ -41,7 +41,7 @@ module.exports = function(req, res) {
   }
 
   var body = req.body.Body;
-  //Log.incoming(req.body);
+  Log.incoming(req.body);
 
   var number;
   var platform = 'twilio';
@@ -63,9 +63,10 @@ module.exports = function(req, res) {
       return router(user, body);
     });
   }).then(function(response) {
-    return Text.respond(response).toString();
+    Log.outgoing(response);
+    return Text.respond(response);
   }).then(function(response) {
-    return res.end(response);
+    return res.end(response.toString());
   }).catch(function(err) {
     // this should not notify the user. It means that the incoming request's number
     // somehow failed validation on Twilio's side, which would be odd because Twilio

@@ -594,7 +594,7 @@ module.exports = function(params) {
       });
     });
 
-    it.only('should allow a fourth player to join', function() {
+    it('should allow a fourth player to join', function() {
       var users = getUsers();
       users.thirdInvited = {
         number: '+1'+params.getUser(),
