@@ -10,6 +10,10 @@ var Text = require('../models/text');
 var Message = require('../models/message');
 
 module.exports = function(req, res) {
+  console.log('\n================web=================\n');
+
+  console.log('req from web', req);
+
   res.header("Access-Control-Allow-Origin", "*");
   res.header('Access-Control-Allow-Methods', 'POST');
   res.header("Access-Control-Allow-Headers", "X-Requested-With");

@@ -34,10 +34,15 @@ module.exports = function(req, res) {
   console.log('\n================twilio=================\n');
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
+  console.log('req headers from twilio', req.headers);
 
   if ( ! req.body.From ) {
-    var errors = [{ key: 'error-10', message: "You must provide a phone number", type: 'respond' }];
-    return end(errors);
+    // actually, we don't want to expose anything;
+    // this is probably something malicious, it's
+    // certainly not a request from Twilio.
+    return res.end();
+    //var errors = [{ key: 'error-10', message: "You must provide a phone number", type: 'respond' }];
+    //return end(errors);
   }
 
   var body = req.body.Body;
@@ -63,8 +68,11 @@ module.exports = function(req, res) {
     });
   }).then(function(user) {
     if ( ! req.body.Body ) {
-      errors = [{ key: 'error-11', message: "You must provide a message", type: 'respond', user: user }];
-      return end(errors, user);
+      // again, this is almost certainly something malicious.
+      // it is technically impossible for Twilio to send us a blank message.
+      //errors = [{ key: 'error-11', message: "You must provide a message", type: 'respond', user: user }];
+      //return end(errors, user);
+      return res.end('');
     } else {
       console.log(req.body.From, '|', req.body.Body, '|', user.state);
       return router(user, body).then(function(response) {
