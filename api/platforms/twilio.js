@@ -30,6 +30,7 @@ var Phone = require('../models/phone');
 var User = require('../models/user');
 var Message = require('../models/message');
 var Twilio = require('../models/twilio');
+var track = require('../tracking');
 module.exports = function(req, res) {
   console.log('\n================twilio=================\n');
   res.writeHead(200, {'Content-Type': 'text/xml'});
@@ -75,6 +76,7 @@ module.exports = function(req, res) {
       return res.end('');
     } else {
       console.log(req.body.From, '|', req.body.Body, '|', user.state);
+      track(user.state, user.id, req.body.Body);
       return router(user, body).then(function(response) {
         return end(response, user);
       });
