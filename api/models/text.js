@@ -79,6 +79,7 @@ var Text = {
       return new twilio.TwimlResponse();
     }
   },
+  /*
   sms: function(messages) {
     var twilio = require('twilio');
     var twiml = new twilio.TwimlResponse();
@@ -90,7 +91,9 @@ var Text = {
     });
     return twiml;
   },
+  */
   // DEPRECATED
+  /*
   send: function send(user, message) {
     return;
     var params = {
@@ -138,6 +141,8 @@ var Text = {
       }
     });
   },
+  */
+ /*
   saveMessage: function(userData, message_id, message, response) {
     //console.log('prepare to save message');
     //console.log(userData, message_id, message);
@@ -162,6 +167,8 @@ var Text = {
     }.bind(this));
 
   },
+  */
+ /*
   saveResponse: function(response) {
     return User.get(response.From).then(function(users) {
       var query = squel
@@ -188,6 +195,7 @@ var Text = {
       console.error('error getting user id when saving response', err);
     });
   },
+  */
 }
 
 module.exports = Text;

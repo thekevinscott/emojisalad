@@ -29,7 +29,7 @@ var Log = require('../models/log');
 var Phone = require('../models/phone');
 var User = require('../models/user');
 var Message = require('../models/message');
-var Text = require('../models/text');
+var Twilio = require('../models/twilio');
 module.exports = function(req, res) {
   console.log('\n================twilio=================\n');
   res.writeHead(200, {'Content-Type': 'text/xml'});
@@ -59,17 +59,18 @@ module.exports = function(req, res) {
           platform: platform
         }
       }
-
-      if ( ! req.body.Body ) {
-        errors = [{ key: 'error-11', message: "You must provide a message", type: 'respond', user: user }];
-        return end(errors);
-      } else {
-        console.log(req.body.From, '|', req.body.Body, '|', user.state);
-        return router(user, body);
-      }
+      return user;
     });
-  }).then(function(response) {
-    return end(response);
+  }).then(function(user) {
+    if ( ! req.body.Body ) {
+      errors = [{ key: 'error-11', message: "You must provide a message", type: 'respond', user: user }];
+      return end(errors, user);
+    } else {
+      console.log(req.body.From, '|', req.body.Body, '|', user.state);
+      return router(user, body).then(function(response) {
+        return end(response, user);
+      });
+    }
   }).catch(function(err) {
     // this should not notify the user. It means that the incoming request's number
     // somehow failed validation on Twilio's side, which would be odd because Twilio
@@ -85,10 +86,14 @@ module.exports = function(req, res) {
     res.end();
   });
 
-  function end(response) {
+  function end(response, user) {
+    //Twilio.respond(response).then(function(twiml) {
+      //console.log('what is twiml', twiml);
+    //});
+
     return new Promise(function(resolve) {
-      Log.outgoing(response);
-      resolve(Text.respond(response));
+      //Log.outgoing(response, user);
+      resolve(Twilio.respond(response));
     }).then(function(response) {
       return res.end(response.toString());
     });
