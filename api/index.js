@@ -20,7 +20,7 @@ app.get('/test', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.json({ success: 3 });
+  res.json({ success: 1 });
 });
 
 /*
