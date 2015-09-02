@@ -10,11 +10,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-app.all('/', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5003");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
+//app.all('/', function(req, res, next) {
+  //res.header("Access-Control-Allow-Origin", "http://localhost:5003");
+  //res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  //next();
+//});
 
 app.get('/test', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -39,24 +39,9 @@ app.get('/goat/:number', function(req, res) {
 });
 */
 
-// this creates a new game
-//app.post('/users/create', require('./routes/users/create'));
-//app.put('/users/:user_id', require('./routes/users/update'));
-//app.get('/users/:user_id/games', require('./routes/users/games'));
-//app.post('/games/:user_id', require('./routes/games/create'));
-//app.get('/users/:user_id/inviter', require('./routes/users/inviter'));
-//app.get('/users/:user_id/games', require('./routes/users/games'));
-//app.post('/invites/new', require('./routes/invites/create'));
-//app.post('/games/phrase', require('./routes/games/phrase'));
-//app.post('/games/submission', require('./routes/games/submission'));
-//app.post('/games/guess', require('./routes/games/guess'));
-//app.get('/games/players', require('./routes/games/players'));
-//app.put('/games/:game_id', require('./routes/games/update'));
-
 // this handles all replies
 app.post('/platform/:platform', require('./platforms/'));
 
 app.listen(app.get('port'), function() {
   console.log('EmojinaryFriend API');
-  //console.log('listening on port', app.get('port'), 'with db', db.environment);
 });
