@@ -7,7 +7,7 @@ var _ = require('lodash');
 module.exports = function(user, input) {
   if ( /^invite(.*)/i.test(input) ) {
     return require('../users/invite')(user, input);
-  } else if ( ! Game.checkInput(input) ) {
+  } else if ( 0 && ! Game.checkInput(input) ) {
     return [{
       type: 'respond',
       key: 'error-9'
