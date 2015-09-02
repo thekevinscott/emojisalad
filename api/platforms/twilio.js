@@ -22,7 +22,7 @@
  * From: '+18604608183',
  * ApiVersion: '2010-04-01'
  */
-var rp = require('request-promise');
+var pmx = require('pmx');
 var _ = require('lodash');
 var router = require('../routes');
 var Log = require('../models/log');
@@ -91,6 +91,9 @@ module.exports = function(req, res) {
     if ( err.sql ) {
       console.error(err.sql);
     }
+
+    pmx.notify(err);
+
     res.end();
   });
 

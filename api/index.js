@@ -1,3 +1,5 @@
+var pmx = require('pmx');
+
 var express = require('express');
 var app = express();
 var db = require('db');
@@ -45,3 +47,5 @@ app.post('/platform/:platform', require('./platforms/'));
 app.listen(app.get('port'), function() {
   console.log('EmojinaryFriend API');
 });
+
+app.use(pmx.expressErrorHandler());
