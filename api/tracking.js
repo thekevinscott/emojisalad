@@ -11,15 +11,14 @@ module.exports = function(state, user_id, input) {
     });
 
     visitor.event({
-      ec: 'Twilio View',
-      ea: state,
-      ev: input
+      ec: state',
+      ea: input,
     }).send();
 
-    mixpanel.track("Twilio Request", {
+    mixpanel.track(state, {
       user_id: user_id,
-      state: state,
-      input: input
+      input: input,
+      platform: 'twilio'
     });
 
   }
