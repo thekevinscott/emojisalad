@@ -13,7 +13,7 @@ var config = {
     // specify that react and reqwest should be part of that chunk
     entry: {
         web: ['./web/main.js'],
-        vendors: ['react', 'reqwest', 'react-router', 'd3']
+        vendors: ['react', 'reqwest', 'react-router']
     },
     resolve: { alias: {} },
 
@@ -42,6 +42,5 @@ var config = {
 config.addVendor('react', bower_dir + 'react/react.js');
 config.addVendor('react-router', bower_dir + 'react-router/build/umd/ReactRouter.js');
 config.addVendor('reqwest', bower_dir + 'reqwest/reqwest.js');
-config.addVendor('d3', bower_dir + 'd3/d3.min.js');
 
 module.exports = config;
