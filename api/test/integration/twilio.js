@@ -12,7 +12,7 @@ var params = {
 
   // callback for a test that passes no data
   reject: function(response) {
-    should.not.exist(response);
+    should.equal(response, undefined);
   },
   // callback to test for an empty response
   empty: function(response) {
