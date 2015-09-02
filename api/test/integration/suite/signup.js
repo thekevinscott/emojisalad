@@ -15,7 +15,7 @@ module.exports = function(params) {
 
   describe('Signup', function() {
     this.timeout(6000);
-    it('should reject if no identifier is provided', function() {
+    it('should return blank if no identifier is provided', function() {
       return r.q().then(function(response) {
         params.reject(response);
       });
