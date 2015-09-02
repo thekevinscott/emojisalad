@@ -11,7 +11,7 @@ module.exports = function(state, user_id, input) {
     });
 
     visitor.event({
-      ec: state',
+      ec: state,
       ea: input,
     }).send();
 
