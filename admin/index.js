@@ -37,7 +37,6 @@ require('./api/routes/messages')(app);
 
 // bootstrap our web app
 app.get('*', function(req, res) {
-  console.log('get the app');
     res.render('app.html');
 });
 
