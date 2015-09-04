@@ -44,6 +44,8 @@ function pullDB() {
     tmp+zippedFile
   ];
 
+  // these tables have data we want
+  // and need
   var tablesHavingData = [
     'admins',
     'game_phrases',
@@ -51,6 +53,7 @@ function pullDB() {
     'messages',
     'phrases',
     'platforms',
+    'round_states',
     'user_attribute_keys',
     'user_entries',
     'user_states'

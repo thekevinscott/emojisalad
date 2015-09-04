@@ -7,6 +7,8 @@ var db = require('db');
 var User;
 var Round = require('./round');
 
+// number of guesses a user gets per round
+var default_guesses = 2;
 var Game = {
   update: function(game, data) {
     console.log('update game', game.id, data);
@@ -77,6 +79,13 @@ var Game = {
   },
   checkGuess: function(game, user, guess) {
     return Round.checkGuess(game, user, guess);
+  },
+  getGuessesLeft: function(game) {
+    return Promise.all(game.round.players.map(function(player) {
+      return Round.getGuessesLeft(game, player);
+    })).reduce(function(prev, current) {
+      return prev + current;
+    });
   },
   checkInput: function(str) {
     var FBS_REGEXP = new RegExp("(?:" + (EmojiData.chars({
@@ -161,15 +170,30 @@ var Game = {
                     //.where('a.attribute=?', val)
                     .where('a.user_id=?',user.id);
 
-        return db.query(query).then(function(attributes) {
-          attributes.map(function(attribute) {
-            user[attribute.key] = attribute.attribute;
-          });
-          return user;
-        });
-      }));
+        return Promise.join(
+          db.query(query),
+          function(attributes) {
+            attributes.map(function(attribute) {
+              user[attribute.key] = attribute.attribute;
+            });
+            return user;
+          }
+        );
+                    /*
+        return Promise.join(
+          db.query(query),
+          function(attributes, guesses) {
+            console.log('guesses', guesses);
+            attributes.map(function(attribute) {
+              user[attribute.key] = attribute.attribute;
+            });
+            return user;
+          }
+        );
+        */
+      }.bind(this)));
 
-    });
+    }.bind(this));
   },
   getRound: function(game) {
     return Round.getLast(game);
@@ -199,11 +223,9 @@ var Game = {
     return db.query(query.toString()).then(function(rows) {
       if ( rows.length ) {
         var game = rows[0];
-        return Promise.join(
-          this.getRound(game),
-          this.getPlayers(game),
-          function(round, players) {
-            game.round = round;
+        return this.getRound(game).then(function(round) {
+          game.round = round;
+          return this.getPlayers(game).then(function(players) {
             game.players = players;
 
             if ( game.round ) {
@@ -217,8 +239,8 @@ var Game = {
               });
             }
             return game;
-          }
-        );
+          });
+        }.bind(this));
         /*
         return this.getRound(game).then(function(round) {
           game.round = round;
@@ -321,11 +343,20 @@ var Game = {
     }.bind(this)));
   },
   create: function() {
+    var state_id = squel
+                  .select()
+                  .field('id')
+                  .from('game_states')
+                  .where('state=?','pending');
+
     var query = squel
                 .insert()
                 .into('games', 'g')
-                .setFields({ state_id: 1 });
-    return db.query(query).then(function(rows) {
+                .setFields({
+                  state_id: state_id,
+                  guesses: default_guesses
+                });
+    return db.query(query.toString()).then(function(rows) {
       return {
         id: rows.insertId
       }

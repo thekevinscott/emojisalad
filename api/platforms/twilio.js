@@ -35,7 +35,7 @@ module.exports = function(req, res) {
   console.log('\n================twilio=================\n');
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
-  console.log('req headers from twilio', req.headers);
+  console.log('req headers from twilio', req.headers.host);
 
   if ( ! req.body.From ) {
     // actually, we don't want to expose anything;

@@ -558,6 +558,10 @@ module.exports = function(params) {
 
     });
 
+    it('should chide the submitter if they try and guess', function() {
+      throw "Implement this";
+    });
+
   });
 
   function signUp(user) {

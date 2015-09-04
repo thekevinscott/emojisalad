@@ -46,7 +46,7 @@ var Log = {
     try {
     if ( responses && responses.length ) {
       Promise.all(responses.map(function(message) {
-        console.log('message', message);
+        //console.log('message', message);
         var platform_id = squel
                           .select()
                           .field('id')

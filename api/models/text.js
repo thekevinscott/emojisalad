@@ -26,7 +26,7 @@ var Text = {
     if ( responses && responses.length ) {
       var messages = {};
       var options = {};
-      console.log('incoming responses', responses);
+      //console.log('incoming responses', responses);
       responses.map(function(response) {
         if ( response.options ) {
           options[response.key] = response.options;
@@ -45,7 +45,7 @@ var Text = {
           messages[row.key] = row.message;
         });
       }).then(function() {
-        console.log('all messages', messages);
+        //console.log('all messages', messages);
         var twiml = new twilio.TwimlResponse();
         responses.map(function(response) {
           switch(response.type) {
@@ -57,7 +57,7 @@ var Text = {
                 var number = response.number;
               }
 
-              console.log('sms response', response, messages[response.key]);
+              //console.log('sms response', response, messages[response.key]);
 
               twiml.sms(messages[response.key], {
                 to: number,
@@ -72,7 +72,7 @@ var Text = {
             break;
           }
         });
-        console.log('return twiml', twiml.toString());
+        //console.log('return twiml', twiml.toString());
         return twiml;
       });
     } else {

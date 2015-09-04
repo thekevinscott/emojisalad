@@ -312,25 +312,6 @@ module.exports = function(params) {
               });
             }
           );
-        //}).then(function() {
-          //var correct = 'guess Jurassic Park';
-          //return Promise.join(
-            //req.p({
-              //username: users.invited.number,
-              //message: correct 
-            //}, params, true),
-            //Message.get('says', [users.invited.nickname, correct]),
-            //function(output, message) {
-              //output.Response.Sms.length.should.equal(2);
-              //output.Response.Sms.map(function(sms) {
-                //sms['_'].should.equal(message.message);
-                //expect([
-                  //users.inviter.number,
-                  //users.invited.number
-                //]).to.contain(sms['$']['to']);
-              //});
-            //}
-          //);
         });
       });
     });

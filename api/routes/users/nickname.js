@@ -26,8 +26,7 @@ module.exports = function(user, input) {
         if ( game.state === 'pending' ) {
           return startGame(game, user, input);
         } else if ( game.state === 'playing' ) {
-          //console.log('\n\n\n######');
-          //console.log('what is teh state of hte round', game.round);
+          console.log('game roudn state', game.round);
           if ( game.round.state === 'pending' ) {
             // the user can jump in.
             // the round has yet to begin!
@@ -35,9 +34,12 @@ module.exports = function(user, input) {
           } else if ( game.round.state === 'playing' ) {
             return addPlayerToBench(game, user, input);
           } else {
-            console.log('game', game);
-            console.log('round', game.round);
+            cnosole.error("Game round has no state", game);
+            throw new Error("Game round has no state");
           }
+        } else {
+          cnosole.error("Game has no state", game);
+          throw new Error("Game has no state");
         }
       });
     } else {
