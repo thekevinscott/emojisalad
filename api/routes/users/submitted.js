@@ -8,6 +8,35 @@ module.exports = function(user, input) {
 
   if ( /^invite(.*)/i.test(input) ) {
     return require('../users/invite')(user, input);
+  } else if ( /^clue/i.test(input) ) {
+    return Game.get({ user: user }).then(function(game) {
+      var message = {
+        type: 'sms',
+        key: 'says',
+        options: [
+          user.nickname,
+          input
+        ]
+      };
+      var messages = game.players.map(function(player) {
+        if ( player.id !== user.id ) {
+          return _.assign({
+            user: player
+          },
+          message);
+        }
+      }).filter(function(el) { return el });
+
+      messages = messages.concat(game.players.map(function(player) {
+        return {
+          user: player,
+          type: 'sms',
+          key: 'no-clue-for-submitter'
+        }
+      }));
+      return messages;
+    });
+        
   } else {
     return Promise.join(
       Game.get({ user: user }),

@@ -264,7 +264,3 @@ function signUp(number, nickname) {
     }, params);
   });
 }
-
-require('./suite/game')(params);
-require('./suite/game-three')(params);
-require('./suite/guessing')(params);

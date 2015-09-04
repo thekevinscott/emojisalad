@@ -10,6 +10,8 @@ module.exports = function(user, input) {
 
   if ( /^invite(.*)/i.test(input) ) {
     return require('../users/invite')(user, input);
+  } else if ( /^clue(.*)/i.test(input) ) {
+    return require('../games/clue')(user, input);
   } else if ( /^guess(.*)/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
       var messages = game.players.map(function(player) {

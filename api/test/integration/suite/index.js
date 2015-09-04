@@ -4,5 +4,9 @@ var r = require('./lib/req');
 var suite = function(params) {
   //require('./debug')(params);
   require('./signup')(params);
+  require('./game')(params);
+  require('./game-three')(params);
+  require('./guessing')(params);
+  require('./clues')(params);
 }
 module.exports = suite;

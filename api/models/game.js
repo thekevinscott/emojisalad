@@ -9,6 +9,7 @@ var Round = require('./round');
 
 // number of guesses a user gets per round
 var default_guesses = 2;
+var default_clues_allowed = 2;
 var Game = {
   update: function(game, data) {
     console.log('update game', game.id, data);
@@ -354,7 +355,8 @@ var Game = {
                 .into('games', 'g')
                 .setFields({
                   state_id: state_id,
-                  guesses: default_guesses
+                  guesses: default_guesses,
+                  clues_allowed: default_clues_allowed 
                 });
     return db.query(query.toString()).then(function(rows) {
       return {

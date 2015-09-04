@@ -48,6 +48,7 @@ function pullDB() {
   // and need
   var tablesHavingData = [
     'admins',
+    'clues',
     'game_phrases',
     'game_states',
     'messages',

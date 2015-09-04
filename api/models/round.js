@@ -9,6 +9,56 @@ var Message = require('./message');
 var Game;
 
 var Round = {
+  getCluesLeft: function(game) {
+    var clue_query = squel
+                     .select()
+                     .field('count(1) as cnt')
+                     .from('round_clues')
+                     .where('round_id=?',game.round.id);
+    return db.query(clue_query).then(function(rows) {
+      return game.round.clues_allowed - rows[0]['cnt'];
+    });
+  },
+  getClue: function(game, user) {
+    var clue_query = squel
+                     .select()
+                     .field('clue_id')
+                     .from('round_clues')
+                     .where('round_id=?',game.round.id);
+
+    var select_query = squel
+                .select()
+                .field('c.id as clue_id')
+                .field('c.clue')
+                .field('c.phrase_id')
+                .from('clues', 'c')
+                .left_join('phrases','p','c.phrase_id=p.id')
+                .where('p.id=?', game.round.phrase_id)
+                .where('c.id NOT IN ?', clue_query)
+                .limit(1);
+
+                console.log(select_query.toString());
+
+    return db.query(select_query.toString()).then(function(rows) {
+      var clue = rows[0];
+      if ( clue ) {
+        console.log('clue', clue);
+        var update_clue_query = squel
+                                .insert()
+                                .into('round_clues')
+                                .setFields({
+                                  user_id: user.id,
+                                  round_id: game.round.id,
+                                  clue_id: clue.clue_id
+                                });
+
+        db.query(update_clue_query);
+        return clue;
+      } else {
+        return null;
+      }
+    });
+  },
   checkGuess: function(game, user, guess) {
     var query = squel
                 .select()
@@ -117,6 +167,7 @@ var Round = {
                 .field('r.winner_id')
                 .field('r.created')
                 .field('r.guesses')
+                .field('r.clues_allowed')
                 //.field('COUNT(1) as guesses_made')
                 .field('p.phrase')
                 .field('s.state')
@@ -156,6 +207,12 @@ var Round = {
                        .from('round_states')
                        .where('state=?',state);
 
+        var clues_allowed = squel
+                      .select()
+                      .field('clues_allowed')
+                      .from('games')
+                      .where('id=?',game.id);
+
         var guesses = squel
                       .select()
                       .field('guesses')
@@ -170,7 +227,8 @@ var Round = {
                       state_id: state_id,
                       submitter_id: submitter.id,
                       phrase_id: phrase.id,
-                      guesses: guesses
+                      guesses: guesses,
+                      clues_allowed: clues_allowed
                     });
         return db.query(query.toString()).then(function() {
           return {
@@ -227,9 +285,10 @@ var Round = {
                      .from('round_states')
                      .where('state=?',data.state);
       query.set('state_id', state_id);
+    } else if ( data.clues_allowed ) {
+      query.set('clues_allowed', data.clues_allowed);
     }
 
-    console.log('query', query.toString());
     return db.query(query.toString());
   }
 }
