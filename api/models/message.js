@@ -74,7 +74,6 @@ var Message = {
                 var number = response.number;
               }
 
-
               return _.assign({
                 message: messages[response.key],
                 to: number,

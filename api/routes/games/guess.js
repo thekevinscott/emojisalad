@@ -40,7 +40,7 @@ module.exports = function(user, input) {
 
               correct.type = 'sms';
               game.players.map(function(player) {
-                messages.push(_.assign({ number: player.number }, correct));
+                messages.push(_.assign({ user: player }, correct));
               });
 
               promises.push(Game.newRound(game).then(function(round) {
@@ -71,7 +71,6 @@ module.exports = function(user, input) {
                 };
 
                 suggestion.user = round.submitter;
-                //suggestion.number = round.submitter.number;
                 messages.push(suggestion);
                 round.game.players.map(function(player) {
                   if ( player.id !== round.submitter.id ) {
@@ -139,7 +138,6 @@ module.exports = function(user, input) {
                     };
 
                     suggestion.user = round.submitter;
-                    //suggestion.number = round.submitter.number;
                     messages.push(suggestion);
                     round.game.players.map(function(player) {
                       if ( player.id !== round.submitter.id ) {

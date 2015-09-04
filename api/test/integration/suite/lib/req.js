@@ -41,8 +41,8 @@ function req(options, params, raw) {
         });
       }
     } else if (content_type.indexOf('text/html') !== -1 ) {
-      console.log('wtf?');
-      console.log('body', body);
+      console.error('wtf?');
+      console.error('body', body);
     } else if ( content_type.indexOf('application/json') !== -1 ) {
       if ( _.isString(body) ) {
         body = JSON.parse(body);
