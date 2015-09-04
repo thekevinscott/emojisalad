@@ -15,7 +15,7 @@ addRoute('waiting-for-invites', require('./users/invite'));
 addRoute('do-not-contact', require('./users/blackhole'));
 addRoute('waiting-for-submission', require('./games/submission'));
 addRoute('ready-for-game', require('./users/say'));
-addRoute('submitted', require('./users/say'));
+addRoute('submitted', require('./users/submitted'));
 addRoute('guessing', require('./games/guess'));
 addRoute('bench', require('./users/say'));
 addRoute('waiting-for-round', require('./users/say'));

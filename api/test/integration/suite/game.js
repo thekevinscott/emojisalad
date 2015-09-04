@@ -123,56 +123,6 @@ module.exports = function(params) {
           );
         });
       });
-
-      describe('Valid Emoji', function() {
-        function checkValidEmoji(emoji) {
-          var users = getUsers();
-          return startGame(users).then(function(game) {
-            return Promise.join(
-              req.p({
-              username: game.round.submitter.number,
-              message: emoji
-            }, params, true),
-            Message.get('game-submission-sent'),
-            Message.get('says', [game.round.submitter.nickname, emoji]),
-            Message.get('guessing-instructions'),
-            function(output, message, forwardedMessage, guessingInstructions) {
-              output.Response.Message[0].should.equal(message.message);
-              game.round.players.map(function(player, i) {
-                var saySMS = output.Response.Sms[i+0];
-                var instructionsSMS = output.Response.Sms[i+1];
-                saySMS['_'].should.equal(forwardedMessage.message);
-                saySMS['$']['to'].should.equal(player.number);
-                instructionsSMS['_'].should.equal(guessingInstructions.message);
-                instructionsSMS['$']['to'].should.equal(player.number);
-              });
-            }
-            );
-          });
-        }
-
-        it('should check a smiley', function() {
-          return checkValidEmoji('😀');
-        });
-
-        it('should check a rocket', function() {
-          return checkValidEmoji('🚀');
-        });
-
-        it('should check a filling hourglass', function() {
-          return checkValidEmoji('⏳');
-        });
-
-        //it('should check a hourglass', function() {
-          //return checkValidEmoji('⌛️');
-        //});
-
-        it('should check a back', function() {
-          return checkValidEmoji('🔙');
-        });
-
-      });
-
     });
 
     it('should allow other players to cross talk', function() {
@@ -559,7 +509,48 @@ module.exports = function(params) {
     });
 
     it('should chide the submitter if they try and guess', function() {
-      throw "Implement this";
+      var users = getUsers();
+      var msg = 'Jurassic Park';
+      var msg2 = 'SILENCE OF THE LAMBS';
+      var msg3 = 'TIME AFTER TIME';
+
+      var firstSubmitter;
+      var secondSubmitter;
+
+      return startGame(users).then(function(game) {
+        firstSubmitter = game.round.submitter;
+        secondSubmitter = game.round.players[0];
+        return req.p({
+          username: firstSubmitter.number,
+          message: JURASSIC_PARK 
+        }, params, true).then(function() {
+          return game;
+        });
+      }).then(function(game) {
+        return Promise.join(
+          req.p({
+            username: firstSubmitter.number,
+            message: 'jurassic park'
+            }, params, true),
+          Message.get('says', [game.round.submitter.nickname, 'jurassic park']),
+          Message.get('submitter-dont-guess', [game.round.submitter.nickname]),
+          function(output, says, chide) {
+            console.log('output', output.Response.Sms);
+            output.Response.Sms.length.should.equal(3);
+            var saySMS = output.Response.Sms[0];
+            saySMS['_'].should.equal(says.message);
+            saySMS['$']['to'].should.equal(secondSubmitter.number);
+
+            output.Response.Sms.splice(1).map(function(sms) {
+              sms['_'].should.equal(chide.message);
+              game.players.map(function(player) {
+                return player.number;
+              })
+              .should.contain(sms['$']['to']);
+            });
+          }
+        );
+      });
     });
 
   });

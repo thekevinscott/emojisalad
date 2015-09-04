@@ -407,7 +407,7 @@ module.exports = function(params) {
               users.invited.number,
               users.secondInvited.number
             ];
-            output.Response.Sms.map(function(sms) {
+            output.Response.Sms.splice(0, 3).map(function(sms) {
               sms['_'].should.equal(roundOver.message);
               expect(expectations).to.contain(sms['$']['to']);
               if ( sms['$']['to'] === users.inviter.number ) {
@@ -424,7 +424,7 @@ module.exports = function(params) {
       });
     });
 
-    it.only('should start a new round when everyone has gotten it wrong', function() {
+    it('should start a new round when everyone has gotten it wrong', function() {
       var users = getUsers();
       var msg = 'guess foo';
 

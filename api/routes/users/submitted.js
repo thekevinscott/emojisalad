@@ -12,6 +12,7 @@ module.exports = function(user, input) {
     return Promise.join(
       Game.get({ user: user }),
       function(game) {
+        
         var message = {
           type: 'sms',
           key: 'says',
@@ -20,15 +21,32 @@ module.exports = function(user, input) {
             input
           ]
         };
-        return game.players.map(function(player) {
+        var messages = game.players.map(function(player) {
           if ( player.id !== user.id ) {
             return _.assign({
-              //number: player.number,
               user: player
             },
             message);
           }
         }).filter(function(el) { return el });
+
+        // check that the submitter has not just guessed their own clue
+        var regex = new RegExp(game.phrase, 'i');
+        if ( regex.test(input) ) {
+          messages = messages.concat(game.players.map(function(player) {
+            return {
+              key: 'submitter-dont-guess',
+              user: player,
+              type: 'sms',
+              options: [
+                user.nickname
+              ]
+            };
+          }));
+        }
+
+        return messages;
+
       }
     );
   }
