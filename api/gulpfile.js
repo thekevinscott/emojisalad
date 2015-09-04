@@ -28,10 +28,14 @@ function pullDB() {
   var destination = tmp+'production.sql.gz';
   var file = 'db_backup.sql';
   var zippedFile = 'db_backup.sql.gz';
-  var dumpDB = [
+  //mysqldump -u user -p --no-data db > structure.sql; mysqldump -u user -p db table1 table2 >> structure.sql
+
+  var dumpSchemas = [
     'mysqldump -u',
     config.production.user,
     '-p' + config.production.password,
+    '--no-data',
+    '--add-drop-table',
     '-h',
     config.production.host,
     config.production.database,
@@ -39,10 +43,36 @@ function pullDB() {
     'gzip >',
     tmp+zippedFile
   ];
+
+  var tablesHavingData = [
+    'admins',
+    'game_phrases',
+    'game_states',
+    'messages',
+    'phrases',
+    'platforms',
+    'user_attribute_keys',
+    'user_entries',
+    'user_states'
+  ];
+  var dumpData = [
+    'mysqldump -u',
+    config.production.user,
+    '-p' + config.production.password,
+    '-h',
+    config.production.host,
+    config.production.database,
+    tablesHavingData.join(' '),
+    '|',
+    'gzip >>',
+    tmp+zippedFile
+  ];
   return exec('mkdir -p '+tmp).then(function() {
     return exec('rm -f '+tmp+file);
   }).then(function() {
-    return exec(dumpDB.join(' '))
+    return exec(dumpSchemas.join(' '))
+  }).then(function() {
+    return exec(dumpData.join(' '))
   }).then(function(output) {
     return exec('gunzip '+tmp+zippedFile);
   }).then(function() {
@@ -102,28 +132,6 @@ gulp.task('sync-testing-db', function(cb) {
     return exec(['rm -f',testDB].join(' ')).then(function() {
       return exec(['mv',file,testDB].join(' '));
     });
-    // remove worthless data from tables
-    // NOTE: A much better way to do this would be to only
-    // select, above, in mysqldump, table schemas and ONLY
-    // data from the tables we want (such as messages).
-  }).then(function() {
-    var squel = require('squel');
-    var db = require('db');
-    var tables = [
-      'users',
-      'user_attributes',
-      'outgoingMessages',
-      'invites',
-      'incomingMessages',
-      'games',
-      'game_participants',
-    ];
-    return Promise.all(tables.map(function(table) {
-      var query = squel.remove().from(table);
-      return db.query(query);
-    }));
-  }).catch(function(e) {
-    console.log('e', e);
   }).done(function() {
     return exec('rm -rf '+tmp).then(function() {
       process.exit(0);
