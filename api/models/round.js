@@ -132,6 +132,7 @@ var Round = {
     } else {
       var order = 'p.id';
     }
+
     var query = squel
                 .select()
                 .from('phrases', 'p')
