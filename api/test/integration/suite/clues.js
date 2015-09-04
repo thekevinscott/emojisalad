@@ -412,7 +412,11 @@ module.exports = function(params) {
     }).then(function() {
       return User.get( users.inviter );
     }).then(function(user) {
-      return Game.get({ user: user });
+      return Game.get({ user: user }).then(function(game) {
+        return Game.update(game, { random: 0 }).then(function() {
+          return game;
+        });
+      });
     });
   }
 

@@ -12,16 +12,24 @@ var default_guesses = 2;
 var default_clues_allowed = 2;
 var Game = {
   update: function(game, data) {
-    var state_id = squel
-                  .select()
-                  .field('id')
-                  .from('game_states')
-                  .where('state=?',data.state);
     var query = squel
-                .update()
-                .table('games')
-                .set('state_id', state_id)
-                .where('id=?',game.id);
+              .update()
+              .table('games')
+              .set('id', game.id)
+              .where('id=?',game.id);
+
+    if ( data.state !== undefined ) {
+      var state_id = squel
+                    .select()
+                    .field('id')
+                    .from('game_states')
+                    .where('state=?',data.state);
+      query.set('state_id', state_id);
+    }
+    if ( data.random !== undefined ) {
+      query.set('random', data.random);
+    }
+
     return db.query(query);
   },
   getNextSubmitter: function(game) {

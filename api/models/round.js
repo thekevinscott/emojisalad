@@ -126,13 +126,19 @@ var Round = {
                        .field('phrase_id')
                        .from('game_phrases')
                        .where('game_id=?', game.id);
+
+    if ( game.random ) {
+      var order = 'RAND()';
+    } else {
+      var order = 'p.id';
+    }
     var query = squel
                 .select()
                 .from('phrases', 'p')
                 .field('p.phrase')
                 .field('p.id')
                 .where('p.id NOT IN ?', game_phrases)
-                .order('p.id')
+                .order(order)
                 .limit(1);
 
     return db.query(query).then(function(rows) {
