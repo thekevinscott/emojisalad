@@ -37,7 +37,7 @@ var Log = {
       return db.query(query);
       } catch(e) {
         // fail relatively silently
-        console.log('error inserting into DB', query.toString());
+        console.error('error inserting into DB', query.toString());
       }
     });
   },
@@ -46,7 +46,6 @@ var Log = {
     try {
     if ( responses && responses.length ) {
       Promise.all(responses.map(function(message) {
-        //console.log('message', message);
         var platform_id = squel
                           .select()
                           .field('id')
@@ -76,7 +75,7 @@ var Log = {
       }));
     }
     } catch(e) {
-      console.log('error with outgoing message', e);
+      console.error('error with outgoing message', e);
     }
   }
 }

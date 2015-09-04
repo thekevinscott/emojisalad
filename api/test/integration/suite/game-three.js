@@ -65,7 +65,6 @@ module.exports = function(params) {
           username: game.round.submitter.number,
           message: msg
         }, params, true).then(function() {
-          console.log('ok round is live thanks to', game.round.submitter);
           // Submitter (Inviter) has started off the round, it is live.
           return Promise.join(
             req.p({
@@ -87,7 +86,6 @@ module.exports = function(params) {
             Message.get('intro_4', [users.secondInvited.number]),
             Message.get('invite', [users.inviter.nickname]),
             function(output, message, invitedMessage) {
-              console.log('output', output.Response);
               output.Response.Message[0].should.equal(message.message);
 
               output.Response.Sms[0]['_'].should.equal(invitedMessage.message);
@@ -202,7 +200,6 @@ module.exports = function(params) {
               var smses = output.Response.Sms.splice(0, 4);
               smses.length.should.equal(4);
               smses.map(function(sms) {
-                console.log('sms', sms);
                 if ( sms['$']['to'] === users.invited.number ) {
                   expect([says.message, instructions.message]).to.contain(sms['_']);
                 } else if ( sms['$']['to'] === users.secondInvited.number ) {
@@ -211,18 +208,6 @@ module.exports = function(params) {
                   throw "Message addressed incorrectly";
                 }
               });
-
-              //output.Response.Sms.splice(0,2).map(function(sms) {
-                //if ( sms['$']['to'] === users.invited.number ) {
-                  //console.log(sms);
-                //} else if ( sms['$']['to'] === users.secondInvited.number ) {
-                  //console.log(sms);
-                //} else {
-                  //throw "Message addressed incorrectly";
-                //}
-              //});
-
-              console.log('remaining output', output.Response.Sms);
 
               output.Response.Sms.length.should.equal(0);
             }
@@ -353,27 +338,22 @@ module.exports = function(params) {
             Message.get('game-next-round-suggestion', [users.invited.nickname, msg2]),
             function(output, says, correct, nextRound, suggestion) {
               // every player in the game should receive this message
-              //console.log(output.Response.Sms);
               output.Response.Sms.length.should.equal(8);
 
               output.Response.Sms.map(function(sms) {
-                console.log('sms', sms);
                 if ( sms['$']['to'] === users.invited.number ) {
-                  console.log('user who guessed');
                   // this is the user who guessed
                   expect([
                     correct.message,
                     suggestion.message
                   ]).to.contain(sms['_']);
                 } else if ( sms['$']['to'] === users.inviter.number ) {
-                  console.log('inviter');
                   expect([
                     says.message,
                     correct.message,
                     nextRound.message
                   ]).to.contain(sms['_']);
                 } else if ( sms['$']['to'] === users.secondInvited.number ) {
-                  console.log('second invited', says.message);
                   expect([
                     says.message,
                     correct.message,
@@ -437,7 +417,6 @@ module.exports = function(params) {
               // we expect these to be in order, too
               output.Response.Sms.length.should.equal(8);
 
-              console.log('response', output.Response.Sms);
               output.Response.Sms.splice(0, 2).map(function(sms) {
                 says.message.should.equal(sms['_']);
                 expect([
@@ -492,7 +471,6 @@ module.exports = function(params) {
         Message.get('game-next-round', [users.inviter.nickname]),
         Message.get('game-next-round-suggestion', [users.inviter.nickname, msg4]),
         function(output, says, correct, nextRound, suggestion) {
-          console.log('response back', output.Response);
           // we expect these to be in order, too
           output.Response.Sms.length.should.equal(8);
 
@@ -551,7 +529,6 @@ module.exports = function(params) {
         }, params, true),
         Message.get('says', [users.invited.nickname, 'foo']),
         function(output, says) {
-          console.log('response back', output.Response);
           // we expect these to be in order, too
           output.Response.Sms.length.should.equal(2);
 

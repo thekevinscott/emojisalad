@@ -19,46 +19,31 @@ module.exports = function(user, input) {
   } else {
 
     return Game.saveSubmission(user, input).then(function(game) {
-      //return Promise.join(
-        //Message.get('game-submission-sent'),
-        //Message.get('says', [game.round.submitter.nickname, input]),
-        //Message.get('guessing-instructions'),
-        //function(message, forwardedMessage, guessingInstructions) {
-          //console.log('saved submission');
-          var messages = [{
-            type: 'respond',
-            key: 'game-submission-sent'
-          }];
+      var messages = [{
+        type: 'respond',
+        key: 'game-submission-sent'
+      }];
 
-          var forwarded_message = {
-            type: 'sms',
-            key: 'says',
-            options: [
-              game.round.submitter.nickname, input
-            ]
-          };
-          //forwardedMessage.type = 'sms';
-          //forwardedMessage.options = [
-            //game.round.submitter.nickname, input
-          //];
-          var guessing_instructions = {
-            type: 'sms',
-            key: 'guessing-instructions'
-            //options: [
-            //]
-          };
-          //guessingInstructions.type = 'sms';
-          //console.log('the players', game.round.players);
-          game.round.players.map(function(player) {
-            messages.push(_.assign({ user: player }, forwarded_message));
-            messages.push(_.assign({ user: player }, guessing_instructions));
-          });
-          return messages;
-        //}
-      //);
-      //res.json(game);
+      var forwarded_message = {
+        type: 'sms',
+        key: 'says',
+        options: [
+          game.round.submitter.nickname, input
+        ]
+      };
+
+      var guessing_instructions = {
+        type: 'sms',
+        key: 'guessing-instructions'
+      };
+
+      game.round.players.map(function(player) {
+        messages.push(_.assign({ user: player }, forwarded_message));
+        messages.push(_.assign({ user: player }, guessing_instructions));
+      });
+      return messages;
     }).catch(function(error) {
-      console.log('there is an error', error);
+      console.error('there is an error', error);
       if ( error && parseInt(error.message) ) {
         return [{
           type: 'respond',

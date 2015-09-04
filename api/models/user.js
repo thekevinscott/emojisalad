@@ -172,7 +172,6 @@ var User = {
                       .table('users')
                       .where('id=?', user.id);
           query.set('state_id', state, { dontQuote: true });
-          console.log('update user', user.id, params[key]);
           queries.push(query);
           break;
         default:
@@ -203,82 +202,7 @@ var User = {
       });
     }));
 
-    //return db.query(query).then(function(rows) {
-      /*
-        if ( params.state && params.state === 'ready-for-game' ) {
-          // add them to the game
-          Invite.getInviter(user.id).then(function(inviter) {
-            if ( inviter && inviter.id ) {
-              return Game.getByUsers([inviter]).then(function(game) {
-                return Game.add(game, [user]).then(function() {
-                  dfd.resolve({
-                    game_state: 'ready-to-play'
-                  });
-                });
-              }).catch(function(err) {
-                console.error(err);
-              });
-            } else {
-              return Game.getByUsers([user]).then(function(game) {
-                if ( !game ) {
-                  return Game.create().then(function(game) {
-                    return Game.add(game, [user]);
-                  }).then(function() {
-                    dfd.resolve({
-                      game_state: 'pending'
-                    });
-                  });
-                } else {
-                  dfd.resolve({
-                    game_state: 'foo'
-                  });
-                }
-              });
-            }
-          });
-        } else {
-
-          dfd.resolve({
-            game_state: 'pending'
-          });
-        }
-        */
-    //});
   },
-  //this is the old message function that sends messages based on platform.
-  //deprecated
-  /*
-  message: function(user, message_key, options) {
-    switch(user.platform) {
-      case 'messenger': 
-
-        return Message.get(message_key, options).then(function(message) {
-          if ( message && message.message ) {
-            return message.message;
-          } else {
-            return new Error({
-              message: 'Message for key not found: '+ message_key
-            });
-          }
-        });
-        break;
-      case 'twilio':
-        return Message.get(message_key, options).then(function(message) {
-        if ( message && message.message ) {
-          return message.message;
-        } else {
-          throw new Error({
-            message: 'Message was not found for key: ' + message_key
-          });
-        }
-      });
-        break;
-      default:
-        return Q.reject('No platform specified');
-        break;
-    }
-  }
-  */
 };
 
 module.exports = User;

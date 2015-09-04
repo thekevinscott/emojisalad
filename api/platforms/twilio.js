@@ -31,11 +31,14 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var Twilio = require('../models/twilio');
 var track = require('../tracking');
+var debug = false;
 module.exports = function(req, res) {
-  console.log('\n================twilio=================\n');
+  if ( debug ) {
+    console.log('\n================twilio=================\n');
+    console.log('req headers from twilio', req.headers.host);
+  }
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
-  console.log('req headers from twilio', req.headers.host);
 
   if ( ! req.body.From ) {
     // actually, we don't want to expose anything;
@@ -75,7 +78,9 @@ module.exports = function(req, res) {
       //return end(errors, user);
       return res.end('');
     } else {
-      console.log(req.body.From, '|', req.body.Body, '|', user.state);
+      if ( debug ) {
+        console.log(req.body.From, '|', req.body.Body, '|', user.state);
+      }
       track(user.state, user.id, req.body.Body);
       return router(user, body).then(function(response) {
         return end(response, user);

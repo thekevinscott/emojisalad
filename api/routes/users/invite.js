@@ -31,19 +31,6 @@ module.exports = function(invitingUser, input) {
             user: users.invitedUser
           },
         ];
-        //return Promise.join(
-          //Message.get('intro_4', phone),
-          //Message.get('invite', users.invitingUser.nickname),
-          //function(sentMessage, invitedMessage) {
-            //sentMessage.type = 'respond';
-            //invitedMessage.type = 'sms';
-            //invitedMessage.number = users.invitedUser.number;
-            //return [
-              //sentMessage,
-              //invitedMessage
-            //];
-          //}
-        //);
       });
     }).catch(function(error) {
       if ( error && parseInt(error.message) ) {
@@ -52,10 +39,6 @@ module.exports = function(invitingUser, input) {
           key: 'error-'+error.message,
           options: [input]
         }];
-        //return Message.get('error-'+error.message, [input]).then(function(message) {
-          //message.type = 'respond';
-          //return [message];
-        //});
       } else {
         console.error('HANDLE THIS', error.message);
         throw error;
@@ -67,10 +50,6 @@ module.exports = function(invitingUser, input) {
       key: 'error-8',
       options: [input]
     }];
-    //return Message.get('error-8').then(function(message) {
-      //message.type = 'respond';
-      //return [message];
-    //});
   }
 
 }

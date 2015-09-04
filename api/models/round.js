@@ -37,12 +37,10 @@ var Round = {
                 .where('c.id NOT IN ?', clue_query)
                 .limit(1);
 
-                console.log(select_query.toString());
 
     return db.query(select_query.toString()).then(function(rows) {
       var clue = rows[0];
       if ( clue ) {
-        console.log('clue', clue);
         var update_clue_query = squel
                                 .insert()
                                 .into('round_clues')
@@ -65,11 +63,9 @@ var Round = {
                 .from('phrases')
                 .where('id=?', game.round.phrase_id);
                         
-                //console.log('game round', game.round);
     return db.query(query.toString()).then(function(phrases) {
       var phrase = phrases[0].phrase;
       var regex = new RegExp('^'+phrase, 'i');
-      console.log('regex', regex, guess);
       var result = regex.test(guess);
 
       // we save the guess
@@ -116,7 +112,6 @@ var Round = {
                 .where('r.id=?',game.round.id)
                 .where('g.user_id=?',user.id);
 
-                //console.log(query.toString());
     return db.query(query).then(function(rows) {
       var row = rows.pop();
       return parseInt(row.guesses) - parseInt(row.guesses_made);
@@ -247,28 +242,22 @@ var Round = {
     );
   },
   saveSubmission: function(game, user, message) {
-    console.log('SUBMISSION IS ABOUT TO BE SAVED');
     if ( ! User ) {
       User = require('./user');
     }
 
-    //console.log('game', game.round);
-    //console.log('incoming user', user);
     // all other users who are not submitter (not the user)
     // should be switched to guessing
     if ( game.round.players[0].id === user.id ) {
       throw "These should not match";
     }
     var promises = game.round.players.map(function(player) {
-      //console.log('player', player.id, 'guessing update');
       return User.update(player, {state: 'guessing' });
     });
     promises.push(function() {
       return User.update(user, {state: 'submitted'})
     }());
-    //console.log('get ready to push a promise #####\n\n\n\n\n');
     promises.push(function() {
-      //console.log('update round', this, game.round);
       return this.update(game.round, { state: 'playing' });
     }.bind(this)());
     return Promise.all(promises);

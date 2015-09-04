@@ -26,7 +26,6 @@ module.exports = function(user, input) {
         if ( game.state === 'pending' ) {
           return startGame(game, user, input);
         } else if ( game.state === 'playing' ) {
-          console.log('game roudn state', game.round);
           if ( game.round.state === 'pending' ) {
             // the user can jump in.
             // the round has yet to begin!
@@ -165,7 +164,6 @@ function startGame(game, user, input) {
   game.players.push(user);
   game.players.map(function(player) {
     // update each game player that its time to begin
-    console.log('set user to ready-for-game', player);
     User.update(player, {
       state: 'ready-for-game',
     });
@@ -174,10 +172,8 @@ function startGame(game, user, input) {
   return Promise.join(
     Game.add(game, [user]),
     Game.start(game),
-    //Message.get('accepted-invited', [input, user.inviter.nickname]),
-    //Message.get('accepted-inviter', [input, user.inviter.nickname]),
     Game.newRound(game),
-    function(_1, _2, /*invitedMessage, inviterMessage,*/ round) {
+    function(_1, _2, round) {
       invitedMessage = {
         key: 'accepted-invited',
         options: [
@@ -196,7 +192,6 @@ function startGame(game, user, input) {
         ]
       }
 
-      //console.log('set user to waiting-for-submission', round.submitter);
       User.update(round.submitter, {
         state: 'waiting-for-submission',
       });
@@ -214,16 +209,6 @@ function startGame(game, user, input) {
           ]
         }
       ];
-      //return Message.get('game-start', [round.submitter.nickname, round.phrase]).then(function(gameStart) {
-        //gameStart.type = 'sms';
-        //gameStart.number = round.submitter.number;
-        //return [
-          //invitedMessage,
-          //inviterMessage,
-          //gameStart 
-        //];
-      //});
-
     }
   );
 }
@@ -232,15 +217,13 @@ function createGame(user, input) {
   Game.create().then(function(game) {
     return Game.add(game, [user]);
   }).catch(function(err) {
-    console.log('error adding user', err, user);
+    console.error('error adding user', err, user);
   });
 
-  console.log('set user to wait for invites', user);
   User.update(user, {
     state: 'waiting-for-invites',
     nickname: input
   });
-  console.log('this is what we return');
   return new Promise(function(resolve) {
     resolve([{
       type: 'respond',
@@ -248,8 +231,4 @@ function createGame(user, input) {
       options: [input]
     }]);
   });
-  //return Message.get('intro_3', [input]).then(function(message) {
-    //message.type = 'respond';
-    //return [message];
-  //});
 }

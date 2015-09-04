@@ -11,10 +11,6 @@ module.exports = function(user, input) {
         key: 'intro_2',
       }];
     });
-    //return Message.get('intro_2').then(function(message) {
-      //message.type = 'respond';
-      //return [message];
-    //});
   } else {
     User.update(user, {
       state: 'do-not-contact'

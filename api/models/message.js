@@ -46,7 +46,6 @@ var Message = {
     if ( responses && responses.length ) {
       var messages = {};
       var options = {};
-      //console.log('incoming responses', responses);
       responses.map(function(response) {
         if ( response.options ) {
           options[response.key] = response.options;
@@ -71,11 +70,10 @@ var Message = {
               if ( response.user ) {
                 var number = response.user.number
               } else {
-                console.log('##### deprecate passing number directly', response);
+                console.warn('##### deprecate passing number directly', response);
                 var number = response.number;
               }
 
-              //console.log('sms response', response, messages[response.key]);
 
               return _.assign({
                 message: messages[response.key],

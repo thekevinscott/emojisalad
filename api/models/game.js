@@ -12,7 +12,6 @@ var default_guesses = 2;
 var default_clues_allowed = 2;
 var Game = {
   update: function(game, data) {
-    console.log('update game', game.id, data);
     var state_id = squel
                   .select()
                   .field('id')
@@ -38,15 +37,9 @@ var Game = {
           for ( var i=0,l=order.length; i<l; i++ ) {
             if ( order[i].user_id === round.submitter_id ) {
               if ( i < l-1 ) {
-                console.log('grab the next one');
-                console.log('order length', order.length);
-                console.log('i', i);
-                console.log('the next one', order[i+1]);
-                console.log('the submitter', order[i]);
                 // grab the next one
                 next = order[i + 1];
               } else {
-                console.log('loop back to start');
                 next = order[0];
               }
               // else, just use the first user
@@ -54,7 +47,6 @@ var Game = {
             }
           }
         } else {
-          console.log('just take the first, no order');
           next = order[0];
         }
         return User.get({ id: next.user_id });
@@ -180,18 +172,6 @@ var Game = {
             return user;
           }
         );
-                    /*
-        return Promise.join(
-          db.query(query),
-          function(attributes, guesses) {
-            console.log('guesses', guesses);
-            attributes.map(function(attribute) {
-              user[attribute.key] = attribute.attribute;
-            });
-            return user;
-          }
-        );
-        */
       }.bind(this)));
 
     }.bind(this));
@@ -337,7 +317,7 @@ var Game = {
           // game is in progress
           this.addToBattingOrder(game, user).then(function() {
           }).catch(function(err) {
-            console.log('error adding user ot batting order',  user);
+            console.error('error adding user ot batting order',  user);
           });
         //}
       }.bind(this));

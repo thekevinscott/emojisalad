@@ -329,29 +329,23 @@ module.exports = function(params) {
           Message.get('game-next-round', [users.invited.nickname]),
           Message.get('game-next-round-suggestion', [users.invited.nickname, msg2]),
           function(output, says, correct, nextRound, suggestion) {
-            console.log('output', output.Response);
             // every player in the game should receive this message
-            //console.log(output.Response.Sms);
             output.Response.Sms.length.should.equal(8);
 
             output.Response.Sms.map(function(sms) {
-              console.log('sms', sms);
               if ( sms['$']['to'] === users.secondInvited.number ) {
-                console.log('user who guessed');
                 // this is the user who guessed
                 expect([
                   correct.message,
                   nextRound.message
                 ]).to.contain(sms['_']);
               } else if ( sms['$']['to'] === users.inviter.number ) {
-                console.log('inviter');
                 expect([
                   says.message,
                   correct.message,
                   nextRound.message
                 ]).to.contain(sms['_']);
               } else if ( sms['$']['to'] === users.invited.number ) {
-                console.log('second invited', says.message);
                 expect([
                   says.message,
                   suggestion.message,
@@ -392,7 +386,6 @@ module.exports = function(params) {
           Message.get('says', [users.secondInvited.nickname, msg]),
           Message.get('round-over'),
           function(output, says, roundOver) {
-            console.log(output.Response.Sms);
 
             output.Response.Sms.splice(0,2).map(function(sms) {
               sms['_'].should.equal(says.message);
