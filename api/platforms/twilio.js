@@ -31,11 +31,11 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var Twilio = require('../models/twilio');
 var track = require('../tracking');
-var debug = false;
+var debug = true;
 module.exports = function(req, res) {
   if ( debug ) {
     console.log('\n================twilio=================\n');
-    console.log('req headers from twilio', req.headers.host);
+    //console.log('req headers from twilio', req.headers.host);
   }
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
@@ -79,7 +79,12 @@ module.exports = function(req, res) {
       return res.end('');
     } else {
       if ( debug ) {
-        console.log(req.body.From, '|', req.body.Body, '|', user.state);
+        console.log([
+          user.nickname,
+          req.body.From,
+          req.body.Body,
+          user.state,
+        ].join(' | '));
       }
       try {
         track(user.state, user, req.body.Body);

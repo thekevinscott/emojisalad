@@ -60,7 +60,8 @@ module.exports = function(user, input) {
         }).filter(function(el) { return el });
 
         // check that the submitter has not just guessed their own clue
-        var regex = new RegExp(game.phrase, 'i');
+        var regex = new RegExp(game.round.phrase, 'i');
+        console.log('regex', game.round.phrase, regex);
         if ( regex.test(input) ) {
           messages = messages.concat(game.players.map(function(player) {
             return {
