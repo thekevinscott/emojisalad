@@ -15,8 +15,12 @@ module.exports = function(state, user, input) {
       ea: input,
     }).send();
 
+    var user_id;
+    if ( user && user.id ) {
+      user_id = user.id;
+    }
     mixpanel.track(state, {
-      user_id: user.id,
+      user_id: user_id,
       input: input,
       platform: 'twilio'
     });
