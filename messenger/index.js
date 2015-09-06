@@ -7,11 +7,20 @@ var port = process.env.PORT || 5003;
 var newMessage = require('./newMessage');
 var addUser = require('./addUser');
 
+var exphbs  = require('express-handlebars');
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
 server.listen(port, function () {
   console.log('EmojinaryFriend Messenger listening at port %d', port);
 });
 
 app.use(express.static(__dirname + '/public'));
+
+app.get('/:username', function(req, res) {
+    res.render('index', { username: req.params.username });
+
+});
 
 io.on('connection', function (socket) {
   // when the client emits 'new message', this listens and executes
