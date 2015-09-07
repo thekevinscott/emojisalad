@@ -6,6 +6,8 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 5003;
 var newMessage = require('./newMessage');
 var addUser = require('./addUser');
+var db = require('db');
+var squel = require('squel');
 
 var exphbs  = require('express-handlebars');
 app.engine('handlebars', exphbs());
@@ -17,8 +19,30 @@ server.listen(port, function () {
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/:username', function(req, res) {
-    res.render('index', { username: req.params.username });
+app.get('/:user_id', function(req, res) {
+  var attributes = squel
+                   .select()
+                   .field('a.attribute as username')
+                   .field('a.user_id')
+                   .from('user_attributes','a')
+                   .left_join('user_attribute_keys','k','a.attribute_id=k.id')
+                   .where('k.`key`=?','nickname');
+
+  var query = squel
+              .select()
+              .field('u.id')
+              .field('a.username')
+              .from('users','u')
+              .left_join(attributes, 'a', 'a.user_id=u.id')
+              .where('u.id=?',req.params.user_id);
+
+              console.log(query.toString());
+
+    return db.query(query.toString()).then(function(users) {
+      var user = users[0];
+      console.log(users);
+      res.render('index', { user_id: user.id, username: user.username });
+    });
 
 });
 

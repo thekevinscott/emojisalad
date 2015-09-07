@@ -2,9 +2,10 @@ var db = require('db');
 var Promise = require('bluebird');
 var squel = require('squel');
 
-function addUser (socket, username) {
+function addUser (socket, user) {
   // we store the username in the socket session for this client
-  socket.username = username;
+  socket.username = user.username;
+  socket.user_id = user.user_id;
   socket.emit('login');
   // this could go get a list of messages
 
@@ -26,7 +27,7 @@ function addUser (socket, username) {
                               .left_join('users', 'u', 'u.id=m.user_id')
                               .left_join('platforms', 'p', 'p.id=m.platform_id')
                               .left_join(attributes, 'a', 'a.user_id=u.id')
-                              .where('username=?',username)
+                              .where('u.id=?',user.user_id)
                               .order('m.created', false);
                               
   var get_incoming_messages = squel
@@ -39,10 +40,9 @@ function addUser (socket, username) {
                               .left_join('users', 'u', 'u.id=m.user_id')
                               .left_join('platforms', 'p', 'p.id=m.platform_id')
                               .left_join(attributes, 'a', 'a.user_id=u.id')
-                              .where('username=?',username)
+                              .where('u.id=?',user.user_id)
                               .order('m.created', false);
                               
-                              console.log(get_incoming_messages.toString());
   return Promise.join(
     db.query(get_incoming_messages.toString()),
     db.query(get_outgoing_messages.toString()),

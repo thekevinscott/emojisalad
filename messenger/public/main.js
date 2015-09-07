@@ -20,17 +20,12 @@ var $currentInput = $usernameInput.focus();
 var socket = io();
 
 // Sets the client's username
-function setUsername (username) {
-  //username = cleanInput($usernameInput.val().trim());
+function setUsername (username, user_id) {
+  $chatPage.show();
+  $currentInput = $inputMessage.focus();
 
-  // If the username is valid
-  if (username) {
-    $chatPage.show();
-    $currentInput = $inputMessage.focus();
-
-    // Tell the server your username
-    socket.emit('add user', username);
-  }
+  // Tell the server your username
+  socket.emit('add user', { username: username, user_id: user_id });
 }
 
 // Sends a chat message
@@ -170,5 +165,5 @@ socket.on('new message', function (data) {
 });
 
 if ( username ) {
-  setUsername(username);
+  setUsername(username, user_id);
 }
