@@ -1,5 +1,14 @@
 @import (css) "https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css";
 
+body, html, .admin {
+  height: 100%;
+}
+
+.admin {
+  display: flex;
+  flex-direction: column;
+}
+
 body {
     background: #EEE;
     font-family: sans-serif;
@@ -11,6 +20,7 @@ a {
 }
 
 .page {
+  flex: 1;
   padding: 20px;
 }
 

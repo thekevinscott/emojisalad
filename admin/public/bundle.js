@@ -85,6 +85,7 @@ webpackJsonp([1],[
 	  React.createElement(Route, { name: 'logout', handler: _accountLogout.Logout }),
 	  React.createElement(Route, { handler: _dashboard.Dashboard }),
 	  React.createElement(Route, { handler: _games.Games, name: 'games' }),
+	  React.createElement(Route, { name: 'game', path: '/games/:game_id', handler: _games.Game }),
 	  React.createElement(Route, { handler: _players.Players, name: 'players' }),
 	  React.createElement(Route, { handler: _messages.Messages, name: 'messages' }),
 	  React.createElement(NotFoundRoute, { handler: _notfound.NotFound })
@@ -731,7 +732,7 @@ webpackJsonp([1],[
 	exports.push([module.id, "@import url(https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css);", ""]);
 
 	// module
-	exports.push([module.id, "body {\n  background: #EEE;\n  font-family: sans-serif;\n}\na {\n  text-decoration: underline;\n  cursor: pointer;\n}\n.page {\n  padding: 20px;\n}\ntable {\n  border-collapse: collapse;\n  width: 100%;\n}\ntable td {\n  border: 1px solid #CCC;\n  padding: 10px;\n  vertical-align: top;\n}\ntable td.full {\n  padding: 0;\n}\ntable td textarea {\n  width: 100%;\n  height: 100%;\n  font-size: 12px;\n  min-height: 80px;\n  padding: 0;\n  border: none;\n}\n", ""]);
+	exports.push([module.id, "body,\nhtml,\n.admin {\n  height: 100%;\n}\n.admin {\n  display: flex;\n  flex-direction: column;\n}\nbody {\n  background: #EEE;\n  font-family: sans-serif;\n}\na {\n  text-decoration: underline;\n  cursor: pointer;\n}\n.page {\n  flex: 1;\n  padding: 20px;\n}\ntable {\n  border-collapse: collapse;\n  width: 100%;\n}\ntable td {\n  border: 1px solid #CCC;\n  padding: 10px;\n  vertical-align: top;\n}\ntable td.full {\n  padding: 0;\n}\ntable td textarea {\n  width: 100%;\n  height: 100%;\n  font-size: 12px;\n  min-height: 80px;\n  padding: 0;\n  border: none;\n}\n", ""]);
 
 	// exports
 
@@ -1319,26 +1320,143 @@ webpackJsonp([1],[
 
 	var _auth = __webpack_require__(8);
 
+	var _base = __webpack_require__(27);
+
+	__webpack_require__(29);
+
 	var Link = Router.Link;
 
 	var Games = React.createClass({
 	  displayName: 'Games',
 
-	  statics: {
-	    willTransitionTo: function willTransitionTo(transition, params, query) {
-	      _auth.auth.isLoggedIn(transition);
-	    }
-	  },
+	  mixins: [_base.Base], // Use the mixin
+	  url: '/api/games',
 	  render: function render() {
-	    console.log('redner dashboard');
+	    var content;
+	    if (this.state.loading) {
+	      content = "Loading";
+	    } else if (this.state.error) {
+	      content = this.state.error;
+	    } else {
+	      var games = this.state.data.map(function (game) {
+	        return React.createElement(
+	          'tr',
+	          null,
+	          React.createElement(
+	            'td',
+	            null,
+	            React.createElement(
+	              Link,
+	              { to: 'game', params: { game_id: game.id } },
+	              game.id
+	            )
+	          ),
+	          React.createElement(
+	            'td',
+	            null,
+	            game.created
+	          )
+	        );
+	      });
+
+	      content = React.createElement(
+	        'table',
+	        null,
+	        React.createElement(
+	          'thead',
+	          null,
+	          React.createElement(
+	            'tr',
+	            null,
+	            React.createElement(
+	              'td',
+	              null,
+	              'ID'
+	            ),
+	            React.createElement(
+	              'td',
+	              null,
+	              'Created'
+	            )
+	          )
+	        ),
+	        games
+	      );
+	    }
 	    return React.createElement(
 	      'div',
 	      { className: 'games page' },
-	      'Games'
+	      content
 	    );
 	  }
 	});
+
 	exports.Games = Games;
+	var Game = React.createClass({
+	  displayName: 'Game',
+
+	  mixins: [_base.Base], // Use the mixin
+	  url: function url() {
+	    return '/api/games/' + this.props.params.game_id;
+	  },
+	  render: function render() {
+	    var content;
+	    if (this.state.loading) {
+	      content = "Loading";
+	    } else if (this.state.error) {
+	      content = this.state.error;
+	    } else {
+	      console.log(this.state.data);
+	      var iframes = this.state.data.players.map(function (player) {
+	        var url = '//localhost:5003/' + player.user_id;
+	        return React.createElement('iframe', { src: url });
+	      });
+	      content = React.createElement(
+	        'div',
+	        { className: 'game-container' },
+	        React.createElement(
+	          'div',
+	          { className: 'game-stats' },
+	          React.createElement(
+	            'p',
+	            null,
+	            'State: ',
+	            this.state.data.state
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Created: ',
+	            this.state.data.created
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Players: ',
+	            this.state.data.players.length
+	          ),
+	          React.createElement(
+	            'p',
+	            null,
+	            'Rounds: ',
+	            this.state.data.rounds
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'messages' },
+	          iframes
+	        )
+	      );
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'games page' },
+	      content
+	    );
+	  }
+	});
+	exports.Game = Game;
 
 /***/ },
 /* 26 */
@@ -1482,8 +1600,14 @@ webpackJsonp([1],[
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
+	    if (typeof this.url === 'string') {
+	      var url = this.url;
+	    } else {
+	      var url = this.url();
+	    }
+	    console.log(url);
 	    (0, _reqwest2['default'])({
-	      url: this.url,
+	      url: url,
 	      method: 'get'
 	    }).then((function (resp) {
 	      if (!resp || typeof resp !== 'object') {
@@ -1655,6 +1779,46 @@ webpackJsonp([1],[
 	  }
 	});
 	exports.Messages = Messages;
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(30);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(13)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./games.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./games.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(12)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".games {\n  display: flex;\n  flex-direction: column;\n}\n.game-container {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n}\n.game-stats {\n  margin-bottom: 20px;\n}\n.messages {\n  display: flex;\n  flex: 1;\n}\niframe {\n  background: white;\n  flex: 1;\n  border: 1px solid #CCC;\n  margin-right: 20px;\n}\niframe:last-child {\n  margin-right: 0;\n}\n", ""]);
+
+	// exports
+
 
 /***/ }
 ]);

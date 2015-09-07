@@ -17,8 +17,14 @@ export var Base = {
     };
   },
   componentDidMount: function() {
+    if ( typeof this.url === 'string' ) {
+      var url = this.url;
+    } else {
+      var url = this.url();
+    }
+    console.log(url);
     reqwest({
-      url: this.url,
+      url: url,
       method: 'get'
     })
     .then(function (resp) {

@@ -6,6 +6,7 @@ import { NotFound } from './notfound';
 import { Account } from './account';
 import { Logout } from './account/logout';
 import { Games } from './games';
+import { Game } from './games';
 import { Players } from './players';
 import { Messages } from './messages';
 
@@ -23,6 +24,7 @@ export const routes = (
     <Route name="logout" handler={Logout} />
     <Route handler={Dashboard} />
     <Route handler={Games} name="games" />
+    <Route name="game" path="/games/:game_id" handler={Game}/>
     <Route handler={Players} name="players" />
     <Route handler={Messages} name="messages" />
     <NotFoundRoute handler={NotFound} />
