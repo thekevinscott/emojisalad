@@ -62,7 +62,7 @@ function addChatMessage (data, options) {
     .text(data.username)
     .css('color', getUsernameColor(data.username));
   var $messageBodyDiv = $('<span class="messageBody">')
-    .text(data.message);
+    .html(data.message.split('\n').join('<br />'));
 
   var $messageDiv = $('<li class="message"/>')
     .data('username', data.username)
