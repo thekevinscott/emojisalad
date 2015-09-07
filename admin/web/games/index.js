@@ -48,7 +48,7 @@ export var Game = React.createClass({
     } else {
       console.log(this.state.data);
       var iframes = this.state.data.players.map(function(player) {
-        var url = '//localhost:5003/'+player.user_id;
+        var url = '//localhost:5003/'+player.id;
         return (
           <iframe src={url}></iframe>
         );
