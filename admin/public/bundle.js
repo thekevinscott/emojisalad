@@ -66,9 +66,9 @@ webpackJsonp([1],[
 
 	var _games = __webpack_require__(25);
 
-	var _players = __webpack_require__(26);
+	var _players = __webpack_require__(29);
 
-	var _messages = __webpack_require__(28);
+	var _messages = __webpack_require__(30);
 
 	var _auth = __webpack_require__(8);
 
@@ -1320,9 +1320,9 @@ webpackJsonp([1],[
 
 	var _auth = __webpack_require__(8);
 
-	var _base = __webpack_require__(27);
+	var _base = __webpack_require__(26);
 
-	__webpack_require__(29);
+	__webpack_require__(27);
 
 	var Link = Router.Link;
 
@@ -1408,7 +1408,7 @@ webpackJsonp([1],[
 	    } else {
 	      console.log(this.state.data);
 	      var iframes = this.state.data.players.map(function (player) {
-	        var url = '//localhost:5003/' + player.id;
+	        var url = '//45.55.41.73:5003/' + player.id;
 	        return React.createElement('iframe', { src: url });
 	      });
 	      content = React.createElement(
@@ -1486,7 +1486,119 @@ webpackJsonp([1],[
 
 	var _auth = __webpack_require__(8);
 
-	var _base = __webpack_require__(27);
+	var Base = {
+	  statics: {
+	    willTransitionTo: function willTransitionTo(transition, params, query) {
+	      _auth.auth.isLoggedIn(transition);
+	    }
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      loading: true,
+	      data: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    if (typeof this.url === 'string') {
+	      var url = this.url;
+	    } else {
+	      var url = this.url();
+	    }
+	    console.log(url);
+	    (0, _reqwest2['default'])({
+	      url: url,
+	      method: 'get'
+	    }).then((function (resp) {
+	      if (!resp || typeof resp !== 'object') {
+	        this.setState({
+	          loading: false,
+	          error: 'Error retrieving data'
+	        });
+	      } else if (resp.error) {
+	        this.setState({
+	          loading: false,
+	          error: resp.error
+	        });
+	      } else {
+	        this.setState({
+	          loading: false,
+	          data: resp
+	        });
+	      }
+	    }).bind(this));
+	  }
+	};
+	exports.Base = Base;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(28);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(13)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./games.less", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./games.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(12)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".games {\n  display: flex;\n  flex-direction: column;\n}\n.game-container {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n}\n.game-stats {\n  margin-bottom: 20px;\n}\n.messages {\n  display: flex;\n  flex: 1;\n}\niframe {\n  background: white;\n  flex: 1;\n  border: 1px solid #CCC;\n  margin-right: 20px;\n}\niframe:last-child {\n  margin-right: 0;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+	var _react = __webpack_require__(1);
+
+	var React = _interopRequireWildcard(_react);
+
+	var _reactRouter = __webpack_require__(3);
+
+	var Router = _interopRequireWildcard(_reactRouter);
+
+	var _reqwest = __webpack_require__(2);
+
+	var _reqwest2 = _interopRequireDefault(_reqwest);
+
+	var _auth = __webpack_require__(8);
+
+	var _base = __webpack_require__(26);
 
 	var Players = React.createClass({
 	  displayName: 'Players',
@@ -1560,7 +1672,7 @@ webpackJsonp([1],[
 	exports.Players = Players;
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1587,79 +1699,7 @@ webpackJsonp([1],[
 
 	var _auth = __webpack_require__(8);
 
-	var Base = {
-	  statics: {
-	    willTransitionTo: function willTransitionTo(transition, params, query) {
-	      _auth.auth.isLoggedIn(transition);
-	    }
-	  },
-	  getInitialState: function getInitialState() {
-	    return {
-	      loading: true,
-	      data: []
-	    };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    if (typeof this.url === 'string') {
-	      var url = this.url;
-	    } else {
-	      var url = this.url();
-	    }
-	    console.log(url);
-	    (0, _reqwest2['default'])({
-	      url: url,
-	      method: 'get'
-	    }).then((function (resp) {
-	      if (!resp || typeof resp !== 'object') {
-	        this.setState({
-	          loading: false,
-	          error: 'Error retrieving data'
-	        });
-	      } else if (resp.error) {
-	        this.setState({
-	          loading: false,
-	          error: resp.error
-	        });
-	      } else {
-	        this.setState({
-	          loading: false,
-	          data: resp
-	        });
-	      }
-	    }).bind(this));
-	  }
-	};
-	exports.Base = Base;
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-	var _react = __webpack_require__(1);
-
-	var React = _interopRequireWildcard(_react);
-
-	var _reactRouter = __webpack_require__(3);
-
-	var Router = _interopRequireWildcard(_reactRouter);
-
-	var _reqwest = __webpack_require__(2);
-
-	var _reqwest2 = _interopRequireDefault(_reqwest);
-
-	var _auth = __webpack_require__(8);
-
-	var _base = __webpack_require__(27);
+	var _base = __webpack_require__(26);
 
 	var Messages = React.createClass({
 	  displayName: 'Messages',
@@ -1779,46 +1819,6 @@ webpackJsonp([1],[
 	  }
 	});
 	exports.Messages = Messages;
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(30);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(13)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./games.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./games.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(12)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".games {\n  display: flex;\n  flex-direction: column;\n}\n.game-container {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n}\n.game-stats {\n  margin-bottom: 20px;\n}\n.messages {\n  display: flex;\n  flex: 1;\n}\niframe {\n  background: white;\n  flex: 1;\n  border: 1px solid #CCC;\n  margin-right: 20px;\n}\niframe:last-child {\n  margin-right: 0;\n}\n", ""]);
-
-	// exports
-
 
 /***/ }
 ]);
