@@ -7,7 +7,7 @@ module.exports = function(app) {
         .from('games');
     db.query(query).then(function(rows) {
       res.json(rows);
-    }).fail(function(err) {
+    }).catch(function(err) {
       res.json({error: err});
     });
   });
@@ -46,7 +46,7 @@ module.exports = function(app) {
         };
       }
       res.json(game);
-    }).fail(function(err) {
+    }).catch(function(err) {
       res.json({error: err});
     });
   });
