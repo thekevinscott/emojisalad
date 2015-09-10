@@ -24,7 +24,8 @@ var Log = {
                   .setFields({
                     message: response.Body,
                     response: JSON.stringify(response),
-                    platform_id: platform_id
+                    platform_id: platform_id,
+                    created: squel.fval('NOW(3)')
                   });
 
 
@@ -59,12 +60,14 @@ var Log = {
                     .into('outgoingMessages')
                     .setFields({
                       message_key: message.key,
-                      options: JSON.stringify(message.options),
+                      options: JSON.stringify(message.options || []),
                       message: message.message,
                       type: message.type,
-                      platform_id: platform_id
+                      platform_id: platform_id,
+                      created: squel.fval('NOW(3)')
                     });
 
+                    console.log(query.toString());
         if ( message.type === 'respond' && user ) {
           query.setFields({ user_id: user.id });
         } else if ( message.user ) {

@@ -10,6 +10,8 @@ var Log = require('../models/log');
 var User = require('../models/user');
 var Message = require('../models/message');
 module.exports = function(req, res) {
+  console.log(req.body);
+  return res.json({ message: 'You say: '+req.body.message});
   //console.log('\n====================================\n');
   //Log.incoming(req.body);
 
