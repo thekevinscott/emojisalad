@@ -157,7 +157,7 @@ var Game = {
                 .left_join('user_states', 's', 's.id = u.state_id')
                 .left_join('platforms', 'p', 'p.id = u.platform_id')
                 .where('g.id=?', game.id)
-                .order('u.created');
+                .order('u.id');
 
     return db.query(query).then(function(users) {
       return Promise.all(users.map(function(user) {

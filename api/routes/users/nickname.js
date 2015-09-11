@@ -26,6 +26,9 @@ module.exports = function(user, input) {
         if ( game.state === 'pending' ) {
           return startGame(game, user, input);
         } else if ( game.state === 'playing' ) {
+          if ( ! game.round ) {
+            throw "This should not happen, there should always be a round";
+          }
           if ( game.round.state === 'pending' ) {
             // the user can jump in.
             // the round has yet to begin!

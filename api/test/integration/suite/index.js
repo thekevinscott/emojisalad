@@ -7,6 +7,6 @@ var suite = function(params) {
   require('./game')(params);
   require('./game-three')(params);
   require('./guessing')(params);
-  require('./clues')(params);
+  require('./clues');
 }
 module.exports = suite;

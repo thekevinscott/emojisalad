@@ -11,7 +11,6 @@ module.exports = function(user, input) {
   } else if ( /^clue/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
       var message = {
-        type: 'sms',
         key: 'says',
         options: [
           user.nickname,
@@ -30,7 +29,6 @@ module.exports = function(user, input) {
       messages = messages.concat(game.players.map(function(player) {
         return {
           user: player,
-          type: 'sms',
           key: 'no-clue-for-submitter'
         }
       }));
@@ -43,7 +41,6 @@ module.exports = function(user, input) {
       function(game) {
         
         var message = {
-          type: 'sms',
           key: 'says',
           options: [
             user.nickname,
@@ -67,7 +64,6 @@ module.exports = function(user, input) {
             return {
               key: 'submitter-dont-guess',
               user: player,
-              type: 'sms',
               options: [
                 user.nickname
               ]

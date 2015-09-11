@@ -41,14 +41,12 @@ module.exports = function(user, input) {
       }
     }).then(function(message) {
       return game.players.map(function(player) {
-        //console.log('users', player.id);
         return _.assign({
           user: player,
         }, message);
       });
     }).then(function(messages) {
       return game.players.map(function(player) {
-        //console.log('users', player.id);
         if ( player.id !== user.id ) {
           return {
             key: 'says',
