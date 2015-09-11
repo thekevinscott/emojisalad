@@ -58,10 +58,7 @@ function addPlayerToBench(game, user, input) {
   // add this invited user to the game
   return Promise.join(
     Game.add(game, [user]),
-    //Message.get('accepted-inviter-next-round', [input, user.inviter.nickname]),
-    //Message.get('accepted-invited-next-round', [input, user.inviter.nickname]),
-    //Message.get('join-game-next-round', [input]),
-    function(_1, inviterMessage, invitedMessage, joinMessage) {
+    function() {
       inviterMessage = {
         key: 'accepted-inviter-next-round',
         type: 'respond',
@@ -92,7 +89,7 @@ function addPlayerToBench(game, user, input) {
       var messages = [inviterMessage, invitedMessage];
 
       game.players.map(function(player) {
-        if ( player.id !== user.id ) {
+        if ( player.id !== user.id && player.id !== user.inviter.id ) {
           messages.push(_.assign({
             user: player,
           }, joinMessage));

@@ -31,7 +31,7 @@ var User = require('../models/user');
 var Message = require('../models/message');
 var Twilio = require('../models/twilio');
 var track = require('../tracking');
-var debug = true;
+var debug = false;
 module.exports = function(req, res) {
   if ( debug ) {
     console.log('\n================twilio=================\n');

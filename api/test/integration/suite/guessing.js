@@ -74,7 +74,7 @@ module.exports = function(params) {
         });
     });
 
-    it.only('should be able to successfully guess with case insensitivity', function() {
+    it('should be able to successfully guess with case insensitivity', function() {
       var users = getUsers();
 
       return startGame(users).then(function(game) {

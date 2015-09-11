@@ -245,17 +245,14 @@ module.exports = function(params) {
             Message.get('join-game-next-round', [users.secondInvited.nickname]),
             function(output, message, accepted, join) {
               output.Response.Message[0].should.equal(message.message);
-              output.Response.Sms.length.should.equal(3);
               output.Response.Sms.map(function(sms) {
                 if ( sms['$']['to'] === users.inviter.number ) {
-                  expect([
-                    accepted.message,
-                    join.message
-                  ]).to.contain(sms['_']);
+                  sms['_'].should.equal(accepted.message);
                 } else {
                   sms['_'].should.equal(join.message);
                 }
               });
+              output.Response.Sms.length.should.equal(2);
             }
           );
         }).then(function() {

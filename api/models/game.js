@@ -9,7 +9,7 @@ var Round = require('./round');
 
 // number of guesses a user gets per round
 var default_guesses = 2;
-var default_clues_allowed = 2;
+var default_clues_allowed = 1;
 var Game = {
   update: function(game, data) {
     var query = squel
