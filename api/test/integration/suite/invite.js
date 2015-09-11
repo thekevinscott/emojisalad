@@ -12,7 +12,7 @@ describe('Inviter flow', function() {
     return signup(inviter);
   });
 
-  describe.only('Invalid Phone Numbers', function() {
+  describe('Invalid Phone Numbers', function() {
     it('should reject an invalid invite phrase', function() {
       return check(
         { user: inviter, msg: 'foobar' },
@@ -59,91 +59,75 @@ describe('Inviter flow', function() {
     });
   });
 
-  describe('Valid numbers', function() {
+  describe.only('Valid numbers', function() {
     this.timeout(10000);
     it('should be able to invite someone', function() {
-      var num = '+1'+getRand();
-      return Promise.join(
-        req.p({
-          username: inviter,
-          message: 'invite '+num,
-        }, true),
-        Message.get('intro_4', num),
-        Message.get('invite', inviter),
-        function(output, message, introMessage) {
-          output.Response.Message[0].should.equal(message.message);
-          output.Response.Sms[0]['_'].should.equal(introMessage.message);
-          output.Response.Sms[0]['$']['to'].should.equal(num);
-          // from is actually our config number. I don't think we need to test that.
-          //output.Response.Sms[0]['$']['from'].should.equal(inviter);
-        }
-      );
+      var user = getUsers(1)[0];
+
+      return check(
+        // lose the intro of the number for testing
+        { user: inviter, msg: 'invite '+user.number.substring(2) },
+        [
+          { key: 'intro_4', options: [user.number], to: inviter },
+          { key: 'invite', options: [inviter.nickname], to: user }
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
     });
 
     it('should be able to invite a formatted number', function() {
+
       var end = Math.floor(1000 + Math.random() * 9000);
       var num = '+1860460'+end;
-      return Promise.join(
-        req.p({
-          username: inviter,
-          message: 'invite (860) 460-'+end,
-        }, true),
-        Message.get('intro_4', num),
-        Message.get('invite', inviter),
-        function(output, message, introMessage) {
-          output.Response.Message[0].should.equal(message.message);
-          output.Response.Sms[0]['_'].should.equal(introMessage.message);
-          output.Response.Sms[0]['$']['to'].should.equal(num);
-          // from is actually our config number. I don't think we need to test that.
-          //output.Response.Sms[0]['$']['from'].should.equal(inviter);
-        }
-      );
+
+      var user = getUsers(1)[0];
+      user.number = num;
+
+      return check(
+        { user: inviter, msg: 'invite '+user.number },
+        [
+          { key: 'intro_4', options: [user.number], to: inviter },
+          { key: 'invite', options: [inviter.nickname], to: user }
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
     });
 
     it('should not be able to re-invite someone', function() {
-      var num = '+1'+getRand();
-      return req.p({
-        username: inviter,
-        message: 'invite '+num,
-      }).then(function() {
-        return Promise.join(
-          req.p({
-            username: inviter,
-            message: 'invite '+num,
-          }, true),
-          Message.get('error-2', num),
-          function(output, message) {
-            output.Response.Message[0].should.equal(message.message);
-            // from is actually our config number. I don't think we need to test that.
-            //output.Response.Sms[0]['$']['from'].should.equal(inviter);
-          }
-        );
+      var user = getUsers(1)[0];
+
+      return setup([
+        { user: inviter, msg: 'invite '+user.number }
+      ]).then(function() {
+        return check(
+          { user: inviter, msg: 'invite '+user.number },
+          [
+            { key: 'error-2', options: [user.number], to: inviter },
+          ]
+        )
+      }).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
       });
     });
 
     it('should not be able to invite someone on do-not-call-list', function() {
-      var num = '+1'+getRand();
-      return req.p({
-        username: inviter,
-        message: 'invite '+num,
-      }).then(function() {
-        return req.p({
-          username: num,
-          message: 'do not text me again!!!!!!k'
-        });
-      }).then(function() {
-        return Promise.join(
-          req.p({
-            username: inviter,
-            message: 'invite '+num,
-          }, true),
-          Message.get('error-3', num),
-          function(output, message) {
-            output.Response.Message[0].should.equal(message.message);
-            // from is actually our config number. I don't think we need to test that.
-            //output.Response.Sms[0]['$']['from'].should.equal(inviter);
-          }
+
+      var user = getUsers(1)[0];
+
+      return setup([
+        { user: inviter, msg: 'invite '+user.number },
+        { user: user, msg: 'do not invite me again' }
+      ]).then(function() {
+        return check(
+          { user: inviter, msg: 'invite '+user.number },
+          [
+            { key: 'error-3', options: [user.number], to: inviter },
+          ]
         );
+      }).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
       });
     });
   });
@@ -158,7 +142,7 @@ describe('Invited User Onboarding', function() {
   });
 
   it('should be able to onboard an invited user', function() {
-    var num = '+1'+getRand();
+    var num = '+1'+getRandomPhone();
     var invitedName = 'Invited User';
     return req.p({
       username: inviter,

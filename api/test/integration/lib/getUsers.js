@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var getRandomPhone = require('./getRandomPhone');
 // if a number is the argument, this is the number of users
 // to create.
 //
@@ -17,7 +18,7 @@ function getUsers(arg) {
   if ( _.isNumber(arg) ) {
     for ( var i=0;i<arg;i++ ) {
       users.push({
-        number: getRandPhone(),
+        number: getRandomPhone(),
         nickname: listOfNicknames[i]
       });
     }
@@ -26,7 +27,7 @@ function getUsers(arg) {
     users = arg;
     users.map(function(user) {
       if ( ! user.phone ) {
-        user.phone = getRandPhone()
+        user.phone = getRandomPhone()
       }
       if ( ! user.nickname ) {
         user.nickname = listOfNicknames[nicknameCount++];
@@ -34,10 +35,6 @@ function getUsers(arg) {
     });
   }
   return users;
-}
-
-function getRandPhone() {
-  return '+186046'+Math.floor(10000 + Math.random() * 90000);
 }
 
 module.exports = getUsers;
