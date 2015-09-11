@@ -20,12 +20,11 @@ module.exports = function(invitingUser, input) {
         // know they've been invited
         return [
           {
-            type: 'respond',
+            user: users.invitingUser,
             key: 'intro_4',
             options: [phone]
           },
           {
-            type: 'sms',
             key: 'invite',
             options: [users.invitingUser.nickname],
             user: users.invitedUser
@@ -35,7 +34,7 @@ module.exports = function(invitingUser, input) {
     }).catch(function(error) {
       if ( error && parseInt(error.message) ) {
         return [{
-          type: 'respond', 
+          user: invitingUser,
           key: 'error-'+error.message,
           options: [input]
         }];
@@ -46,7 +45,7 @@ module.exports = function(invitingUser, input) {
     });
   } else {
     return [{
-      type: 'respond', 
+      user: invitingUser,
       key: 'error-8',
       options: [input]
     }];

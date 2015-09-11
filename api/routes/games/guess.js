@@ -18,7 +18,6 @@ module.exports = function(user, input) {
         if ( player.id !== user.id ) {
           return {
             key: 'says',
-            type: 'sms',
             user: player,
             options: [
               user.nickname,
@@ -39,7 +38,6 @@ module.exports = function(user, input) {
                 options: user.nickname
               }
 
-              correct.type = 'sms';
               game.players.map(function(player) {
                 messages.push(_.assign({ user: player }, correct));
               });
@@ -55,7 +53,6 @@ module.exports = function(user, input) {
                 });
 
                 var suggestion = {
-                  type: 'sms',
                   key: 'game-next-round-suggestion',
                   options: [
                     round.submitter.nickname,
@@ -64,7 +61,6 @@ module.exports = function(user, input) {
                 };
 
                 var nextRoundInstructions = {
-                  type: 'sms',
                   key: 'game-next-round',
                   options: [
                     round.submitter.nickname,
@@ -105,7 +101,6 @@ module.exports = function(user, input) {
                   key: key
                 };
 
-                message.type = 'sms';
                 game.players.map(function(player) {
                   messages.push(_.assign({ user: player }, message));
                 });
@@ -122,7 +117,6 @@ module.exports = function(user, input) {
                     });
 
                     var suggestion = {
-                      type: 'sms',
                       key: 'game-next-round-suggestion',
                       options: [
                         round.submitter.nickname,
@@ -131,7 +125,6 @@ module.exports = function(user, input) {
                     };
 
                     var nextRoundInstructions = {
-                      type: 'sms',
                       key: 'game-next-round',
                       options: [
                         round.submitter.nickname,
@@ -161,7 +154,6 @@ module.exports = function(user, input) {
             key: 'out-of-guesses'
           };
 
-          message.type = 'sms';
           message.options = [
             user.nickname
           ];

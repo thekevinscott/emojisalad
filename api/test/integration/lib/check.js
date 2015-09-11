@@ -1,7 +1,7 @@
 var Promise = require('bluebird');
 var setup = require('./setup');
 var _ = require('lodash');
-var Message = require('../../../../models/Message');
+var Message = require('../../../models/Message');
 var expect = require('chai').expect;
 
 // checks that a certain action's
@@ -33,25 +33,29 @@ var check = function(action, expected) {
     });
 
     var actions = [];
-    for ( var i=0;i<action_output.length;i++ ) {
-      var action = {
-        message : action_output[i]['_']
-      };
-      if ( action_output[i]['$'] ) {
-        action.recipient = action_output[i]['$']['to'];
+    if ( action_output && action_output.length ) {
+      for ( var i=0;i<action_output.length;i++ ) {
+        var action = {
+          message : action_output[i]['_']
+        };
+        if ( action_output[i]['$'] ) {
+          action.recipient = action_output[i]['$']['to'];
+        }
+        actions.push(action);
       }
-      actions.push(action);
     }
 
     var expecteds = [];
-    for ( var i=0;i<expected.length;i++ ) {
-      var expected_obj = {
-        message : messages[expected[i].key].message
-      };
-      if ( expected[i].to ) {
-        expected_obj.recipient = expected[i].to.number;
+    if ( expected.length ) {
+      for ( var i=0;i<expected.length;i++ ) {
+        var expected_obj = {
+          message : messages[expected[i].key].message
+        };
+        if ( expected[i].to ) {
+          expected_obj.recipient = expected[i].to.number;
+        }
+        expecteds.push(expected_obj);
       }
-      expecteds.push(expected_obj);
     }
 
     // we return arrays of expectations so that tests can accurately report 

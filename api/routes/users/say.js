@@ -13,7 +13,6 @@ module.exports = function(user, input) {
       Game.get({ user: user }),
       function(game) {
         var message = {
-          type: 'sms',
           key: 'says',
           options: [
             user.nickname,

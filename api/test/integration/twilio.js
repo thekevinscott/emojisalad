@@ -1,7 +1,7 @@
 var should = require('chai').should();
 var expect = require('chai').expect;
 var _ = require('lodash');
-var req = require('./suite/lib/req');
+var req = require('./lib/req');
 var Promise = require('bluebird');
 var Message = require('../../models/Message');
 

@@ -1,6 +1,6 @@
 var _ = require('lodash');
-var Game = require('../../../../models/Game');
-var User = require('../../../../models/User');
+var Game = require('../../../models/Game');
+var User = require('../../../models/User');
 
 var setNonRandomGame = function(user) {
   return User.get({ number: user.number }).then(function(user) {

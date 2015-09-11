@@ -7,8 +7,8 @@ module.exports = function(user, input) {
       state: 'waiting-for-nickname'
     }).then(function() {
       return [{
-        type: 'respond',
         key: 'intro_2',
+        user: user
       }];
     });
   } else {

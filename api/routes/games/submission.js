@@ -9,23 +9,18 @@ module.exports = function(user, input) {
     return require('../users/invite')(user, input);
   } else if ( 0 && ! Game.checkInput(input) ) {
     return [{
-      type: 'respond',
+      user: user,
       key: 'error-9'
     }];
-    //return Message.get('error-9').then(function(message) {
-      //message.type = 'respond';
-      //return [message];
-    //});
   } else {
 
     return Game.saveSubmission(user, input).then(function(game) {
       var messages = [{
-        type: 'respond',
+        user: user,
         key: 'game-submission-sent'
       }];
 
       var forwarded_message = {
-        type: 'sms',
         key: 'says',
         options: [
           game.round.submitter.nickname, input
@@ -33,7 +28,6 @@ module.exports = function(user, input) {
       };
 
       var guessing_instructions = {
-        type: 'sms',
         key: 'guessing-instructions'
       };
 
@@ -46,14 +40,10 @@ module.exports = function(user, input) {
       console.error('there is an error', error);
       if ( error && parseInt(error.message) ) {
         return [{
-          type: 'respond',
+          user: user,
           key: 'error-' + error.message,
           options: [input]
         }];
-        //return Message.get('error-'+error.message, [input]).then(function(message) {
-          //message.type = 'respond';
-          //return [message];
-        //});
       } else {
         throw error;
       }

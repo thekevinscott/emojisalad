@@ -25,27 +25,10 @@ var Twilio = {
   parse: function(responses, user) {
     var twiml = new twilio.TwimlResponse();
     responses.map(function(response) {
-      switch(response.type) {
-        case 'sms' :
-          twiml.sms(response.message, {
-            to: response.to,
-            from: response.from
-          });
-        break;
-        case 'respond' :
-          twiml.sms(response.message, {
-            to: user.number,
-            from: response.from
-          });
-        break;
-        default:
-          twiml.sms(response.message, {
-            to: response.to,
-            from: response.from
-          });
-          //console.error('uncaught response type', response);
-        break;
-      }
+      twiml.sms(response.message, {
+        to: response.to,
+        from: response.from
+      });
     });
     return new Promise(function(resolve) {
       resolve(twiml);

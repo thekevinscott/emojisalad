@@ -7,7 +7,7 @@ var _ = require('lodash');
 module.exports = function(user, input) {
   if ( /^invite/.test(input) ) {
     return [{
-      type: 'respond',
+      user: user,
       key: 'wait-to-invite'
     }];
   } else {
@@ -27,6 +27,7 @@ module.exports = function(user, input) {
           return startGame(game, user, input);
         } else if ( game.state === 'playing' ) {
           if ( ! game.round ) {
+            console.error(game);
             throw "This should not happen, there should always be a round";
           }
           if ( game.round.state === 'pending' ) {
@@ -64,7 +65,7 @@ function addPlayerToBench(game, user, input) {
     function() {
       inviterMessage = {
         key: 'accepted-inviter-next-round',
-        type: 'respond',
+        user: user,
         options: [ 
           input,
           user.inviter.nickname
@@ -73,7 +74,6 @@ function addPlayerToBench(game, user, input) {
 
       invitedMessage = {
         key: 'accepted-invited-next-round',
-        type: 'sms',
         user: user.inviter,
         options: [
           input,
@@ -83,7 +83,6 @@ function addPlayerToBench(game, user, input) {
 
       joinMessage = {
         key: 'join-game-next-round',
-        type: 'sms',
         options: [
           input
         ]
@@ -121,7 +120,7 @@ function addPlayerToRound(game, user, input) {
     function(_1, invitedMessage, inviterMessage, joinMessage) {
       inviterMessage = {
         key: 'accepted-inviter',
-        type: 'respond',
+        user: user,
         options: [
           input,
           user.inviter.nickname
@@ -129,7 +128,6 @@ function addPlayerToRound(game, user, input) {
       };
       invitedMessage = {
         key: 'accepted-invited',
-        type: 'sms',
         options: [
           input,
           user.inviter.nickname
@@ -138,7 +136,6 @@ function addPlayerToRound(game, user, input) {
       };
       joinMessage = {
         key: 'join-game',
-        type: 'sms',
         options: [
           input
         ]
@@ -180,11 +177,10 @@ function startGame(game, user, input) {
           input,
           user.inviter.nickname
         ],
-        type: 'sms',
         user: user.inviter
       };
       inviterMessage = {
-        type: 'respond',
+        user: user,
         key: 'accepted-inviter',
         options: [
           input,
@@ -200,7 +196,6 @@ function startGame(game, user, input) {
         invitedMessage,
         inviterMessage,
         {
-          type: 'sms',
           key: 'game-start',
           user: round.submitter,
           options: [
@@ -226,7 +221,7 @@ function createGame(user, input) {
   });
   return new Promise(function(resolve) {
     resolve([{
-      type: 'respond',
+      user: user,
       key: 'intro_3',
       options: [input]
     }]);

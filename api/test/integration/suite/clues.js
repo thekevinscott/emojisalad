@@ -4,17 +4,12 @@
  */
 
 var expect = require('chai').expect;
-var req = require('./lib/req');
-var Message = require('../../../models/Message');
-var Round = require('../../../models/Round');
-var sprint = require('sprintf');
-var Promise = require('bluebird');
 
-var getUsers = require('./lib/getUsers');
-var startGame = require('./flows/startGame');
-var playGame = require('./flows/playGame');
-var setup = require('./lib/setup');
-var check = require('./lib/check');
+var getUsers = require('../lib/getUsers');
+var startGame = require('../flows/startGame');
+var playGame = require('../flows/playGame');
+var setup = require('../lib/setup');
+var check = require('../lib/check');
 
 var EMOJI = '😀';
 

@@ -7,8 +7,8 @@ module.exports = function(user, message) {
     User.create({ number: user.number }),
     function(user, message) {
       return [{
-        type: 'respond',
         key: 'intro',
+        user: user
       }];
     }
   );

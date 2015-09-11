@@ -2,7 +2,7 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 var setup = require('../lib/setup');
 var startGame = require('./startGame');
-var Round = require('../../../../models/Round');
+var Round = require('../../../models/Round');
 
 // submit any old emoji to start a round
 var EMOJI = '😀';
