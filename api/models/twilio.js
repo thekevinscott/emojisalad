@@ -22,7 +22,7 @@ var twilio = require('twilio');
 
 
 var Twilio = {
-  parse: function(responses) {
+  parse: function(responses, user) {
     var twiml = new twilio.TwimlResponse();
     responses.map(function(response) {
       switch(response.type) {
@@ -33,10 +33,17 @@ var Twilio = {
           });
         break;
         case 'respond' :
-          twiml.message(response.message);
+          twiml.sms(response.message, {
+            to: user.number,
+            from: response.from
+          });
         break;
         default:
-          console.error('uncaught response type', response);
+          twiml.sms(response.message, {
+            to: response.to,
+            from: response.from
+          });
+          //console.error('uncaught response type', response);
         break;
       }
     });

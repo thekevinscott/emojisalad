@@ -112,9 +112,9 @@ module.exports = function(req, res) {
   });
 
   function end(response, user) {
-    return Message.parse(response).then(function(messages) {
+    return Message.parse(response, user).then(function(messages) {
       Log.outgoing(messages, user, 'twilio');
-      return Twilio.parse(messages);
+      return Twilio.parse(messages, user);
     }).then(function(twiml) {
       return res.end(twiml.toString());
     });

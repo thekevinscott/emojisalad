@@ -42,7 +42,7 @@ var Message = {
       }
     });
   },
-  parse: function(responses) {
+  parse: function(responses, user) {
     if ( responses && responses.length ) {
       var messages = {};
       var options = {};
@@ -65,30 +65,20 @@ var Message = {
         });
       }).then(function() {
         return responses.map(function(response) {
-          switch(response.type) {
-            case 'sms' :
-              if ( response.user ) {
-                var number = response.user.number
-              } else {
-                console.warn('##### deprecate passing number directly', response);
-                var number = response.number;
-              }
-
-              return _.assign({
-                message: messages[response.key],
-                to: number,
-                from: config.from
-              }, response);
-            break;
-            case 'respond' :
-              return _.assign({
-                message: messages[response.key],
-              }, response);
-            break;
-            default:
-              console.error('uncaught response type', response);
-            break;
+          var number;
+          if ( ! response.user || ! response.user.number ) {
+            console.warn('##### deprecate passing number directly', response);
+            number = user.number;
+            //throw "stop it";
+          } else {
+            number = response.user.number;
           }
+
+          return _.assign({
+            message: messages[response.key],
+            to: number,
+            from: config.from
+          }, response);
         });
       });
     } else {

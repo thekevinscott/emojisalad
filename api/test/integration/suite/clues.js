@@ -6,15 +6,17 @@
 var expect = require('chai').expect;
 var req = require('./lib/req');
 var Message = require('../../../models/Message');
-var Game = require('../../../models/Game');
-var User = require('../../../models/User');
 var Round = require('../../../models/Round');
 var sprint = require('sprintf');
 var Promise = require('bluebird');
 
 var getUsers = require('./lib/getUsers');
-var signup = require('./flows/signup');
-var invite = require('./flows/invite');
+var startGame = require('./flows/startGame');
+var playGame = require('./flows/playGame');
+var setup = require('./lib/setup');
+var check = require('./lib/check');
+
+var EMOJI = '😀';
 
 module.exports = function(params) {
   var r = {
@@ -25,10 +27,6 @@ module.exports = function(params) {
       return req.p(opts, params );
     }
   }
-  var JURASSIC_PARK = '⏰🐲🐊🐉   🌳🌳🌳';
-  var MIXED_EMOJI = '😀😀😀😀foo🚀🚀🚀🚀' ;
-  var SILENCE_OF_THE_LAMBS = '🙊  🐑       🔪🔫';
-  var TIME_AFTER_TIME = '🚀🚀';
   var numbers = [];
 
   describe('Clues', function() {
@@ -36,42 +34,23 @@ module.exports = function(params) {
     var msg = 'Jurassic Park';
     var msg2 = 'SILENCE OF THE LAMBS';
 
-    it.only('should allow a user to ask for a clue', function() {
+    it.only('should notify all the other users when somebody asks for a clue', function() {
       var users = getUsers(3);
-      var clueMsg = 'MOVIE';
 
-      return startGame(users).then(function(game) {
-        return req.p({
-          user: game.round.submitter,
-          message: JURASSIC_PARK 
-        }, params, true).then(function() {
-          return game;
+      return playGame(users).then(function() {
+        return check(
+          { user: users[1], msg: 'CLUE' },
+          [
+            { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[0] },
+            { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[2] },
+            { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[0] },
+            { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[1] },
+            { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[2] }
+          ]
+        ).then(function(obj) {
+          //console.log('output', obj.output);
+          obj.output.should.deep.equal(obj.expected);
         });
-      }).then(function(game) {
-        return Promise.join(
-          req.p({
-            user: game.round.players[0],
-            message: 'CLUE'
-          }, params, true),
-          Message.get(['says'], [game.round.players[0].nickname, 'CLUE']),
-          Message.get(['clue'], [game.round.players[0].nickname, clueMsg ] ),
-          function(output, says, clue) {
-            output.Response.Sms.splice(0,2).map(function(sms) {
-              sms['_'].should.equal(says.message);
-              game.players.map(function(player) {
-                if ( player.id !== game.round.players[0].id ) {
-                  return player.number;
-                }
-              }).should.contain(sms['$']['to']);
-            });
-            output.Response.Sms.splice(0,3).map(function(sms) {
-              sms['_'].should.equal(clue.message);
-              game.players.map(function(player) {
-                return player.number
-              }).should.contain(sms['$']['to']);
-            });
-          }
-        );
       });
     });
 
@@ -88,7 +67,7 @@ module.exports = function(params) {
       }).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
-          message: JURASSIC_PARK 
+          message: EMOJI.JURASSIC_PARK 
         }, params, true).then(function() {
           return req.p({
             username: game.round.players[0].number,
@@ -139,7 +118,7 @@ module.exports = function(params) {
       }).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
-          message: JURASSIC_PARK 
+          message: EMOJI.JURASSIC_PARK 
         }, params, true).then(function() {
           return req.p({
             username: game.round.players[0].number,
@@ -184,7 +163,7 @@ module.exports = function(params) {
       return startGame(users).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
-          message: JURASSIC_PARK 
+          message: EMOJI.JURASSIC_PARK 
         }, params, true).then(function() {
           return game;
         });
@@ -230,7 +209,7 @@ module.exports = function(params) {
       }).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
-          message: JURASSIC_PARK 
+          message: EMOJI.JURASSIC_PARK 
         }, params, true).then(function() {
           return req.p({
             username: game.round.players[0].number,
@@ -280,7 +259,7 @@ module.exports = function(params) {
       return startGame(users).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
-          message: JURASSIC_PARK 
+          message: EMOJI.JURASSIC_PARK 
         }, params, true).then(function() {
           return req.p({
             username: game.round.players[0].number,
@@ -329,7 +308,7 @@ module.exports = function(params) {
       return startGame(users).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
-          message: JURASSIC_PARK 
+          message: EMOJI.JURASSIC_PARK 
         }, params, true).then(function() {
           return Round.update(game.round, {
             clues_allowed: 99 
@@ -383,21 +362,6 @@ module.exports = function(params) {
   });
 
 
-  function startGame(users) {
-    return signup(users[0]).then(function() {
-      return invite(users[0], users[1]); 
-    }).then(function() {
-      return invite(users[0], users[2]); 
-    }).then(function() {
-      return User.get({ number: users[0].number });
-    }).then(function(user) {
-      return Game.get({ user: user }).then(function(game) {
-        return Game.update(game, { random: 0 }).then(function() {
-          return game;
-        });
-      });
-    });
-  }
 
   function jumpIntoThirdRound(users) {
     return startGame(users).then(function(game) {
@@ -420,7 +384,7 @@ module.exports = function(params) {
         // first user submits their emoji
         return req.p({
           username: users[0].number,
-          message: JURASSIC_PARK 
+          message: EMOJI.JURASSIC_PARK 
         }, params, true)
       }).then(function() {
         // third user guesses

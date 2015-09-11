@@ -17,7 +17,10 @@ var User = {
 
     var query = squel
                 .insert()
-                .into('users');
+                .into('users')
+                .setFields({
+                  created: squel.fval('NOW(3)')
+                });
 
     if ( platform ) {
       query.setFields({'platform_id': squel

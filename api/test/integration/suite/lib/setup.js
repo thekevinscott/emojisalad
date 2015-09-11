@@ -1,28 +1,31 @@
 var Promise = require('bluebird');
 var req = require('./req');
+var sequence = require('./sequence');
+var _ = require('lodash');
 
 var setup = function(arr) {
-  //arr.map(function(a) {
-  //});
+  if ( !_.isArray(arr) ) {
+    arr = [arr];
+  }
 
-  var fns = arr.map(function(a, i) {
+  return sequence(arr.map(function(a, i) {
     var user = a.user;
     var msg = a.msg;
-    return function() {
-      return Promise.delay(500).then(function() {
-        return req.post({
-          user: user,
-          message: msg
-        });
-      });
+    if ( ! user ) {
+      console.error(a, i);
+      throw "No user provided";
     }
-  });
-  return Promise.reduce(fns, function(response, fn) {
-    return fn().then(function(output) {
-      return response.concat(output);
-    });
-  }, []);
-
+    if ( ! msg ) {
+      console.error(a, i);
+      throw "No msg provided";
+    }
+    return function() {
+      return req.post({
+        user: user,
+        message: msg
+      }, null, true);
+    }
+  }));
 };
 
 module.exports = setup;
