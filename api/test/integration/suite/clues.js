@@ -12,6 +12,10 @@ var Round = require('../../../models/Round');
 var sprint = require('sprintf');
 var Promise = require('bluebird');
 
+var getUsers = require('./lib/getUsers');
+var signup = require('./flows/signup');
+var invite = require('./flows/invite');
+
 module.exports = function(params) {
   var r = {
     q: function() {
@@ -32,13 +36,13 @@ module.exports = function(params) {
     var msg = 'Jurassic Park';
     var msg2 = 'SILENCE OF THE LAMBS';
 
-    it('should allow a user to ask for a clue', function() {
-      var users = getUsers();
+    it.only('should allow a user to ask for a clue', function() {
+      var users = getUsers(3);
       var clueMsg = 'MOVIE';
 
       return startGame(users).then(function(game) {
         return req.p({
-          username: game.round.submitter.number,
+          user: game.round.submitter,
           message: JURASSIC_PARK 
         }, params, true).then(function() {
           return game;
@@ -46,7 +50,7 @@ module.exports = function(params) {
       }).then(function(game) {
         return Promise.join(
           req.p({
-            username: game.round.players[0].number,
+            user: game.round.players[0],
             message: 'CLUE'
           }, params, true),
           Message.get(['says'], [game.round.players[0].nickname, 'CLUE']),
@@ -72,7 +76,7 @@ module.exports = function(params) {
     });
 
     it('should allow a user to ask for a second clue', function() {
-      var users = getUsers();
+      var users = getUsers(3);
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
@@ -123,7 +127,7 @@ module.exports = function(params) {
     });
 
     it('should allow a second user to ask for a second clue', function() {
-      var users = getUsers();
+      var users = getUsers(3);
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
@@ -174,7 +178,7 @@ module.exports = function(params) {
     });
 
     it('should not allow the submitter to ask for a clue', function() {
-      var users = getUsers();
+      var users = getUsers(3);
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
@@ -214,7 +218,7 @@ module.exports = function(params) {
     });
 
     it('should not allow more than two clues', function() {
-      var users = getUsers();
+      var users = getUsers(3);
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
@@ -270,7 +274,7 @@ module.exports = function(params) {
     });
 
     it('should not allow more than one clue if the round clue_allowed field only allows 1', function() {
-      var users = getUsers();
+      var users = getUsers(3);
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
@@ -319,7 +323,7 @@ module.exports = function(params) {
     });
 
     it('should fail gracefully if no more clues exist', function() {
-      var users = getUsers();
+      var users = getUsers(3);
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
@@ -378,57 +382,14 @@ module.exports = function(params) {
     });
   });
 
-  function signUp(user) {
-    // set up a new user
-    return req.p({
-      username: user.number,
-      message: 'hi'
-    }, params).then(function() {
-      return req.p({
-        username: user.number,
-        message: 'yes'
-      }, params);
-    }).then(function() {
-      return req.p({
-        username: user.number,
-        message: user.nickname // the nickname
-      }, params);
-    });
-  }
 
   function startGame(users) {
-    return signUp(users.inviter).then(function() {
-      return req.p({
-        username: users.inviter.number,
-        message: 'invite '+users.invited.number,
-      }, params);
-    }).then(function(response) {
-      return req.p({
-        username: users.invited.number,
-        message: 'yes'
-      }, params);
-    }).then(function(response) {
-      return req.p({
-        username: users.invited.number,
-        message: users.invited.nickname 
-      }, params, true);
+    return signup(users[0]).then(function() {
+      return invite(users[0], users[1]); 
     }).then(function() {
-      return req.p({
-        username: users.inviter.number,
-        message: 'invite '+users.secondInvited.number,
-      }, params);
-    }).then(function(response) {
-      return req.p({
-        username: users.secondInvited.number,
-        message: 'yes'
-      }, params);
-    }).then(function(response) {
-      return req.p({
-        username: users.secondInvited.number,
-        message: users.secondInvited.nickname 
-      }, params, true);
+      return invite(users[0], users[2]); 
     }).then(function() {
-      return User.get( users.inviter );
+      return User.get({ number: users[0].number });
     }).then(function(user) {
       return Game.get({ user: user }).then(function(game) {
         return Game.update(game, { random: 0 }).then(function() {
@@ -438,75 +399,51 @@ module.exports = function(params) {
     });
   }
 
-  function getUsers(numbers) {
-
-    var inviter = {
-      number: '+1'+params.getUser(), // add a +1 to simulate twilio
-      nickname: 'Ari'
-    };
-    var invited = {
-      number: '+1'+params.getUser(), // add a +1 to simulate twilio
-      nickname: 'Kevin'
-    }
-    var secondInvited = {
-      number: '+1'+params.getUser(), // add a +1 to simulate twilio
-      nickname: 'SCHLOOOOO'
-    }
-
-    var users = {
-      inviter: inviter,
-      invited: invited,
-      secondInvited: secondInvited
-    };
-
-    return users;
-  }
-
   function jumpIntoThirdRound(users) {
     return startGame(users).then(function(game) {
       // second user says yes
       return req.p({
-        username: users.inviter.number,
-        message: 'invite '+users.secondInvited.number,
+        username: users[0].number,
+        message: 'invite '+users[2].number,
       }, params).then(function() {
         return req.p({
-          username: users.secondInvited.number,
+          username: users[2].number,
           message: 'yes' 
         }, params);
       }).then(function() {
         // second user is in the game
         return req.p({
-          username: users.secondInvited.number,
-          message: users.secondInvited.nickname
+          username: users[2].number,
+          message: users[2].nickname
         }, params, true)
       }).then(function() {
         // first user submits their emoji
         return req.p({
-          username: users.inviter.number,
+          username: users[0].number,
           message: JURASSIC_PARK 
         }, params, true)
       }).then(function() {
         // third user guesses
         return req.p({
-          username: users.secondInvited.number,
+          username: users[2].number,
           message: 'guess Jurassic Park' 
         }, params, true);
       }).then(function(output) {
         // second user submits their emoji
         return req.p({
-          username: users.invited.number,
+          username: users[1].number,
           message: SILENCE_OF_THE_LAMBS 
         }, params, true)
       }).then(function() {
         // third user guesses
         return req.p({
-          username: users.secondInvited.number,
+          username: users[2].number,
           message: 'guess Silence of the Lambs' 
         }, params, true);
       }).then(function() {
         // third user submits their emoji
         return req.p({
-          username: users.secondInvited.number,
+          username: users[2].number,
           message: TIME_AFTER_TIME 
         }, params, true);
       }).then(function() {

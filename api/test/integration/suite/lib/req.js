@@ -6,21 +6,25 @@ var xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // exampl
 
 var host = 'http://localhost:'+process.env.PORT;
 
-function req(options, params, raw) {
+function req(options, raw) {
   options = _.assign({
     method: 'POST'
-  }, params, options);
+  }, options);
 
-  options.url = host + params.url;
+  options.url = host + '/platform/twilio';
 
   if ( options.form ) {
-    var user = options.form.username;
+    var user = options.form.user;
+    if ( ! _.isObject(user) ) {
+      console.error('user', user);
+      throw "You must provide user as an object now";
+    }
     var message = options.form.message;
     delete options.form.username;
     delete options.form.message;
 
-    options.form[params.userKey] = user;
-    options.form[params.messageKey] = message;
+    options.form['From'] = user.number;
+    options.form['Body'] = message;
   }
 
   return request(options).then(function(response) {
@@ -57,12 +61,13 @@ function req(options, params, raw) {
 function post(data, params, raw) {
   return req({
     form: data
-  }, params, raw);
+  }, raw);
 }
 
 function Req() {
   this.q = req;
   this.p = post;
+  this.post = post;
   this.setParams = function(data) {
     params = _.assign({}, params, data);
   }

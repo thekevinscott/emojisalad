@@ -32,7 +32,6 @@ var params = {
 
 describe('Twilio', function() {
   this.timeout(10000);
-  // MOVE THIS TO THE WEB TESTS
   require('./suite')(params);
 });
 
