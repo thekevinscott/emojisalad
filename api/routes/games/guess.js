@@ -30,7 +30,8 @@ module.exports = function(user, input) {
 
       return Round.getGuessesLeft(game, user).then(function(guesses_left) {
         if ( guesses_left > 0 ) {
-          var guess = input.split('guess').pop().trim();
+
+          var guess = input.match(/guess(.*)/i).pop().trim();
           return Game.checkGuess(game, user, guess).then(function(result) {
             if ( result ) {
               var correct ={

@@ -74,6 +74,50 @@ module.exports = function(params) {
         });
     });
 
+    it.only('should be able to successfully guess with case insensitivity', function() {
+      var users = getUsers();
+
+      return startGame(users).then(function(game) {
+        var correct = 'GuesS JurassiC ParK';
+
+        return Promise.join(
+          req.p({
+            username: users.invited.number,
+            message: correct 
+          }, params, true),
+          Message.get('says', [users.invited.nickname, correct]),
+          Message.get('correct-guess', [users.invited.nickname]),
+          Message.get('game-next-round', [users.invited.nickname]),
+          Message.get('game-next-round-suggestion', [users.invited.nickname, msg2]),
+          function(output, says, correct, nextRound, suggestion) {
+              output.Response.Sms.length.should.equal(8);
+
+              output.Response.Sms.map(function(sms) {
+                if ( sms['$']['to'] === users.invited.number ) {
+                  // this is the user who guessed
+                  expect([
+                    correct.message,
+                    suggestion.message
+                  ]).to.contain(sms['_']);
+                } else if ( sms['$']['to'] === users.inviter.number ) {
+                  expect([
+                    says.message,
+                    correct.message,
+                    nextRound.message
+                  ]).to.contain(sms['_']);
+                } else if ( sms['$']['to'] === users.secondInvited.number ) {
+                  expect([
+                    says.message,
+                    correct.message,
+                    nextRound.message
+                  ]).to.contain(sms['_']);
+                }
+              });
+            }
+          );
+        });
+    });
+
     it('should be notified on an incorrect guess', function() {
       var users = getUsers();
 

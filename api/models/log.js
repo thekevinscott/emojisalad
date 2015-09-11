@@ -67,7 +67,6 @@ var Log = {
                       created: squel.fval('NOW(3)')
                     });
 
-                    console.log(query.toString());
         if ( message.type === 'respond' && user ) {
           query.setFields({ user_id: user.id });
         } else if ( message.user ) {
