@@ -1,8 +1,6 @@
 var expect = require('chai').expect;
 
 var getUsers = require('../lib/getUsers');
-var startGame = require('../flows/startGame');
-var playGame = require('../flows/playGame');
 var setup = require('../lib/setup');
 var check = require('../lib/check');
 
