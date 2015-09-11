@@ -191,6 +191,7 @@ var Game = {
     var query = squel
                 .select()
                 .field('g.id')
+                .field('g.random')
                 .field('s.state')
                 .from('games', 'g')
                 .left_join('game_participants', 'p', 'p.game_id = g.id')
