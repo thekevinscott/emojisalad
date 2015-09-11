@@ -244,4 +244,9 @@ module.exports = function(params) {
       }, params);
     });
   }
+
+  function getRand() {
+    return '860460'+Math.floor(1000 + Math.random() * 9000);
+  }
+
 }

@@ -333,7 +333,6 @@ module.exports = function(params) {
             Message.get('says', [users.inviter.nickname, msg]),
             function(output, says) {
               //output.Response.Message[0].should.equal(gameSubmission.message);
-              console.log('output', output.Response.Sms);
               output.Response.Sms.splice(0,2).map(function(sms) {
                 sms['_'].should.equal(says.message);
               });
@@ -682,22 +681,10 @@ module.exports = function(params) {
           Message.get('join-game-next-round', [users.thirdInvited.nickname]),
           function(output, invitedMsg, inviterMsg, joined) {
             output.Response.Message[0].should.equal(invitedMsg.message);
-            output.Response.Sms.length.should.equal(4);
-            var inviterExpectations = [
-              inviterMsg.message,
-              joined.message,
-            ];
+            output.Response.Sms.length.should.equal(3);
             output.Response.Sms.map(function(sms) {
               if ( sms['$']['to'] === users.inviter.number ) {
-                expect(inviterExpectations).to.contain(sms['_']);
-                // once a message has been received, it shouldn't come
-                // a second time
-                if ( sms['_'] === inviterMsg.message ) {
-                  delete inviterExpectations[0];
-                } else {
-                  delete inviterExpectations[1];
-                }
-
+                sms['_'].should.equal(inviterMsg.message);
               } else if ( sms['$']['to'] === users.invited.number || sms['$']['to'] === users.secondInvited.number ) {
                 sms['_'].should.equal(joined.message);
               }

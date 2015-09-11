@@ -76,6 +76,12 @@ module.exports = function(params) {
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
+        return Round.update(game.round, {
+          clues_allowed: 2
+        }).then(function() {
+          return game;
+        });
+      }).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
           message: JURASSIC_PARK 
@@ -121,6 +127,12 @@ module.exports = function(params) {
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
+        return Round.update(game.round, {
+          clues_allowed: 2
+        }).then(function() {
+          return game;
+        });
+      }).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
           message: JURASSIC_PARK 
@@ -206,6 +218,12 @@ module.exports = function(params) {
       var clueMsg = 'CLEVER GIRL';
 
       return startGame(users).then(function(game) {
+        return Round.update(game.round, {
+          clues_allowed: 2
+        }).then(function() {
+          return game;
+        });
+      }).then(function(game) {
         return req.p({
           username: game.round.submitter.number,
           message: JURASSIC_PARK 
