@@ -19,7 +19,7 @@ function getUsers(arg) {
     for ( var i=0;i<arg;i++ ) {
       users.push({
         number: getRandomPhone(),
-        nickname: listOfNicknames[i]
+        nickname: listOfNicknames[i]+Math.random()
       });
     }
   } else if ( _.isArray(arg) ) { 
@@ -30,7 +30,7 @@ function getUsers(arg) {
         user.phone = getRandomPhone()
       }
       if ( ! user.nickname ) {
-        user.nickname = listOfNicknames[nicknameCount++];
+        user.nickname = listOfNicknames[nicknameCount++]+Math.random();
       }
     });
   }

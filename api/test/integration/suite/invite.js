@@ -4,6 +4,7 @@ var getUsers = require('../lib/getUsers');
 var setup = require('../lib/setup');
 var check = require('../lib/check');
 var signup = require('../flows/signup');
+var Game = require('../../../models/game');
 
 describe('Inviter flow', function() {
   var users = getUsers(2);
@@ -59,7 +60,7 @@ describe('Inviter flow', function() {
     });
   });
 
-  describe.only('Valid numbers', function() {
+  describe('Valid numbers', function() {
     this.timeout(10000);
     it('should be able to invite someone', function() {
       var user = getUsers(1)[0];
@@ -113,7 +114,6 @@ describe('Inviter flow', function() {
     });
 
     it('should not be able to invite someone on do-not-call-list', function() {
-
       var user = getUsers(1)[0];
 
       return setup([
@@ -131,48 +131,30 @@ describe('Inviter flow', function() {
       });
     });
   });
-});
-
-/*
-describe('Invited User Onboarding', function() {
-  var inviter = '+1'+params.getUser(); // add a +1 to simulate twilio
-  var inviterName = 'Inviting User';
-  before(function() {
-    return signUp(inviter, inviterName);
-  });
 
   it('should be able to onboard an invited user', function() {
-    var num = '+1'+getRandomPhone();
-    var invitedName = 'Invited User';
-    return req.p({
-      username: inviter,
-      message: 'invite '+num,
-    }, params).then(function(response) {
-      return Promise.join(
-        req.p({
-          username: num,
-          message: 'yes'
-        }, params),
-        Message.get('intro_2'),
-        function(response, message) {
-          response[0].should.equal(message.message);
-        }
+    var user = getUsers(1)[0];
+
+    var firstPhrase = 'JURASSIC PARK';
+
+    return setup([
+      { user: inviter, msg: 'invite '+user.number },
+      { user: user, msg: 'yes' },
+    ]).then(function() {
+      return Game.get(inviter).then(function(game) {
+        return Game.update(game, { random : 0 });
+      });
+    }).then(function(game) {
+      return check(
+        { user: user, msg: user.nickname },
+        [
+          { key: 'accepted-invited', options: [user.nickname], to: inviter },
+          { key: 'accepted-inviter', options: [user.nickname, inviter.nickname], to: user },
+          { key: 'game-start', options: [inviter.nickname, firstPhrase], to: inviter },
+        ]
       );
-    }).then(function() {
-      return Promise.join(
-        req.p({
-          username: num,
-          message: invitedName 
-        }, params, true),
-        Message.get('accepted-inviter', [invitedName, inviterName]),
-        Message.get('accepted-invited', invitedName),
-        function(output, messageInviter, messageInvited) {
-          output.Response.Message[0].should.equal(messageInviter.message);
-          output.Response.Sms[0]['_'].should.equal(messageInvited.message);
-          output.Response.Sms[0]['$']['to'].should.equal(inviter);
-        }
-      );
+    }).then(function(obj) {
+      obj.output.should.deep.equal(obj.expected);
     });
   });
 });
-*/
