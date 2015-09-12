@@ -68,10 +68,11 @@ module.exports = function(user, input) {
                 };
 
                 suggestion.user = round.submitter;
-                messages.push(suggestion);
                 round.game.players.map(function(player) {
                   if ( player.id !== round.submitter.id ) {
                     messages.push(_.assign( { user: player }, nextRoundInstructions));
+                  } else {
+                    messages.push(suggestion);
                   }
                 });
               }));

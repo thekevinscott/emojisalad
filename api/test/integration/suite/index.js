@@ -4,7 +4,7 @@ var suite = function(params) {
   require('./invite');
   //require('./game')(params);
   //require('./game-three')(params);
-  //require('./guessing')(params);
+  require('./guessing');
   require('./clues');
 }
 module.exports = suite;

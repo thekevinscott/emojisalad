@@ -6,7 +6,7 @@ var check = require('../lib/check');
 var signup = require('../flows/signup');
 var Game = require('../../../models/game');
 
-describe('Inviter flow', function() {
+describe('Inviting', function() {
   var users = getUsers(2);
   var inviter = users[0];
   before(function() {
@@ -130,31 +130,31 @@ describe('Inviter flow', function() {
         obj.output.should.deep.equal(obj.expected);
       });
     });
-  });
 
-  it('should be able to onboard an invited user', function() {
-    var user = getUsers(1)[0];
+    it('should be able to onboard an invited user', function() {
+      var user = getUsers(1)[0];
 
-    var firstPhrase = 'JURASSIC PARK';
+      var firstPhrase = 'JURASSIC PARK';
 
-    return setup([
-      { user: inviter, msg: 'invite '+user.number },
-      { user: user, msg: 'yes' },
-    ]).then(function() {
-      return Game.get(inviter).then(function(game) {
-        return Game.update(game, { random : 0 });
+      return setup([
+        { user: inviter, msg: 'invite '+user.number },
+        { user: user, msg: 'yes' },
+      ]).then(function() {
+        return Game.get(inviter).then(function(game) {
+          return Game.update(game, { random : 0 });
+        });
+      }).then(function(game) {
+        return check(
+          { user: user, msg: user.nickname },
+          [
+            { key: 'accepted-invited', options: [user.nickname], to: inviter },
+            { key: 'accepted-inviter', options: [user.nickname, inviter.nickname], to: user },
+            { key: 'game-start', options: [inviter.nickname, firstPhrase], to: inviter },
+          ]
+        );
+      }).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
       });
-    }).then(function(game) {
-      return check(
-        { user: user, msg: user.nickname },
-        [
-          { key: 'accepted-invited', options: [user.nickname], to: inviter },
-          { key: 'accepted-inviter', options: [user.nickname, inviter.nickname], to: user },
-          { key: 'game-start', options: [inviter.nickname, firstPhrase], to: inviter },
-        ]
-      );
-    }).then(function(obj) {
-      obj.output.should.deep.equal(obj.expected);
     });
   });
 });

@@ -21,6 +21,8 @@ function playGame(users, options) {
           clues_allowed: options.clues_allowed
         });
       }
+    }).then(function() {
+      return game;
     });
   });
 }
