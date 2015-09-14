@@ -42,6 +42,22 @@ module.exports = function(user, input) {
                 messages.push(_.assign({ user: player }, correct));
               });
 
+              // are there any users waiting in the wings?
+              game.players.filter(function(player) {
+                // this player is about to join
+                return player.state === 'bench';
+              }).map(function(benchedPlayer) {
+                game.players.map(function(player) {
+                  messages.push({
+                    key: 'join-game',
+                    options: [
+                      benchedPlayer.nickname
+                    ],
+                    user: player
+                  });
+                });
+              });
+
               promises.push(Game.newRound(game).then(function(round) {
                 round.players.map(function(player) {
                   User.update(player, {

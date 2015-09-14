@@ -3,6 +3,7 @@ var expect = require('chai').expect;
 var getUsers = require('../lib/getUsers');
 var setup = require('../lib/setup');
 var check = require('../lib/check');
+var getGame = require('../lib/getGame');
 var signup = require('../flows/signup');
 var startGame = require('../flows/startGame');
 var Game = require('../../../models/game');
@@ -242,6 +243,51 @@ describe('Inviting', function() {
       });
 
       runBothPlayers(users);
+    });
+
+    it('should be able to onboard a third user to the game', function() {
+      var users = getUsers(2);
+      var invitee = getUsers(3).pop();
+      return startGame(users).then(function() {
+        return setup([
+          { user: users[0], msg: 'invite '+invitee.number },
+          { user: invitee, msg: 'yes' },
+        ]);
+      }).then(function() {
+        return check(
+          { user: invitee, msg: invitee.nickname },
+          [
+            { to: users[0], key: 'accepted-invited', options: [invitee.nickname] },
+            { to: users[1], key: 'join-game', options: [invitee.nickname] },
+            { to: invitee, key: 'accepted-inviter', options: [invitee.nickname, users[0].nickname] },
+          ]
+        );
+      }).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+
+    it('should make a third user invited in the middle of a round wait until the next round', function() {
+      var users = getUsers(2);
+      var invitee = getUsers(3).pop();
+      return startGame(users).then(function() {
+        return setup([
+          { user: users[0], msg: EMOJI },
+          { user: users[0], msg: 'invite '+invitee.number },
+          { user: invitee, msg: 'yes' },
+        ]);
+      }).then(function() {
+        return check(
+          { user: invitee, msg: invitee.nickname },
+          [
+            { to: users[0], key: 'accepted-invited-next-round', options: [invitee.nickname] },
+            { to: users[1], key: 'join-game-next-round', options: [invitee.nickname] },
+            { to: invitee, key: 'accepted-inviter-next-round', options: [invitee.nickname, users[0].nickname] },
+          ]
+        );
+      }).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
     });
   });
 });
