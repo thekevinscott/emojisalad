@@ -1,8 +1,9 @@
+'use strict';
 var User = require('../../models/user');
 var Game = require('../../models/game');
 //var Message = require('../../models/message');
-var Promise = require('bluebird');
-var _ = require('lodash');
+var BPromise = require('bluebird');
+//var _ = require('lodash');
 
 module.exports = function(user, input) {
   if ( /^invite/.test(input) ) {
@@ -37,11 +38,11 @@ module.exports = function(user, input) {
           } else if ( game.round.state === 'playing' ) {
             return addPlayerToBench(game, user, input);
           } else {
-            cnosole.error("Game round has no state", game);
+            console.error("Game round has no state", game);
             throw new Error("Game round has no state");
           }
         } else {
-          cnosole.error("Game has no state", game);
+          console.error("Game has no state", game);
           throw new Error("Game has no state");
         }
       });
@@ -49,7 +50,7 @@ module.exports = function(user, input) {
       return createGame(user, input);
     }
   }
-}
+};
 
 function addPlayerToBench(game, user, input) {
   // this means the invited user must wait until the next round
@@ -147,12 +148,12 @@ function startGame(game, user, input) {
     });
   });
   // add this invited user to the game
-  return Promise.join(
+  return BPromise.join(
     Game.add(game, [user]),
     Game.start(game),
     Game.newRound(game),
     function(_1, _2, round) {
-      invitedMessage = {
+      let invitedMessage = {
         key: 'accepted-invited',
         options: [
           input,
@@ -160,14 +161,14 @@ function startGame(game, user, input) {
         ],
         user: user.inviter
       };
-      inviterMessage = {
+      let inviterMessage = {
         user: user,
         key: 'accepted-inviter',
         options: [
           input,
           user.inviter.nickname
         ]
-      }
+      };
 
       User.update(round.submitter, {
         state: 'waiting-for-submission',
@@ -191,6 +192,7 @@ function startGame(game, user, input) {
 
 function createGame(user, input) {
   Game.create().then(function(game) {
+    console.log('4');
     return Game.add(game, [user]);
   }).catch(function(err) {
     console.error('error adding user', err, user);
@@ -200,7 +202,7 @@ function createGame(user, input) {
     state: 'waiting-for-invites',
     nickname: input
   });
-  return new Promise(function(resolve) {
+  return new BPromise(function(resolve) {
     resolve([{
       user: user,
       key: 'intro_3',

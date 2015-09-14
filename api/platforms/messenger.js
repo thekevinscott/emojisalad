@@ -1,3 +1,4 @@
+'use strict';
 /*
  * An incoming message from Messenger will contain the following:
  *
@@ -5,10 +6,9 @@
  * username: 'foo'
  * body: 'yes'
  */
-var rp = require('request-promise');
-var Log = require('../models/log');
-var User = require('../models/user');
-var Message = require('../models/message');
+//var Log = require('../models/log');
+//var User = require('../models/user');
+//var Message = require('../models/message');
 module.exports = function(req, res) {
   console.log(req.body);
   return res.json({ message: 'You say: '+req.body.message});
@@ -60,4 +60,4 @@ module.exports = function(req, res) {
     console.error('some odd kind of messenger error', err);
   });
   */
-}
+};

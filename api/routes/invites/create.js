@@ -1,7 +1,8 @@
-var User = require('../../models/user');
-var Phone = require('../../models/phone');
-var Text = require('../../models/text');
-var Game = require('../../models/game');
+'use strict';
+//var User = require('../../models/user');
+//var Phone = require('../../models/phone');
+//var Text = require('../../models/text');
+//var Game = require('../../models/game');
 var Invite = require('../../models/invite');
 
 module.exports = function(req, res) {

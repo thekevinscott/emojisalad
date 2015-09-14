@@ -1,27 +1,12 @@
+'use strict';
 var config = require('../config/twilio');
-var _ = require('lodash');
-var Promise = require('bluebird');
-
-var squel = require('squel');
-
-var db = require('db');
-
-var client = require('twilio')(config.accountSid, config.authToken); 
+//var client = require('twilio')(config.accountSid, config.authToken); 
  
-var User = require('./user');
 var Message = require('./message');
 
 var twilio = require('twilio');
-//function get(sid) {
-    //if ( sid ) {
-        //return client.messages(sid).get();
-    //} else {
-        //return client.messages.list();
-    //}
-//}
 
-
-var Text = {
+module.exports = {
   respond: function(responses) {
     if ( responses && responses.length ) {
       var messages = {};
@@ -48,12 +33,7 @@ var Text = {
         responses.map(function(response) {
           switch(response.type) {
             case 'sms' :
-              if ( response.user ) {
-                var number = response.user.number
-              } else {
-                console.warn('##### deprecate passing number directly');
-                var number = response.number;
-              }
+              let number = response.user.number;
 
               twiml.sms(messages[response.key], {
                 to: number,
@@ -74,7 +54,4 @@ var Text = {
       return new twilio.TwimlResponse();
     }
   },
-}
-
-module.exports = Text;
-
+};

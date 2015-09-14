@@ -1,8 +1,8 @@
-var User = require('../../models/user');
+'use strict';
+//var User = require('../../models/user');
 //var Message = require('../../models/message');
 var Game = require('../../models/game');
 var Round = require('../../models/round');
-var Promise = require('bluebird');
 var _ = require('lodash');
 
 module.exports = function(user, input) {
@@ -11,22 +11,19 @@ module.exports = function(user, input) {
     return Round.getCluesLeft(game).then(function(clues_left) {
       if ( clues_left > 0 ) {
         return Round.getClue(game, user).then(function(roundClue) {
-
           if ( roundClue ) {
-            var message = {
+            return {
               key: 'clue',
               options: [
                 user.nickname,
                 roundClue.clue
               ]
             };
-
           } else {
-            var message = {
+            return {
               key: 'no-more-clues-available',
             };
           }
-          return message;
         });
       } else {
         var clues_allowed = game.round.clues_allowed;
@@ -60,5 +57,5 @@ module.exports = function(user, input) {
       }).filter(function(el) { return el; }).concat(messages);
     });
   });
-}
+};
 

@@ -1,3 +1,4 @@
+'use strict';
 var squel = require('squel');
 var config = require('../config/twilio');
 var sprintf = require('sprintf');

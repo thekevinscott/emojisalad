@@ -1,11 +1,10 @@
-var _ = require('lodash');
+'use strict';
 var squel = require('squel');
 var Promise = require('bluebird');
 
 var db = require('db');
 
 var User;
-var Message = require('./message');
 var Game;
 
 var Round = {
@@ -16,7 +15,7 @@ var Round = {
                      .from('round_clues')
                      .where('round_id=?',game.round.id);
     return db.query(clue_query).then(function(rows) {
-      return game.round.clues_allowed - rows[0]['cnt'];
+      return game.round.clues_allowed - rows[0].cnt;
     });
   },
   getClue: function(game, user) {
@@ -127,10 +126,11 @@ var Round = {
                        .from('game_phrases')
                        .where('game_id=?', game.id);
 
+    var order;
     if ( game.random ) {
-      var order = 'RAND()';
+      order = 'RAND()';
     } else {
-      var order = 'p.id';
+      order = 'p.id';
     }
 
     var query = squel
@@ -243,12 +243,12 @@ var Round = {
                 return player;
               }
             })
-          }
+          };
         });
       }
     );
   },
-  saveSubmission: function(game, user, message) {
+  saveSubmission: function(game, user) {
     if ( ! User ) {
       User = require('./user');
     }
@@ -262,7 +262,7 @@ var Round = {
       return User.update(player, {state: 'guessing' });
     });
     promises.push(function() {
-      return User.update(user, {state: 'submitted'})
+      return User.update(user, {state: 'submitted'});
     }());
     promises.push(function() {
       return this.update(game.round, { state: 'playing' });
@@ -287,6 +287,6 @@ var Round = {
 
     return db.query(query.toString());
   }
-}
+};
 
 module.exports = Round;

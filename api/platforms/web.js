@@ -1,13 +1,14 @@
+'use strict';
 /*
  * An incoming POST from the website will contain the following:
  *
  * number: (860) 460-8183
  *
  */
-var User = require('../models/user');
-var Phone = require('../models/phone');
-var Text = require('../models/text');
-var Message = require('../models/message');
+const User = require('../models/user');
+const Phone = require('../models/phone');
+const TextModel = require('../models/text');
+const Message = require('../models/message');
 
 module.exports = function(req, res) {
   console.log('\n================web=================\n');
@@ -33,7 +34,7 @@ module.exports = function(req, res) {
 
     return Message.get('intro');
   }).then(function(message) {
-    return Text.send(user, message);
+    return TextModel.send(user, message);
   }).then(function() {
     res.json({});
   }).fail(function(err) {
@@ -43,4 +44,4 @@ module.exports = function(req, res) {
       res.json({ error: err.message });
     }
   });
-}
+};

@@ -1,8 +1,9 @@
-var User = require('../../models/user');
+'use strict';
+//var User = require('../../models/user');
 //var Message = require('../../models/message');
 var Phone  = require('../../models/phone');
 var Invite = require('../../models/invite');
-var Promise = require('bluebird');
+//var BPromise = require('bluebird');
 
 module.exports = function(invitingUser, input) {
   if ( /^invite(.*)/i.test(input) ) {
@@ -51,4 +52,4 @@ module.exports = function(invitingUser, input) {
     }];
   }
 
-}
+};

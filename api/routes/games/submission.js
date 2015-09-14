@@ -1,7 +1,7 @@
-var User = require('../../models/user');
+'use strict';
+//var User = require('../../models/user');
 var Game = require('../../models/game');
 //var Message = require('../../models/message');
-var Promise = require('bluebird');
 var _ = require('lodash');
 
 module.exports = function(user, input) {

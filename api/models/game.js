@@ -1,3 +1,4 @@
+'use strict';
 var squel = require('squel').useFlavour('mysql');
 var Promise = require('bluebird');
 var _ = require('lodash');
@@ -60,23 +61,6 @@ var Game = {
         return User.get({ id: next.user_id });
       }
     );
-    return this.getPlayers(game).then(function(users) {
-      return users[0];
-      /*
-      for ( var i=0, l=users.length; i < l; i++ ) {
-        var user = users[i];
-        if ( user.state === 'waiting' ) {
-          // then the next user will be the next player
-          if ( users[i+1] ) {
-            return users[i+1];
-          } else {
-            // loop back to start
-            return users[0];
-          }
-        }
-      }
-      */
-    });
   },
   checkGuess: function(game, user, guess) {
     return Round.checkGuess(game, user, guess);
@@ -201,12 +185,12 @@ var Game = {
                 .limit(1);
 
     if ( params.user ) {
-      query.where('p.user_id=?',params.user.id)
+      query.where('p.user_id=?',params.user.id);
     } else if ( params.users ) {
       var user_ids = params.users.map(function(user) {
         return user.id;
       });
-      query.where('p.user_id IN ? ',user_ids)
+      query.where('p.user_id IN ? ',user_ids);
     } else if ( params.id ) {
       query.where('g.id=?',params.id);
     }
@@ -280,10 +264,11 @@ var Game = {
   },
   addToBattingOrder: function(game, user) {
     return this.getBattingOrder(game).then(function(order) {
+      var nextOrder;
       if ( order.length ) {
-        var nextOrder = order.pop().order + 1;
+        nextOrder = order.pop().order + 1;
       } else {
-        var nextOrder = 0;
+        nextOrder = 0;
       }
       return this.addBatter(game, user, nextOrder);
     }.bind(this));
@@ -307,27 +292,28 @@ var Game = {
     return db.query(query);
   },
   add: function(game, users) {
+
     return Promise.all(users.map(function(user) {
       var row = {
         game_id: game.id,
         user_id: user.id
       };
 
-      query = squel
-              .insert()
-              .into('game_participants')
-              .setFields(row)
+      var query = squel
+                  .insert()
+                  .into('game_participants')
+                  .setFields(row);
 
       return db.query(query).then(function(rows) {
         return {
           id: rows.insertId
-        }
+        };
       }).then(function() {
         //if ( game.state && game.state !== 'waiting-for-players' ) {
           // game is in progress
           this.addToBattingOrder(game, user).then(function() {
           }).catch(function(err) {
-            console.error('error adding user ot batting order',  user);
+            console.error('error adding user ot batting order',  user, err);
           });
         //}
       }.bind(this));
@@ -351,7 +337,7 @@ var Game = {
     return db.query(query.toString()).then(function(rows) {
       return {
         id: rows.insertId
-      }
+      };
     });
   }
 };

@@ -1,7 +1,8 @@
-var User = require('../../models/user');
+'use strict';
+//var User = require('../../models/user');
 //var Message = require('../../models/message');
 var Game = require('../../models/game');
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 var _ = require('lodash');
 
 module.exports = function(user, input) {
@@ -24,19 +25,19 @@ module.exports = function(user, input) {
           },
           message);
         }
-      }).filter(function(el) { return el });
+      }).filter(function(el) { return el; });
 
       messages = messages.concat(game.players.map(function(player) {
         return {
           user: player,
           key: 'no-clue-for-submitter'
-        }
+        };
       }));
       return messages;
     });
         
   } else {
-    return Promise.join(
+    return BPromise.join(
       Game.get({ user: user }),
       function(game) {
         
@@ -54,7 +55,7 @@ module.exports = function(user, input) {
             },
             message);
           }
-        }).filter(function(el) { return el });
+        }).filter(function(el) { return el; });
 
         // check that the submitter has not just guessed their own clue
         var regex = new RegExp(game.round.phrase, 'i');
@@ -76,5 +77,5 @@ module.exports = function(user, input) {
       }
     );
   }
-}
+};
 

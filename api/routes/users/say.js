@@ -1,7 +1,8 @@
-var User = require('../../models/user');
+'use strict';
+//var User = require('../../models/user');
 //var Message = require('../../models/message');
 var Game = require('../../models/game');
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 var _ = require('lodash');
 
 module.exports = function(user, input) {
@@ -9,7 +10,7 @@ module.exports = function(user, input) {
   if ( /^invite(.*)/i.test(input) ) {
     return require('../users/invite')(user, input);
   } else {
-    return Promise.join(
+    return BPromise.join(
       Game.get({ user: user }),
       function(game) {
         var message = {
@@ -27,9 +28,8 @@ module.exports = function(user, input) {
             },
             message);
           }
-        }).filter(function(el) { return el });
+        }).filter(function(el) { return el; });
       }
     );
   }
-}
-
+};

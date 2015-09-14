@@ -1,3 +1,4 @@
+'use strict';
 var platforms = {
   twilio: require('./twilio'),
   messenger: require('./messenger'),

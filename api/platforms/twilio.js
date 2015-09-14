@@ -1,3 +1,4 @@
+'use strict';
 /*
  * An incoming text from Twilio will contain the following:
  *
@@ -22,16 +23,15 @@
  * From: '+18604608183',
  * ApiVersion: '2010-04-01'
  */
-var pmx = require('pmx');
-var _ = require('lodash');
-var router = require('../routes');
-var Log = require('../models/log');
-var Phone = require('../models/phone');
-var User = require('../models/user');
-var Message = require('../models/message');
-var Twilio = require('../models/twilio');
-var track = require('../tracking');
-var debug = false;
+const pmx = require('pmx');
+const router = require('../routes');
+const Log = require('../models/log');
+const Phone = require('../models/phone');
+const User = require('../models/user');
+const Message = require('../models/message');
+const Twilio = require('../models/twilio');
+const track = require('../tracking');
+const debug = false;
 module.exports = function(req, res) {
   if ( debug ) {
     console.log('\n================twilio=================\n');
@@ -49,16 +49,15 @@ module.exports = function(req, res) {
     //return end(errors);
   }
 
-  var body = req.body.Body;
+  const body = req.body.Body;
   Log.incoming(req.body, 'twilio');
 
-  var number;
-  var platform = 'twilio';
-  var entry = 'text';
+  const platform = 'twilio';
+  const entry = 'text';
 
   // first, we parse the Phone number
   Phone.parse(req.body.From).then(function(parsedNumber) {
-    number = parsedNumber;
+    const number = parsedNumber;
     return User.get({ number: number }).then(function(user) {
       if ( !user ) {
         user = {
@@ -66,7 +65,7 @@ module.exports = function(req, res) {
           state: 'uncreated',
           entry: entry,
           platform: platform
-        }
+        };
       }
       return user;
     });
@@ -100,7 +99,7 @@ module.exports = function(req, res) {
     //
     // This could mean Twilio somehow fell down between requests, or there's a man
     // in the middle, or someone has gotten a hold of this URL and is trying to hack us.
-    console.error('twilio error for number', number);
+    console.error('twilio error for ', req.body);
     console.error(err.stack);
     if ( err.sql ) {
       console.error(err.sql);
@@ -119,4 +118,4 @@ module.exports = function(req, res) {
       return res.end(twiml.toString());
     });
   }
-}
+};

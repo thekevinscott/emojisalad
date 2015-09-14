@@ -1,11 +1,8 @@
-var _ = require('lodash');
+'use strict';
 var Promise = require('bluebird');
-
 var squel = require('squel');
-
 var db = require('db');
 var User = require('./user');
-var Message = require('./message');
  
 var Log = {
   incoming: function(response, platform) {
@@ -80,6 +77,6 @@ var Log = {
       console.error('error with outgoing message', e);
     }
   }
-}
+};
 
 module.exports = Log;

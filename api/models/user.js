@@ -1,11 +1,7 @@
+'use strict';
 var squel = require('squel').useFlavour('mysql');
 var db = require('db');
-var Game = require('./game');
-var Promise = require('bluebird');
-var Invite = require('./invite');
-var Text;
-
-var regex = require('../config/regex');
+var BPromise = require('bluebird');
 
 var User = {
   // valid phone number test
@@ -13,8 +9,6 @@ var User = {
 
   // create a new user number
   create: function(user, entry, platform) {
-    var attributes = {};
-
     var query = squel
                 .insert()
                 .into('users')
@@ -58,7 +52,7 @@ var User = {
                  .setFields({
                    user_id: user_id,
                    attribute_id: attribute_id,
-                   attribute: user['number']
+                   attribute: user.number
                  });
 
 
@@ -86,7 +80,7 @@ var User = {
       if ( key === 'id' ) {
         query = query.where('u.`'+key+'`=?', val);
       } else if ( key === 'invited_id' ) {
-        query = query.where('i.invited_id=?', val)
+        query = query.where('i.invited_id=?', val);
       } else {
         query = query
                 .where('k.`key`=?', key)
@@ -119,7 +113,7 @@ var User = {
             promises.push(User.get({ id: user.inviter_id }));
           }
 
-          return Promise.all(promises).then(function(results) {
+          return BPromise.all(promises).then(function(results) {
             results[0].map(function(attribute) {
               user[attribute.key] = attribute.attribute;
             });
@@ -161,37 +155,38 @@ var User = {
     var queries = [];
 
     Object.keys(params).map(function(key) {
+      var query;
       switch(key) {
         case 'state' :
-          var state = squel
+          let state = squel
                        .select()
                        .field('id')
                        .from('user_states')
                        .where('state=?',params[key]);
 
 
-          var query = squel
-                      .update()
-                      .table('users')
-                      .where('id=?', user.id);
+          query = squel
+                  .update()
+                  .table('users')
+                  .where('id=?', user.id);
           query.set('state_id', state, { dontQuote: true });
           queries.push(query);
           break;
         default:
-          var attribute_id = squel
+          let attribute_id = squel
                              .select()
                              .field('id')
                              .from('user_attribute_keys')
                              .where('`key`=?',key);
-          var query = squel
-                     .insert()
-                     .into('user_attributes')
-                     .setFields({
-                       user_id: user.id,
-                       attribute_id: attribute_id,
-                       attribute: params[key]
-                     })
-                     .onDupUpdate('attribute', params[key]);
+          query = squel
+                   .insert()
+                   .into('user_attributes')
+                   .setFields({
+                     user_id: user.id,
+                     attribute_id: attribute_id,
+                     attribute: params[key]
+                   })
+                   .onDupUpdate('attribute', params[key]);
 
          queries.push(query);
          break;
@@ -199,7 +194,7 @@ var User = {
       user[key] = params[key];
     });
 
-    return Promise.all(queries.map(function(query) {
+    return BPromise.all(queries.map(function(query) {
       return db.query(query.toString()).then(function() {
         return user;
       });

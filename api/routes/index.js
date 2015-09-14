@@ -1,11 +1,12 @@
 // a separate router. all routes come in to platforms which then routes them here.
+'use strict';
 
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 var routes = [];
 function addRoute(path, fn) {
   routes.push({
     regex: new RegExp(path),
-    fn: Promise.method(fn)
+    fn: BPromise.method(fn)
   });
 }
 addRoute('uncreated', require('./users/create'));
@@ -23,14 +24,14 @@ addRoute('waiting-for-round', require('./users/say'));
 var Router = function(user, message) {
   var state = user.state;
   for ( var i=0,l=routes.length; i<l; i++ ) {
-    var route = routes[i];
+    let route = routes[i];
     if ( route.regex.test(state) ) {
       //console.log('state', state, user.id);
       return route.fn(user, message);
-      break;
+      //break;
     }
   }
   throw new Error('state not found: ' + state + ", user: " + user.id);
-}
+};
 
 module.exports = Router;

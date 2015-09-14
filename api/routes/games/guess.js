@@ -1,8 +1,9 @@
+'use strict';
 var User = require('../../models/user');
 //var Message = require('../../models/message');
 var Game = require('../../models/game');
 var Round = require('../../models/round');
-var Promise = require('bluebird');
+var BPromise = require('bluebird');
 var _ = require('lodash');
 
 module.exports = function(user, input) {
@@ -33,13 +34,14 @@ module.exports = function(user, input) {
           var guess = input.match(/guess(.*)/i).pop().trim();
           return Game.checkGuess(game, user, guess).then(function(result) {
             if ( result ) {
-              var correct ={
-                key: 'correct-guess',
-                options: user.nickname
-              }
-
               game.players.map(function(player) {
-                messages.push(_.assign({ user: player }, correct));
+                messages.push({
+                  key: 'correct-guess',
+                  user: player,
+                  options: [
+                    user.nickname
+                  ]
+                });
               });
 
               // are there any users waiting in the wings?
@@ -92,7 +94,7 @@ module.exports = function(user, input) {
                   }
                 });
               }));
-              return Promise.all(promises).then(function() {
+              return BPromise.all(promises).then(function() {
                 return messages;
               });
             } else {
@@ -184,5 +186,5 @@ module.exports = function(user, input) {
   } else {
     return require('../users/say')(user, input);
   }
-}
+};
 
