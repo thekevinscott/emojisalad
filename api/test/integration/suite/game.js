@@ -1,9 +1,8 @@
+'use strict';
 /*
  * Tests that games work with two players
  *
  */
-
-var expect = require('chai').expect;
 
 var getUsers = require('../lib/getUsers');
 var startGame = require('../flows/startGame');
@@ -11,7 +10,6 @@ var playGame = require('../flows/playGame');
 var setup = require('../lib/setup');
 var check = require('../lib/check');
 var signup = require('../flows/signup');
-var invite = require('../flows/invite');
 var getGame = require('../lib/getGame');
 var setNonRandomGame = require('../lib/setNonRandomGame');
 
@@ -94,7 +92,7 @@ describe('Game', function() {
         return check(
           { user: users[0], msg: guess },
           [
-            { to: users[1], key: 'says', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[0], key: 'game-next-round-suggestion', options: [users[0].nickname, third_phrase] },
@@ -124,8 +122,8 @@ describe('Game', function() {
         return check(
           { user: users[0], msg: guess },
           [
-            { to: users[1], key: 'says', options: [users[0].nickname, guess] },
-            { to: users[2], key: 'says', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[2], key: 'guesses', options: [users[0].nickname, guess] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[2], key: 'correct-guess', options: [users[0].nickname] },
@@ -142,7 +140,7 @@ describe('Game', function() {
     it('should add a third player at the second round and proceed to second user', function() {
       var users = getUsers(3);
 
-      return startGame(users.slice(0, 2)).then(function(game) {
+      return startGame(users.slice(0, 2)).then(function() {
         return setup([
           { user: users[0], msg: EMOJI },
           { user: users[0], msg: 'invite '+users[2].number },
@@ -156,8 +154,8 @@ describe('Game', function() {
         return check(
           { user: users[1], msg: guess },
           [
-            { to: users[0], key: 'says', options: [users[1].nickname, guess] },
-            { to: users[2], key: 'says', options: [users[1].nickname, guess] },
+            { to: users[0], key: 'guesses', options: [users[1].nickname, guess] },
+            { to: users[2], key: 'guesses', options: [users[1].nickname, guess] },
             { to: users[0], key: 'correct-guess', options: [users[1].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[1].nickname] },
             { to: users[2], key: 'correct-guess', options: [users[1].nickname] },
@@ -177,7 +175,7 @@ describe('Game', function() {
     it('should add a third player at the third round and proceed to third user', function() {
       var users = getUsers(3);
 
-      return startGame(users.slice(0, 2)).then(function(game) {
+      return startGame(users.slice(0, 2)).then(function() {
         return setup([
           { user: users[0], msg: EMOJI },
           { user: users[1], msg: 'guess JURASSIC PARK' },
@@ -193,8 +191,8 @@ describe('Game', function() {
         return check(
           { user: users[0], msg: guess },
           [
-            { to: users[1], key: 'says', options: [users[0].nickname, guess] },
-            { to: users[2], key: 'says', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[2], key: 'guesses', options: [users[0].nickname, guess] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[2], key: 'correct-guess', options: [users[0].nickname] },
@@ -214,7 +212,7 @@ describe('Game', function() {
     it('should add a fourth player at the fourth round and proceed to fourth user', function() {
       var users = getUsers(4);
 
-      return startGame(users.slice(0, 3)).then(function(game) {
+      return startGame(users.slice(0, 3)).then(function() {
         return setup([
           { user: users[0], msg: EMOJI },
           { user: users[1], msg: 'guess JURASSIC PARK' },
@@ -232,9 +230,9 @@ describe('Game', function() {
         return check(
           { user: users[0], msg: guess },
           [
-            { to: users[1], key: 'says', options: [users[0].nickname, guess] },
-            { to: users[2], key: 'says', options: [users[0].nickname, guess] },
-            { to: users[3], key: 'says', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[2], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[3], key: 'guesses', options: [users[0].nickname, guess] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[2], key: 'correct-guess', options: [users[0].nickname] },

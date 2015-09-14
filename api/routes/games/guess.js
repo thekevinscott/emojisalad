@@ -18,7 +18,7 @@ module.exports = function(user, input) {
       var messages = game.players.map(function(player) {
         if ( player.id !== user.id ) {
           return {
-            key: 'says',
+            key: 'guesses',
             user: player,
             options: [
               user.nickname,

@@ -1,9 +1,8 @@
+'use strict';
 /*
  * Tests that guessing works
  *
  */
-
-var expect = require('chai').expect;
 
 var getUsers = require('../lib/getUsers');
 var playGame = require('../flows/playGame');
@@ -21,8 +20,8 @@ describe('Guessing', function() {
       return check(
         { user: users[1], msg: guess },
         [
-          { key: 'says', options: [users[1].nickname, guess], to: users[0] },
-          { key: 'says', options: [users[1].nickname, guess], to: users[2] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[0] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[2] },
           { key: 'correct-guess', options: [users[1].nickname], to: users[0] },
           { key: 'correct-guess', options: [users[1].nickname], to: users[1] },
           { key: 'correct-guess', options: [users[1].nickname], to: users[2] },
@@ -46,8 +45,8 @@ describe('Guessing', function() {
       return check(
         { user: users[1], msg: guess },
         [
-          { key: 'says', options: [users[1].nickname, guess], to: users[0] },
-          { key: 'says', options: [users[1].nickname, guess], to: users[2] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[0] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[2] },
           { key: 'correct-guess', options: [users[1].nickname], to: users[0] },
           { key: 'correct-guess', options: [users[1].nickname], to: users[1] },
           { key: 'correct-guess', options: [users[1].nickname], to: users[2] },
@@ -64,13 +63,13 @@ describe('Guessing', function() {
   it('should be notified on an incorrect guess', function() {
     var users = getUsers(3);
 
-    return playGame(users).then(function(game) {
+    return playGame(users).then(function() {
       var guess = 'guess foo';
       return check(
         { user: users[1], msg: guess },
         [
-          { key: 'says', options: [users[1].nickname, guess], to: users[0] },
-          { key: 'says', options: [users[1].nickname, guess], to: users[2] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[0] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[2] },
           { key: 'incorrect-guess', options: [users[1].nickname], to: users[0] },
           { key: 'incorrect-guess', options: [users[1].nickname], to: users[1] },
           { key: 'incorrect-guess', options: [users[1].nickname], to: users[2] },
@@ -85,7 +84,7 @@ describe('Guessing', function() {
     var users = getUsers(3);
 
     var guess = 'guess foo';
-    return playGame(users).then(function(game) {
+    return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess }
       ]);
@@ -93,8 +92,8 @@ describe('Guessing', function() {
       return check(
         { user: users[1], msg: guess },
         [
-          { key: 'says', options: [users[1].nickname, guess], to: users[0] },
-          { key: 'says', options: [users[1].nickname, guess], to: users[2] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[0] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[2] },
           { key: 'incorrect-out-of-guesses', to: users[0] },
           { key: 'incorrect-out-of-guesses', to: users[1] },
           { key: 'incorrect-out-of-guesses', to: users[2] },
@@ -109,7 +108,7 @@ describe('Guessing', function() {
     var users = getUsers(3);
 
     var guess = 'guess foo';
-    return playGame(users).then(function(game) {
+    return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess },
         { user: users[1], msg: guess },
@@ -118,8 +117,8 @@ describe('Guessing', function() {
       return check(
         { user: users[1], msg: guess },
         [
-          { key: 'says', options: [users[1].nickname, guess], to: users[0] },
-          { key: 'says', options: [users[1].nickname, guess], to: users[2] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[0] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[2] },
           { key: 'out-of-guesses', options: [users[1].nickname], to: users[0] },
           { key: 'out-of-guesses', options: [users[1].nickname], to: users[1] },
           { key: 'out-of-guesses', options: [users[1].nickname], to: users[2] },
@@ -134,7 +133,7 @@ describe('Guessing', function() {
     var users = getUsers(3);
 
     var guess = 'guess foo';
-    return playGame(users).then(function(game) {
+    return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess },
         { user: users[2], msg: guess },
@@ -144,8 +143,8 @@ describe('Guessing', function() {
       return check(
         { user: users[1], msg: guess },
         [
-          { key: 'says', options: [users[1].nickname, guess], to: users[0] },
-          { key: 'says', options: [users[1].nickname, guess], to: users[2] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[0] },
+          { key: 'guesses', options: [users[1].nickname, guess], to: users[2] },
           { key: 'out-of-guesses', options: [users[1].nickname], to: users[0] },
           { key: 'out-of-guesses', options: [users[1].nickname], to: users[1] },
           { key: 'out-of-guesses', options: [users[1].nickname], to: users[2] },
@@ -162,7 +161,7 @@ describe('Guessing', function() {
     var guess = 'guess foo';
     var msg2 = 'SILENCE OF THE LAMBS';
 
-    return playGame(users).then(function(game) {
+    return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess },
         { user: users[2], msg: guess },
@@ -173,8 +172,8 @@ describe('Guessing', function() {
       return check(
         { user: users[2], msg: correct },
         [
-          { key: 'says', options: [users[2].nickname, correct], to: users[0] },
-          { key: 'says', options: [users[2].nickname, correct], to: users[1] },
+          { key: 'guesses', options: [users[2].nickname, correct], to: users[0] },
+          { key: 'guesses', options: [users[2].nickname, correct], to: users[1] },
           { key: 'correct-guess', options: [users[2].nickname], to: users[0] },
           { key: 'correct-guess', options: [users[2].nickname], to: users[1] },
           { key: 'correct-guess', options: [users[2].nickname], to: users[2] },
@@ -194,7 +193,7 @@ describe('Guessing', function() {
     var guess = 'guess foo';
     var msg2 = 'SILENCE OF THE LAMBS';
 
-    return playGame(users).then(function(game) {
+    return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess },
         { user: users[2], msg: guess },
@@ -204,8 +203,8 @@ describe('Guessing', function() {
       return check(
         { user: users[2], msg: guess },
         [
-          { key: 'says', options: [users[2].nickname, guess], to: users[0] },
-          { key: 'says', options: [users[2].nickname, guess], to: users[1] },
+          { key: 'guesses', options: [users[2].nickname, guess], to: users[0] },
+          { key: 'guesses', options: [users[2].nickname, guess], to: users[1] },
           { key: 'round-over', options: [users[2].nickname], to: users[0] },
           { key: 'round-over', options: [users[2].nickname], to: users[1] },
           { key: 'round-over', options: [users[2].nickname], to: users[2] },
