@@ -1,4 +1,5 @@
-module.exports = {
+var local = require('./db-local');
+var db = {
   production: {
     "host"     : "emojinaryfriend.cfiretgvvbvv.us-east-1.rds.amazonaws.com",
     "user"     : "emojinaryfriend",
@@ -6,6 +7,12 @@ module.exports = {
     "database" : "emojinaryfriend",
     "charset"  : "utf8mb4"
   },
-  staging: {},
-  development: {}
 };
+if ( local.test ) {
+  db.test = local.test;
+}
+if ( local.development ) {
+  db.development = local.development;
+}
+
+module.exports = db;
