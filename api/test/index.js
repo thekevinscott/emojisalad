@@ -1,4 +1,5 @@
-var requireAll = require('require-all');
-require(__dirname + '/integration/twilio');
+var should = require('chai').should();
+
+require('./integration/suite');
 //require(__dirname + '/unit-tests/models/game');
 

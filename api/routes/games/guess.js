@@ -1,11 +1,10 @@
 'use strict';
-var User = require('../../models/user');
-//var Message = require('../../models/message');
-var Game = require('../../models/game');
-var Round = require('../../models/round');
 var Promise = require('bluebird');
 var _ = require('lodash');
-var rule = require('../../config/rule');
+var User = require('models/user');
+var Game = require('models/game');
+var Round = require('models/round');
+var rule = require('config/rule');
 
 module.exports = function(user, input) {
   var promises = [];

@@ -1,10 +1,11 @@
+'use strict';
+// set require path
+require('app-module-path').addPath(__dirname);
 var gulp = require('gulp');
 var Promise = require('bluebird');
 var childExec = require('child_process').exec;
 var argv = require('yargs').argv;
 var mocha = require('gulp-mocha');
-var gutil = require('gulp-util');
-var env = require('gulp-env');
 var nodemon = require('gulp-nodemon');
 var chalk = require('chalk');
 var squel = require('squel');
@@ -26,7 +27,7 @@ function exec(command) {
 function pullDB() {
   var config = require('db').config;
   var tmp = 'tmp/';
-  var destination = tmp+'production.sql.gz';
+  //var destination = tmp+'production.sql.gz';
   var file = 'db_backup.sql';
   var zippedFile = 'db_backup.sql.gz';
   //mysqldump -u user -p --no-data db > structure.sql; mysqldump -u user -p db table1 table2 >> structure.sql
@@ -72,25 +73,23 @@ function pullDB() {
   return exec('mkdir -p '+tmp).then(function() {
     return exec('rm -f '+tmp+file);
   }).then(function() {
-    return exec(dumpSchemas.join(' '))
+    return exec(dumpSchemas.join(' '));
   }).then(function() {
-    return exec(dumpData.join(' '))
-  }).then(function(output) {
+    return exec(dumpData.join(' '));
+  }).then(function() {
     return exec('gunzip '+tmp+zippedFile);
   }).then(function() {
     return tmp+file;
   });
 }
 
-gulp.task('sync', function(cb) {
+gulp.task('sync', function() {
   var tmp = 'tmp/';
-  var importKey;
   var keys = Object.keys(argv);
   // environment is 1
   var importKey = keys[1];
   if ( importKey === 'production' ) {
     throw "WHOA WHOA WHOA NO KILLING PRODUCTION";
-    return;
   } else {
     process.env.ENVIRONMENT = importKey;
   }
@@ -127,8 +126,8 @@ gulp.task('sync-testing-db', function(cb) {
   process.env.ENVIRONMENT = 'kevin-test';
   process.env.PORT = '5005';
   var tmp = 'tmp/';
-  var config = require('db').config;
-  importConfig = config['kevin-test'];
+  //var config = require('../.db.json');
+  //var importConfig = config['kevin-test'];
   var testDB = 'test/fixtures/test-db.sql';
   return pullDB().then(function(file) {
     return exec(['rm -f',testDB].join(' ')).then(function() {
@@ -147,7 +146,7 @@ function resetTestingDB() {
   process.env.ENVIRONMENT = 'kevin-test';
   process.env.PORT = '5005';
   var sql_file = 'test/fixtures/test-db.sql';
-  var config = require('db').config['kevin-test'];
+  var config = require('../.db.json')['kevin-test'];
   var importDB = [
     'mysql -u',
     config.user,
@@ -223,7 +222,7 @@ function runTests() {
   });
   return deferred.promise;
 }
-gulp.task('test', function(cb) {
+gulp.task('test', function() {
   return startServer('test').on('start', function() {
     // process has started
   }).on('stderr', function(data) {
@@ -251,7 +250,7 @@ gulp.task('test', function(cb) {
 });
 
 /* Running server */
-gulp.task('default', function(cb) {
+gulp.task('default', function() {
   gulp.run(['start-server','ngrok']);
 });
 gulp.task('start-server', function() {

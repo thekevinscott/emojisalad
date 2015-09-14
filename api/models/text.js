@@ -1,10 +1,8 @@
 'use strict';
-var config = require('../config/twilio');
 //var client = require('twilio')(config.accountSid, config.authToken); 
- 
-var Message = require('./message');
-
-var twilio = require('twilio');
+const config = require('config/twilio');
+const Message = require('./message');
+const twilio = require('twilio');
 
 module.exports = {
   respond: function(responses) {

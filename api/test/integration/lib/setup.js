@@ -1,4 +1,5 @@
-var Promise = require('bluebird');
+'use strict';
+//var Promise = require('bluebird');
 var req = require('./req');
 var sequence = require('./sequence');
 var _ = require('lodash');
@@ -24,7 +25,7 @@ var setup = function(arr) {
         user: user,
         message: msg
       }, null, true);
-    }
+    };
   }));
 };
 

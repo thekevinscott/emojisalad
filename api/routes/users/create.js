@@ -1,7 +1,7 @@
 'use strict';
-var User = require('../../models/user');
-//var Message = require('../../models/message');
 var Promise = require('bluebird');
+var User = require('models/user');
+//var Message = require('../../models/message');
 
 module.exports = function(user) {
   return Promise.join(

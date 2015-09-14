@@ -1,3 +1,4 @@
+'use strict';
 var _ = require('lodash');
 var getRandomPhone = require('./getRandomPhone');
 // if a number is the argument, this is the number of users
@@ -27,7 +28,7 @@ function getUsers(arg) {
     users = arg;
     users.map(function(user) {
       if ( ! user.phone ) {
-        user.phone = getRandomPhone()
+        user.phone = getRandomPhone();
       }
       if ( ! user.nickname ) {
         user.nickname = listOfNicknames[nicknameCount++]+Math.random();

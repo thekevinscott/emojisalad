@@ -1,3 +1,4 @@
+'use strict';
 var expect = require('chai').expect;
 
 var getUsers = require('../lib/getUsers');
@@ -14,7 +15,9 @@ describe('Signup', function() {
         [
           { key: 'intro', to: user }
         ]
-      );
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
     });
 
     describe('Saying yes', function() {

@@ -1,9 +1,8 @@
 'use strict';
-var squel = require('squel').useFlavour('mysql');
-var db = require('db');
-var BPromise = require('bluebird');
-
-var User = {
+const squel = require('squel').useFlavour('mysql');
+const db = require('db');
+const Promise = require('bluebird');
+let User = {
   // valid phone number test
   table: 'users',
 
@@ -113,7 +112,7 @@ var User = {
             promises.push(User.get({ id: user.inviter_id }));
           }
 
-          return BPromise.all(promises).then(function(results) {
+          return Promise.all(promises).then(function(results) {
             results[0].map(function(attribute) {
               user[attribute.key] = attribute.attribute;
             });
@@ -194,7 +193,7 @@ var User = {
       user[key] = params[key];
     });
 
-    return BPromise.all(queries.map(function(query) {
+    return Promise.all(queries.map(function(query) {
       return db.query(query.toString()).then(function() {
         return user;
       });

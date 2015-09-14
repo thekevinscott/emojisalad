@@ -1,3 +1,4 @@
+'use strict';
 var Promise = require('bluebird');
 var _ = require('lodash');
 
@@ -11,6 +12,6 @@ var sequence = function(fns) {
       return response.concat(output);
     });
   }, []);
-}
+};
 
 module.exports = sequence;

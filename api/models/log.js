@@ -1,8 +1,8 @@
 'use strict';
-var Promise = require('bluebird');
-var squel = require('squel');
-var db = require('db');
-var User = require('./user');
+const Promise = require('bluebird');
+const squel = require('squel');
+const db = require('db');
+const User = require('./user');
  
 var Log = {
   incoming: function(response, platform) {

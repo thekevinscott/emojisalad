@@ -24,13 +24,13 @@
  * ApiVersion: '2010-04-01'
  */
 const pmx = require('pmx');
-const router = require('../routes');
-const Log = require('../models/log');
-const Phone = require('../models/phone');
-const User = require('../models/user');
-const Message = require('../models/message');
-const Twilio = require('../models/twilio');
-const track = require('../tracking');
+const router = require('routes');
+const Log = require('models/log');
+const Phone = require('models/phone');
+const User = require('models/user');
+const Message = require('models/message');
+const Twilio = require('models/twilio');
+const track = require('tracking');
 const debug = false;
 module.exports = function(req, res) {
   if ( debug ) {

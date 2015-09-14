@@ -6,7 +6,7 @@ var check = require('../lib/check');
 var getGame = require('../lib/getGame');
 var signup = require('../flows/signup');
 var startGame = require('../flows/startGame');
-var Game = require('../../../models/game');
+var Game = require('models/game');
 
 var EMOJI = '😀';
 

@@ -1,8 +1,8 @@
 'use strict';
-const Game = require('../../models/game');
 const Promise = require('bluebird');
 const _ = require('lodash');
-const rule = require('../../config/rule');
+const Game = require('models/game');
+const rule = require('config/rule');
 
 module.exports = function(user, input) {
   if ( rule('invite').test(input) ) {

@@ -1,8 +1,8 @@
 'use strict';
 //var User = require('../../models/user');
 //var Message = require('../../models/message');
-const Game = require('../../models/game');
-const Round = require('../../models/round');
+const Game = require('models/game');
+const Round = require('models/round');
 const _ = require('lodash');
 
 module.exports = function(user, input) {

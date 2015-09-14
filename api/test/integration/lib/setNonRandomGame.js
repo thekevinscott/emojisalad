@@ -1,6 +1,6 @@
-var _ = require('lodash');
+'use strict';
 var getGame = require('./getGame');
-var Game = require('../../../models/Game');
+var Game = require('models/Game');
 
 var setNonRandomGame = function(user) {
   return getGame(user).then(function(game) {
@@ -8,6 +8,6 @@ var setNonRandomGame = function(user) {
       return game;
     });
   });
-}
+};
 
 module.exports = setNonRandomGame;

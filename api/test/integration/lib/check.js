@@ -1,16 +1,12 @@
+'use strict';
 var Promise = require('bluebird');
 var setup = require('./setup');
-var _ = require('lodash');
-var Message = require('../../../models/Message');
-var expect = require('chai').expect;
+var Message = require('models/Message');
 
 // checks that a certain action's
 // return matches an expected array
 var check = function(action, expected) {
   var fns = [setup(action)];
-  var message_keys = _.uniq(expected.map(function(e) {
-    return e.key;
-  }));
   var messages = {};
   // retreive messages
   var expected_fns = expected.map(function(message) {
@@ -34,12 +30,12 @@ var check = function(action, expected) {
 
     var actions = [];
     if ( action_output && action_output.length ) {
-      for ( var i=0;i<action_output.length;i++ ) {
+      for ( let i=0;i<action_output.length;i++ ) {
         var action = {
-          message : action_output[i]['_']
+          message : action_output[i]._
         };
-        if ( action_output[i]['$'] ) {
-          action.recipient = action_output[i]['$']['to'];
+        if ( action_output[i].$ ) {
+          action.recipient = action_output[i].$.to;
         }
         actions.push(action);
       }
@@ -47,7 +43,7 @@ var check = function(action, expected) {
 
     var expecteds = [];
     if ( expected.length ) {
-      for ( var i=0;i<expected.length;i++ ) {
+      for ( let i=0;i<expected.length;i++ ) {
         var expected_obj = {
           message : messages[expected[i].key].message
         };

@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "app-module-path": "^1.0.4",
     "auto-loader": "^0.2.0",
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",

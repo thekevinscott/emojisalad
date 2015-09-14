@@ -1,5 +1,5 @@
 'use strict';
-var twilio = require('twilio');
+const twilio = require('twilio');
 module.exports = {
   parse: function(responses) {
     var twiml = new twilio.TwimlResponse();

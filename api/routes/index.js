@@ -1,12 +1,12 @@
 // a separate router. all routes come in to platforms which then routes them here.
 'use strict';
 
-var BPromise = require('bluebird');
+var Promise = require('bluebird');
 var routes = [];
 function addRoute(path, fn) {
   routes.push({
     regex: new RegExp(path),
-    fn: BPromise.method(fn)
+    fn: Promise.method(fn)
   });
 }
 addRoute('uncreated', require('./users/create'));

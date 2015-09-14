@@ -1,6 +1,6 @@
 'use strict';
-var User = require('../../models/user');
-var rule = require('../../config/rule');
+var User = require('models/user');
+var rule = require('config/rule');
 //var Message = require('../../models/message');
 
 module.exports = function(user, input) {

@@ -1,9 +1,7 @@
 'use strict';
-//var User = require('../../models/user');
-var Game = require('../../models/game');
-//var Message = require('../../models/message');
 var _ = require('lodash');
-var rule = require('../../config/rule');
+var Game = require('models/game');
+var rule = require('config/rule');
 
 module.exports = function(user, input) {
   if ( rule('invite').test(input) ) {

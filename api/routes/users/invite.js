@@ -1,10 +1,7 @@
 'use strict';
-//var User = require('../../models/user');
-//var Message = require('../../models/message');
-var Phone  = require('../../models/phone');
-var Invite = require('../../models/invite');
-//var Promise = require('bluebird');
-var rule = require('../../config/rule');
+var Phone  = require('models/phone');
+var Invite = require('models/invite');
+var rule = require('config/rule');
 
 module.exports = function(invitingUser, input) {
   if ( rule('invite').test(input) ) {

@@ -1,11 +1,10 @@
 'use strict';
-var config = require('../config/twilio');
-var Promise = require('bluebird');
+const config = require('config/twilio');
+const Promise = require('bluebird');
+const LookupsClient = require('twilio').LookupsClient;
+const client = new LookupsClient(config.accountSid, config.authToken);
 
-var LookupsClient = require('twilio').LookupsClient;
-var client = new LookupsClient(config.accountSid, config.authToken);
-
-var Phone = {
+let Phone = {
   parse: function(passedNumber) {
     if ( ! passedNumber ) {
       return Promise.reject(new Error(8));

@@ -1,12 +1,12 @@
 'use strict';
-var squel = require('squel');
-var Promise = require('bluebird');
+const squel = require('squel');
+const Promise = require('bluebird');
+const db = require('db');
+const rule = require('config/rule');
 
-var db = require('db');
-var rule = require('../config/rule');
-
-var User;
+const User = require('./user');
 var Game;
+//let Game = require('./game');
 
 var Round = {
   getCluesLeft: function(game) {
@@ -249,9 +249,9 @@ var Round = {
     );
   },
   saveSubmission: function(game, user) {
-    if ( ! User ) {
-      User = require('./user');
-    }
+    //if ( ! User ) {
+      //User = require('./user');
+    //}
 
     // all other users who are not submitter (not the user)
     // should be switched to guessing
