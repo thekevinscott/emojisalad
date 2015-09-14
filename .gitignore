@@ -6,3 +6,4 @@ npm-debug.log
 .jshintrc
 .vimrc
 .DS_Store
+.db

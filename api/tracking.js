@@ -1,11 +1,13 @@
-var ua = require('universal-analytics');
-var Mixpanel = require('mixpanel');
+'use strict';
+const ua = require('universal-analytics');
+const Mixpanel = require('mixpanel');
 
-var mixpanel = Mixpanel.init('95ea55113750200c91effcaade70941b');
+let mixpanel = Mixpanel.init(require('../config/mixpanel')[process.env.ENVIRONMENT]);
+const ua_config = require('../config/google-analytics')[process.env.ENVIRONMENT];
 
 module.exports = function(state, user, input) {
   if ( process.env.ENVIRONMENT === 'production' ) {
-    var visitor = ua('UA-67117728-1', user.id, {
+    var visitor = ua(ua_config, user.id, {
       strictCidFormat: false,
       https: true
     });
@@ -26,4 +28,4 @@ module.exports = function(state, user, input) {
     });
 
   }
-}
+};

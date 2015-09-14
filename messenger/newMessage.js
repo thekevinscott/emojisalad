@@ -1,20 +1,16 @@
-var rp = require('request-promise');
+var reqwest = require('reqwest');
 
 function newMessage (socket, data) {
-  socket.username = data.username;
-
-  console.log('sending message', data.message);
-  rp({
+  reqwest({
     url: 'http://localhost:5000/platform/messenger',
     method: 'POST',
-    json: data
+    data: data
   }).then(function(data) {
     if ( data && data.message ) {
       socket.emit('response', {
         message: data.message
       });
     }
-    console.log('response!', data);
   }).catch(function(e) {
     console.log('e', e);
   });

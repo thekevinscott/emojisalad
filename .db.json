@@ -1,0 +1,16 @@
+{
+  "kevin-test": {
+    "host"     : "127.0.0.1",
+    "user"     : "emojinaryfriend",
+    "password" : "*dsfji34resdf___sdfsdf",
+    "database" : "emojinaryfriendtest",
+    "charset"  : "utf8mb4"
+  },
+  "kevin-dev": {
+    "host"     : "127.0.0.1",
+    "user"     : "emojinaryfriend",
+    "password" : "*dsfji34resdf___sdfsdf",
+    "database" : "emojinaryfriend",
+    "charset"  : "utf8mb4"
+  }
+}

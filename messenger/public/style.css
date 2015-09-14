@@ -48,10 +48,6 @@ ul {
 
 /* Chat page */
 
-.chat.page {
-  display: none;
-}
-
 /* Font */
 
 .messages {
@@ -106,4 +102,8 @@ ul {
   position: absolute;
   right: 0;
   width: 100%;
+}
+
+.incoming {
+  text-align: right;
 }

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Emojinary Friend Messenger</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <ul class="pages">
+      <li class="chat page">
+        <div class="chatArea">
+          <ul class="messages"></ul>
+        </div>
+        <input class="inputMessage" placeholder="Type here..."/>
+      </li>
+    </ul>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      var username = 'foo';
+      var user_id = '1';
+    </script>
+    <script src="/main.js"></script>
+  </body>
+</html>

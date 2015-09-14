@@ -14,7 +14,6 @@
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
     "chalk": "^1.1.1",
-    "db": "git+https://slipper-siblings:vc42cihEXdAUibmnJmFcsspbf0gwEMRc@bitbucket.org/slipper-siblings/emojinaryfriend-db.git",
     "emoji-data": "^0.2.0",
     "express": "^4.13.3",
     "gulp-nodemon": "^2.0.3",
