@@ -3,9 +3,10 @@
 var Game = require('../../models/game');
 //var Message = require('../../models/message');
 var _ = require('lodash');
+var rule = require('../../config/rule');
 
 module.exports = function(user, input) {
-  if ( /^invite(.*)/i.test(input) ) {
+  if ( rule('invite').test(input) ) {
     return require('../users/invite')(user, input);
   } else if ( 0 && ! Game.checkInput(input) ) {
     return [{

@@ -2,11 +2,12 @@
 var User = require('../../models/user');
 var Game = require('../../models/game');
 //var Message = require('../../models/message');
-var BPromise = require('bluebird');
+var Promise = require('bluebird');
 //var _ = require('lodash');
+var rule = require('../../config/rule');
 
 module.exports = function(user, input) {
-  if ( /^invite/.test(input) ) {
+  if ( rule('invite').test(input) ) {
     return [{
       user: user,
       key: 'wait-to-invite'
@@ -148,7 +149,7 @@ function startGame(game, user, input) {
     });
   });
   // add this invited user to the game
-  return BPromise.join(
+  return Promise.join(
     Game.add(game, [user]),
     Game.start(game),
     Game.newRound(game),
@@ -201,7 +202,7 @@ function createGame(user, input) {
     state: 'waiting-for-invites',
     nickname: input
   });
-  return new BPromise(function(resolve) {
+  return new Promise(function(resolve) {
     resolve([{
       user: user,
       key: 'intro_3',

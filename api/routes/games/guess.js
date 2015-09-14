@@ -3,17 +3,18 @@ var User = require('../../models/user');
 //var Message = require('../../models/message');
 var Game = require('../../models/game');
 var Round = require('../../models/round');
-var BPromise = require('bluebird');
+var Promise = require('bluebird');
 var _ = require('lodash');
+var rule = require('../../config/rule');
 
 module.exports = function(user, input) {
   var promises = [];
-
-  if ( /^invite(.*)/i.test(input) ) {
+  
+  if ( rule('invite').test(input) ) {
     return require('../users/invite')(user, input);
-  } else if ( /^clue(.*)/i.test(input) ) {
+  } else if ( rule('clue').test(input) ) {
     return require('../games/clue')(user, input);
-  } else if ( /^guess(.*)/i.test(input) ) {
+  } else if ( rule('guess').test(input) ) {
     return Game.get({ user: user }).then(function(game) {
       var messages = game.players.map(function(player) {
         if ( player.id !== user.id ) {
@@ -26,13 +27,11 @@ module.exports = function(user, input) {
             ]
           };
         }
-      //}).filter(function(el) { return el; });
       }).filter((el) => el);
 
       return Round.getGuessesLeft(game, user).then(function(guesses_left) {
         if ( guesses_left > 0 ) {
-
-          var guess = input.match(/guess(.*)/i).pop().trim();
+          var guess = rule('guess').match(input);
           return Game.checkGuess(game, user, guess).then(function(result) {
             if ( result ) {
               game.players.map(function(player) {
@@ -95,7 +94,7 @@ module.exports = function(user, input) {
                   }
                 });
               }));
-              return BPromise.all(promises).then(function() {
+              return Promise.all(promises).then(function() {
                 return messages;
               });
             } else {

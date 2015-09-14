@@ -3,10 +3,11 @@
 //var Message = require('../../models/message');
 var Phone  = require('../../models/phone');
 var Invite = require('../../models/invite');
-//var BPromise = require('bluebird');
+//var Promise = require('bluebird');
+var rule = require('../../config/rule');
 
 module.exports = function(invitingUser, input) {
-  if ( /^invite(.*)/i.test(input) ) {
+  if ( rule('invite').test(input) ) {
     var type = 'twilio';
     input = input.split('invite').pop().trim();
     return Phone.parse(input).then(function(phone) {

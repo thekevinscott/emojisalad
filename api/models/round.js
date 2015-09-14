@@ -3,6 +3,7 @@ var squel = require('squel');
 var Promise = require('bluebird');
 
 var db = require('db');
+var rule = require('../config/rule');
 
 var User;
 var Game;
@@ -57,18 +58,17 @@ var Round = {
     });
   },
   checkGuess: function(game, user, guess) {
-    var query = squel
+    let query = squel
                 .select()
                 .from('phrases')
                 .where('id=?', game.round.phrase_id);
                         
     return db.query(query.toString()).then(function(phrases) {
-      var phrase = phrases[0].phrase;
-      var regex = new RegExp('^'+phrase, 'i');
-      var result = regex.test(guess);
+      const phrase = phrases[0].phrase;
+      const result = rule('phrase', {phrase: phrase}).test(guess);
 
       // we save the guess
-      var guessQuery = squel
+      let guessQuery = squel
                        .insert()
                        .into('guesses')
                        .setFields({

@@ -1,13 +1,11 @@
 'use strict';
-//var User = require('../../models/user');
-//var Message = require('../../models/message');
-var Game = require('../../models/game');
-var BPromise = require('bluebird');
-var _ = require('lodash');
+const Game = require('../../models/game');
+const Promise = require('bluebird');
+const _ = require('lodash');
+const rule = require('../../config/rule');
 
 module.exports = function(user, input) {
-
-  if ( /^invite(.*)/i.test(input) ) {
+  if ( rule('invite').test(input) ) {
     return require('../users/invite')(user, input);
   } else if ( /^clue/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
@@ -25,7 +23,6 @@ module.exports = function(user, input) {
           },
           message);
         }
-      //}).filter(function(el) { return el; });
       }).filter((el) => el);
 
       messages = messages.concat(game.players.map(function(player) {
@@ -38,7 +35,7 @@ module.exports = function(user, input) {
     });
         
   } else {
-    return BPromise.join(
+    return Promise.join(
       Game.get({ user: user }),
       function(game) {
         
@@ -56,7 +53,6 @@ module.exports = function(user, input) {
             },
             message);
           }
-        //}).filter(function(el) { return el; });
         }).filter((el) => el);
 
         // check that the submitter has not just guessed their own clue
