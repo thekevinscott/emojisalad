@@ -192,7 +192,6 @@ function startGame(game, user, input) {
 
 function createGame(user, input) {
   Game.create().then(function(game) {
-    console.log('4');
     return Game.add(game, [user]);
   }).catch(function(err) {
     console.error('error adding user', err, user);
