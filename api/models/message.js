@@ -1,13 +1,12 @@
 'use strict';
-var squel = require('squel');
-var config = require('../config/twilio');
-var sprintf = require('sprintf');
-var _ = require('lodash');
-var Promise = require('bluebird');
+const squel = require('squel');
+const sprintf = require('sprintf');
+const _ = require('lodash');
+const Promise = require('bluebird');
+const db = require('db');
+const config = require('../config/twilio');
 
-var db = require('db');
-
-var Message = {
+let Message = {
   table: 'messages',
   get: function(key, options, arr) {
     if ( ! options ) {

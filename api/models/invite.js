@@ -1,16 +1,11 @@
 'use strict';
-var squel = require('squel');
-var db = require('db');
+const squel = require('squel');
+const db = require('db');
+const Phone = require('./phone');
+const User = require('./user');
 
-var Phone = require('./phone');
-var User;
-
-var Invite = {
+let Invite = {
   create: function(type, value, invitingUser) {
-    if ( ! User ) {
-      User = require('./user');
-    }
-
     if ( type === 'twilio' ) {
       return Phone.parse(value).then(function(number) {
         // first check to see if user exists
@@ -32,18 +27,15 @@ var Invite = {
           }
         });
       }).then(function(invitedUser) {
-        var invite_id;
-        var query = squel
+        let query = squel
                     .insert()
                     .into('invites')
                     .set('invited_id', invitedUser.id)
                     .set('inviter_id', invitingUser.id);
       
         return db.query(query).then(function(rows) {
-          invite_id = rows.insertId;
-        }).then(function() {
           return {
-            id: invite_id,
+            id: rows.insertId,
             invited_user: invitedUser,
             inviting_user: invitingUser
           };
