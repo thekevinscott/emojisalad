@@ -1,26 +1,26 @@
 'use strict';
-var squel = require('squel').useFlavour('mysql');
-var Promise = require('bluebird');
-var _ = require('lodash');
-var EmojiData = require('emoji-data');
+const squel = require('squel').useFlavour('mysql');
+const Promise = require('bluebird');
+const _ = require('lodash');
+const EmojiData = require('emoji-data');
 
-var db = require('db');
-var User;
-var Round = require('./round');
+const db = require('db');
+const User = require('./user');
+const Round = require('./round');
 
 // number of guesses a user gets per round
-var default_guesses = 2;
-var default_clues_allowed = 1;
-var Game = {
+const default_guesses = 2;
+const default_clues_allowed = 1;
+let Game = {
   update: function(game, data) {
-    var query = squel
+    let query = squel
               .update()
               .table('games')
               .set('id', game.id)
               .where('id=?',game.id);
 
     if ( data.state !== undefined ) {
-      var state_id = squel
+      let state_id = squel
                     .select()
                     .field('id')
                     .from('game_states')
@@ -34,16 +34,13 @@ var Game = {
     return db.query(query);
   },
   getNextSubmitter: function(game) {
-    if ( ! User ) {
-      User = require('./user');
-    }
     return Promise.join(
       Round.getLast(game),
       this.getBattingOrder(game),
       function(round, order) {
         var next;
         if ( round ) {
-          for ( var i=0,l=order.length; i<l; i++ ) {
+          for ( let i=0,l=order.length; i<l; i++ ) {
             if ( order[i].user_id === round.submitter_id ) {
               if ( i < l-1 ) {
                 // grab the next one
@@ -73,7 +70,7 @@ var Game = {
     });
   },
   checkInput: function(str) {
-    var FBS_REGEXP = new RegExp("(?:" + (EmojiData.chars({
+    let FBS_REGEXP = new RegExp("(?:" + (EmojiData.chars({
       include_variants: true
     }).join("|")) + ")", "g");
 
@@ -96,12 +93,12 @@ var Game = {
     return Round.create(game);
   },
   getPhrase: function(game) {
-    var game_phrases = squel
+    let game_phrases = squel
                        .select()
                        .field('phrase_id')
                        .from('game_phrases')
                        .where('game_id=?', game.id);
-    var query = squel
+    let query = squel
                 .select()
                 .from('phrases', 'p')
                 .field('p.phrase')
@@ -112,9 +109,9 @@ var Game = {
 
     return db.query(query).then(function(rows) {
       if ( rows ) {
-        var phrase = rows[0];
+        let phrase = rows[0];
         // mark this phrase as used
-        var markPhrase = squel
+        let markPhrase = squel
                          .insert()
                          .into('game_phrases')
                          .setFields({
@@ -129,7 +126,7 @@ var Game = {
     });
   },
   getPlayers: function(game) {
-    var query = squel
+    let query = squel
                 .select()
                 .field('u.id')
                 .field('u.created')
@@ -145,7 +142,7 @@ var Game = {
 
     return db.query(query).then(function(users) {
       return Promise.all(users.map(function(user) {
-        var query = squel
+        let query = squel
                     .select()
                     .field('a.attribute')
                     .field('k.`key`')
@@ -173,7 +170,7 @@ var Game = {
     return Round.getLast(game);
   },
   get: function(params) {
-    var query = squel
+    let query = squel
                 .select()
                 .field('g.id')
                 .field('g.random')
@@ -187,7 +184,7 @@ var Game = {
     if ( params.user ) {
       query.where('p.user_id=?',params.user.id);
     } else if ( params.users ) {
-      var user_ids = params.users.map(function(user) {
+      let user_ids = params.users.map(function(user) {
         return user.id;
       });
       query.where('p.user_id IN ? ',user_ids);
@@ -197,7 +194,7 @@ var Game = {
     
     return db.query(query.toString()).then(function(rows) {
       if ( rows.length ) {
-        var game = rows[0];
+        let game = rows[0];
         return this.getRound(game).then(function(round) {
           game.round = round;
           return this.getPlayers(game).then(function(players) {
@@ -216,32 +213,6 @@ var Game = {
             return game;
           });
         }.bind(this));
-        /*
-        return this.getRound(game).then(function(round) {
-          game.round = round;
-          return game;
-        });
-        /*
-        return this.getPlayers(game).then(function(players) {
-          game.players = players;
-          if ( players.length > 1 ) {
-            game.state = 'ready';
-            game.guessers = [];
-            for ( var i=0, l=players.length; i < l; i++ ) {
-              var player = players[i];
-              if ( player.state === 'waiting' ) {
-                game.submitter = player;
-              } else {
-                game.guessers.push(player);
-              }
-            }
-          } else {
-            game.state = 'waiting-for-players';
-            game.players = players;
-          }
-          return game;
-        });
-        */
       } else {
         return null;
       }
@@ -254,7 +225,7 @@ var Game = {
     return this.generateBattingOrder(game);
   },
   getBattingOrder: function(game) {
-    var query = squel
+    let query = squel
                 .select({ autoQuoteFieldNames: true })
                 .field('user_id')
                 .field('order')
@@ -264,7 +235,7 @@ var Game = {
   },
   addToBattingOrder: function(game, user) {
     return this.getBattingOrder(game).then(function(order) {
-      var nextOrder;
+      let nextOrder;
       if ( order.length ) {
         nextOrder = order.pop().order + 1;
       } else {
@@ -281,25 +252,24 @@ var Game = {
     }.bind(this));
   },
   addBatter: function(game, player, order) {
-    var query = squel
-    .insert({ autoQuoteFieldNames: true })
-    .into('player_order')
-    .setFields({
-      game_id: game.id,
-      user_id: player.id,
-      order: order
-    });
+    let query = squel
+                .insert({ autoQuoteFieldNames: true })
+                .into('player_order')
+                .setFields({
+                  game_id: game.id,
+                  user_id: player.id,
+                  order: order
+                });
     return db.query(query);
   },
   add: function(game, users) {
-
     return Promise.all(users.map(function(user) {
-      var row = {
+      let row = {
         game_id: game.id,
         user_id: user.id
       };
 
-      var query = squel
+      let query = squel
                   .insert()
                   .into('game_participants')
                   .setFields(row);
@@ -320,13 +290,13 @@ var Game = {
     }.bind(this)));
   },
   create: function() {
-    var state_id = squel
+    let state_id = squel
                   .select()
                   .field('id')
                   .from('game_states')
                   .where('state=?','pending');
 
-    var query = squel
+    let query = squel
                 .insert()
                 .into('games', 'g')
                 .setFields({

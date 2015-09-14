@@ -54,7 +54,8 @@ module.exports = function(user, input) {
             ]
           };
         }
-      }).filter(function(el) { return el; }).concat(messages);
+      //}).filter(function(el) { return el; }).concat(messages);
+      }).filter((el) => el).concat(messages);
     });
   });
 };

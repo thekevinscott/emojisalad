@@ -28,7 +28,8 @@ module.exports = function(user, input) {
             },
             message);
           }
-        }).filter(function(el) { return el; });
+        //}).filter(function(el) { return el; });
+        }).filter((el) => el);
       }
     );
   }

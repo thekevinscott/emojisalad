@@ -25,7 +25,8 @@ module.exports = function(user, input) {
           },
           message);
         }
-      }).filter(function(el) { return el; });
+      //}).filter(function(el) { return el; });
+      }).filter((el) => el);
 
       messages = messages.concat(game.players.map(function(player) {
         return {
@@ -55,7 +56,8 @@ module.exports = function(user, input) {
             },
             message);
           }
-        }).filter(function(el) { return el; });
+        //}).filter(function(el) { return el; });
+        }).filter((el) => el);
 
         // check that the submitter has not just guessed their own clue
         var regex = new RegExp(game.round.phrase, 'i');

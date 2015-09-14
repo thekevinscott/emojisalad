@@ -26,7 +26,8 @@ module.exports = function(user, input) {
             ]
           };
         }
-      }).filter(function(el) { return el; });
+      //}).filter(function(el) { return el; });
+      }).filter((el) => el);
 
       return Round.getGuessesLeft(game, user).then(function(guesses_left) {
         if ( guesses_left > 0 ) {
