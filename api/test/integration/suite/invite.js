@@ -4,7 +4,10 @@ var getUsers = require('../lib/getUsers');
 var setup = require('../lib/setup');
 var check = require('../lib/check');
 var signup = require('../flows/signup');
+var startGame = require('../flows/startGame');
 var Game = require('../../../models/game');
+
+var EMOJI = '😀';
 
 describe('Inviting', function() {
   var users = getUsers(2);
@@ -155,6 +158,90 @@ describe('Inviting', function() {
       }).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
       });
+    });
+  });
+
+  describe('Inviting during a game', function() {
+    function runBothPlayers(users) {
+      it('should let submitter invite', function() {
+        var inviter = users[0];
+        var invitee = getUsers(3).pop();
+        return check(
+          { user: inviter, msg: 'invite '+invitee.number },
+          [
+            { to: inviter, key: 'intro_4', options: [invitee.number] },
+            { to: invitee, key: 'invite', options: [inviter.nickname] }
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+
+      it('should let player invite', function() {
+        var inviter = users[1];
+        var invitee = getUsers(3).pop();
+        return check(
+          { user: inviter, msg: 'invite '+invitee.number },
+          [
+            { to: inviter, key: 'intro_4', options: [invitee.number] },
+            { to: invitee, key: 'invite', options: [inviter.nickname] }
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    }
+
+      // should allow for an invite after a submission (by submitter and other player)
+      // should allow for an invite after a correct answer (by submitter and other player)
+    describe('before a round starts', function() {
+      var users = getUsers(2);
+      before(function() {
+        return startGame(users);
+      });
+
+      runBothPlayers(users);
+    });
+
+    describe('during a round', function() {
+      var users = getUsers(2);
+      before(function() {
+        return startGame(users).then(function() {
+          return setup([
+            { user: users[0], msg: EMOJI }
+          ]);
+        });
+      });
+
+      runBothPlayers(users);
+    });
+
+    describe('after guessing incorrectly', function() {
+      var users = getUsers(2);
+      before(function() {
+        return startGame(users).then(function() {
+          return setup([
+            { user: users[0], msg: EMOJI },
+            { user: users[1], msg: 'guess foo' }
+          ]);
+        });
+      });
+
+      runBothPlayers(users);
+    });
+
+    describe('after guessing correctly', function() {
+      var users = getUsers(2);
+      before(function() {
+        return startGame(users).then(function() {
+          return setup([
+            { user: users[0], msg: EMOJI },
+            { user: users[1], msg: 'guess JURASSIC PARK' }
+          ]);
+        });
+      });
+
+      runBothPlayers(users);
     });
   });
 });

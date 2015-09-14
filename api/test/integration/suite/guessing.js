@@ -11,7 +11,6 @@ var setup = require('../lib/setup');
 var check = require('../lib/check');
 
 describe('Guessing', function() {
-  this.timeout(60000);
 
   it('should be able to successfully guess', function() {
     var users = getUsers(3);

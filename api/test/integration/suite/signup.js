@@ -5,7 +5,6 @@ var setup = require('../lib/setup');
 var check = require('../lib/check');
 
 describe('Signup', function() {
-  this.timeout(6000);
 
   describe('Test a brand new user', function() {
     it('should introduce itself when contacting for the first time', function() {

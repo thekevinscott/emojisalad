@@ -14,7 +14,6 @@ var check = require('../lib/check');
 var EMOJI = '😀';
 
 describe('Clues', function() {
-  this.timeout(60000);
 
   it('should notify all the other users when somebody asks for a clue', function() {
     var users = getUsers(3);

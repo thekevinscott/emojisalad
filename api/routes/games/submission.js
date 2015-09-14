@@ -33,6 +33,9 @@ module.exports = function(user, input) {
 
       game.round.players.map(function(player) {
         messages.push(_.assign({ user: player }, forwarded_message));
+      });
+
+      game.round.players.map(function(player) {
         messages.push(_.assign({ user: player }, guessing_instructions));
       });
       return messages;

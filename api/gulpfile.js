@@ -187,7 +187,9 @@ function startServer(server) {
 function runTests() {
   var deferred = Promise.pending();
   gulp.src(['test/index.js'], { read: false })
-  .pipe(mocha({}))
+  .pipe(mocha({
+    timeout: 60000
+  }))
   .on('error', function(data) {
     console.log(data.message);
   })
