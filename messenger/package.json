@@ -15,7 +15,6 @@
   "homepage": "https://bitbucket.org/slipper-siblings/emojinaryfriend-messenger#readme",
   "dependencies": {
     "bluebird": "^2.9.34",
-    "db": "git+https://slipper-siblings:vc42cihEXdAUibmnJmFcsspbf0gwEMRc@bitbucket.org/slipper-siblings/emojinaryfriend-db.git",
     "express": "^4.13.3",
     "express-handlebars": "^2.0.1",
     "lodash": "^3.10.1",
