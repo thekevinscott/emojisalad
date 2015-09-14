@@ -7,6 +7,7 @@ var gutil = require('gulp-util');
 var env = require('gulp-env');
 var nodemon = require('gulp-nodemon');
 var chalk = require('chalk');
+var squel = require('squel');
 
 function exec(command) {
   var deferred = Promise.pending();
@@ -48,11 +49,8 @@ function pullDB() {
   // and need
   var tablesHavingData = [
     'admins',
-    'clues',
-    'game_phrases',
     'game_states',
     'messages',
-    'phrases',
     'platforms',
     'round_states',
     'user_attribute_keys',
@@ -148,7 +146,7 @@ gulp.task('sync-testing-db', function(cb) {
 function resetTestingDB() {
   process.env.ENVIRONMENT = 'kevin-test';
   process.env.PORT = '5005';
-  var db = 'test/fixtures/test-db.sql';
+  var sql_file = 'test/fixtures/test-db.sql';
   var config = require('db').config['kevin-test'];
   var importDB = [
     'mysql -u',
@@ -157,9 +155,36 @@ function resetTestingDB() {
     '-h',
     config.host,
     config.database,
-    '<'+ db
+    '<'+ sql_file 
   ];
-  return exec(importDB.join(' '));
+  var db = require('db');
+
+  return exec(importDB.join(' ')).then(function() {
+    // set up phrases
+    var query = squel
+                .insert()
+                .into('phrases')
+                .setFieldsRows([
+                  { id: 1, phrase: 'JURASSIC PARK', admin_id: 16 },
+                  { id: 2, phrase: 'SILENCE OF THE LAMBS', admin_id: 16 },
+                  { id: 3, phrase: 'TIME AFTER TIME', admin_id: 16 },
+                  { id: 4, phrase: 'BUFFALO WILD WINGS', admin_id: 16 },
+                ]);
+    return db.query(query.toString());
+  }).then(function() {
+    // set up clues
+    var query = squel
+                .insert()
+                .into('clues')
+                .setFieldsRows([
+                  { id: 1, phrase_id: 1, clue: 'MOVIE' },
+                  { id: 2, phrase_id: 1, clue: 'CLEVER GIRL' },
+                  { id: 3, phrase_id: 1, clue: 'DINOSAURS' },
+                  { id: 4, phrase_id: 2, clue: 'MOVIE' },
+                  { id: 5, phrase_id: 2, clue: 'CLARICE' },
+                ]);
+    return db.query(query.toString());
+  });
 }
 function startServer(server) {
   if ( server === 'test' ) {

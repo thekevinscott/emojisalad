@@ -13,6 +13,7 @@ var check = require('../lib/check');
 var signup = require('../flows/signup');
 var invite = require('../flows/invite');
 var getGame = require('../lib/getGame');
+var setNonRandomGame = require('../lib/setNonRandomGame');
 
 var EMOJI = '😀';
 
@@ -26,6 +27,8 @@ describe('Game', function() {
         {user: users[0], msg: 'invite '+users[1].number},
         {user: users[1], msg: 'yes'},
       ]);
+    }).then(function() {
+      return setNonRandomGame(users[0]);
     }).then(function() {
       return check(
         {user: users[1], msg: users[1].nickname},

@@ -4,10 +4,15 @@ var setup = require('../lib/setup');
 var signup = require('./signup');
 var invite = require('./invite');
 var sequence = require('../lib/sequence');
+var getGame = require('../lib/getGame');
 var setNonRandomGame = require('../lib/setNonRandomGame');
 
 function startGame(users) {
   return signup(users[0]).then(function() {
+    // this sets a game to not be random.
+    // we need this set so we know // which clues to expect
+    return setNonRandomGame(users[0]);
+  }).then(function() {
     // make sure to sign people up in sequence, so we know
     // in what order to expect messages
     return sequence(users.slice(1).map(function(user) {
@@ -16,10 +21,7 @@ function startGame(users) {
       }
     }));
   }).then(function() {
-    // this sets a game to not be random.
-    // we need this set so we know
-    // which clues to expect
-    return setNonRandomGame(users[0]);
+    return getGame(users[0]);
   });
 }
 
