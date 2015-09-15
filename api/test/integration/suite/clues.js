@@ -1,17 +1,15 @@
+'use strict';
 /*
  * Tests that clues work
  *
  */
 
-var expect = require('chai').expect;
-
-var getUsers = require('../lib/getUsers');
-var startGame = require('../flows/startGame');
-var playGame = require('../flows/playGame');
-var setup = require('../lib/setup');
-var check = require('../lib/check');
-
-var EMOJI = '😀';
+const getUsers = require('../lib/getUsers');
+const playGame = require('../flows/playGame');
+const setup = require('../lib/setup');
+const check = require('../lib/check');
+const rule = require('../../../config/rule');
+const clue = rule('clue').example();
 
 describe('Clues', function() {
 
@@ -20,10 +18,10 @@ describe('Clues', function() {
 
     return playGame(users).then(function() {
       return check(
-        { user: users[1], msg: 'CLUE' },
+        { user: users[1], msg: clue },
         [
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[0] },
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[2] },
+          { key: 'says', options: [users[1].nickname, clue], to: users[0] },
+          { key: 'says', options: [users[1].nickname, clue], to: users[2] },
           { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[0] },
           { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[1] },
           { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[2] }
@@ -39,10 +37,10 @@ describe('Clues', function() {
 
     return playGame(users).then(function() {
       return check(
-        { user: users[0], msg: 'CLUE' },
+        { user: users[0], msg: clue },
         [
-          { key: 'says', options: [users[0].nickname, 'CLUE'], to: users[1] },
-          { key: 'says', options: [users[0].nickname, 'CLUE'], to: users[2] },
+          { key: 'says', options: [users[0].nickname, clue], to: users[1] },
+          { key: 'says', options: [users[0].nickname, clue], to: users[2] },
           { key: 'no-clue-for-submitter', options: [users[0].nickname], to: users[0] },
           { key: 'no-clue-for-submitter', options: [users[0].nickname], to: users[1] },
           { key: 'no-clue-for-submitter', options: [users[0].nickname], to: users[2] }
@@ -58,14 +56,14 @@ describe('Clues', function() {
 
     return playGame(users).then(function() {
       return setup([
-        { user: users[1], msg: 'CLUE' }
+        { user: users[1], msg: clue }
       ]);
     }).then(function() {
       return check(
-        { user: users[1], msg: 'CLUE' },
+        { user: users[1], msg: clue },
         [
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[0] },
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[2] },
+          { key: 'says', options: [users[1].nickname, clue], to: users[0] },
+          { key: 'says', options: [users[1].nickname, clue], to: users[2] },
           { key: 'no-more-clues-allowed', options: ['1 clue'], to: users[0] },
           { key: 'no-more-clues-allowed', options: ['1 clue'], to: users[1] },
           { key: 'no-more-clues-allowed', options: ['1 clue'], to: users[2] }
@@ -82,16 +80,16 @@ describe('Clues', function() {
 
     return playGame(users, { clues_allowed: 99 }).then(function() {
       return setup([
-        { user: users[1], msg: 'CLUE' },
-        { user: users[1], msg: 'CLUE' },
-        { user: users[1], msg: 'CLUE' },
+        { user: users[1], msg: clue },
+        { user: users[1], msg: clue },
+        { user: users[1], msg: clue },
       ]);
     }).then(function() {
       return check(
-        { user: users[1], msg: 'CLUE' },
+        { user: users[1], msg: clue },
         [
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[0] },
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[2] },
+          { key: 'says', options: [users[1].nickname, clue], to: users[0] },
+          { key: 'says', options: [users[1].nickname, clue], to: users[2] },
           { key: 'no-more-clues-available', to: users[0] },
           { key: 'no-more-clues-available', to: users[1] },
           { key: 'no-more-clues-available', to: users[2] }

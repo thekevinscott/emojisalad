@@ -30,6 +30,13 @@ const rules = {
     pattern: '^%(phrase)s',
     flags: 'i'
   },
+  'submission': {
+    pattern: '^submission(.*)',
+    flags: 'i',
+    example: [
+      'submission '
+    ],
+  },
   'yes': {
     pattern: '^yes|^yeah|^yea|^y$',
     flags: 'i',
@@ -67,6 +74,10 @@ module.exports = function(key, options) {
     },
     match: function(input) {
       return input.match(regex).pop().trim();
+    },
+    example: function() {
+      var examples = rules[key].example;
+      return examples[Math.floor(Math.random()*examples.length)];
     }
   };
 };

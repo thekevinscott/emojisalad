@@ -1,24 +1,39 @@
+'use strict';
 /*
  * Tests that games work with two players
  *
  */
 
-var expect = require('chai').expect;
-
 var getUsers = require('../lib/getUsers');
 var startGame = require('../flows/startGame');
-var playGame = require('../flows/playGame');
-var setup = require('../lib/setup');
 var check = require('../lib/check');
-var signup = require('../flows/signup');
-var invite = require('../flows/invite');
+var rule = require('../../../config/rule');
 
 var EMOJI = '😀';
+var submission = rule('submission').example();
 
 describe('Submissions', function() {
+  it('should forward submissions not prefaced by /submission', function() {
+    var users = getUsers(3);
+
+    return startGame(users).then(function() {
+      var msg = 'foo';
+      return check(
+        { user: users[0], msg: msg },
+        [
+          { to: users[1], key: 'says', options: [users[0].nickname, msg] },
+          { to: users[2], key: 'says', options: [users[0].nickname, msg] },
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
   it('should get pissy if you try and send a text submission', function() {
     console.error('****** FIX THIS WHEN BUG IS FIXED');
     return;
+    /*
     var users = getUsers(3);
 
     return startGame(users).then(function() {
@@ -36,11 +51,13 @@ describe('Submissions', function() {
         obj.output.should.deep.equal(obj.expected);
       });
     });
+    */
   });
 
   it('should get pissy if you try and send a mixed text emoji submission', function() {
     console.error('****** FIX THIS WHEN BUG IS FIXED');
     return;
+    /*
     var users = getUsers(3);
 
     return startGame(users).then(function() {
@@ -58,6 +75,7 @@ describe('Submissions', function() {
         obj.output.should.deep.equal(obj.expected);
       });
     });
+    */
   });
 
   it('should forward the submission to other players', function() {
@@ -65,7 +83,7 @@ describe('Submissions', function() {
 
     return startGame(users).then(function() {
       return check(
-        { user: users[0], msg: EMOJI },
+        { user: users[0], msg: submission + EMOJI },
         [
           { key: 'game-submission-sent', to: users[0] },
           { key: 'says', options: [users[0].nickname, EMOJI], to: users[1] },
@@ -77,6 +95,5 @@ describe('Submissions', function() {
         obj.output.should.deep.equal(obj.expected);
       });
     });
-    var users = getUsers();
   });
 });

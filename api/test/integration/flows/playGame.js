@@ -1,11 +1,12 @@
-var _ = require('lodash');
-var Promise = require('bluebird');
-var setup = require('../lib/setup');
-var startGame = require('./startGame');
-var Round = require('../../../models/Round');
+'use strict';
+const setup = require('../lib/setup');
+const startGame = require('./startGame');
+const Round = require('../../../models/Round');
+const rule = require('../../../config/rule');
 
 // submit any old emoji to start a round
-var EMOJI = '😀';
+const EMOJI = '😀';
+const submission = rule('submission').example();
 
 function playGame(users, options) {
   if ( ! options ) { options = {}; }
@@ -13,7 +14,7 @@ function playGame(users, options) {
     return setup([
       {
         user: users[0],
-        msg: EMOJI 
+        msg: submission + EMOJI 
       }
     ]).then(function() {
       if ( options.clues_allowed ) {

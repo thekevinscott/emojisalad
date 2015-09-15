@@ -4,21 +4,22 @@
  *
  */
 
-var getUsers = require('../lib/getUsers');
-var startGame = require('../flows/startGame');
-var playGame = require('../flows/playGame');
-var setup = require('../lib/setup');
-var check = require('../lib/check');
-var signup = require('../flows/signup');
-var getGame = require('../lib/getGame');
-var setNonRandomGame = require('../lib/setNonRandomGame');
-
-var EMOJI = '😀';
+const getUsers = require('../lib/getUsers');
+const startGame = require('../flows/startGame');
+const playGame = require('../flows/playGame');
+const setup = require('../lib/setup');
+const check = require('../lib/check');
+const signup = require('../flows/signup');
+const getGame = require('../lib/getGame');
+const setNonRandomGame = require('../lib/setNonRandomGame');
+const rule = require('../../../config/rule');
+const EMOJI = '😀';
+const submission = rule('submission').example();
 
 describe('Game', function() {
 
   it('should initiate the game with the person who started it', function() {
-    var users = getUsers(2);
+    const users = getUsers(2);
 
     return signup(users[0]).then(function() {
       return setup([
@@ -82,7 +83,7 @@ describe('Game', function() {
       return playGame(users).then(function(game) {
         return setup([
           { user: users[1], msg: 'guess '+game.round.phrase },
-          { user: users[1], msg: EMOJI },
+          { user: users[1], msg: submission + EMOJI },
         ]);
       }).then(function() {
         return getGame(users[0]);
@@ -110,9 +111,9 @@ describe('Game', function() {
       return playGame(users).then(function(game) {
         return setup([
           { user: users[1], msg: 'guess '+game.round.phrase },
-          { user: users[1], msg: EMOJI },
+          { user: users[1], msg: submission + EMOJI },
           { user: users[0], msg: 'guess SILENCE OF THE LAMBS' },
-          { user: users[2], msg: EMOJI },
+          { user: users[2], msg: submission + EMOJI },
         ]);
       }).then(function() {
         return getGame(users[0]);
@@ -142,7 +143,7 @@ describe('Game', function() {
 
       return startGame(users.slice(0, 2)).then(function() {
         return setup([
-          { user: users[0], msg: EMOJI },
+          { user: users[0], msg: submission + EMOJI },
           { user: users[0], msg: 'invite '+users[2].number },
           { user: users[2], msg: 'y' },
           { user: users[2], msg: users[2].nickname },
@@ -177,9 +178,9 @@ describe('Game', function() {
 
       return startGame(users.slice(0, 2)).then(function() {
         return setup([
-          { user: users[0], msg: EMOJI },
+          { user: users[0], msg: submission + EMOJI },
           { user: users[1], msg: 'guess JURASSIC PARK' },
-          { user: users[1], msg: EMOJI },
+          { user: users[1], msg: submission + EMOJI },
           { user: users[0], msg: 'invite '+users[2].number },
           { user: users[2], msg: 'y' },
           { user: users[2], msg: users[2].nickname },
@@ -214,12 +215,12 @@ describe('Game', function() {
 
       return startGame(users.slice(0, 3)).then(function() {
         return setup([
-          { user: users[0], msg: EMOJI },
+          { user: users[0], msg: submission + EMOJI },
           { user: users[1], msg: 'guess JURASSIC PARK' },
-          { user: users[1], msg: EMOJI },
+          { user: users[1], msg: submission + EMOJI },
           { user: users[0], msg: 'guess SILENCE OF THE LAMBS' },
           { user: users[0], msg: 'invite '+users[3].number },
-          { user: users[2], msg: EMOJI },
+          { user: users[2], msg: submission + EMOJI },
           { user: users[3], msg: 'y' },
           { user: users[3], msg: users[3].nickname },
         ]);
