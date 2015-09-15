@@ -1,5 +1,4 @@
 'use strict';
-var expect = require('chai').expect;
 
 var getUsers = require('../lib/getUsers');
 var setup = require('../lib/setup');

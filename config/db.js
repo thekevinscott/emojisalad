@@ -8,6 +8,7 @@ var db = {
     "charset"  : "utf8mb4"
   },
 };
+
 if ( local.test ) {
   db.test = local.test;
 }
@@ -15,4 +16,4 @@ if ( local.development ) {
   db.development = local.development;
 }
 
-module.exports = db;
+module.exports = db[process.env.ENVIRONMENT];

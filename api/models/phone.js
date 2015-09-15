@@ -1,5 +1,5 @@
 'use strict';
-const config = require('config/twilio');
+const config = require('../../config/twilio');
 const Promise = require('bluebird');
 const LookupsClient = require('twilio').LookupsClient;
 const client = new LookupsClient(config.accountSid, config.authToken);
@@ -12,7 +12,8 @@ let Phone = {
       var getAsync = Promise.promisify(client.phoneNumbers(passedNumber).get);
       return getAsync().then(function(number) {
         return number.phoneNumber;
-      }).catch(function() {
+      }).catch(function(err) {
+        console.error('Error parsing Twilio number', err);
         throw new Error(1);
       });
     }

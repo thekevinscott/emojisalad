@@ -1,6 +1,6 @@
 'use strict';
 //var client = require('twilio')(config.accountSid, config.authToken); 
-const config = require('config/twilio');
+const config = require('../../config/twilio');
 const Message = require('./message');
 const twilio = require('twilio');
 

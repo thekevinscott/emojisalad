@@ -10,9 +10,8 @@ let pool;
 if ( ! process.env.ENVIRONMENT ) {
   throw "You must specify a DB environment";
 }
-let environment = process.env.ENVIRONMENT;
-let config = require('./config')[environment];
 
+let config = require('../config/db');
 
 if ( ! pool ) {
   pool  = mysql.createPool({
@@ -70,5 +69,3 @@ let db = {
 };
 
 module.exports = db;
-module.exports.environment = environment;
-module.exports.config = require('./config');

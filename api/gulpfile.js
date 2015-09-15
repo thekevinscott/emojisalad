@@ -123,11 +123,11 @@ gulp.task('sync', function() {
  */
 gulp.task('sync-testing-db', function(cb) {
 
-  process.env.ENVIRONMENT = 'kevin-test';
+  process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
   var tmp = 'tmp/';
   //var config = require('../.db.json');
-  //var importConfig = config['kevin-test'];
+  //var importConfig = config['test'];
   var testDB = 'test/fixtures/test-db.sql';
   return pullDB().then(function(file) {
     return exec(['rm -f',testDB].join(' ')).then(function() {
@@ -143,10 +143,10 @@ gulp.task('sync-testing-db', function(cb) {
 });
 
 function resetTestingDB() {
-  process.env.ENVIRONMENT = 'kevin-test';
+  process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
   var sql_file = 'test/fixtures/test-db.sql';
-  var config = require('../.db.json')['kevin-test'];
+  var config = require('../config/db');
   var importDB = [
     'mysql -u',
     config.user,
@@ -187,10 +187,10 @@ function resetTestingDB() {
 }
 function startServer(server) {
   if ( server === 'test' ) {
-    process.env.ENVIRONMENT = 'kevin-test';
+    process.env.ENVIRONMENT = 'test';
     process.env.PORT = '5005';
   } else {
-    process.env.ENVIRONMENT = 'kevin-dev';
+    process.env.ENVIRONMENT = 'dev';
     process.env.PORT = '5000';
   }
 
@@ -202,7 +202,7 @@ function startServer(server) {
       //"restart": "osascript -e 'display notification \"app restarted\" with title \"nodemon\"'"
     },
     env: {
-      //ENVIRONMENT : 'kevin-test',
+      //ENVIRONMENT : 'test',
       //PORT : '5005'
     },
     stdout: false

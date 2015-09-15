@@ -4,7 +4,7 @@ const sprintf = require('sprintf');
 const _ = require('lodash');
 const Promise = require('bluebird');
 const db = require('db');
-const config = require('../config/twilio');
+const config = require('../../config/twilio');
 
 let Message = {
   table: 'messages',
