@@ -1,5 +1,6 @@
 'use strict';
-const config = require('../../config/twilio');
+// we always use production
+const config = require('../../config/twilio').production;
 const Promise = require('bluebird');
 const LookupsClient = require('twilio').LookupsClient;
 const client = new LookupsClient(config.accountSid, config.authToken);
