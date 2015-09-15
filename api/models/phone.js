@@ -14,7 +14,10 @@ let Phone = {
       return getAsync().then(function(number) {
         return number.phoneNumber;
       }).catch(function(err) {
-        console.error('Error parsing Twilio number', err);
+        // 20404 means phone number was invalid
+        if ( err && err.code !== 20404 ) {
+          console.error('Error parsing Twilio number', err);
+        }
         throw new Error(1);
       });
     }
