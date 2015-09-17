@@ -7,6 +7,8 @@ const rule = require('config/rule');
 module.exports = function(user, input) {
   if ( rule('invite').test(input) ) {
     return require('../users/invite')(user, input);
+  } else if ( rule('help').test(input) ) {
+    return require('../users/help')(user, input);
   } else if ( /^clue/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
       var message = {
@@ -57,7 +59,6 @@ module.exports = function(user, input) {
 
         // check that the submitter has not just guessed their own clue
         var regex = new RegExp(game.round.phrase, 'i');
-        console.log('regex', game.round.phrase, regex);
         if ( regex.test(input) ) {
           messages = messages.concat(game.players.map(function(player) {
             return {
