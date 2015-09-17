@@ -33,6 +33,13 @@ const rules = {
       'help'
     ]
   },
+  'pass': {
+    pattern: '^pass(.*)',
+    flags: 'i',
+    example: [
+      'pass'
+    ],
+  },
   'phrase': {
     pattern: '^%(phrase)s',
     flags: 'i'
