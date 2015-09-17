@@ -55,5 +55,18 @@ describe('Pass', function() {
       });
     });
   });
+
+  it('should end a round if one player is out of guesses and the other player passes', function() {
+  });
+  it('should end a round if one player passes and the other player runs out of guesses', function() {
+  });
+  it('should end a round if both players pass', function() {
+  });
+  it('should not let a user ask for a clue if they have passed', function() {
+  });
+  it('should not let a user pass if they have run out of guesses', function() {
+  });
+  it('should not let a user guess if they have already passed', function() {
+  });
   */
 });
