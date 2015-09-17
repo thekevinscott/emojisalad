@@ -26,6 +26,13 @@ const rules = {
       'guess '
     ]
   },
+  'help': {
+    pattern: '^help(.*)',
+    flags: 'i',
+    example: [
+      'help'
+    ]
+  },
   'phrase': {
     pattern: '^%(phrase)s',
     flags: 'i'

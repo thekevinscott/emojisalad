@@ -24,8 +24,22 @@ function exec(command) {
   return deferred.promise;
 }
 
-function pullDB() {
-  var config = require('db').config;
+function getConnectionString(config) {
+  return [
+    '-u',
+    config.user,
+    '-p' + config.password,
+    '-h',
+    config.host,
+    config.database,
+  ].join(' ');
+}
+
+function pullProductionDB() {
+
+  process.env.ENVIRONMENT = 'production';
+  let config = require('../config/db');
+  //var config = require('db').config;
   var tmp = 'tmp/';
   //var destination = tmp+'production.sql.gz';
   var file = 'db_backup.sql';
@@ -33,14 +47,10 @@ function pullDB() {
   //mysqldump -u user -p --no-data db > structure.sql; mysqldump -u user -p db table1 table2 >> structure.sql
 
   var dumpSchemas = [
-    'mysqldump -u',
-    config.production.user,
-    '-p' + config.production.password,
+    'mysqldump',
     '--no-data',
     '--add-drop-table',
-    '-h',
-    config.production.host,
-    config.production.database,
+    getConnectionString(config),
     '|',
     'gzip >',
     tmp+zippedFile
@@ -59,12 +69,8 @@ function pullDB() {
     'user_states'
   ];
   var dumpData = [
-    'mysqldump -u',
-    config.production.user,
-    '-p' + config.production.password,
-    '-h',
-    config.production.host,
-    config.production.database,
+    'mysqldump',
+    getConnectionString(config),
     tablesHavingData.join(' '),
     '|',
     'gzip >>',
@@ -93,18 +99,11 @@ gulp.task('sync', function() {
   } else {
     process.env.ENVIRONMENT = importKey;
   }
-  var config = require('db').config;
-  var importConfig;
-  importConfig = config[importKey];
-
-  pullDB().then(function(file) {
+  var config = require('../config/db');
+  pullProductionDB().then(function(file) {
     var importDB = [
-      'mysql -u',
-      importConfig.user,
-      '-p' + importConfig.password,
-      '-h',
-      importConfig.host,
-      importConfig.database,
+      'mysql',
+      getConnectionString(config),
       '<'+ file
     ];
     return exec(importDB.join(' '));
@@ -126,10 +125,8 @@ gulp.task('sync-testing-db', function(cb) {
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
   var tmp = 'tmp/';
-  //var config = require('../.db.json');
-  //var importConfig = config['test'];
   var testDB = 'test/fixtures/test-db.sql';
-  return pullDB().then(function(file) {
+  return pullProductionDB().then(function(file) {
     return exec(['rm -f',testDB].join(' ')).then(function() {
       return exec(['mv',file,testDB].join(' '));
     });
@@ -148,12 +145,8 @@ function resetTestingDB() {
   var sql_file = 'test/fixtures/test-db.sql';
   var config = require('../config/db');
   var importDB = [
-    'mysql -u',
-    config.user,
-    '-p' + config.password,
-    '-h',
-    config.host,
-    config.database,
+    'mysql',
+    getConnectionString(config),
     '<'+ sql_file 
   ];
   var db = require('db');

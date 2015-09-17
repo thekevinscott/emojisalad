@@ -18,3 +18,6 @@ require('./guessing');
 
 // tests that clues work correctly
 require('./clues');
+
+// tests that asking for help works correctly
+require('./help');
