@@ -1,5 +1,4 @@
 // require("./base.less");
-alert('1');
 import * as React from 'react';
 import * as Router from 'react-router';
 import { Header } from './header';
@@ -9,9 +8,11 @@ const Link = Router.Link;
 
 export class App extends React.Component {
   constructor(props) {
+    
     super(props);
   }
   render() {
+    
     return (
       <div className="admin">
         <Header />

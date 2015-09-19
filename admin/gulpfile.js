@@ -1,23 +1,20 @@
+//To do :  , Livereload, Server, (gulp-connect), 
+
 var gulp = require('gulp');
-var bower_dir = __dirname + '/web/lib/';
 
-
-
-
-
-var react = require('gulp-react');
 var stylus = require('gulp-stylus');
 var browserify = require('browserify');
-var transform = require('vinyl-transform');
+// var transform = require('vinyl-transform');
 var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglify');
 var babel = require('babelify');
+var connect = require('gulp-connect');
 
 gulp.task('js', function() {
 console.log('JS');
     var b = browserify();
     b.transform(babel); // use the reactify transform
-    b.add('./web/js/app.js');
+    b.add('./web/js/main.js');
     var out= b.bundle()
     .on('error', function(err) {
         //If you want details of the error in the console
@@ -31,63 +28,24 @@ console.log('JS');
     return out;
 });
 
-gulp.task('browserify', function () {
-  var browserified = transform(function(filename) {
-    var b = browserify(filename);
-    return b.bundle();
-  });
-  
-  return gulp.src(['./web/js/app.js'])
-    .pipe(browserified)
-    // .pipe(uglify())
-    // .pipe(gulp.dest('public'));
-});
-
-// Babel
-gulp.task('babel', function () {
-	var browserified = transform(function(filename) {
-    var b = browserify(filename);
-    return b.bundle();
-  });
-  
-
-    return gulp.src(['web/js/app.js']) //Needs to be edited
-        	
-        .pipe(browserified)
-        .pipe(babel())
-    	.pipe(uglify())
-        .pipe(gulp.dest('public')); //Needs to be edited
-});
-
-// React
-gulp.task('react', function () {
-    return gulp.src('template.jsx')
-        .pipe(react())
-        .pipe(gulp.dest('dist'));
-});
-
 // Stylus
-gulp.task('one', function () {
-  gulp.src('./css/one.styl') //Edit me
+gulp.task('style', function () {
+  gulp.src('./web/styles/main.styl') //Edit me
     .pipe(stylus())
-    .pipe(gulp.dest('./css/build')); //Edit me
+    .pipe(gulp.dest('./public'));
+    // .pipe(gulp.dest('./web/styles/')); //Edit me
 });
 
 
+gulp.task('watch', function() {
+    gulp.watch('./web/styles/**/*.styl', ['style']);
+    gulp.watch('./web/js/**/*', ['js']);
+    // gulp.watch('./gulpfile.js', ['js','style']);
+});
 
-gulp.task('default', ['stylus','babel','react']);
+gulp.task('default', ['js', 'style', 'watch']);
 
-/* 
-Things installed:
-gulp-babel
-*/
 
-/* 
-Remove all require CSS from JS
-Parse CSS as well
+// gulp.task('default', ['stylus','babel','react']);
 
-Suck in all JavaScript
-cool. Run it through Babble
-Export to /public/bundle.js
-*/
- 
+
