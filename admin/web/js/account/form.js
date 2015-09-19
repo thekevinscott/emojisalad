@@ -1,4 +1,4 @@
-require('../form.less');
+//require('../form.less');
 import * as React from 'react';
 import reqwest from 'reqwest';
 

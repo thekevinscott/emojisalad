@@ -1,4 +1,4 @@
-require("./games.less");
+//require("./games.less");
 import * as React from 'react';
 import * as Router from 'react-router';
 import reqwest from 'reqwest';
