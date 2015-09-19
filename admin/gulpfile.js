@@ -1,15 +1,29 @@
-//To do :  , Livereload, Server, (gulp-connect), 
+//To do :  , Livereload
 
 var gulp = require('gulp');
-
+var livereload = require('gulp-livereload');
 var stylus = require('gulp-stylus');
 var browserify = require('browserify');
 // var transform = require('vinyl-transform');
 var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglify');
 var babel = require('babelify');
-var connect = require('gulp-connect');
+var nodemon = require('gulp-nodemon');
 
+// Webserver
+gulp.task('webserver', function() {
+	nodemon({
+    script: 'index.js'
+  , ext: 'js html'
+  , env: { 'NODE_ENV': 'production' }
+  })
+  
+});
+
+
+
+
+// Read Javascript, run Browserfy, Babel and Uglify (one day...)
 gulp.task('js', function() {
 console.log('JS');
     var b = browserify();
@@ -23,27 +37,30 @@ console.log('JS');
     })
 
     .pipe(source('app.min.js'))
-    .pipe(gulp.dest('./public'));
+    .pipe(gulp.dest('./public'))
+    .pipe(livereload())
     console.log('JS done.');
     return out;
 });
 
+
 // Stylus
 gulp.task('style', function () {
-  gulp.src('./web/styles/main.styl') //Edit me
+  gulp.src('./web/styles/main.styl')
     .pipe(stylus())
-    .pipe(gulp.dest('./public'));
-    // .pipe(gulp.dest('./web/styles/')); //Edit me
+    .pipe(gulp.dest('./public'))
+    .pipe(livereload());
 });
 
 
 gulp.task('watch', function() {
+	livereload.listen();
     gulp.watch('./web/styles/**/*.styl', ['style']);
     gulp.watch('./web/js/**/*', ['js']);
     // gulp.watch('./gulpfile.js', ['js','style']);
 });
 
-gulp.task('default', ['js', 'style', 'watch']);
+gulp.task('default', ['webserver', 'js', 'style', 'watch']);
 
 
 // gulp.task('default', ['stylus','babel','react']);
