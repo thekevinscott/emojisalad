@@ -1,0 +1,86 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css";
+body,
+html,
+.admin {
+  height: 100%;
+}
+.admin {
+  display: flex;
+  flex-direction: column;
+}
+body {
+  background: #eee;
+  font-family: sans-serif;
+}
+a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.page {
+  flex: 1;
+  padding: 20px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  vertical-align: top;
+}
+table td.full {
+  padding: 0;
+}
+table td textarea {
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  min-height: 80px;
+  padding: 0;
+  border: none;
+}
+.error {
+  background: #f00;
+}
+.games {
+  display: flex;
+  flex-direction: column;
+}
+.game-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.game-stats {
+  margin-bottom: 20px;
+}
+.messages {
+  display: flex;
+  flex: 1;
+}
+iframe {
+  background: #fff;
+  flex: 1;
+  border: 1px solid #ccc;
+  margin-right: 20px;
+}
+iframe:last-child {
+  margin-right: 0;
+}
+.admin header {
+  padding: 10px;
+  background: #ddd;
+}
+.admin header .account {
+  float: right;
+  clear: both;
+}
+.admin header li {
+  display: inline-block;
+  margin-right: 20px;
+}
+.admin header li a {
+  text-decoration: none;
+  color: #000;
+}
