@@ -60,7 +60,7 @@ gulp.task('watch', function() {
     // gulp.watch('./gulpfile.js', ['js','style']);
 });
 
-gulp.task('default', ['webserver', 'js', 'style', 'watch']);
+gulp.task('default', ['js', 'style', 'webserver', 'watch']);
 
 
 // gulp.task('default', ['stylus','babel','react']);
