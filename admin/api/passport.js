@@ -1,4 +1,4 @@
-var crypt = require('crypt3');
+var crypt = require('bcrypt');
 var passport = require('passport');
 var Q = require('q');
 
@@ -6,7 +6,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var squel = require('squel');
 
-var db = require('db');
+var db = require('../db');
 
 var table = 'admins';
 

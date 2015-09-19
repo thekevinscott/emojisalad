@@ -1,5 +1,5 @@
 var squel = require('squel');
-var db = require('db');
+var db = require('../../db');
 module.exports = function(app) {
   app.delete('/api/messages/:message_id', function(req, res) {
     var query = squel
