@@ -16,4 +16,4 @@ if ( local.development ) {
   db.development = local.development;
 }
 
-module.exports = db[process.env.ENVIRONMENT];
+module.exports = db;

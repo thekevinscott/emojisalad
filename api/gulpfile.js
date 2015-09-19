@@ -38,7 +38,7 @@ function getConnectionString(config) {
 function pullProductionDB() {
 
   process.env.ENVIRONMENT = 'production';
-  let config = require('../config/db');
+  let config = require('../config/db').production;
   //var config = require('db').config;
   var tmp = 'tmp/';
   //var destination = tmp+'production.sql.gz';
@@ -99,7 +99,7 @@ gulp.task('sync', function() {
   } else {
     process.env.ENVIRONMENT = importKey;
   }
-  var config = require('../config/db');
+  var config = require('../config/db')[importKey];
   pullProductionDB().then(function(file) {
     var importDB = [
       'mysql',
@@ -143,7 +143,7 @@ function resetTestingDB() {
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
   var sql_file = 'test/fixtures/test-db.sql';
-  var config = require('../config/db');
+  var config = require('../config/db').test;
   var importDB = [
     'mysql',
     getConnectionString(config),

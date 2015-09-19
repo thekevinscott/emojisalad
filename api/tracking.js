@@ -2,8 +2,8 @@
 const ua = require('universal-analytics');
 const Mixpanel = require('mixpanel');
 
-let mixpanel = Mixpanel.init(require('../config/mixpanel'));
-const ua_config = require('../config/google-analytics');
+let mixpanel = Mixpanel.init(require('../config/mixpanel')[process.env.ENVIRONMENT]);
+const ua_config = require('../config/google-analytics')[process.env.ENVIRONMENT];
 
 module.exports = function(state, user, input) {
   if ( process.env.ENVIRONMENT === 'production' ) {

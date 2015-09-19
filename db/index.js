@@ -11,7 +11,7 @@ if ( ! process.env.ENVIRONMENT ) {
   throw "You must specify a DB environment";
 }
 
-let config = require('../config/db');
+let config = require('../config/db')[process.env.ENVIRONMENT];
 
 if ( ! pool ) {
   pool  = mysql.createPool({
