@@ -7,6 +7,12 @@ npm-debug.log
 .vimrc
 .DS_Store
 .db
+db-local.js
+emojinaryfriend-admin.sublime-project
+emojinaryfriend-admin.sublime-workspace
+emojinaryfriend-website.sublime-project
+emojinaryfriend-website.sublime-workspace
 emojinaryfriend-db.sublime-workspace
 *.sublime-workspace
-db-local.js
+*.sublime-project
+*.sublime-workspace
