@@ -1,5 +1,5 @@
-require("./base.less");
-
+// require("./base.less");
+alert('1');
 import * as React from 'react';
 import * as Router from 'react-router';
 import { Header } from './header';
