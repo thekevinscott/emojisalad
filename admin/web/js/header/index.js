@@ -16,6 +16,7 @@ export class Header extends React.Component {
           <li><Link to="games">Games</Link></li>
           <li><Link to="players">Players</Link></li>
           <li><Link to="messages">Messages</Link></li>
+          <li><Link to="phrases">Phrases</Link></li>
           </ul>
         );
       } else {

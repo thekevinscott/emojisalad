@@ -9,6 +9,7 @@ import { Games } from './games';
 import { Game } from './games';
 import { Players } from './players';
 import { Messages } from './messages';
+import { Phrases } from './phrases';
 
 var DefaultRoute = Router.DefaultRoute;
 var NotFoundRoute = Router.NotFoundRoute;
@@ -27,6 +28,7 @@ export const routes = (
     <Route name="game" path="/games/:game_id" handler={Game}/>
     <Route handler={Players} name="players" />
     <Route handler={Messages} name="messages" />
+    <Route handler={Phrases} name="phrases" />
     <NotFoundRoute handler={NotFound} />
   </Route>
 );
