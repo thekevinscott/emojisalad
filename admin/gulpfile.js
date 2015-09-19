@@ -13,9 +13,9 @@ var nodemon = require('gulp-nodemon');
 // Webserver
 gulp.task('webserver', function() {
 	nodemon({
-    script: 'index.js'
-  , ext: 'js html'
-  , env: { 'NODE_ENV': 'production' }
+    script: 'index.js',
+    ext: 'js html',
+    env: { 'NODE_ENV': 'production' }
   })
   
 });

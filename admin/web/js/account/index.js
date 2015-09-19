@@ -24,10 +24,10 @@ export class Account extends React.Component {
             link = 'Register';
         }
 
-        //<a onClick={this.onToggle}>{link}</a>
         return (
             <div className="account">
                 {page}
+                <a onClick={this.onToggle}>{link}</a>
             </div>
         );
     }
