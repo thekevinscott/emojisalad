@@ -15,7 +15,7 @@ gulp.task('webserver', function() {
 	nodemon({
     script: 'index.js',
     ext: 'js html',
-    env: { 'NODE_ENV': 'production' }
+    env: { 'ENVIRONMENT': 'production' }
   });
   
 });

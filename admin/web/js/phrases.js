@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Router from 'react-router';
 import reqwest from 'reqwest';
-import { Base } from '../base';
+import { Base } from './base';
 
 export var Phrases = React.createClass({
   render: function () {
