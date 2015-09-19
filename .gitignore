@@ -5,3 +5,4 @@ emojinaryfriend-website.sublime-project
 emojinaryfriend-website.sublime-workspace
 *.sublime-workspace
 *.sublime-project
+.DS_Store
