@@ -9,6 +9,8 @@ module.exports = function(user, input) {
     return require('../users/invite')(user, input);
   } else if ( rule('help').test(input) ) {
     return require('../users/help')(user, input);
+  } else if ( rule('pass').test(input) ) {
+    return require('../games/pass')(user, input);
   } else if ( /^clue/i.test(input) ) {
     return Game.get({ user: user }).then(function(game) {
       var message = {

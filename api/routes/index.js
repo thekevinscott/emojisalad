@@ -20,6 +20,8 @@ addRoute('submitted', require('./users/submitted'));
 addRoute('guessing', require('./games/guess'));
 addRoute('bench', require('./users/say'));
 addRoute('waiting-for-round', require('./users/say'));
+addRoute('passed', require('./users/say'));
+addRoute('lost', require('./users/say'));
 
 var Router = function(user, message) {
   var state = user.state;

@@ -21,3 +21,6 @@ require('./clues');
 
 // tests that asking for help works correctly
 require('./help');
+
+// tests that passing works correctly
+require('./pass');
