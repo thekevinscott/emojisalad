@@ -190,8 +190,8 @@ function startServer(server) {
 
   return nodemon({
     script: 'index.js',
-    verbose: true,
-    //verbose: false,
+    //verbose: true,
+    verbose: false,
     quiet: true,
     "events": {
       //"restart": "osascript -e 'display notification \"app restarted\" with title \"nodemon\"'"

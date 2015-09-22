@@ -24,13 +24,14 @@ module.exports = function(user, input) {
     } else {
       return Game.get({ user: user }).then(function(game) {
         var messages = game.players.map(function(player) {
+          var guess = rule('guess').match(input);
           if ( player.id !== user.id ) {
             return {
               key: 'guesses',
               user: player,
               options: [
                 user.nickname,
-                input
+                guess,
               ]
             };
           }
@@ -134,15 +135,6 @@ module.exports = function(user, input) {
 
                   if ( key === 'round-over' ) {
                     return Game.newRound(game).then(function(round) {
-                      round.players.map(function(player) {
-                        User.update(player, {
-                          state: 'waiting-for-round',
-                        });
-                      });
-                      User.update(round.submitter, {
-                        state: 'waiting-for-submission',
-                      });
-
                       var suggestion = {
                         key: 'game-next-round-suggestion',
                         options: [

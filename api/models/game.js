@@ -64,7 +64,11 @@ let Game = {
   },
   getGuessesLeft: function(game) {
     return Promise.all(game.round.players.map(function(player) {
-      return Round.getGuessesLeft(game, player);
+      if ( player.state === 'passed' || player.state === 'lost' ) {
+        return 0;
+      } else {
+        return Round.getGuessesLeft(game, player);
+      }
     })).reduce(function(prev, current) {
       return prev + current;
     });
@@ -90,7 +94,21 @@ let Game = {
     });
   },
   newRound: function(game) {
-    return Round.create(game);
+    return Round.create(game).then(function(round) {
+      return Promise.all(round.players.map(function(player) {
+        var state;
+        if ( player === round.submitter ) {
+          state = 'waiting-for-submission';
+        } else {
+          state = 'waiting-for-round';
+        }
+        return User.update(player, {
+          state: state,
+        });
+      })).then(function() {
+        return round;
+      });
+    });
   },
   getPhrase: function(game) {
     let game_phrases = squel
