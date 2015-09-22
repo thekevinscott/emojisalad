@@ -179,16 +179,18 @@ function resetTestingDB() {
   });
 }
 function startServer(server) {
+  console.log('start server');
   if ( server === 'test' ) {
     process.env.ENVIRONMENT = 'test';
     process.env.PORT = '5005';
   } else {
-    process.env.ENVIRONMENT = 'dev';
+    process.env.ENVIRONMENT = 'development';
     process.env.PORT = '5000';
   }
 
   return nodemon({
     script: 'index.js',
+    //verbose: true,
     verbose: false,
     quiet: true,
     "events": {
@@ -237,7 +239,7 @@ gulp.task('test', function() {
   }).on('change', function() {
     console.log('changed server');
   }).on('restart', function() {
-    console.log('Rerunning tests...');
+    //console.log('Rerunning tests...');
     // server has restarted
   });
 });

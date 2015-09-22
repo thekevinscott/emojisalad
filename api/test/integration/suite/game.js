@@ -15,6 +15,7 @@ const setNonRandomGame = require('../lib/setNonRandomGame');
 const rule = require('../../../config/rule');
 const EMOJI = '😀';
 const submission = rule('submission').example();
+const guess = rule('guess').example();
 
 describe('Game', function() {
 
@@ -82,18 +83,17 @@ describe('Game', function() {
 
       return playGame(users).then(function(game) {
         return setup([
-          { user: users[1], msg: 'guess '+game.round.phrase },
+          { user: users[1], msg: guess + game.round.phrase },
           { user: users[1], msg: submission + EMOJI },
         ]);
       }).then(function() {
         return getGame(users[0]);
       }).then(function(game) {
-        var guess = 'guess '+game.round.phrase;
         var third_phrase = 'TIME AFTER TIME';
         return check(
-          { user: users[0], msg: guess },
+          { user: users[0], msg: guess + game.round.phrase },
           [
-            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, game.round.phrase] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[0], key: 'game-next-round-suggestion', options: [users[0].nickname, third_phrase] },
@@ -110,21 +110,20 @@ describe('Game', function() {
 
       return playGame(users).then(function(game) {
         return setup([
-          { user: users[1], msg: 'guess '+game.round.phrase },
+          { user: users[1], msg: guess+game.round.phrase },
           { user: users[1], msg: submission + EMOJI },
-          { user: users[0], msg: 'guess SILENCE OF THE LAMBS' },
+          { user: users[0], msg: guess+' SILENCE OF THE LAMBS' },
           { user: users[2], msg: submission + EMOJI },
         ]);
       }).then(function() {
         return getGame(users[0]);
       }).then(function(game) {
-        var guess = 'guess '+game.round.phrase;
         var phrase = 'BUFFALO WILD WINGS';
         return check(
-          { user: users[0], msg: guess },
+          { user: users[0], msg: guess + game.round.phrase},
           [
-            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
-            { to: users[2], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, game.round.phrase] },
+            { to: users[2], key: 'guesses', options: [users[0].nickname, game.round.phrase] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[2], key: 'correct-guess', options: [users[0].nickname] },
@@ -151,12 +150,11 @@ describe('Game', function() {
       }).then(function() {
         return getGame(users[0]);
       }).then(function(game) {
-        var guess = 'guess '+game.round.phrase;
         return check(
-          { user: users[1], msg: guess },
+          { user: users[1], msg: guess + game.round.phrase },
           [
-            { to: users[0], key: 'guesses', options: [users[1].nickname, guess] },
-            { to: users[2], key: 'guesses', options: [users[1].nickname, guess] },
+            { to: users[0], key: 'guesses', options: [users[1].nickname, game.round.phrase] },
+            { to: users[2], key: 'guesses', options: [users[1].nickname, game.round.phrase] },
             { to: users[0], key: 'correct-guess', options: [users[1].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[1].nickname] },
             { to: users[2], key: 'correct-guess', options: [users[1].nickname] },
@@ -188,12 +186,11 @@ describe('Game', function() {
       }).then(function() {
         return getGame(users[0]);
       }).then(function(game) {
-        var guess = 'guess '+game.round.phrase;
         return check(
-          { user: users[0], msg: guess },
+          { user: users[0], msg: guess + game.round.phrase },
           [
-            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
-            { to: users[2], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, game.round.phrase] },
+            { to: users[2], key: 'guesses', options: [users[0].nickname, game.round.phrase] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[2], key: 'correct-guess', options: [users[0].nickname] },
@@ -227,12 +224,11 @@ describe('Game', function() {
       }).then(function() {
         return getGame(users[0]);
       }).then(function(game) {
-        var guess = 'guess '+game.round.phrase;
         return check(
-          { user: users[0], msg: guess },
+          { user: users[0], msg: guess + game.round.phrase },
           [
-            { to: users[1], key: 'guesses', options: [users[0].nickname, guess] },
-            { to: users[2], key: 'guesses', options: [users[0].nickname, guess] },
+            { to: users[1], key: 'guesses', options: [users[0].nickname, game.round.phrase] },
+            { to: users[2], key: 'guesses', options: [users[0].nickname, game.round.phrase] },
             { to: users[3], key: 'guesses', options: [users[0].nickname, guess] },
             { to: users[0], key: 'correct-guess', options: [users[0].nickname] },
             { to: users[1], key: 'correct-guess', options: [users[0].nickname] },
