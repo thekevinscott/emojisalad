@@ -1,4 +1,5 @@
-var db = require('db');
+'use strict';
+var db = require('../db');
 var Promise = require('bluebird');
 var squel = require('squel');
 

@@ -1,4 +1,5 @@
-var db = require('db');
+'use strict';
+var db = require('../db');
 var squel = require('squel');
 var getMessages = require('./getMessages');
 module.exports = function(user_id) {
