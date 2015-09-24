@@ -113,7 +113,13 @@ module.exports = function(req, res) {
   function end(response, user) {
     return Message.parse(response, user).then(function(messages) {
       Log.outgoing(messages, user, 'twilio');
-      return Twilio.parse(messages, user);
+      if ( process.env.ENVIRONMENT === 'test' ) {
+        // this returns twiml
+        return Twilio.parse(messages, user);
+      } else {
+        // this actually sends out sms
+        return Twilio.send(messages);
+      }
     }).then(function(twiml) {
       return res.end(twiml.toString());
     });
