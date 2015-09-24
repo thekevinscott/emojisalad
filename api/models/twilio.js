@@ -24,7 +24,7 @@ module.exports = {
       // add 1000 to the sending time. Twilio limits
       // outgoing messages to 1 per second anyways,
       // so we can't actually do anything faster than this.
-      return Promise.delay(delay_time+1000).then(function() {
+      return Promise.delay(message_time + 1000).then(function() {
         return send({
           to: response.to,
           from: response.from,
