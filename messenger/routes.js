@@ -14,6 +14,7 @@ module.exports = function(app) {
   });
 
   app.get('*', function(req, res) {
+    console.log('1');
     res.render('index');
   });
 };

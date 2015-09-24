@@ -20,6 +20,7 @@ module.exports = function(user_id) {
               .left_join(attributes, 'a', 'a.user_id=u.id')
               .where('u.id=?',user_id);
 
+              console.log('query', query.toString());
   return db.query(query.toString()).then(function(rows) {
     if ( rows.length ) {
       var user = rows[0];

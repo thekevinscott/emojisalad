@@ -4,13 +4,12 @@
  *
  */
 
-var getUsers = require('../lib/getUsers');
-var startGame = require('../flows/startGame');
-var check = require('../lib/check');
-var rule = require('../../../config/rule');
-
-var EMOJI = '😀';
-var submission = rule('submission').example();
+const getUsers = require('../lib/getUsers');
+const startGame = require('../flows/startGame');
+const check = require('../lib/check');
+const rule = require('../../../config/rule');
+const EMOJI = '😀';
+const submission = rule('submission').example();
 
 describe('Submissions', function() {
   it('should forward submissions not prefaced by /submission', function() {

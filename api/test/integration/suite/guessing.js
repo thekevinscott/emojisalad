@@ -10,6 +10,9 @@ const setup = require('../lib/setup');
 const check = require('../lib/check');
 const rule = require('../../../config/rule');
 const guess = rule('guess').example();
+const clue = rule('clue').example();
+const submission = rule('submission').example();
+const EMOJI = '😀';
 
 describe('Guessing', function() {
 
@@ -211,6 +214,41 @@ describe('Guessing', function() {
           { key: 'game-next-round', options: [users[1].nickname], to: users[0] },
           { key: 'game-next-round-suggestion', options: [users[1].nickname, msg2], to: users[1] },
           { key: 'game-next-round', options: [users[1].nickname], to: users[2] },
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
+  it.only('should handle the bug I saw in production', function() {
+    var users = getUsers(3);
+
+    var msg2 = 'TIME AFTER TIME';
+
+    return playGame(users).then(function() {
+      return setup([
+        { user: users[2], msg: guess + 'JURASSIC PARK' },
+        { user: users[1], msg: EMOJI },
+        { user: users[1], msg: submission + EMOJI },
+        { user: users[0], msg: guess + 'planet of the apes' },
+        { user: users[0], msg: guess + 'space chimps' },
+        { user: users[2], msg: clue },
+        { user: users[2], msg: guess + '2001' },
+      ]);
+    }).then(function() {
+      var the_guess = 'foo';
+      return check(
+        { user: users[2], msg: guess + the_guess },
+        [
+          { to: users[0], key: 'guesses', options: [users[2].nickname, the_guess] },
+          { to: users[1], key: 'guesses', options: [users[2].nickname, the_guess] },
+          { to: users[0], key: 'round-over', options: [users[2].nickname] },
+          { to: users[1], key: 'round-over', options: [users[2].nickname] },
+          { to: users[2], key: 'round-over', options: [users[2].nickname] },
+          { to: users[0], key: 'game-next-round', options: [users[2].nickname] },
+          { to: users[1], key: 'game-next-round', options: [users[2].nickname] },
+          { to: users[2], key: 'game-next-round-suggestion', options: [users[2].nickname, msg2] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
