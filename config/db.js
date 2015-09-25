@@ -7,6 +7,13 @@ var db = {
     "database" : "emojinaryfriend",
     "charset"  : "utf8mb4"
   },
+  digitalOcean: {
+    "host"     : "localhost",
+    "user"     : "emojinaryfriend",
+    "password" : "yU2ofgAizVovg9M}7Tu$d3==smAvZjqbAPagxPU7;ufYnCQGBo",
+    "database" : "emojinaryfriend",
+    "charset"  : "utf8mb4"
+  },
 };
 
 if ( local.test ) {
