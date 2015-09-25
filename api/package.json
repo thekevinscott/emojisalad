@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "app-module-path": "^1.0.4",
+    "array.from": "^0.2.0",
     "auto-loader": "^0.2.0",
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
@@ -23,11 +24,13 @@
     "nodemon": "^1.4.1",
     "pmx": "^0.4.6",
     "q": "^1.4.1",
+    "regenerate": "^1.2.1",
     "request": "^2.61.0",
     "require-all": "^1.1.0",
     "require-dir": "^0.3.0",
     "sprintf": "^0.1.5",
     "squel": "^4.0.0",
+    "strip-combining-marks": "^0.1.0",
     "twilio": "^2.3.0",
     "universal-analytics": "^0.3.9"
   },
