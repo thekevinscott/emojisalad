@@ -3,7 +3,7 @@ const Game = require('../../../models/game');
 const EmojiData = require('emoji-data');
 
 describe('Game', function() {
-  describe.only('Parsing emoji', function() {
+  describe('Parsing emoji', function() {
     it('should allow a blank string', function() {
       Game.checkInput('').should.equal(true);
     });
@@ -29,6 +29,8 @@ describe('Game', function() {
       // this is a list of phrases known to give trouble
       var troublePhrases = [
         '😀',
+        '😀😀',
+        '😀😀😀',
         '💩',
 
         // good hourglass
@@ -37,14 +39,17 @@ describe('Game', function() {
         '⌛️',
 
         '⏳',
-        //'⏳⌛️',
-        //'⏳⌛️🔙',
+        '⏳⌛️',
+        '⏳⌛️🔙',
         '⌛️',
         '🇨🇳',
-        '🀄'
+        '🀄',
+
+        '©',
+        '®',
+        '8️⃣',
       ];
 
-      /*
       it('should check all emoji', function() {
         EmojiData.all().map(function(emoji) {
           var unified = EmojiData.unified_to_char(emoji.unified);
@@ -57,7 +62,6 @@ describe('Game', function() {
           }
         });
       });
-      */
 
       troublePhrases.map(function(emoji) {
         it('should check phrase: '+emoji, function() {

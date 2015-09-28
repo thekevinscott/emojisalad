@@ -2,26 +2,21 @@
 const squel = require('squel').useFlavour('mysql');
 const Promise = require('bluebird');
 const _ = require('lodash');
-const EmojiData = require('emoji-data');
-const punycode = require('punycode');
-const regenerate = require('regenerate');
+//const EmojiData = require('emoji-data');
+const emojiExists = require('emoji-exists');
+//const regenerate = require('regenerate');
 
 // polyfill for Array.from
 require('Array.from');
 const db = require('db');
 const User = require('./user');
 const Round = require('./round');
-const all_emoji_characters = EmojiData.chars({
-  include_variants: true
-});
-//let combiningMarks = /([\0-\u02FF\u0370-\u1DBF\u1E00-\u20CF\u2100-\uD7FF\uDC00-\uFE1F\uFE30-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF])([\u0300-\u036F\u1DC0-\u1DFF\u20D0-\u20FF\uFE20-\uFE2F]+)/g;
-//console.log(all_emoji_characters);
-/*
- *                               '⌛',
-     8483,
-
-     ,                                             */
-const all_emoji_codepoints = Array.from(all_emoji_characters.join(''));
+//const emoji_dictionary = EmojiData.chars({
+  //include_variants: true
+//}).map(function(emoji) {
+  //return emoji.unified
+//});
+//const all_emoji_codepoints = Array.from(all_emoji_characters.join(''));
 
 // number of guesses a user gets per round
 const default_guesses = 2;
@@ -89,60 +84,7 @@ let Game = {
     });
   },
   checkInput: function(str) {
-    if ( str === '' ) { return true; }
-
-    // Unicode Normalization, NFC form, to account for lookalikes,
-    // for instance:
-    // 'mañana' == 'mañana'
-    // > false
-    // 'ma\xF1ana' == 'man\u0303ana'
-    // > false
-    // https://mathiasbynens.be/notes/javascript-unicode
-    //str = str.normalize('NFC');
-
-    // ES6 Array uses string iterator to split string by symbol
-    //console.log('str', str);
-    //str = Array.from(str);
-    //console.log(punycode.ucs2.decode('💩'));
-    //console.log(punycode.ucs2.encode([0x1D306]));
-    //console.log(punycode.ucs2.decode('\u231b\ufe0f'));
-    //console.log(punycode.ucs2.decode(str));
-    //function countSymbols(string) {
-      //return punycode.ucs2.decode(string).length;
-    //}
-    //console.log(countSymbols('💩'));
-    //console.log(countSymbols('⌛️'));
-    //console.log( 'puny: ', punycode.ucs2.decode(str));
-    //console.log(punycode.ucs2.decode('💩'));
-    //console.log(punycode.ucs2.decode('⌛️'));
-    //console.log('str', str.length);
-    //console.log('str', str);
-    //let regex = regenerate()
-    //.addRange(0x0, 0x10FFFF) ;    // all
-    //console.log(regex.toRegExp());
-  
-    console.log(str);
-    let combiningMarks = /([\0-\u02FF\u0370-\u1DBF\u1E00-\u20CF\u2100-\uD7FF\uDC00-\uFE1F\uFE30-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF])([\u0300-\u036F\u1DC0-\u1DFF\u20D0-\u20FF\uFE20-\uFE2F]+)/g;
-    combiningMarks = /([\uFE0F])/g;
-    //let stripCombiningMarks = require('strip-combining-marks');
-    //str = stripCombiningMarks(str);
-    str = str.replace(combiningMarks, '');
-    console.log(str);
-    console.log(punycode.ucs2.decode(str));
-    let regex = regenerate(all_emoji_codepoints);
-    //console.log(regenerate('⌛'));
-    //console.log(regex);
-    let result = str.replace(regex.toRegExp(),'');
-    return result.length === 0;
-    /*
-    str = str.replace(FBS_REGEXP, '').trim();
-    if ( str.length > 0 ) {
-      // this means non-emoji characters exist in the string
-      return false;
-    } else {
-      return true;
-    }
-    */
+    return emojiExists(str);
   },
   saveSubmission: function(user, message) {
     return this.get({ user: user }).then(function(game) {
