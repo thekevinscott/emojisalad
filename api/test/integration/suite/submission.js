@@ -30,9 +30,6 @@ describe('Submissions', function() {
   });
 
   it('should get pissy if you try and send a text submission', function() {
-    console.error('****** FIX THIS WHEN BUG IS FIXED');
-    return;
-    /*
     var users = getUsers(3);
 
     return startGame(users).then(function() {
@@ -50,13 +47,9 @@ describe('Submissions', function() {
         obj.output.should.deep.equal(obj.expected);
       });
     });
-    */
   });
 
   it('should get pissy if you try and send a mixed text emoji submission', function() {
-    console.error('****** FIX THIS WHEN BUG IS FIXED');
-    return;
-    /*
     var users = getUsers(3);
 
     return startGame(users).then(function() {
@@ -74,7 +67,6 @@ describe('Submissions', function() {
         obj.output.should.deep.equal(obj.expected);
       });
     });
-    */
   });
 
   it('should forward the submission to other players', function() {
