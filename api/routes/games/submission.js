@@ -10,7 +10,7 @@ module.exports = function(user, input) {
     return require('../users/help')(user, input);
   } else if ( rule('submission').test(input) ) {
     // This is where we check for valid Emoji
-    if ( 0 && ! Game.checkInput(input) ) {
+    if ( ! Game.checkInput(input) ) {
       return [{
         user: user,
         key: 'error-9'
