@@ -2,21 +2,11 @@
 const squel = require('squel').useFlavour('mysql');
 const Promise = require('bluebird');
 const _ = require('lodash');
-//const EmojiData = require('emoji-data');
 const emojiExists = require('emoji-exists');
-//const regenerate = require('regenerate');
 
-// polyfill for Array.from
-require('Array.from');
 const db = require('db');
 const User = require('./user');
 const Round = require('./round');
-//const emoji_dictionary = EmojiData.chars({
-  //include_variants: true
-//}).map(function(emoji) {
-  //return emoji.unified
-//});
-//const all_emoji_codepoints = Array.from(all_emoji_characters.join(''));
 
 // number of guesses a user gets per round
 const default_guesses = 2;
