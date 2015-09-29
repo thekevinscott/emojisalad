@@ -37,6 +37,8 @@ module.exports = {
         console.error('error sending message', err);
         throw err;
       });
-    }, []);
+    }, []).then(function() {
+      return new twilio.TwimlResponse();
+    });
   }
 };
