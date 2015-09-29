@@ -112,7 +112,6 @@ module.exports = function(req, res) {
 
   function end(response, user) {
     return Message.parse(response, user).then(function(messages) {
-      Log.outgoing(messages, user, 'twilio');
       if ( process.env.ENVIRONMENT === 'test' ) {
         // this returns twiml
         return Twilio.parse(messages, user);

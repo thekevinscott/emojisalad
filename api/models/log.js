@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 const squel = require('squel');
 const db = require('db');
 const User = require('./user');
+const _ = require('lodash');
  
 var Log = {
   incoming: function(response, platform) {
@@ -42,10 +43,12 @@ var Log = {
   },
   outgoing: function(responses, user, platform) {
     try {
+      if ( !_.isArray(responses) ) {
+        responses = [responses];
+      }
       if ( responses && responses.length ) {
         Promise.all(responses.map(function(message) {
           return User.get({ id: message.user.id }).then(function(user) {
-            console.log('user', user);
             var platform_id = squel
                               .select()
                               .field('id')
