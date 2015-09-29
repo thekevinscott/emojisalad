@@ -67,6 +67,7 @@ let User = {
                   .select()
                   .field('u.id')
                   .field('u.created')
+                  .field('u.state_id')
                   .field('i.inviter_id')
                   .field('p.platform', 'platform')
                   .field('s.state', 'state')

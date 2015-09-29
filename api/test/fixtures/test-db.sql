@@ -156,6 +156,7 @@ DROP TABLE IF EXISTS `incomingMessages`;
 CREATE TABLE `incomingMessages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
+  `user_state` int(11) DEFAULT NULL,
   `message` text COLLATE utf8mb4_unicode_ci,
   `response` text COLLATE utf8mb4_unicode_ci,
   `platform_id` int(11) DEFAULT NULL,
@@ -208,6 +209,7 @@ DROP TABLE IF EXISTS `outgoingMessages`;
 CREATE TABLE `outgoingMessages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
+  `user_state` int(11) DEFAULT NULL,
   `message_key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `options` text COLLATE utf8mb4_unicode_ci,
   `message` text COLLATE utf8mb4_unicode_ci,
@@ -406,7 +408,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-29 19:23:58
+-- Dump completed on 2015-09-29 19:32:51
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: emojinaryfriend.cfiretgvvbvv.us-east-1.rds.amazonaws.com    Database: emojinaryfriend
@@ -631,4 +633,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-29 19:24:01
+-- Dump completed on 2015-09-29 19:32:54

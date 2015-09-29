@@ -29,6 +29,7 @@ var Log = {
       if ( user ) {
         query.setFields({
           user_id: user.id,
+          user_state: user.state_id
         });
       }
       
@@ -40,39 +41,41 @@ var Log = {
     });
   },
   outgoing: function(responses, user, platform) {
-    /// IM TRACKING OUTGOING MESSAGES HERE
     try {
-    if ( responses && responses.length ) {
-      Promise.all(responses.map(function(message) {
-        var platform_id = squel
-                          .select()
-                          .field('id')
-                          .from('platforms')
-                          .where('platform=?',platform);
+      if ( responses && responses.length ) {
+        Promise.all(responses.map(function(message) {
+          return User.get({ id: message.user.id }).then(function(user) {
+            console.log('user', user);
+            var platform_id = squel
+                              .select()
+                              .field('id')
+                              .from('platforms')
+                              .where('platform=?',platform);
 
-        platform_id = 1;
+            platform_id = 1;
 
-        var query = squel
-                    .insert()
-                    .into('outgoingMessages')
-                    .setFields({
-                      message_key: message.key,
-                      options: JSON.stringify(message.options || []),
-                      message: message.message,
-                      type: message.type,
-                      platform_id: platform_id,
-                      created: squel.fval('NOW(3)')
-                    });
+            var query = squel
+                        .insert()
+                        .into('outgoingMessages')
+                        .setFields({
+                          message_key: message.key,
+                          options: JSON.stringify(message.options || []),
+                          message: message.message,
+                          type: message.type,
+                          platform_id: platform_id,
+                          created: squel.fval('NOW(3)')
+                        });
 
-        if ( message.type === 'respond' && user ) {
-          query.setFields({ user_id: user.id });
-        } else if ( message.user ) {
-          query.setFields({ user_id: message.user.id });
-        }
+            query.setFields({
+              user_id: user.id,
+              user_state: user.state_id,
 
-        return db.query(query);
-      }));
-    }
+            });
+
+            return db.query(query);
+          });
+        }));
+      }
     } catch(e) {
       console.error('error with outgoing message', e);
     }
