@@ -2,7 +2,7 @@
 const squel = require('squel').useFlavour('mysql');
 const Promise = require('bluebird');
 const _ = require('lodash');
-const EmojiData = require('emoji-data');
+const emojiExists = require('emoji-exists');
 
 const db = require('db');
 const User = require('./user');
@@ -74,17 +74,7 @@ let Game = {
     });
   },
   checkInput: function(str) {
-    let FBS_REGEXP = new RegExp("(?:" + (EmojiData.chars({
-      include_variants: true
-    }).join("|")) + ")", "g");
-
-    str = str.replace(FBS_REGEXP, '').trim();
-    if ( str.length > 0 ) {
-      // this means non-emoji characters exist in the string
-      return false;
-    } else {
-      return true;
-    }
+    return emojiExists(str);
   },
   saveSubmission: function(user, message) {
     return this.get({ user: user }).then(function(game) {

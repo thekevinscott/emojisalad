@@ -30,51 +30,33 @@ describe('Submissions', function() {
   });
 
   it('should get pissy if you try and send a text submission', function() {
-    console.error('****** FIX THIS WHEN BUG IS FIXED');
-    return;
-    /*
     var users = getUsers(3);
 
     return startGame(users).then(function() {
       return check(
-        { user: users[0], msg: 'foo' },
+        { user: users[0], msg: submission + 'foo' },
         [
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[0] },
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[2] },
-          { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[0] },
-          { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[1] },
-          { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[2] }
+          { to: users[0], key: 'error-9' },
         ]
       ).then(function(obj) {
-        console.log('obj', obj);
         obj.output.should.deep.equal(obj.expected);
       });
     });
-    */
   });
 
   it('should get pissy if you try and send a mixed text emoji submission', function() {
-    console.error('****** FIX THIS WHEN BUG IS FIXED');
-    return;
-    /*
     var users = getUsers(3);
 
     return startGame(users).then(function() {
       return check(
-        { user: users[0], msg: EMOJI+'foo'+EMOJI },
+        { user: users[0], msg: submission + EMOJI + 'foo' + EMOJI },
         [
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[0] },
-          { key: 'says', options: [users[1].nickname, 'CLUE'], to: users[2] },
-          { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[0] },
-          { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[1] },
-          { key: 'clue', options: [users[1].nickname, 'MOVIE'], to: users[2] }
+          { to: users[0], key: 'error-9' },
         ]
       ).then(function(obj) {
-        console.log('obj', obj);
         obj.output.should.deep.equal(obj.expected);
       });
     });
-    */
   });
 
   it('should forward the submission to other players', function() {
