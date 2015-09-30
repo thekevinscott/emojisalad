@@ -113,9 +113,10 @@ module.exports = function(user, input) {
                   if ( guesses_left > 0 ) {
                     return 'incorrect-guess';
                   } else {
-                    User.update(user, { state: 'lost' });
-                    // does the game have ANY players with guesses left?
-                    return Game.getGuessesLeft(game).then(function(guesses_left) {
+                    return User.update(user, { state: 'lost' }).then(function() {
+                      // does the game have ANY players with guesses left?
+                      return Game.getGuessesLeft(game);
+                    }).then(function(guesses_left) {
                       if ( guesses_left > 0 ) {
                         return 'incorrect-out-of-guesses';
                       } else {

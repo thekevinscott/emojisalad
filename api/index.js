@@ -5,7 +5,21 @@ require('app-module-path').addPath(__dirname);
 const pmx = require('pmx');
 const express = require('express');
 const app = express();
-//const db = require('db');
+
+let DEBUG = false;
+console.debug = function() {
+  if ( DEBUG ) {
+    console.log.apply(null, arguments);
+  }
+};
+pmx.action('debug:on', function(reply) {
+  DEBUG = true;
+  reply({DEBUG : DEBUG});
+});
+pmx.action('debug:off', function(reply) {
+  DEBUG = false;
+  reply({DEBUG : DEBUG});
+});
 
 app.set('port', (process.env.PORT || 5000));
 
