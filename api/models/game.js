@@ -76,7 +76,9 @@ let Game = {
     });
   },
   checkInput: function(str) {
-    if ( emojiExists(str) ) {
+    if ( str === '' ) {
+      return 'text';
+    } else if ( emojiExists(str) ) {
       return 'emoji';
     } else if ( EmojiData.scan(str).length > 0 ) {
       return 'mixed-emoji';
