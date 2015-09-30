@@ -317,6 +317,12 @@ let Game = {
                   guesses: default_guesses,
                   clues_allowed: default_clues_allowed 
                 });
+    let default_scores = {
+      'pass': -1,
+      'win_submitter': 3,
+      'win_guesser': 2
+    };
+
     return db.query(query.toString()).then(function(rows) {
       let game_score_query = squel
                              .insert({
@@ -324,9 +330,9 @@ let Game = {
                              })
                              .into('game_scores', 's')
                              .setFieldsRows([
-                               { game_id: rows.insertId, score: -1, key: 'pass' },
-                               { game_id: rows.insertId, score: 3, key: 'win-submitter' },
-                               { game_id: rows.insertId, score: 2, key: 'win-guesser' },
+                               { game_id: rows.insertId, score: -1, key: default_scores.pass },
+                               { game_id: rows.insertId, score: 3, key: default_scores.win_submitter },
+                               { game_id: rows.insertId, score: 2, key: default_scores.win_guesser},
                              ]);
       return db.query(game_score_query.toString()).then(function() {
         return {
