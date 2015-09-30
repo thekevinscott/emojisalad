@@ -188,6 +188,7 @@ let Game = {
                 .from('games', 'g')
                 .left_join('game_participants', 'p', 'p.game_id = g.id')
                 .left_join('game_states', 's', 's.id = g.state_id')
+                .left_join('users', 'u', 'u.id=p.user_id')
                 .where('g.archived=0')
                 .where('u.archived=0')
                 .order('g.created', false)

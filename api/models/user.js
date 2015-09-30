@@ -168,9 +168,9 @@ let User = {
 
           query = squel
                   .update()
-                  .table('users')
+                  .table('users', 'u')
                   .where('u.archived=0')
-                  .where('id=?', user.id);
+                  .where('u.id=?', user.id);
           query.set('state_id', state, { dontQuote: true });
           queries.push(query);
           break;
