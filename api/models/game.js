@@ -318,10 +318,59 @@ let Game = {
                   clues_allowed: default_clues_allowed 
                 });
     return db.query(query.toString()).then(function(rows) {
-      return {
-        id: rows.insertId
-      };
+      let game_score_query = squel
+                             .insert({
+                               autoQuoteFieldNames: true
+                             })
+                             .into('game_scores', 's')
+                             .setFieldsRows([
+                               { game_id: rows.insertId, score: -1, key: 'pass' },
+                               { game_id: rows.insertId, score: 3, key: 'win-submitter' },
+                               { game_id: rows.insertId, score: 2, key: 'win-guesser' },
+                             ]);
+      return db.query(game_score_query.toString()).then(function() {
+        return {
+          id: rows.insertId
+        };
+      });
     });
+  },
+  updateScore: function(game, user, type) {
+    let updates = [];
+    if ( type === 'win-round' ) {
+      updates.push({
+        user_id: user.id,
+        score: squel.select()
+               .field('score').from('game_scores')
+               .where('game_id=?',game.id)
+               .where('`key`=?','win-guesser')
+      });
+      updates.push({
+        user_id: game.round.submitter.id,
+        score: squel.select()
+               .field('score').from('game_scores')
+               .where('game_id=?',game.id)
+               .where('`key`=?','win-submitter')
+      });
+    } else if ( type === 'pass' ) {
+      updates.push({
+        user_id: user.id,
+        score: squel.select()
+               .field('score').from('game_scores')
+               .where('game_id=?',game.id)
+               .where('`key`=?','pass')
+      });
+    }
+
+    return Promise.all(updates.map(function(data) {
+      let query = squel
+                  .update()
+                  .table('game_participants')
+                  .set('score = score + ('+data.score+')')
+                  .where('user_id=?',data.user_id)
+                  .where('game_id=?',game.id);
+      return db.query(query);
+    }));
   }
 };
 

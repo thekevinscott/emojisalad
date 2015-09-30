@@ -42,6 +42,7 @@ module.exports = function(user, input) {
             var guess = rule('guess').match(input);
             return Game.checkGuess(game, user, guess).then(function(result) {
               if ( result ) {
+                Game.updateScore(game, user, 'win-round');
                 game.players.map(function(player) {
                   messages.push({
                     key: 'correct-guess',

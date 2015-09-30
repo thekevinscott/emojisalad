@@ -18,6 +18,7 @@ module.exports = function(user) {
     result = 'pass-rejected-not-guessing';
   } else if ( user.state === 'guessing' ) {
     result = Game.get({ user: user }).then(function(game){
+      Game.updateScore(game, user, 'pass');
 
       var players_left = game.round.players.filter(function(player) {
         return player !== user && player.state === 'guessing';
@@ -79,6 +80,7 @@ module.exports = function(user) {
           }
         }).concat(endingMessages);
       });
+
     });
   }
 

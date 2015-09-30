@@ -73,6 +73,8 @@ CREATE TABLE `game_participants` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `game_id` int(11) DEFAULT NULL,
+  `score` int(11) NOT NULL DEFAULT '0',
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `one_user_per_game` (`user_id`,`game_id`)
@@ -93,6 +95,24 @@ CREATE TABLE `game_phrases` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `game_scores`
+--
+
+DROP TABLE IF EXISTS `game_scores`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `game_scores` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `game_id` int(11) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `key` varchar(255) DEFAULT NULL,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,6 +143,7 @@ CREATE TABLE `games` (
   `clues_allowed` int(11) DEFAULT NULL,
   `random` tinyint(1) NOT NULL DEFAULT '1',
   `archived` tinyint(1) NOT NULL DEFAULT '0',
+  `last_activity` timestamp NULL DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
@@ -395,6 +416,7 @@ CREATE TABLE `users` (
   `state_id` int(2) DEFAULT '1',
   `platform_id` int(11) DEFAULT NULL,
   `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `last_activity` timestamp NULL DEFAULT NULL,
   `created` timestamp(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=429 DEFAULT CHARSET=utf8;
@@ -409,7 +431,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-30 12:26:41
+-- Dump completed on 2015-09-30 13:27:21
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: emojinaryfriend.cfiretgvvbvv.us-east-1.rds.amazonaws.com    Database: emojinaryfriend
@@ -634,4 +656,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-30 12:26:44
+-- Dump completed on 2015-09-30 13:27:24
