@@ -147,6 +147,7 @@ let Game = {
                 .left_join('platforms', 'p', 'p.id = u.platform_id')
                 .where('g.id=?', game.id)
                 .where('g.archived=0')
+                .where('u.archived=0')
                 .order('u.id');
 
     return db.query(query).then(function(users) {
@@ -188,6 +189,7 @@ let Game = {
                 .left_join('game_participants', 'p', 'p.game_id = g.id')
                 .left_join('game_states', 's', 's.id = g.state_id')
                 .where('g.archived=0')
+                .where('u.archived=0')
                 .order('g.created', false)
                 .limit(1);
 
