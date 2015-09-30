@@ -3,6 +3,7 @@ const squel = require('squel').useFlavour('mysql');
 const Promise = require('bluebird');
 const _ = require('lodash');
 const emojiExists = require('emoji-exists');
+const EmojiData = require('emoji-data');
 
 const db = require('db');
 const User = require('./user');
@@ -11,6 +12,7 @@ const Round = require('./round');
 // number of guesses a user gets per round
 const default_guesses = 2;
 const default_clues_allowed = 1;
+
 let Game = {
   update: function(game, data) {
     let query = squel
@@ -74,7 +76,13 @@ let Game = {
     });
   },
   checkInput: function(str) {
-    return emojiExists(str);
+    if ( emojiExists(str) ) {
+      return 'emoji';
+    } else if ( EmojiData.scan(str).length > 0 ) {
+      return 'mixed-emoji';
+    } else {
+      return 'text';
+    }
   },
   saveSubmission: function(user, message) {
     return this.get({ user: user }).then(function(game) {

@@ -2,11 +2,9 @@
 const setup = require('../lib/setup');
 const startGame = require('./startGame');
 const Round = require('../../../models/Round');
-const rule = require('../../../config/rule');
 
 // submit any old emoji to start a round
 const EMOJI = '😀';
-const submission = rule('submission').example();
 
 function playGame(users, options) {
   if ( ! options ) { options = {}; }
@@ -14,7 +12,7 @@ function playGame(users, options) {
     return setup([
       {
         user: users[0],
-        msg: submission + EMOJI 
+        msg: EMOJI 
       }
     ]).then(function() {
       if ( options.clues_allowed ) {

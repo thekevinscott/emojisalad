@@ -10,9 +10,8 @@ const setup = require('../lib/setup');
 const check = require('../lib/check');
 const rule = require('../../../config/rule');
 const guess = rule('guess').example();
-const clue = rule('clue').example();
-const submission = rule('submission').example();
-const EMOJI = '😀';
+//const clue = rule('clue').example();
+//const EMOJI = '😀';
 
 describe('Guessing', function() {
 
@@ -230,7 +229,7 @@ describe('Guessing', function() {
       //return setup([
         //{ user: users[2], msg: guess + 'JURASSIC PARK' },
         //{ user: users[1], msg: EMOJI },
-        //{ user: users[1], msg: submission + EMOJI },
+        //{ user: users[1], msg: EMOJI },
         //{ user: users[0], msg: guess + 'planet of the apes' },
         //{ user: users[0], msg: guess + 'space chimps' },
         //{ user: users[2], msg: clue },

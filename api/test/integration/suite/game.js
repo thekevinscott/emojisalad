@@ -14,7 +14,6 @@ const getGame = require('../lib/getGame');
 const setNonRandomGame = require('../lib/setNonRandomGame');
 const rule = require('../../../config/rule');
 const EMOJI = '😀';
-const submission = rule('submission').example();
 const guess = rule('guess').example();
 
 describe('Game', function() {
@@ -84,7 +83,7 @@ describe('Game', function() {
       return playGame(users).then(function(game) {
         return setup([
           { user: users[1], msg: guess + game.round.phrase },
-          { user: users[1], msg: submission + EMOJI },
+          { user: users[1], msg: EMOJI },
         ]);
       }).then(function() {
         return getGame(users[0]);
@@ -111,9 +110,9 @@ describe('Game', function() {
       return playGame(users).then(function(game) {
         return setup([
           { user: users[1], msg: guess+game.round.phrase },
-          { user: users[1], msg: submission + EMOJI },
+          { user: users[1], msg: EMOJI },
           { user: users[0], msg: guess+' SILENCE OF THE LAMBS' },
-          { user: users[2], msg: submission + EMOJI },
+          { user: users[2], msg: EMOJI },
         ]);
       }).then(function() {
         return getGame(users[0]);
@@ -142,7 +141,7 @@ describe('Game', function() {
 
       return startGame(users.slice(0, 2)).then(function() {
         return setup([
-          { user: users[0], msg: submission + EMOJI },
+          { user: users[0], msg: EMOJI },
           { user: users[0], msg: 'invite '+users[2].number },
           { user: users[2], msg: 'y' },
           { user: users[2], msg: users[2].nickname },
@@ -176,9 +175,9 @@ describe('Game', function() {
 
       return startGame(users.slice(0, 2)).then(function() {
         return setup([
-          { user: users[0], msg: submission + EMOJI },
+          { user: users[0], msg: EMOJI },
           { user: users[1], msg: 'guess JURASSIC PARK' },
-          { user: users[1], msg: submission + EMOJI },
+          { user: users[1], msg: EMOJI },
           { user: users[0], msg: 'invite '+users[2].number },
           { user: users[2], msg: 'y' },
           { user: users[2], msg: users[2].nickname },
@@ -212,12 +211,12 @@ describe('Game', function() {
 
       return startGame(users.slice(0, 3)).then(function() {
         return setup([
-          { user: users[0], msg: submission + EMOJI },
+          { user: users[0], msg: EMOJI },
           { user: users[1], msg: 'guess JURASSIC PARK' },
-          { user: users[1], msg: submission + EMOJI },
+          { user: users[1], msg: EMOJI },
           { user: users[0], msg: 'guess SILENCE OF THE LAMBS' },
           { user: users[0], msg: 'invite '+users[3].number },
-          { user: users[2], msg: submission + EMOJI },
+          { user: users[2], msg: EMOJI },
           { user: users[3], msg: 'y' },
           { user: users[3], msg: users[3].nickname },
         ]);

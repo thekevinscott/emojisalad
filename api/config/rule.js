@@ -44,13 +44,6 @@ const rules = {
     pattern: '^%(phrase)s',
     flags: 'i'
   },
-  'submission': {
-    pattern: '^submission(.*)',
-    flags: 'i',
-    example: [
-      'submission '
-    ],
-  },
   'yes': {
     pattern: '^yes|^yeah|^yea|^y$',
     flags: 'i',

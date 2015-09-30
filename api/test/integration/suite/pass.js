@@ -15,7 +15,6 @@ const setup = require('../lib/setup');
 const rule = require('../../../config/rule');
 const clue = rule('clue').example();
 const pass = rule('pass').example();
-//var submission = rule('submission').example();
 const EMOJI = '😀';
 const guess = rule('guess').example();
 
