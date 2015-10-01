@@ -24,6 +24,8 @@ app.get('/test', function(req, res) {
 // this handles all replies
 app.post('/platform/:platform', require('./platforms/'));
 
+require('./cron');
+
 app.listen(app.get('port'), function() {
   console.log('EmojinaryFriend API');
 });
