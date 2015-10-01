@@ -18,10 +18,14 @@ module.exports = function(user) {
     result = 'pass-rejected-not-guessing';
   } else if ( user.state === 'guessing' ) {
     result = Game.get({ user: user }).then(function(game){
+      return User.update(user, { state: 'passed' }).then(function() {
+        return game;
+      });
+    }).then(function(game) {
       Game.updateScore(game, user, 'pass');
 
       var players_left = game.round.players.filter(function(player) {
-        return player !== user && player.state === 'guessing';
+        return player.id !== user.id && player.state === 'guessing';
       });
 
       var promise;
@@ -83,8 +87,6 @@ module.exports = function(user) {
 
     });
   }
-
-  User.update(user, { state: 'passed' });
 
   if ( typeof result === 'string' ) {
     return [{

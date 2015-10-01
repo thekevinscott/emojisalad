@@ -24,3 +24,6 @@ require('./help');
 
 // tests that passing works correctly
 require('./pass');
+
+// tests that scoring works correctly
+require('./score');

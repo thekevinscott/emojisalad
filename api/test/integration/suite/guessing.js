@@ -4,31 +4,50 @@
  *
  */
 
+const Game = require('../../../models/game');
 const getUsers = require('../lib/getUsers');
 const playGame = require('../flows/playGame');
 const setup = require('../lib/setup');
 const check = require('../lib/check');
+const getScore = require('../lib/getScore');
 const rule = require('../../../config/rule');
 const guess = rule('guess').example();
-const clue = rule('clue').example();
-const submission = rule('submission').example();
-const EMOJI = '😀';
+const rand = require('../lib/getRandomScore');
+//const clue = rule('clue').example();
+//const submission = rule('submission').example();
+//const EMOJI = '😀';
+
+const defaults = {
+  'win-guesser-1': rand(),
+  'win-submitter-1': rand(),
+  'win-guesser-2': rand(),
+  'win-submitter-2': rand(),
+  'pass': rand()
+};
 
 describe('Guessing', function() {
 
   it('should be able to successfully guess', function() {
     var users = getUsers(3);
+    var msg2 = 'SILENCE OF THE LAMBS';
 
     return playGame(users).then(function(game) {
-      var msg2 = 'SILENCE OF THE LAMBS';
+      return Game.updateDefaultScores(game, defaults).then(function() {
+        return game;
+      });
+    }).then(function(game) {
+      let updates = {};
+      updates[users[1].nickname] = defaults['win-guesser-1'];
+      updates[users[0].nickname] = defaults['win-submitter-1'];
+      let score = getScore(game, updates);
       return check(
         { user: users[1], msg: guess + game.round.phrase },
         [
           { key: 'guesses', options: [users[1].nickname, game.round.phrase], to: users[0] },
           { key: 'guesses', options: [users[1].nickname, game.round.phrase], to: users[2] },
-          { key: 'correct-guess', options: [users[1].nickname], to: users[0] },
-          { key: 'correct-guess', options: [users[1].nickname], to: users[1] },
-          { key: 'correct-guess', options: [users[1].nickname], to: users[2] },
+          { key: 'correct-guess', options: [users[1].nickname, score], to: users[0] },
+          { key: 'correct-guess', options: [users[1].nickname, score], to: users[1] },
+          { key: 'correct-guess', options: [users[1].nickname, score], to: users[2] },
           { key: 'game-next-round', options: [users[1].nickname], to: users[0] },
           { key: 'game-next-round-suggestion', options: [users[1].nickname, msg2], to: users[1] },
           { key: 'game-next-round', options: [users[1].nickname], to: users[2] },
@@ -41,21 +60,29 @@ describe('Guessing', function() {
   });
 
   it('should be able to successfully guess with case insensitivity', function() {
-    var users = getUsers(3);
+    const users = getUsers(3);
+    const msg2 = 'SILENCE OF THE LAMBS';
 
     return playGame(users).then(function(game) {
-      var msg2 = 'SILENCE OF THE LAMBS';
+      return Game.updateDefaultScores(game, defaults).then(function() {
+        return game;
+      });
+    }).then(function(game) {
+      let updates = {};
+      updates[users[1].nickname] = defaults['win-guesser-1'];
+      updates[users[0].nickname] = defaults['win-submitter-1'];
+      let score = getScore(game, updates);
       return check(
         { user: users[1], msg: guess + game.round.phrase.toLowerCase() },
         [
-          { key: 'guesses', options: [users[1].nickname, game.round.phrase.toLowerCase()], to: users[0] },
-          { key: 'guesses', options: [users[1].nickname, game.round.phrase.toLowerCase()], to: users[2] },
-          { key: 'correct-guess', options: [users[1].nickname], to: users[0] },
-          { key: 'correct-guess', options: [users[1].nickname], to: users[1] },
-          { key: 'correct-guess', options: [users[1].nickname], to: users[2] },
-          { key: 'game-next-round', options: [users[1].nickname], to: users[0] },
-          { key: 'game-next-round-suggestion', options: [users[1].nickname, msg2], to: users[1] },
-          { key: 'game-next-round', options: [users[1].nickname], to: users[2] },
+          { to: users[0],key: 'guesses', options: [users[1].nickname, game.round.phrase.toLowerCase()] },
+          { to: users[2],key: 'guesses', options: [users[1].nickname, game.round.phrase.toLowerCase()] },
+          { to: users[0], key: 'correct-guess', options: [users[1].nickname, score] },
+          { to: users[1], key: 'correct-guess', options: [users[1].nickname, score] },
+          { to: users[2], key: 'correct-guess', options: [users[1].nickname, score] },
+          { to: users[0], key: 'game-next-round', options: [users[1].nickname] },
+          { to: users[1], key: 'game-next-round-suggestion', options: [users[1].nickname, msg2] },
+          { to: users[2], key: 'game-next-round', options: [users[1].nickname] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -71,11 +98,11 @@ describe('Guessing', function() {
       return check(
         { user: users[1], msg: guess + the_guess},
         [
-          { key: 'guesses', options: [users[1].nickname, the_guess], to: users[0] },
-          { key: 'guesses', options: [users[1].nickname, the_guess], to: users[2] },
-          { key: 'incorrect-guess', options: [users[1].nickname], to: users[0] },
-          { key: 'incorrect-guess', options: [users[1].nickname], to: users[1] },
-          { key: 'incorrect-guess', options: [users[1].nickname], to: users[2] },
+          { to: users[0], key: 'guesses', options: [users[1].nickname, the_guess] },
+          { to: users[2], key: 'guesses', options: [users[1].nickname, the_guess] },
+          { to: users[0], key: 'incorrect-guess', options: [] },
+          { to: users[1], key: 'incorrect-guess', options: [] },
+          { to: users[2], key: 'incorrect-guess', options: [] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -164,25 +191,33 @@ describe('Guessing', function() {
     var the_guess = 'foo';
     var msg2 = 'SILENCE OF THE LAMBS';
 
-    return playGame(users).then(function() {
+    return playGame(users).then(function(game) {
       return setup([
         { user: users[1], msg: guess + the_guess },
         { user: users[2], msg: guess + the_guess },
         { user: users[1], msg: guess + the_guess },
-      ]);
-    }).then(function() {
+      ]).then(function() {
+        return Game.updateDefaultScores(game, defaults).then(function() {
+          return game;
+        });
+      });
+    }).then(function(game) {
+      let updates = {};
+      updates[users[2].nickname] = defaults['win-guesser-1'];
+      updates[users[0].nickname] = defaults['win-submitter-1'];
+      let score = getScore(game, updates);
       var correct = 'jurassic park';
       return check(
         { user: users[2], msg: guess + correct },
         [
-          { key: 'guesses', options: [users[2].nickname, correct], to: users[0] },
-          { key: 'guesses', options: [users[2].nickname, correct], to: users[1] },
-          { key: 'correct-guess', options: [users[2].nickname], to: users[0] },
-          { key: 'correct-guess', options: [users[2].nickname], to: users[1] },
-          { key: 'correct-guess', options: [users[2].nickname], to: users[2] },
-          { key: 'game-next-round', options: [users[1].nickname], to: users[0] },
-          { key: 'game-next-round-suggestion', options: [users[1].nickname, msg2], to: users[1] },
-          { key: 'game-next-round', options: [users[1].nickname], to: users[2] },
+          { to: users[0], key: 'guesses', options: [users[2].nickname, correct] },
+          { to: users[1], key: 'guesses', options: [users[2].nickname, correct] },
+          { to: users[0], key: 'correct-guess', options: [users[2].nickname, score] },
+          { to: users[1], key: 'correct-guess', options: [users[2].nickname, score] },
+          { to: users[2], key: 'correct-guess', options: [users[2].nickname, score] },
+          { to: users[0], key: 'game-next-round', options: [users[1].nickname] },
+          { to: users[1], key: 'game-next-round-suggestion', options: [users[1].nickname, msg2] },
+          { to: users[2], key: 'game-next-round', options: [users[1].nickname] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);

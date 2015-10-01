@@ -134,12 +134,14 @@ let Game = {
     });
   },
   getPlayers: function(game) {
+
     let query = squel
                 .select()
                 .field('u.id')
                 .field('u.created')
                 .field('s.state')
                 .field('p.platform as platform')
+                .field('gp.score')
                 .from('game_participants', 'gp')
                 .left_join('games', 'g', 'gp.game_id = g.id')
                 .left_join('users', 'u', 'u.id = gp.user_id')
@@ -149,6 +151,17 @@ let Game = {
                 .where('g.archived=0')
                 .where('u.archived=0')
                 .order('u.id');
+
+    if ( game.round ) {
+      let guesses = squel
+                    .select()
+                    .field('user_id')
+                    .field('COALESCE(count(1), 0) as guesses')
+                    .from('guesses')
+                    .where('round_id=?',game.round.id);
+      query = query.left_join(guesses, 'e', 'e.user_id=u.id');
+      query = query.field('e.guesses');
+    }
 
     return db.query(query).then(function(users) {
       return Promise.all(users.map(function(user) {
@@ -319,8 +332,10 @@ let Game = {
                 });
     let default_scores = {
       'pass': -1,
-      'win_submitter': 3,
-      'win_guesser': 2
+      'win-submitter-1': 3,
+      'win-guesser-1': 2,
+      'win-submitter-2': 2,
+      'win-guesser-2': 1
     };
 
     return db.query(query.toString()).then(function(rows) {
@@ -329,11 +344,13 @@ let Game = {
                                autoQuoteFieldNames: true
                              })
                              .into('game_scores', 's')
-                             .setFieldsRows([
-                               { game_id: rows.insertId, score: -1, key: default_scores.pass },
-                               { game_id: rows.insertId, score: 3, key: default_scores.win_submitter },
-                               { game_id: rows.insertId, score: 2, key: default_scores.win_guesser},
-                             ]);
+                             .setFieldsRows(Object.keys(default_scores).map(function(key) {
+                               return {
+                                 game_id: rows.insertId,
+                                 score: default_scores[key],
+                                 key: key
+                               };
+                             }));
       return db.query(game_score_query.toString()).then(function() {
         return {
           id: rows.insertId
@@ -344,19 +361,26 @@ let Game = {
   updateScore: function(game, user, type) {
     let updates = [];
     if ( type === 'win-round' ) {
+      let score_index = 1;
+      game.players.map(function(player) {
+        if ( player.id === user.id ) {
+          score_index += player.guesses;
+        }
+      });
+
       updates.push({
         user_id: user.id,
         score: squel.select()
                .field('score').from('game_scores')
                .where('game_id=?',game.id)
-               .where('`key`=?','win-guesser')
+               .where('`key`=?','win-guesser-'+score_index)
       });
       updates.push({
         user_id: game.round.submitter.id,
         score: squel.select()
                .field('score').from('game_scores')
                .where('game_id=?',game.id)
-               .where('`key`=?','win-submitter')
+               .where('`key`=?','win-submitter-'+score_index)
       });
     } else if ( type === 'pass' ) {
       updates.push({
@@ -375,7 +399,22 @@ let Game = {
                   .set('score = score + ('+data.score+')')
                   .where('user_id=?',data.user_id)
                   .where('game_id=?',game.id);
+
       return db.query(query);
+    })).then(function() {
+      return this.get({ id: game.id });
+    }.bind(this));
+  },
+  updateDefaultScores: function(game, scores) {
+    return Promise.all(Object.keys(scores).map(function(key) {
+      let query = squel
+                  .update()
+                  .table('game_scores')
+                  .set('score='+scores[key])
+                  .where('game_id=?',game.id)
+                  .where('`key`=?',key);
+
+      return db.query(query.toString());
     }));
   }
 };
