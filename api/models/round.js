@@ -202,7 +202,7 @@ var Round = {
       Game.getNextSubmitter(game),
       this.getPhrase(game),
       function(submitter, phrase) {
-        var state = 'pending';
+        var state = 'waiting-for-submission';
         var state_id = squel
                        .select()
                        .field('id')

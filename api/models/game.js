@@ -11,6 +11,11 @@ const Round = require('./round');
 // number of guesses a user gets per round
 const default_guesses = 2;
 const default_clues_allowed = 1;
+
+squel.registerValueHandler(Date, function(date) {
+  return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
+});
+
 let Game = {
   update: function(game, data) {
     let query = squel
@@ -196,16 +201,18 @@ let Game = {
     let query = squel
                 .select()
                 .field('g.id')
+                .field('g.last_activity')
                 .field('g.random')
                 .field('s.state')
                 .from('games', 'g')
                 .left_join('game_participants', 'p', 'p.game_id = g.id')
                 .left_join('game_states', 's', 's.id = g.state_id')
                 .left_join('users', 'u', 'u.id=p.user_id')
+                .group('g.id')
                 .where('g.archived=0')
                 .where('u.archived=0')
-                .order('g.created', false)
-                .limit(1);
+                .order('g.created', false);
+                //.limit(1);
 
     if ( params.user ) {
       query.where('p.user_id=?',params.user.id);
@@ -216,6 +223,10 @@ let Game = {
       query.where('p.user_id IN ? ',user_ids);
     } else if ( params.id ) {
       query.where('g.id=?',params.id);
+    }
+
+    if ( params.last_activity ) {
+      query.where('g.last_activity<?', params.last_activity);
     }
     
     return db.query(query.toString()).then(function(rows) {

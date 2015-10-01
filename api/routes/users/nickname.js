@@ -30,7 +30,7 @@ module.exports = function(user, input) {
             console.error(game);
             throw "This should not happen, there should always be a round";
           }
-          if ( game.round.state === 'pending' ) {
+          if ( game.round.state === 'waiting-for-submission' ) {
             // the user can jump in.
             // the round has yet to begin!
             return addPlayerToRound(game, user, input);

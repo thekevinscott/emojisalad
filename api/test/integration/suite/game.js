@@ -30,7 +30,7 @@ const defaults = {
 
 describe('Game', function() {
 
-  it('should initiate the game with the person who started it', function() {
+  it.only('should initiate the game with the person who started it', function() {
     const users = getUsers(2);
 
     return signup(users[0]).then(function() {
