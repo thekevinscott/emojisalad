@@ -23,11 +23,6 @@ function checkGames() {
       }
     });
   });
-
-  // switch on their round states
-  // * waiting-for-submission - send a message to the submitter. CHECK THAT THIS IS ACTRUALLY BEING SET BY the app.
-  // * won - this state can be safely ignored. SCRATCH THAT - if this happens, it means the game is in stasis. This should alert administrators that something is wrong.
-  // * playing - send a message to everyone in the group
 }
 
 function sendAlert(key, players) {
