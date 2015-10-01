@@ -1,11 +1,15 @@
 'use strict';
 const Game = require('models/game');
 
-function checkGames() {
-  // get a list of games with no activity for at least 24 hours.
+function getDayAgo() {
   const day_ago = new Date();
   day_ago.setDate(day_ago.getDate() - 1);
-  Game.get({ last_activity: day_ago }).then(function(games) {
+  return day_ago;
+}
+
+function checkGames() {
+  // get a list of games with no activity for at least 24 hours.
+  Game.get({ last_activity: getDayAgo() }).then(function(games) {
     games.map(function(game) {
       // if there's no game round, probably an error
       if ( game.round ) {
