@@ -15,6 +15,7 @@ const setup = require('../lib/setup');
 const rule = require('../../../config/rule');
 const clue = rule('clue').example();
 const pass = rule('pass').example();
+var submission = rule('submission').example();
 const EMOJI = '😀';
 const guess = rule('guess').example();
 
@@ -256,6 +257,30 @@ describe('Pass', function() {
             { to: users[0], key: 'game-next-round', options: [users[1].nickname] },
             { to: users[1], key: 'game-next-round-suggestion', options: [users[1].nickname, nextClue] },
             { to: users[2], key: 'game-next-round', options: [users[1].nickname] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
+    it('should allow a game to move on if everyone passes', function() {
+      var users = getUsers(3);
+      //var nextClue = 'SILENCE OF THE LAMBS';
+      return playGame(users).then(function() {
+        return setup([
+          { user: users[2], msg: pass },
+          { user: users[1], msg: pass },
+        ]);
+      }).then(function() {
+        return check(
+          { user: users[1], msg: submission + EMOJI },
+          [
+            { to: users[1], key: 'game-submission-sent'},
+            { to: users[0], key: 'says', options: [users[1].nickname, EMOJI] },
+            { to: users[2], key: 'says', options: [users[1].nickname, EMOJI] },
+            { to: users[0], key: 'guessing-instructions' },
+            { to: users[2], key: 'guessing-instructions' }
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
