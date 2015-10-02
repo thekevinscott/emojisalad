@@ -119,29 +119,33 @@ module.exports = function(user, input) {
                 return Round.getGuessesLeft(game, user).then(function(guesses_left) {
                   // does the user still have guesses left over?
                   if ( guesses_left > 0 ) {
-                    return 'incorrect-guess';
+                    return {
+                      key: 'incorrect-guess',
+                      options: [user.nickname]
+                    };
                   } else {
-                    User.update(user, { state: 'lost' });
-                    // does the game have ANY players with guesses left?
-                    return Game.getGuessesLeft(game).then(function(guesses_left) {
+                    return User.update(user, { state: 'lost' }).then(function() {
+                      // does the game have ANY players with guesses left?
+                      return Game.getGuessesLeft(game);
+                    }).then(function(guesses_left) {
                       if ( guesses_left > 0 ) {
-                        return 'incorrect-out-of-guesses';
+                        return {
+                          key: 'incorrect-out-of-guesses'
+                        };
                       } else {
                         // start a new round
-                        return 'round-over';
+                        return {
+                          key: 'round-over'
+                        };
                       }
                     });
                   }
-                }).then(function(key) {
-                  var message = {
-                    key: key
-                  };
-
+                }).then(function(message) {
                   game.players.map(function(player) {
                     messages.push(_.assign({ user: player }, message));
                   });
 
-                  if ( key === 'round-over' ) {
+                  if ( message.key === 'round-over' ) {
                     return Game.newRound(game).then(function(round) {
                       var suggestion = {
                         key: 'game-next-round-suggestion',

@@ -4,24 +4,24 @@ const EmojiData = require('emoji-data');
 
 describe('Game', function() {
   describe('Parsing emoji', function() {
-    it('should allow a blank string', function() {
-      Game.checkInput('').should.equal(true);
+    it('should parse a blank string', function() {
+      Game.checkInput('').should.equal('text');
     });
 
-    it('should reject text', function() {
-      Game.checkInput('foo').should.equal(false);
+    it('should parse text', function() {
+      Game.checkInput('foo').should.equal('text');
     });
 
-    it('should reject a mixed string', function() {
-      Game.checkInput('😀foo😀').should.equal(false);
+    it('should parse a mixed string', function() {
+      Game.checkInput('😀foo😀').should.equal('mixed-emoji');
     });
 
-    it('should reject a mixed string with emoji inside', function() {
-      Game.checkInput('foo😀bar').should.equal(false);
+    it('should parse a mixed string with emoji inside', function() {
+      Game.checkInput('foo😀bar').should.equal('mixed-emoji');
     });
 
     it('should reject a mixed string with emoji at end', function() {
-      Game.checkInput('foo😀').should.equal(false);
+      Game.checkInput('foo😀').should.equal('mixed-emoji');
     });
 
     describe('Valid emoji', function() {
@@ -55,7 +55,7 @@ describe('Game', function() {
           var unified = EmojiData.unified_to_char(emoji.unified);
           //console.log('code point: ', unified, unified.codePointAt(0));
           try {
-            Game.checkInput(unified).should.equal(true);
+            Game.checkInput(unified).should.equal('emoji');
           } catch(e) {
             console.log('emoji failed:', unified);
             throw e;
@@ -65,7 +65,7 @@ describe('Game', function() {
 
       troublePhrases.map(function(emoji) {
         it('should check phrase: '+emoji, function() {
-          Game.checkInput(emoji).should.equal(true);
+          Game.checkInput(emoji).should.equal('emoji');
         });
       });
     });

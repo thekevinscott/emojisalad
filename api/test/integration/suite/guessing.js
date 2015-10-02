@@ -14,8 +14,8 @@ const rule = require('../../../config/rule');
 const guess = rule('guess').example();
 const rand = require('../lib/getRandomScore');
 //const clue = rule('clue').example();
-//const submission = rule('submission').example();
-//const EMOJI = '😀';
+const submission = rule('submission').example();
+const EMOJI = '😀';
 
 const defaults = {
   'win-guesser-1': rand(),
@@ -91,10 +91,10 @@ describe('Guessing', function() {
   });
 
   it('should be notified on an incorrect guess', function() {
-    var users = getUsers(3);
+    let users = getUsers(3);
 
     return playGame(users).then(function() {
-      var the_guess = 'foo';
+      let the_guess = 'foo';
       return check(
         { user: users[1], msg: guess + the_guess},
         [
@@ -111,9 +111,9 @@ describe('Guessing', function() {
   });
 
   it('should send a sad message when you run out of guesses', function() {
-    var users = getUsers(3);
+    let users = getUsers(3);
 
-    var the_guess = ' foo';
+    let the_guess = ' foo';
     return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess + the_guess }
@@ -135,9 +135,9 @@ describe('Guessing', function() {
   });
 
   it('should chide you if you continue to guess after running out of guesses', function() {
-    var users = getUsers(3);
+    let users = getUsers(3);
 
-    var the_guess = 'foo';
+    let the_guess = 'foo';
     return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess + the_guess },
@@ -160,9 +160,9 @@ describe('Guessing', function() {
   });
 
   it('should allow one user to guess, the other user to guess, and then catch the first user guessing a second time and boot them', function() {
-    var users = getUsers(3);
+    let users = getUsers(3);
 
-    var the_guess = 'foo';
+    let the_guess = 'foo';
     return playGame(users).then(function() {
       return setup([
         { user: users[1], msg: guess + the_guess },
@@ -186,10 +186,10 @@ describe('Guessing', function() {
   });
 
   it('should allow a user to fail miserably and the other one can still win', function() {
-    var users = getUsers(3);
+    let users = getUsers(3);
 
-    var the_guess = 'foo';
-    var msg2 = 'SILENCE OF THE LAMBS';
+    let the_guess = 'foo';
+    let msg2 = 'SILENCE OF THE LAMBS';
 
     return playGame(users).then(function(game) {
       return setup([
@@ -206,7 +206,7 @@ describe('Guessing', function() {
       updates[users[2].nickname] = defaults['win-guesser-1'];
       updates[users[0].nickname] = defaults['win-submitter-1'];
       let score = getScore(game, updates);
-      var correct = 'jurassic park';
+      let correct = 'jurassic park';
       return check(
         { user: users[2], msg: guess + correct },
         [
@@ -226,10 +226,10 @@ describe('Guessing', function() {
   });
 
   it('should really get sad if everyone fails and then start a new round', function() {
-    var users = getUsers(3);
+    let users = getUsers(3);
 
-    var the_guess = 'foo';
-    var msg2 = 'SILENCE OF THE LAMBS';
+    let the_guess = 'foo';
+    let msg2 = 'SILENCE OF THE LAMBS';
 
     return playGame(users).then(function() {
       return setup([
@@ -256,23 +256,52 @@ describe('Guessing', function() {
     });
   });
 
-  //it.only('should handle the bug I saw in production', function() {
-    //var users = getUsers(3);
+  it('should allow a game to move on if everyone loses', function() {
+    let users = getUsers(3);
 
-    //var msg2 = 'TIME AFTER TIME';
+    let the_guess = 'foo';
+    //let msg2 = 'SILENCE OF THE LAMBS';
+
+    return playGame(users).then(function() {
+      return setup([
+        { user: users[1], msg: guess + the_guess },
+        { user: users[2], msg: guess + the_guess },
+        { user: users[2], msg: guess + the_guess },
+        { user: users[1], msg: guess + the_guess },
+      ]);
+    }).then(function() {
+      return check(
+        { user: users[1], msg: submission + EMOJI },
+        [
+          { to: users[1], key: 'game-submission-sent'},
+          { to: users[0], key: 'says', options: [users[1].nickname, EMOJI] },
+          { to: users[2], key: 'says', options: [users[1].nickname, EMOJI] },
+          { to: users[0], key: 'guessing-instructions' },
+          { to: users[2], key: 'guessing-instructions' }
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
+  //it.only('should handle the bug I saw in production', function() {
+    //let users = getUsers(3);
+
+    //let msg2 = 'TIME AFTER TIME';
 
     //return playGame(users).then(function() {
       //return setup([
         //{ user: users[2], msg: guess + 'JURASSIC PARK' },
         //{ user: users[1], msg: EMOJI },
-        //{ user: users[1], msg: submission + EMOJI },
+        //{ user: users[1], msg: EMOJI },
         //{ user: users[0], msg: guess + 'planet of the apes' },
         //{ user: users[0], msg: guess + 'space chimps' },
         //{ user: users[2], msg: clue },
         //{ user: users[2], msg: guess + '2001' },
       //]);
     //}).then(function() {
-      //var the_guess = 'foo';
+      //let the_guess = 'foo';
       //return check(
         //{ user: users[2], msg: guess + the_guess },
         //[

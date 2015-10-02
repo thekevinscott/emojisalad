@@ -16,8 +16,8 @@ const getGame = require('../lib/getGame');
 const setNonRandomGame = require('../lib/setNonRandomGame');
 const rule = require('../../../config/rule');
 const EMOJI = '😀';
-const submission = rule('submission').example();
 const guess = rule('guess').example();
+const submission = rule('submission').example();
 const rand = require('../lib/getRandomScore');
 
 const defaults = {
@@ -245,7 +245,6 @@ describe('Game', function() {
 
     it('should add a fourth player at the fourth round and proceed to fourth user', function() {
       var users = getUsers(4);
-
       return startGame(users.slice(0, 3)).then(function(game) {
         return Game.updateDefaultScores(game, defaults).then(function() {
           return setup([
