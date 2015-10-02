@@ -112,7 +112,7 @@ CREATE TABLE `game_scores` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,7 +143,7 @@ CREATE TABLE `games` (
   `clues_allowed` int(11) DEFAULT NULL,
   `random` tinyint(1) NOT NULL DEFAULT '1',
   `archived` tinyint(1) NOT NULL DEFAULT '0',
-  `last_activity` timestamp NULL DEFAULT NULL,
+  `last_activity` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
@@ -431,7 +431,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-30 18:05:05
+-- Dump completed on 2015-10-02 17:13:46
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: emojinaryfriend.cfiretgvvbvv.us-east-1.rds.amazonaws.com    Database: emojinaryfriend
@@ -571,7 +571,7 @@ CREATE TABLE `round_states` (
 
 LOCK TABLES `round_states` WRITE;
 /*!40000 ALTER TABLE `round_states` DISABLE KEYS */;
-INSERT INTO `round_states` VALUES (1,'pending'),(2,'waiting-for-submission'),(3,'won'),(4,'playing');
+INSERT INTO `round_states` VALUES (2,'waiting-for-submission'),(3,'won'),(4,'playing');
 /*!40000 ALTER TABLE `round_states` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -656,4 +656,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-30 18:05:07
+-- Dump completed on 2015-10-02 17:13:49

@@ -13,8 +13,6 @@ const getScore = require('../lib/getScore');
 const rule = require('../../../config/rule');
 const guess = rule('guess').example();
 const rand = require('../lib/getRandomScore');
-//const clue = rule('clue').example();
-const submission = rule('submission').example();
 const EMOJI = '😀';
 
 const defaults = {
@@ -271,7 +269,7 @@ describe('Guessing', function() {
       ]);
     }).then(function() {
       return check(
-        { user: users[1], msg: submission + EMOJI },
+        { user: users[1], msg: EMOJI },
         [
           { to: users[1], key: 'game-submission-sent'},
           { to: users[0], key: 'says', options: [users[1].nickname, EMOJI] },
