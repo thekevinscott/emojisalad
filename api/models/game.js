@@ -84,14 +84,18 @@ let Game = {
     });
   },
   newRound: function(game) {
+    console.debug('new round');
     return Round.create(game).then(function(round) {
-      return Promise.all(round.players.map(function(player) {
+      console.debug('round submitter', round.submitter.id, round.submitter.nickname);
+      return Promise.all(game.players.map(function(player) {
+        console.debug('player', player.id, player.nickname);
         var state;
-        if ( player === round.submitter ) {
+        if ( player.id === round.submitter.id ) {
           state = 'waiting-for-submission';
         } else {
           state = 'waiting-for-round';
         }
+        console.debug('expected state', state);
         return User.update(player, {
           state: state,
         });
