@@ -1,6 +1,6 @@
 var local = require('./db-local');
 var db = {
-  production: {
+  aws: {
     "host"     : "emojinaryfriend.cfiretgvvbvv.us-east-1.rds.amazonaws.com",
     "user"     : "emojinaryfriend",
     "password" : "mwQWhFruH?bhd8V]nzf8s7WHu?JT",
@@ -22,5 +22,7 @@ if ( local.test ) {
 if ( local.development ) {
   db.development = local.development;
 }
+
+db.production = db.aws;
 
 module.exports = db;

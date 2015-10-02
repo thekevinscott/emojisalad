@@ -4,20 +4,29 @@
  *
  */
 
-//const Game = require('../../../models/game');
+const Game = require('../../../models/game');
 //const User = require('../../../models/user');
 const getUsers = require('../lib/getUsers');
+const getScore = require('../lib/getScore');
 const startGame = require('../flows/startGame');
 const playGame = require('../flows/playGame');
 //const invite = require('../flows/invite');
 const check = require('../lib/check');
 const setup = require('../lib/setup');
+const rand = require('../lib/getRandomScore');
 const rule = require('../../../config/rule');
 const clue = rule('clue').example();
 const pass = rule('pass').example();
-var submission = rule('submission').example();
 const EMOJI = '😀';
 const guess = rule('guess').example();
+
+let defaults = {
+  'win-guesser-1': rand(),
+  'win-submitter-1': rand(),
+  'win-guesser-2': rand(),
+  'win-submitter-2': rand(),
+  'pass': rand()
+};
 
 describe('Pass', function() {
   describe('Illegal', function() {
@@ -180,19 +189,28 @@ describe('Pass', function() {
       var users = getUsers(3);
       var nextClue = 'SILENCE OF THE LAMBS';
       var firstClue = 'JURASSIC PARK';
-      return playGame(users).then(function() {
-        return setup([
-          { user: users[2], msg: pass }
-        ]);
-      }).then(function() {
+      return playGame(users).then(function(game) {
+        return Game.updateDefaultScores(game, defaults).then(function() {
+          return setup([
+            { user: users[2], msg: pass }
+          ]);
+        }).then(function() {
+          return game;
+        });
+      }).then(function(game) {
+        let updates = {};
+        updates[users[2].nickname] = defaults.pass;
+        updates[users[1].nickname] = defaults['win-guesser-1'];
+        updates[users[0].nickname] = defaults['win-submitter-1'];
+        let score = getScore(game, updates);
         return check(
           { user: users[1], msg: guess + firstClue },
           [
             { to: users[0], key: 'guesses', options: [users[1].nickname, firstClue] },
             { to: users[2], key: 'guesses', options: [users[1].nickname, firstClue] },
-            { to: users[0], key: 'correct-guess', options: [users[1].nickname] },
-            { to: users[1], key: 'correct-guess', options: [users[1].nickname] },
-            { to: users[2], key: 'correct-guess', options: [users[1].nickname] },
+            { to: users[0], key: 'correct-guess', options: [users[1].nickname, score] },
+            { to: users[1], key: 'correct-guess', options: [users[1].nickname, score] },
+            { to: users[2], key: 'correct-guess', options: [users[1].nickname, score] },
             { to: users[0], key: 'game-next-round', options: [users[1].nickname] },
             { to: users[1], key: 'game-next-round-suggestion', options: [users[1].nickname, nextClue] },
             { to: users[2], key: 'game-next-round', options: [users[1].nickname] },
@@ -274,7 +292,7 @@ describe('Pass', function() {
         ]);
       }).then(function() {
         return check(
-          { user: users[1], msg: submission + EMOJI },
+          { user: users[1], msg: EMOJI },
           [
             { to: users[1], key: 'game-submission-sent'},
             { to: users[0], key: 'says', options: [users[1].nickname, EMOJI] },

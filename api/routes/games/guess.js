@@ -7,7 +7,7 @@ var Round = require('models/round');
 var rule = require('config/rule');
 
 module.exports = function(user, input) {
-  var promises = [];
+  const promises = [];
   
   if ( rule('invite').test(input) ) {
     return require('../users/invite')(user, input);
@@ -42,68 +42,76 @@ module.exports = function(user, input) {
             var guess = rule('guess').match(input);
             return Game.checkGuess(game, user, guess).then(function(result) {
               if ( result ) {
-                game.players.map(function(player) {
-                  messages.push({
-                    key: 'correct-guess',
-                    user: player,
-                    options: [
-                      user.nickname
-                    ]
-                  });
-                });
+                return Game.updateScore(game, user, 'win-round').then(function(game) {
+                  let score = game.players.map(function(player) {
+                    return player.nickname + ': ' + player.score;
+                  }).join('\n');
 
-                // are there any users waiting in the wings?
-                game.players.filter(function(player) {
-                  // this player is about to join
-                  return player.state === 'bench';
-                }).map(function(benchedPlayer) {
                   game.players.map(function(player) {
                     messages.push({
-                      key: 'join-game',
+                      key: 'correct-guess',
+                      user: player,
                       options: [
-                        benchedPlayer.nickname
-                      ],
-                      user: player
+                        user.nickname,
+                        score
+                      ]
                     });
                   });
-                });
 
-                promises.push(Game.newRound(game).then(function(round) {
-                  round.players.map(function(player) {
-                    User.update(player, {
-                      state: 'waiting-for-round',
+                  // are there any users waiting in the wings?
+                  game.players.filter(function(player) {
+                    // this player is about to join
+                    return player.state === 'bench';
+                  }).map(function(benchedPlayer) {
+                    game.players.map(function(player) {
+                      messages.push({
+                        key: 'join-game',
+                        options: [
+                          benchedPlayer.nickname
+                        ],
+                        user: player
+                      });
                     });
                   });
-                  User.update(round.submitter, {
-                    state: 'waiting-for-submission',
+
+                  promises.push(Game.newRound(game).then(function(round) {
+                    round.players.map(function(player) {
+                      User.update(player, {
+                        state: 'waiting-for-round',
+                      });
+                    });
+                    User.update(round.submitter, {
+                      state: 'waiting-for-submission',
+                    });
+
+                    var suggestion = {
+                      key: 'game-next-round-suggestion',
+                      options: [
+                        round.submitter.nickname,
+                        round.phrase
+                      ]
+                    };
+
+                    var nextRoundInstructions = {
+                      key: 'game-next-round',
+                      options: [
+                        round.submitter.nickname,
+                      ]
+                    };
+
+                    suggestion.user = round.submitter;
+                    round.game.players.map(function(player) {
+                      if ( player.id !== round.submitter.id ) {
+                        messages.push(_.assign( { user: player }, nextRoundInstructions));
+                      } else {
+                        messages.push(suggestion);
+                      }
+                    });
+                  }));
+
+                  return Promise.all(promises).then(function() {
+                    return messages;
                   });
-
-                  var suggestion = {
-                    key: 'game-next-round-suggestion',
-                    options: [
-                      round.submitter.nickname,
-                      round.phrase
-                    ]
-                  };
-
-                  var nextRoundInstructions = {
-                    key: 'game-next-round',
-                    options: [
-                      round.submitter.nickname,
-                    ]
-                  };
-
-                  suggestion.user = round.submitter;
-                  round.game.players.map(function(player) {
-                    if ( player.id !== round.submitter.id ) {
-                      messages.push(_.assign( { user: player }, nextRoundInstructions));
-                    } else {
-                      messages.push(suggestion);
-                    }
-                  });
-                }));
-                return Promise.all(promises).then(function() {
-                  return messages;
                 });
               } else {
                 // we do a request to get the up-to-date

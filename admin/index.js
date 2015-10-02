@@ -1,3 +1,4 @@
+'use strict';
 /* globals process, __dirname */
 var express = require('express');
 var app = express();
@@ -35,6 +36,7 @@ require('./api/routes/account')(app);
 require('./api/routes/players')(app);
 require('./api/routes/messages')(app);
 require('./api/routes/games')(app);
+require('./api/routes/scores')(app);
 
 // bootstrap our web app
 app.get('*', function(req, res) {

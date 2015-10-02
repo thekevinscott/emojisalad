@@ -72,6 +72,7 @@ let User = {
                   .field('p.platform', 'platform')
                   .field('s.state', 'state')
                   .from('users', 'u')
+                  .where('u.archived=0')
                   .left_join('invites', 'i', 'u.id = i.invited_id')
                   .left_join('platforms', 'p', 'p.id = u.platform_id')
                   .left_join('user_states', 's', 's.id = u.state_id')
@@ -167,8 +168,9 @@ let User = {
 
           query = squel
                   .update()
-                  .table('users')
-                  .where('id=?', user.id);
+                  .table('users', 'u')
+                  .where('u.archived=0')
+                  .where('u.id=?', user.id);
           query.set('state_id', state, { dontQuote: true });
           queries.push(query);
           break;

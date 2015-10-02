@@ -1,5 +1,6 @@
-var squel = require('squel');
-var db = require('../../db');
+'use strict';
+const squel = require('squel');
+const db = require('../../db');
 module.exports = function(app) {
   app.delete('/api/messages/:message_id', function(req, res) {
     var query = squel
@@ -8,7 +9,7 @@ module.exports = function(app) {
         .where('id=?',req.params.message_id);
     db.query(query).then(function() {
       res.json({});
-    }).fail(function(err) {
+    }).catch(function(err) {
       res.json({error: err});
     });
   });
@@ -22,14 +23,14 @@ module.exports = function(app) {
         .set('message', message)
         .set('key', key);
 
-    db.query(query).then(function(rows) {
+    db.query(query).then(function() {
       var query = squel
           .select()
           .from('messages');
       return db.query(query).then(function(rows) {
         res.json(rows);
       });
-    }).fail(function(err) {
+    }).catch(function(err) {
       res.json({error: err});
     });
   });
@@ -42,9 +43,9 @@ module.exports = function(app) {
         .table('messages')
         .set('message', message)
         .where('id=?', message_id);
-    db.query(query).then(function(rows) {
+    db.query(query).then(function() {
       res.json({});
-    }).fail(function(err) {
+    }).catch(function(err) {
       res.json({error: err});
     });
   });
@@ -55,8 +56,8 @@ module.exports = function(app) {
         .from('messages');
     db.query(query).then(function(rows) {
       res.json(rows);
-    }).fail(function(err) {
+    }).catch(function(err) {
       res.json({error: err});
     });
   });
-}
+};
