@@ -259,7 +259,7 @@ describe('Guessing', function() {
       //return setup([
         //{ user: users[2], msg: guess + 'JURASSIC PARK' },
         //{ user: users[1], msg: EMOJI },
-        //{ user: users[1], msg: submission + EMOJI },
+        //{ user: users[1], msg: EMOJI },
         //{ user: users[0], msg: guess + 'planet of the apes' },
         //{ user: users[0], msg: guess + 'space chimps' },
         //{ user: users[2], msg: clue },

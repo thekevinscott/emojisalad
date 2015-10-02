@@ -15,8 +15,7 @@ const setup = require('../lib/setup');
 const rule = require('../../../config/rule');
 const help = rule('help').example();
 const guess = rule('guess').example();
-var submission = rule('submission').example();
-var EMOJI = '😀';
+let EMOJI = '😀';
 
 describe('Help', function() {
   describe('Submitter', function() {
@@ -40,7 +39,7 @@ describe('Help', function() {
 
       return startGame(users).then(function(game) {
         return setup([
-          { user: game.round.submitter, msg: submission + EMOJI }
+          { user: game.round.submitter, msg: EMOJI }
         ]).then(function() {
           return game;
         });

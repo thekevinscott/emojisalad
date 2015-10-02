@@ -8,17 +8,23 @@ module.exports = function(user, input) {
     return require('../users/invite')(user, input);
   } else if ( rule('help').test(input) ) {
     return require('../users/help')(user, input);
-  } else if ( rule('submission').test(input) ) {
-    // This is where we check for valid Emoji
-    var submission = rule('submission').match(input);
-    if ( ! Game.checkInput(submission) ) {
-      return [{
-        user: user,
-        key: 'error-9'
-      }];
-    } else {
+  } else {
+    let type_of_input = Game.checkInput(input);
 
-      return Game.saveSubmission(user, submission).then(function(game) {
+    if ( type_of_input === 'text' ) {
+      return require('../users/say')(user, input);
+    } else if ( type_of_input === 'mixed-emoji' ) {
+      return require('../users/say')(user, input).then(function(responses) {
+        return responses.concat([
+          {
+            user: user,
+            key: 'mixed-emoji',
+            options: [user.nickname]
+          }
+        ]);
+      });
+    } else if ( type_of_input === 'emoji' ) {
+      return Game.saveSubmission(user, input).then(function(game) {
         var messages = [{
           user: user,
           key: 'game-submission-sent'
@@ -27,7 +33,7 @@ module.exports = function(user, input) {
         var forwarded_message = {
           key: 'says',
           options: [
-            game.round.submitter.nickname,submission 
+            game.round.submitter.nickname, input 
           ]
         };
 
@@ -49,15 +55,13 @@ module.exports = function(user, input) {
           return [{
             user: user,
             key: 'error-' + error.message,
-            options: [submission]
+            options: [input]
           }];
         } else {
           throw error;
         }
       });
     }
-  } else {
-    return require('../users/say')(user, input);
   }
 };
 
