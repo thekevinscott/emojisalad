@@ -98,9 +98,9 @@ describe('Guessing', function() {
         [
           { to: users[0], key: 'guesses', options: [users[1].nickname, the_guess] },
           { to: users[2], key: 'guesses', options: [users[1].nickname, the_guess] },
-          { to: users[0], key: 'incorrect-guess', options: [] },
-          { to: users[1], key: 'incorrect-guess', options: [] },
-          { to: users[2], key: 'incorrect-guess', options: [] },
+          { to: users[0], key: 'incorrect-guess', options: [users[1].nickname] },
+          { to: users[1], key: 'incorrect-guess', options: [users[1].nickname] },
+          { to: users[2], key: 'incorrect-guess', options: [users[1].nickname] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
