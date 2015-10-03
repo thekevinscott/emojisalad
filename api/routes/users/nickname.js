@@ -37,7 +37,7 @@ module.exports = function(user, input) {
           } else if ( game.round.state === 'playing' ) {
             return addPlayerToBench(game, user, input);
           } else {
-            console.error("Game round has no state", game);
+            console.error("Game round has no state", game.round.state, game.round);
             throw new Error("Game round has no state");
           }
         } else {

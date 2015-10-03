@@ -431,7 +431,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-01 10:53:08
+-- Dump completed on 2015-10-03 14:49:41
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: emojinaryfriend.cfiretgvvbvv.us-east-1.rds.amazonaws.com    Database: emojinaryfriend
@@ -656,4 +656,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-01 10:53:11
+-- Dump completed on 2015-10-03 14:49:44

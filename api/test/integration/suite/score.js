@@ -15,7 +15,6 @@ const setup = require('../lib/setup');
 const rule = require('../../../config/rule');
 //const clue = rule('clue').example();
 const pass = rule('pass').example();
-var submission = rule('submission').example();
 const EMOJI = '😀';
 const guess = rule('guess').example();
 const rand = require('../lib/getRandomScore');
@@ -116,11 +115,10 @@ describe('Score', function() {
     };
     return playGame(users).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
-        console.log('**** AFTER MERGE, REMOVE THIS SUBMISSION ****');
         return setup([
           { user: game.players[2], msg: pass },
           { user: game.players[1], msg: guess + 'JURASSIC PARK' },
-          { user: game.players[1], msg: submission + EMOJI },
+          { user: game.players[1], msg: EMOJI },
           { user: game.players[2], msg: pass },
         ]);
       }).then(function() {

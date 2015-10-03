@@ -3,6 +3,7 @@ const squel = require('squel').useFlavour('mysql');
 const Promise = require('bluebird');
 const _ = require('lodash');
 const emojiExists = require('emoji-exists');
+const EmojiData = require('emoji-data');
 
 const db = require('db');
 const User = require('./user');
@@ -12,6 +13,7 @@ const Round = require('./round');
 const default_guesses = 2;
 const default_clues_allowed = 1;
 
+console.log('can i move this elsewhere?');
 squel.registerValueHandler(Date, function(date) {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
@@ -79,7 +81,15 @@ let Game = {
     });
   },
   checkInput: function(str) {
-    return emojiExists(str);
+    if ( str === '' ) {
+      return 'text';
+    } else if ( emojiExists(str) ) {
+      return 'emoji';
+    } else if ( EmojiData.scan(str).length > 0 ) {
+      return 'mixed-emoji';
+    } else {
+      return 'text';
+    }
   },
   saveSubmission: function(user, message) {
     return this.get({ user: user }).then(function(game) {
@@ -89,14 +99,18 @@ let Game = {
     });
   },
   newRound: function(game) {
+    console.debug('new round');
     return Round.create(game).then(function(round) {
-      return Promise.all(round.players.map(function(player) {
+      console.debug('round submitter', round.submitter.id, round.submitter.nickname);
+      return Promise.all(game.players.map(function(player) {
+        console.debug('player', player.id, player.nickname);
         var state;
-        if ( player === round.submitter ) {
+        if ( player.id === round.submitter.id ) {
           state = 'waiting-for-submission';
         } else {
           state = 'waiting-for-round';
         }
+        console.debug('expected state', state);
         return User.update(player, {
           state: state,
         });

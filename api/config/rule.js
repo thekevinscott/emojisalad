@@ -44,13 +44,6 @@ const rules = {
     pattern: '^%(phrase)s',
     flags: 'i'
   },
-  'submission': {
-    pattern: '^submission(.*)',
-    flags: 'i',
-    example: [
-      'submission '
-    ],
-  },
   'yes': {
     pattern: '^yes|^yeah|^yea|^y$',
     flags: 'i',
@@ -90,6 +83,9 @@ module.exports = function(key, options) {
       return input.match(regex).pop().trim();
     },
     example: function() {
+      if ( !rules[key] ) {
+        throw "No rule found for "+key;
+      }
       var examples = rules[key].example;
       return examples[Math.floor(Math.random()*examples.length)];
     }

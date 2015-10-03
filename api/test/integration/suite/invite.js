@@ -1,5 +1,4 @@
 'use strict';
-
 const getUsers = require('../lib/getUsers');
 const setup = require('../lib/setup');
 const check = require('../lib/check');
@@ -7,10 +6,8 @@ const check = require('../lib/check');
 const signup = require('../flows/signup');
 const startGame = require('../flows/startGame');
 const Game = require('models/game');
-const rule = require('../../../config/rule');
 
 const EMOJI = '😀';
-const submission = rule('submission').example();
 
 describe('Inviting', function() {
   var users = getUsers(2);
@@ -211,7 +208,7 @@ describe('Inviting', function() {
       before(function() {
         return startGame(users).then(function() {
           return setup([
-            { user: users[0], msg: submission + EMOJI }
+            { user: users[0], msg: EMOJI }
           ]);
         });
       });
@@ -224,7 +221,7 @@ describe('Inviting', function() {
       before(function() {
         return startGame(users).then(function() {
           return setup([
-            { user: users[0], msg: submission + EMOJI },
+            { user: users[0], msg: EMOJI },
             { user: users[1], msg: 'guess foo' }
           ]);
         });
@@ -238,7 +235,7 @@ describe('Inviting', function() {
       before(function() {
         return startGame(users).then(function() {
           return setup([
-            { user: users[0], msg: submission + EMOJI },
+            { user: users[0], msg: EMOJI },
             { user: users[1], msg: 'guess JURASSIC PARK' }
           ]);
         });
@@ -274,7 +271,7 @@ describe('Inviting', function() {
       var invitee = getUsers(3).pop();
       return startGame(users).then(function() {
         return setup([
-          { user: users[0], msg: submission + EMOJI },
+          { user: users[0], msg: EMOJI },
           { user: users[0], msg: 'invite '+invitee.number },
           { user: invitee, msg: 'yes' },
         ]);
