@@ -1,6 +1,7 @@
 'use strict';
 const mysql = require('mysql');
 const Promise = require('bluebird');
+const squel = require('squel');
 
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
@@ -10,6 +11,10 @@ let pool;
 if ( ! process.env.ENVIRONMENT ) {
   throw "You must specify a DB environment";
 }
+
+squel.registerValueHandler(Date, function(date) {
+  return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
+});
 
 let config = require('../config/db')[process.env.ENVIRONMENT];
 

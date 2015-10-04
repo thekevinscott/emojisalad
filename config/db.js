@@ -23,6 +23,6 @@ if ( local.development ) {
   db.development = local.development;
 }
 
-db.production = db.aws;
+db.production = db.digitalOcean;
 
 module.exports = db;

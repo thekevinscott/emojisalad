@@ -11,7 +11,7 @@
   "dependencies": {
     "bluebird": "^2.9.34",
     "mysql": "^2.8.0",
-    "squel": "^4.0.0"
+    "squel": "^4.2.0"
   },
   "private": true
 }
