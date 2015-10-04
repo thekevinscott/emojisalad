@@ -11,6 +11,7 @@
   "dependencies": {
     "app-module-path": "^1.0.4",
     "auto-loader": "^0.2.0",
+    "babel": "^5.8.23",
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
     "chalk": "^1.1.1",

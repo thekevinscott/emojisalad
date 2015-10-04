@@ -13,11 +13,6 @@ const Round = require('./round');
 const default_guesses = 2;
 const default_clues_allowed = 1;
 
-console.log('can i move this elsewhere?');
-squel.registerValueHandler(Date, function(date) {
-  return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
-});
-
 let Game = {
   update: function(game, data) {
     let query = squel

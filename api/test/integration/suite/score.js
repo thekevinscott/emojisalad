@@ -126,7 +126,6 @@ describe('Score', function() {
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-1']);
         game.players[1].score.should.equal(defaults['win-guesser-1']);
-        console.log('pass', defaults.pass);
         game.players[2].score.should.equal(defaults.pass*2);
       });
     });

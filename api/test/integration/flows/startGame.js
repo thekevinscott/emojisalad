@@ -1,14 +1,18 @@
-var _ = require('lodash');
-var Promise = require('bluebird');
-var setup = require('../lib/setup');
-var signup = require('./signup');
-var invite = require('./invite');
-var sequence = require('../lib/sequence');
-var getGame = require('../lib/getGame');
-var setNonRandomGame = require('../lib/setNonRandomGame');
+'use strict';
+//const _ = require('lodash');
+//const Promise = require('bluebird');
+//const setup = require('../lib/setup');
+const signup = require('./signup');
+const invite = require('./invite');
+const sequence = require('../lib/sequence');
+const getGame = require('../lib/getGame');
+const setNonRandomGame = require('../lib/setNonRandomGame');
 
 function startGame(users) {
-  return signup(users[0]).then(function() {
+  return signup(users[0]).then(function(output) {
+    console.log(output.map(function(resp) {
+      return resp.Response.Sms;
+    }));
     // this sets a game to not be random.
     // we need this set so we know // which clues to expect
     return setNonRandomGame(users[0]);
@@ -18,7 +22,7 @@ function startGame(users) {
     return sequence(users.slice(1).map(function(user) {
       return function() {
         return invite(users[0], user); 
-      }
+      };
     }));
   }).then(function() {
     return getGame(users[0]);

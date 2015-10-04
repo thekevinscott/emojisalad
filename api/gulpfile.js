@@ -207,7 +207,9 @@ function runTests() {
   var deferred = Promise.pending();
   gulp.src(['test/index.js'], { read: false })
   .pipe(mocha({
-    timeout: 60000
+    timeout: 60000,
+    slow: 3000,
+    bail: true
   }))
   .on('error', function(data) {
     console.log(data.message);
