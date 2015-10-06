@@ -6,15 +6,15 @@ var Game = require('models/game');
 var Round = require('models/round');
 var rule = require('config/rule');
 
-module.exports = function(user, input) {
+module.exports = function(user, input, game_number) {
   const promises = [];
   
   if ( rule('invite').test(input) ) {
-    return require('../users/invite')(user, input);
+    return require('../users/invite')(user, input, game_number);
   } else if ( rule('pass').test(input) ) {
-    return require('../games/pass')(user, input);
+    return require('../games/pass')(user, input, game_number);
   } else if ( rule('clue').test(input) ) {
-    return require('../games/clue')(user, input);
+    return require('../games/clue')(user, input, game_number);
   } else if ( rule('guess').test(input) ) {
     if ( user.state === 'passed' ) {
       return [{
@@ -22,7 +22,7 @@ module.exports = function(user, input) {
         key: 'no-guessing-after-passing'
       }];
     } else {
-      return Game.get({ user: user }).then(function(game) {
+      return Game.get({ user: user, game_number: game_number }).then(function(game) {
         var messages = game.players.map(function(player) {
           var guess = rule('guess').match(input);
           if ( player.id !== user.id ) {
@@ -128,11 +128,14 @@ module.exports = function(user, input) {
                       // does the game have ANY players with guesses left?
                       return Game.getGuessesLeft(game);
                     }).then(function(guesses_left) {
+                      console.debug('how many guesses be left', guesses_left);
                       if ( guesses_left > 0 ) {
+                        console.debug('user is out of guesses ' + user.id);
                         return {
                           key: 'incorrect-out-of-guesses'
                         };
                       } else {
+                        console.debug('the round is over');
                         // start a new round
                         return {
                           key: 'round-over'
@@ -146,6 +149,7 @@ module.exports = function(user, input) {
                   });
 
                   if ( message.key === 'round-over' ) {
+                    console.debug('proceed with the round over');
                     return Game.newRound(game).then(function(round) {
                       var suggestion = {
                         key: 'game-next-round-suggestion',
@@ -197,7 +201,7 @@ module.exports = function(user, input) {
       });
     }
   } else {
-    return require('../users/say')(user, input);
+    return require('../users/say')(user, input, game_number);
   }
 };
 
