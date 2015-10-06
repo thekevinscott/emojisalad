@@ -134,7 +134,7 @@ describe('Inviting', function() {
       });
     });
 
-    it('should be able to onboard an invited user', function() {
+    it.only('should be able to onboard an invited user', function() {
       var user = getUsers(1)[0];
 
       var firstPhrase = 'JURASSIC PARK';
@@ -143,7 +143,8 @@ describe('Inviting', function() {
         { user: inviter, msg: 'invite '+user.number },
         { user: user, msg: 'yes' },
       ]).then(function() {
-        return Game.get(inviter).then(function(game) {
+        return Game.get({ number: inviter.number, game_number: '12013409832' }).then(function(game) {
+          console.log('game', game.id);
           return Game.update(game, { random : 0 });
         });
       }).then(function() {

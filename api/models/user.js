@@ -205,7 +205,7 @@ let User = {
     }));
 
   },
-  logLastActivity: function(user) {
+  logLastActivity: function(user, game_number) {
     if ( ! Game ) {
       Game = require('./game');
     }
@@ -221,7 +221,7 @@ let User = {
 
       promises.push(db.query(update_user));
 
-      promises.push(Game.get({ user: user }).then(function(game) {
+      promises.push(Game.get({ user: user, game_number: game_number }).then(function(game) {
         if ( game && game.id ) {
 
           let update_game = squel

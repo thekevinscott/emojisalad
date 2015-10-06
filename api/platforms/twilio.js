@@ -88,7 +88,7 @@ module.exports = function(req, res) {
       try {
         track(user.state, user, req.body.Body);
       } catch(e) { console.error('error tracking user', user, req); }
-      return router(user, body).then(function(response) {
+      return router(user, body, req.body.To).then(function(response) {
         return end(response, user);
       });
     }

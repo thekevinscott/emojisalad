@@ -5,7 +5,7 @@ const Game = require('models/game');
 //const Round = require('models/round');
 const _ = require('lodash');
 
-module.exports = function(user) {
+module.exports = function(user, input, game_number) {
   var result;
 
   if ( user.state === 'ready-for-game' || user.state === 'waiting-for-round' ) {
@@ -17,7 +17,7 @@ module.exports = function(user) {
   } else if ( user.state === 'submitted' ) {
     result = 'pass-rejected-not-guessing';
   } else if ( user.state === 'guessing' ) {
-    result = Game.get({ user: user }).then(function(game){
+    result = Game.get({ user: user, game_number: game_number }).then(function(game){
       return User.update(user, { state: 'passed' }).then(function() {
         return game;
       });

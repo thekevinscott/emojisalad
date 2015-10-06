@@ -4,7 +4,7 @@ var rule = require('config/rule');
 var User = require('models/user');
 var Game = require('models/game');
 
-module.exports = function(user, input) {
+module.exports = function(user, input, game_number) {
   if ( rule('invite').test(input) ) {
     return [{
       user: user,
@@ -21,7 +21,7 @@ module.exports = function(user, input) {
       return User.update(user, {
         nickname: input
       }).then(function() {
-        return Game.get({ user: { id: user.inviter.id }});
+        return Game.get({ user: { id: user.inviter.id }, game_number: game_number });
       }).then(function(game) {
         if ( game.state === 'pending' ) {
           return startGame(game, user, input);
@@ -33,9 +33,9 @@ module.exports = function(user, input) {
           if ( game.round.state === 'waiting-for-submission' ) {
             // the user can jump in.
             // the round has yet to begin!
-            return addPlayerToRound(game, user, input);
+            return addPlayerToRound(game, user, input, game_number);
           } else if ( game.round.state === 'playing' ) {
-            return addPlayerToBench(game, user, input);
+            return addPlayerToBench(game, user, input, game_number);
           } else {
             console.error("Game round has no state", game.round.state, game.round);
             throw new Error("Game round has no state");
@@ -51,7 +51,7 @@ module.exports = function(user, input) {
   }
 };
 
-function addPlayerToBench(game, user, input) {
+function addPlayerToBench(game, user, input, game_number) {
   // this means the invited user must wait until the next round
   game.players.push(user);
 
@@ -60,7 +60,7 @@ function addPlayerToBench(game, user, input) {
   });
 
   // add this invited user to the game
-  return Game.add(game, [user]).then(function() {
+  return Game.add(game, [user], game_number).then(function() {
     return game.players.map(function(player) {
 
       if ( player.id === user.id ) {
@@ -94,7 +94,7 @@ function addPlayerToBench(game, user, input) {
   });
 }
 
-function addPlayerToRound(game, user, input) {
+function addPlayerToRound(game, user, input, game_number) {
   // this means the invited user can join immediately
   game.players.push(user);
 
@@ -104,7 +104,7 @@ function addPlayerToRound(game, user, input) {
 
   // add this invited user to the game
   return Game.add(game, [user]).then(function() {
-    return Game.get({ user: user });
+    return Game.get({ user: user, game_number: game_number});
   }).then(function(game) {
     return game.players.map(function(player) {
       if ( player.id === user.inviter.id ) {

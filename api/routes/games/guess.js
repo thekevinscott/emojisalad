@@ -6,7 +6,7 @@ var Game = require('models/game');
 var Round = require('models/round');
 var rule = require('config/rule');
 
-module.exports = function(user, input) {
+module.exports = function(user, input, game_number) {
   const promises = [];
   
   if ( rule('invite').test(input) ) {
@@ -22,7 +22,7 @@ module.exports = function(user, input) {
         key: 'no-guessing-after-passing'
       }];
     } else {
-      return Game.get({ user: user }).then(function(game) {
+      return Game.get({ user: user, game_number: game_number }).then(function(game) {
         var messages = game.players.map(function(player) {
           var guess = rule('guess').match(input);
           if ( player.id !== user.id ) {

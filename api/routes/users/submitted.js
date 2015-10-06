@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Game = require('models/game');
 const rule = require('config/rule');
 
-module.exports = function(user, input) {
+module.exports = function(user, input, game_number) {
   if ( rule('invite').test(input) ) {
     return require('../users/invite')(user, input);
   } else if ( rule('help').test(input) ) {
@@ -12,7 +12,7 @@ module.exports = function(user, input) {
   } else if ( rule('pass').test(input) ) {
     return require('../games/pass')(user, input);
   } else if ( /^clue/i.test(input) ) {
-    return Game.get({ user: user }).then(function(game) {
+    return Game.get({ user: user, game_number: game_number }).then(function(game) {
       var message = {
         key: 'says',
         options: [
@@ -40,7 +40,7 @@ module.exports = function(user, input) {
         
   } else {
     return Promise.join(
-      Game.get({ user: user }),
+      Game.get({ user: user, game_number: game_number }),
       function(game) {
         
         var message = {

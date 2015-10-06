@@ -18,6 +18,7 @@ const pass = rule('pass').example();
 const EMOJI = '😀';
 const guess = rule('guess').example();
 const rand = require('../lib/getRandomScore');
+let game_number = '12013409832';
 
 describe('Score', function() {
   it('should record a correct guess successfully', function() {
@@ -32,7 +33,7 @@ describe('Score', function() {
           { user: game.players[1], msg: guess + 'JURASSIC PARK' },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0] });
+        return Game.get({ user: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-1']);
         game.players[1].score.should.equal(defaults['win-guesser-1']);
@@ -52,7 +53,7 @@ describe('Score', function() {
           { user: game.players[1], msg: pass },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0] });
+        return Game.get({ user: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(0);
         game.players[1].score.should.equal(defaults.pass);
@@ -74,7 +75,7 @@ describe('Score', function() {
           { user: game.players[1], msg: guess + 'JURASSIC PARK' },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0] });
+        return Game.get({ user: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-2']);
         game.players[1].score.should.equal(defaults['win-guesser-2']);
@@ -97,7 +98,7 @@ describe('Score', function() {
           { user: game.players[2], msg: guess + 'SILENCE OF THE LAMBS' },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0] });
+        return Game.get({ user: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-1']);
         game.players[1].score.should.equal(defaults['win-submitter-1']);
@@ -122,7 +123,7 @@ describe('Score', function() {
           { user: game.players[2], msg: pass },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0] });
+        return Game.get({ user: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-1']);
         game.players[1].score.should.equal(defaults['win-guesser-1']);
