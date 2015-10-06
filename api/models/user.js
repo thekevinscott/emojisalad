@@ -2,6 +2,8 @@
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
+let Game;
+
 let User = {
   // valid phone number test
   table: 'users',
@@ -203,6 +205,40 @@ let User = {
     }));
 
   },
+  logLastActivity: function(user) {
+    if ( ! Game ) {
+      Game = require('./game');
+    }
+    const promises = [];
+    if ( user && user.id ) {
+      let update_user = squel
+                        .update()
+                        .table('users')
+                        .setFields({
+                          last_activity: squel.fval('NOW(3)')
+                        })
+                       .where('id=?',user.id);
+
+      promises.push(db.query(update_user));
+
+      promises.push(Game.get({ user: user }).then(function(game) {
+        if ( game && game.id ) {
+
+          let update_game = squel
+                            .update()
+                            .table('games')
+                            .setFields({
+                              last_activity: squel.fval('NOW(3)')
+                            })
+                           .where('id=?',game.id);
+
+          return db.query(update_game);
+        }
+      }));
+    }
+
+    return Promise.all(promises);
+  }
 };
 
 module.exports = User;
