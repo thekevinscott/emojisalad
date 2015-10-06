@@ -2,6 +2,7 @@
 'use strict';
 
 var Promise = require('bluebird');
+var User = require('models/user');
 var routes = [];
 function addRoute(path, fn) {
   routes.push({
@@ -28,7 +29,7 @@ var Router = function(user, message) {
   for ( var i=0,l=routes.length; i<l; i++ ) {
     let route = routes[i];
     if ( route.regex.test(state) ) {
-      //console.log('state', state, user.id);
+      User.logLastActivity(user);
       return route.fn(user, message);
       //break;
     }
