@@ -6,6 +6,7 @@ const check = require('../lib/check');
 const signup = require('../flows/signup');
 const startGame = require('../flows/startGame');
 const Game = require('models/game');
+const User = require('models/user');
 const EMOJI = '😀';
 const game_number = '12013409832';
 
@@ -150,14 +151,14 @@ describe('Inviting', function() {
         { user: inviter, msg: 'invite '+user.number },
         { user: user, msg: 'yes' },
       ]).then(function() {
-        return Game.get({ number: inviter.number, game_number: game_number }).then(function(game) {
-          //console.log('********** 1 game', inviter.nickname, game.id, game.random);
-          return Game.update(game, { random : 0 });
+        return User.get({ number: inviter.number }).then(function(gotUser) {
+          return Game.get({ user: gotUser, game_number: game_number }).then(function(game) {
+            //console.log('********** 1 game', user.number, game.id, game.random);
+            return Game.update(game, { random : 0 });
+          });
         });
       }).then(function() {
-        return Game.get({ number: inviter.number, game_number: game_number });
-      }).then(function() {
-        //console.log('********** 2 game', inviter.nickname, game.id, game.random);
+        //console.log('********** 2 game', user.number, game.id, game.random);
         return check(
           { user: user, msg: user.nickname },
           [
@@ -191,6 +192,7 @@ describe('Inviting', function() {
       it('should let player invite', function() {
         var inviter = users[1];
         var invitee = getUsers(3).pop();
+        console.log('should let player invite');
         return check(
           { user: inviter, msg: 'invite '+invitee.number },
           [

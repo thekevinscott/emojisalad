@@ -10,11 +10,11 @@ module.exports = function(user, input, game_number) {
   const promises = [];
   
   if ( rule('invite').test(input) ) {
-    return require('../users/invite')(user, input);
+    return require('../users/invite')(user, input, game_number);
   } else if ( rule('pass').test(input) ) {
-    return require('../games/pass')(user, input);
+    return require('../games/pass')(user, input, game_number);
   } else if ( rule('clue').test(input) ) {
-    return require('../games/clue')(user, input);
+    return require('../games/clue')(user, input, game_number);
   } else if ( rule('guess').test(input) ) {
     if ( user.state === 'passed' ) {
       return [{
@@ -197,7 +197,7 @@ module.exports = function(user, input, game_number) {
       });
     }
   } else {
-    return require('../users/say')(user, input);
+    return require('../users/say')(user, input, game_number);
   }
 };
 

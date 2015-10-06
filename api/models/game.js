@@ -86,8 +86,8 @@ let Game = {
       return 'text';
     }
   },
-  saveSubmission: function(user, message) {
-    return this.get({ user: user }).then(function(game) {
+  saveSubmission: function(user, message, game_number) {
+    return this.get({ user: user, game_number: game_number }).then(function(game) {
       return Round.saveSubmission(game, user, message).then(function() {
         return game;
       });
@@ -258,12 +258,9 @@ let Game = {
       query.where('g.last_activity<?', params.last_activity);
     }
 
-    //console.log(query.toString());
-
     return db.query(query.toString()).then(function(rows) {
       if ( rows.length ) {
         let game = rows[0];
-        console.log('game id gotten', game.id);
         return this.getRound(game).then(function(round) {
           game.round = round;
           return this.getPlayers(game).then(function(players) {
@@ -333,7 +330,6 @@ let Game = {
   },
   add: function(game, users, game_number) {
     return Promise.all(users.map(function(user) {
-      //console.log('game_number', game_number);
       let get_game_number_id = squel
                                .select()
                                .field('id')

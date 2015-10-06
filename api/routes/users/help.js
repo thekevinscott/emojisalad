@@ -26,7 +26,7 @@ function getGame(key) {
   };
 }
 
-module.exports = function(user, game_number) {
+module.exports = function(user, input, game_number) {
   if ( keys[user.state] ) {
     if ( typeof keys[user.state] === 'function' ) {
       return keys[user.state](user, game_number);

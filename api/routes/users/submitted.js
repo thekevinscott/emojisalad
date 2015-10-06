@@ -6,11 +6,11 @@ const rule = require('config/rule');
 
 module.exports = function(user, input, game_number) {
   if ( rule('invite').test(input) ) {
-    return require('../users/invite')(user, input);
+    return require('../users/invite')(user, input, game_number);
   } else if ( rule('help').test(input) ) {
-    return require('../users/help')(user, input);
+    return require('../users/help')(user, input, game_number);
   } else if ( rule('pass').test(input) ) {
-    return require('../games/pass')(user, input);
+    return require('../games/pass')(user, input, game_number);
   } else if ( /^clue/i.test(input) ) {
     return Game.get({ user: user, game_number: game_number }).then(function(game) {
       var message = {
