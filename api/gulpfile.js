@@ -28,7 +28,7 @@ function getConnectionString(config) {
   return [
     '-u',
     config.user,
-    '-p' + config.password,
+    '-p\'' + config.password+'\'',
     '-h',
     config.host,
     config.database,
