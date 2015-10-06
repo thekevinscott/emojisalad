@@ -206,6 +206,7 @@ let User = {
 
   },
   logLastActivity: function(user, game_number) {
+    return; 
     if ( ! Game ) {
       Game = require('./game');
     }

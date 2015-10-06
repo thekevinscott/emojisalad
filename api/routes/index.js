@@ -30,6 +30,7 @@ var Router = function(user, message, game_number) {
     let route = routes[i];
     if ( route.regex.test(state) ) {
       User.logLastActivity(user, game_number);
+      console.log('user', user.state, user.number);
       return route.fn(user, message, game_number);
       //break;
     }

@@ -6,17 +6,18 @@ const check = require('../lib/check');
 const signup = require('../flows/signup');
 const startGame = require('../flows/startGame');
 const Game = require('models/game');
-
 const EMOJI = '😀';
+const game_number = '12013409832';
 
 describe('Inviting', function() {
-  var users = getUsers(2);
-  var inviter = users[0];
-  before(function() {
-    return signup(inviter);
-  });
-
   describe('Invalid Phone Numbers', function() {
+    var users = getUsers(2);
+    var inviter = users[0];
+
+    before(function() {
+      return signup(inviter);
+    });
+
     it('should reject an invalid invite phrase', function() {
       return check(
         { user: inviter, msg: 'foobar' },
@@ -64,6 +65,12 @@ describe('Inviting', function() {
   });
 
   describe('Valid numbers', function() {
+    var users = getUsers(2);
+    var inviter = users[0];
+    before(function() {
+      return signup(inviter);
+    });
+
     this.timeout(10000);
     it('should be able to invite someone', function() {
       var user = getUsers(1)[0];
@@ -134,7 +141,7 @@ describe('Inviting', function() {
       });
     });
 
-    it.only('should be able to onboard an invited user', function() {
+    it('should be able to onboard an invited user', function() {
       var user = getUsers(1)[0];
 
       var firstPhrase = 'JURASSIC PARK';
@@ -143,11 +150,14 @@ describe('Inviting', function() {
         { user: inviter, msg: 'invite '+user.number },
         { user: user, msg: 'yes' },
       ]).then(function() {
-        return Game.get({ number: inviter.number, game_number: '12013409832' }).then(function(game) {
-          console.log('game', game.id);
+        return Game.get({ number: inviter.number, game_number: game_number }).then(function(game) {
+          //console.log('********** 1 game', inviter.nickname, game.id, game.random);
           return Game.update(game, { random : 0 });
         });
       }).then(function() {
+        return Game.get({ number: inviter.number, game_number: game_number });
+      }).then(function() {
+        //console.log('********** 2 game', inviter.nickname, game.id, game.random);
         return check(
           { user: user, msg: user.nickname },
           [
@@ -248,6 +258,7 @@ describe('Inviting', function() {
     it('should be able to onboard a third user to the game', function() {
       var users = getUsers(2);
       var invitee = getUsers(3).pop();
+      console.log('start that game');
       return startGame(users).then(function() {
         return setup([
           { user: users[0], msg: 'invite '+invitee.number },

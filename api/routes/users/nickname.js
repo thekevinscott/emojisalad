@@ -24,7 +24,7 @@ module.exports = function(user, input, game_number) {
         return Game.get({ user: { id: user.inviter.id }, game_number: game_number });
       }).then(function(game) {
         if ( game.state === 'pending' ) {
-          return startGame(game, user, input);
+          return startGame(game, user, input, game_number);
         } else if ( game.state === 'playing' ) {
           if ( ! game.round ) {
             console.error(game);
@@ -46,7 +46,7 @@ module.exports = function(user, input, game_number) {
         }
       });
     } else {
-      return createGame(user, input);
+      return createGame(user, input, game_number);
     }
   }
 };
@@ -103,7 +103,7 @@ function addPlayerToRound(game, user, input, game_number) {
   });
 
   // add this invited user to the game
-  return Game.add(game, [user]).then(function() {
+  return Game.add(game, [user], game_number).then(function() {
     return Game.get({ user: user, game_number: game_number});
   }).then(function(game) {
     return game.players.map(function(player) {
@@ -138,7 +138,7 @@ function addPlayerToRound(game, user, input, game_number) {
   });
 }
 
-function startGame(game, user, input) {
+function startGame(game, user, input, game_number) {
   game.players.push(user);
   game.players.map(function(player) {
     // update each game player that its time to begin
@@ -148,7 +148,7 @@ function startGame(game, user, input) {
   });
   // add this invited user to the game
   return Promise.join(
-    Game.add(game, [user]),
+    Game.add(game, [user], game_number),
     Game.start(game),
     Game.newRound(game),
     function(_1, _2, round) {
@@ -189,11 +189,13 @@ function startGame(game, user, input) {
   );
 }
 
-function createGame(user, input) {
+function createGame(user, input, game_number) {
+  console.log('create game');
   Game.create().then(function(game) {
-    return Game.add(game, [user]);
+    console.log('created game', game.id);
+    return Game.add(game, [user], game_number);
   }).catch(function(err) {
-    console.error('error adding user', err, user);
+    console.error('error adding user 1', err, user);
   });
 
   User.update(user, {
