@@ -16,6 +16,7 @@ const rule = require('../../../config/rule');
 const help = rule('help').example();
 const guess = rule('guess').example();
 let EMOJI = '😀';
+let game_number = '12013409832';
 
 describe('Help', function() {
   describe('Submitter', function() {
@@ -112,7 +113,7 @@ describe('Help', function() {
           { user: users[1], msg: guess + game.round.phrase }
         ]).then(function() {
           return User.get(users[0]).then(function(user) {
-            return Game.get({ user: user });
+            return Game.get({ user: user, game_number: game_number });
           });
         });
       }).then(function(game) {

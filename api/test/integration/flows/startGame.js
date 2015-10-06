@@ -9,10 +9,7 @@ const getGame = require('../lib/getGame');
 const setNonRandomGame = require('../lib/setNonRandomGame');
 
 function startGame(users) {
-  return signup(users[0]).then(function(output) {
-    console.log(output.map(function(resp) {
-      return resp.Response.Sms;
-    }));
+  return signup(users[0]).then(function() {
     // this sets a game to not be random.
     // we need this set so we know // which clues to expect
     return setNonRandomGame(users[0]);

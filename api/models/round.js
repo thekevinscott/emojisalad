@@ -128,8 +128,10 @@ var Round = {
 
     var order;
     if ( game.random ) {
+      //console.log('order phrase by random', game.id, game.random);
       order = 'RAND()';
     } else {
+      //console.log('order phrase by id');
       order = 'p.id';
     }
 
@@ -198,6 +200,7 @@ var Round = {
       Game = require('./game');
     }
 
+    //console.log('game random', game.id, game.random);
     return Promise.join(
       Game.getNextSubmitter(game),
       this.getPhrase(game),

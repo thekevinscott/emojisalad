@@ -5,14 +5,14 @@ const Game = require('models/game');
 const Round = require('models/round');
 const _ = require('lodash');
 
-module.exports = function(user, input) {
+module.exports = function(user, input, game_number) {
   if ( user.state === 'passed' ) {
     return [{
       user: user,
       key: 'no-clue-after-passing'
     }];
   } else {
-    return Game.get({ user: user }).then(function(game) {
+    return Game.get({ user: user, game_number: game_number }).then(function(game) {
       return Round.getCluesLeft(game).then(function(clues_left) {
         if ( clues_left > 0 ) {
           return Round.getClue(game, user).then(function(roundClue) {

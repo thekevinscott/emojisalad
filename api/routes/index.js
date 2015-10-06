@@ -24,13 +24,14 @@ addRoute('waiting-for-round', require('./users/say'));
 addRoute('passed', require('./users/say'));
 addRoute('lost', require('./users/say'));
 
-var Router = function(user, message) {
+var Router = function(user, message, game_number) {
   var state = user.state;
   for ( var i=0,l=routes.length; i<l; i++ ) {
     let route = routes[i];
     if ( route.regex.test(state) ) {
-      User.logLastActivity(user);
-      return route.fn(user, message);
+      User.logLastActivity(user, game_number);
+      //console.log('user', user.state, user.number, game_number);
+      return route.fn(user, message, game_number);
       //break;
     }
   }

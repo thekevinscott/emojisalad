@@ -86,8 +86,8 @@ let Game = {
       return 'text';
     }
   },
-  saveSubmission: function(user, message) {
-    return this.get({ user: user }).then(function(game) {
+  saveSubmission: function(user, message, game_number) {
+    return this.get({ user: user, game_number: game_number }).then(function(game) {
       return Round.saveSubmission(game, user, message).then(function() {
         return game;
       });
@@ -224,8 +224,28 @@ let Game = {
                 //.limit(1);
 
     if ( params.user ) {
+      if ( ! params.game_number ) {
+        console.warn('1) when selecting by a user, games should also select on the To number');
+      } else {
+        let get_game_number = squel
+                              .select()
+                              .field('id')
+                              .from('game_numbers')
+                              .where('number=?',params.game_number);
+        query.where('p.game_number_id=?',get_game_number);
+      }
       query.where('p.user_id=?',params.user.id);
     } else if ( params.users ) {
+      if ( ! params.game_number ) {
+        console.warn('2) when selecting by a user, games should also select on the To number');
+      } else {
+        let get_game_number = squel
+                              .select()
+                              .field('id')
+                              .from('game_numbers')
+                              .where('number=?',params.game_number);
+        query.where('p.game_number_id=?',get_game_number);
+      }
       let user_ids = params.users.map(function(user) {
         return user.id;
       });
@@ -237,7 +257,7 @@ let Game = {
     if ( params.last_activity ) {
       query.where('g.last_activity<?', params.last_activity);
     }
-    
+
     return db.query(query.toString()).then(function(rows) {
       if ( rows.length ) {
         let game = rows[0];
@@ -308,11 +328,18 @@ let Game = {
                 });
     return db.query(query);
   },
-  add: function(game, users) {
+  add: function(game, users, game_number) {
     return Promise.all(users.map(function(user) {
+      let get_game_number_id = squel
+                               .select()
+                               .field('id')
+                               .from('game_numbers')
+                               .where('number=?',game_number);
+
       let row = {
         game_id: game.id,
-        user_id: user.id
+        user_id: user.id,
+        game_number_id : get_game_number_id
       };
 
       let query = squel
@@ -320,7 +347,7 @@ let Game = {
                   .into('game_participants')
                   .setFields(row);
 
-      return db.query(query).then(function(rows) {
+      return db.query(query.toString()).then(function(rows) {
         return {
           id: rows.insertId
         };

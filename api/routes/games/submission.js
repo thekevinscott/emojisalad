@@ -3,18 +3,18 @@ var _ = require('lodash');
 var Game = require('models/game');
 var rule = require('config/rule');
 
-module.exports = function(user, input) {
+module.exports = function(user, input, game_number) {
   if ( rule('invite').test(input) ) {
-    return require('../users/invite')(user, input);
+    return require('../users/invite')(user, input, game_number);
   } else if ( rule('help').test(input) ) {
-    return require('../users/help')(user, input);
+    return require('../users/help')(user, input, game_number);
   } else {
     let type_of_input = Game.checkInput(input);
 
     if ( type_of_input === 'text' ) {
-      return require('../users/say')(user, input);
+      return require('../users/say')(user, input, game_number);
     } else if ( type_of_input === 'mixed-emoji' ) {
-      return require('../users/say')(user, input).then(function(responses) {
+      return require('../users/say')(user, input, game_number).then(function(responses) {
         return responses.concat([
           {
             user: user,
@@ -24,7 +24,7 @@ module.exports = function(user, input) {
         ]);
       });
     } else if ( type_of_input === 'emoji' ) {
-      return Game.saveSubmission(user, input).then(function(game) {
+      return Game.saveSubmission(user, input, game_number).then(function(game) {
         var messages = [{
           user: user,
           key: 'game-submission-sent'

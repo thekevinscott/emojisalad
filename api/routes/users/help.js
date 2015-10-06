@@ -15,8 +15,8 @@ var keys = {
 };
 
 function getGame(key) {
-  return function(user) {
-    return Game.get({ user: user }).then(function(game) {
+  return function(user, game_number) {
+    return Game.get({ user: user, game_number: game_number }).then(function(game) {
       return [{
         user: user,
         key: key,
@@ -26,10 +26,10 @@ function getGame(key) {
   };
 }
 
-module.exports = function(user) {
+module.exports = function(user, input, game_number) {
   if ( keys[user.state] ) {
     if ( typeof keys[user.state] === 'function' ) {
-      return keys[user.state](user);
+      return keys[user.state](user, game_number);
     } else {
       return [{
         user: user,
