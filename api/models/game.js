@@ -381,7 +381,9 @@ let Game = {
                 .setFields({
                   state_id: state_id,
                   guesses: default_guesses,
-                  clues_allowed: default_clues_allowed 
+                  clues_allowed: default_clues_allowed,
+                  created: squel.fval('NOW(3)'),
+                  last_activity: squel.fval('NOW(3)')
                 });
     let default_scores = {
       'pass': -1,
