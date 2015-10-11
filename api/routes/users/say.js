@@ -34,7 +34,6 @@ module.exports = function(user, input, game_number) {
             },
             message);
           }
-        //}).filter(function(el) { return el; });
         }).filter((el) => el);
       }
     );

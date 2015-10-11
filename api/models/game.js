@@ -13,6 +13,10 @@ const Round = require('./round');
 const default_guesses = 2;
 const default_clues_allowed = 1;
 
+squel.registerValueHandler(Date, function(date) {
+  return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
+});
+
 let Game = {
   update: function(game, data) {
     let query = squel
@@ -257,6 +261,8 @@ let Game = {
     if ( params.last_activity ) {
       query.where('g.last_activity<?', params.last_activity);
     }
+
+    console.debug(query.toString());
 
     return db.query(query.toString()).then(function(rows) {
       if ( rows.length ) {
