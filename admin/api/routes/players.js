@@ -1,6 +1,6 @@
 'use strict';
 const squel = require('squel');
-const db = require('../../db');
+const db = require('db');
 module.exports = function(app) {
   app.get('/api/players', function(req, res) {
     var query = squel
@@ -65,4 +65,4 @@ module.exports = function(app) {
       res.json({error: err});
     });
   });
-}
+};

@@ -12,10 +12,6 @@ if ( ! process.env.ENVIRONMENT ) {
   throw "You must specify a DB environment";
 }
 
-squel.registerValueHandler(Date, function(date) {
-  return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
-});
-
 let config = require('../config/db')[process.env.ENVIRONMENT];
 
 if ( ! pool ) {

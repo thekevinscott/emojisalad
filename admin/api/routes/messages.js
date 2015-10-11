@@ -1,6 +1,6 @@
 'use strict';
 const squel = require('squel');
-const db = require('../../db');
+const db = require('db');
 module.exports = function(app) {
   app.delete('/api/messages/:message_id', function(req, res) {
     var query = squel

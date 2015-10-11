@@ -1,6 +1,6 @@
 'use strict';
 var squel = require('squel');
-var db = require('../../db');
+var db = require('db');
 module.exports = function(app) {
   app.put('/api/games/:game_id/scores', function(req, res) {
     let game_id = req.params.game_id;
