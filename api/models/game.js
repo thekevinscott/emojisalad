@@ -262,6 +262,7 @@ let Game = {
       query.where('g.last_activity<?', params.last_activity);
     }
 
+    console.debug('params', params);
     console.debug(query.toString());
 
     return db.query(query.toString()).then(function(rows) {

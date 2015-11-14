@@ -22,8 +22,10 @@ module.exports = function(user_id) {
 
               console.log('query', query.toString());
   return db.query(query.toString()).then(function(rows) {
+    console.log('rows', rows);
     if ( rows.length ) {
       var user = rows[0];
+      console.log('now get messages');
       return getMessages(user_id).then(function(messages) {
         //console.log(messages);
         user.messages = messages;

@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var squel = require('squel');
 
 function getMessages(user_id) {
+  console.log('get messages', user_id);
   var attributes = squel
                    .select()
                    .field('a.attribute as username')
@@ -39,6 +40,7 @@ function getMessages(user_id) {
                               .order('m.created', false);
                               
                               console.log(get_incoming_messages.toString());
+                              console.log(get_outgoing_messages.toString());
   return Promise.join(
     db.query(get_incoming_messages.toString()),
     db.query(get_outgoing_messages.toString()),
