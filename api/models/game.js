@@ -345,7 +345,7 @@ let Game = {
       let row = {
         game_id: game.id,
         user_id: user.id,
-        game_number_id : get_game_number_id
+        game_number_id : 1
       };
 
       let query = squel
