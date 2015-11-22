@@ -1,7 +1,7 @@
 # EmojinaryFriend Admin
 
 
-So far, this is just a minimal user authentication setup. It's using [Passport](passportjs.org) and (Express](http://expressjs.com/).
+So far, this is just a minimal user authentication setup. It's using [Passport](passportjs.org) and [Express](http://expressjs.com/).
 
 ## Description
 Well, basically... We have a dope app. But the contents of the app needs to be updated.
