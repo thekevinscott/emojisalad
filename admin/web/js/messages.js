@@ -44,10 +44,10 @@ export var Messages = React.createClass({
           save = <a onClick={this.save.bind(this, message)}>Save</a>;
         }
         return (
-          <tr><td>{message.key}</td><td className="full"><textarea>{message.message}</textarea></td><td>{save}</td><td>x</td></tr>
+          <tr><td>{message.key}</td><td className="full"><textarea>{message.message}</textarea></td><td>{save}</td></tr>
         );
       }.bind(this));
-      content = (<table><thead><tr><td>Key</td><td>Message</td><td>Save</td><td>Delete</td></tr></thead>{messages}</table>);
+      content = (<table><thead><tr><td>Key</td><td>Message</td><td>Save</td></tr></thead>{messages}</table>);
     }
     return (
       <div className="players page">
