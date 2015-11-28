@@ -304,7 +304,7 @@ CREATE TABLE `player_attribute_keys` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -382,11 +382,11 @@ DROP TABLE IF EXISTS `players`;
 CREATE TABLE `players` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entry_id` int(11) DEFAULT NULL,
-  `state_id` int(2) DEFAULT '1',
+  `state_id` int(11) DEFAULT NULL,
   `platform_id` int(11) DEFAULT NULL,
   `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `maximum_games` int(2) NOT NULL DEFAULT '3',
   `blacklist` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `user_id` int(11) unsigned NOT NULL,
   `last_activity` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   `created` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   PRIMARY KEY (`id`)
@@ -461,6 +461,22 @@ CREATE TABLE `submissions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `last_activity` timestamp(6) NULL DEFAULT NULL,
+  `created` timestamp(6) NULL DEFAULT NULL,
+  `blacklist` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -471,7 +487,7 @@ CREATE TABLE `submissions` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-28 17:07:39
+-- Dump completed on 2015-11-28 18:43:09
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -651,7 +667,7 @@ CREATE TABLE `player_attribute_keys` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -660,7 +676,7 @@ CREATE TABLE `player_attribute_keys` (
 
 LOCK TABLES `player_attribute_keys` WRITE;
 /*!40000 ALTER TABLE `player_attribute_keys` DISABLE KEYS */;
-INSERT INTO `player_attribute_keys` VALUES (3,'number'),(4,'messenger-name'),(6,'nickname');
+INSERT INTO `player_attribute_keys` VALUES (3,'number'),(4,'messenger-name'),(6,'nickname'),(7,'to');
 /*!40000 ALTER TABLE `player_attribute_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -721,4 +737,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-28 17:07:42
+-- Dump completed on 2015-11-28 18:43:12

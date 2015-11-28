@@ -10,7 +10,7 @@ let Player = {
 
   // create a new player number
   create: function(player, entry, platform) {
-    var query = squel
+    let query = squel
                 .insert()
                 .into('players')
                 .setFields({
@@ -40,7 +40,7 @@ let Player = {
                                  .where('state=?','waiting-for-confirmation')});
 
     return db.query(query.toString()).then(function(rows) {
-      var player_id = rows.insertId;
+      let player_id = rows.insertId;
       player.id = player_id;
 
       let insert_to_number = squel
@@ -76,103 +76,117 @@ let Player = {
        });
     });
   },
+
   get: function(player) {
-    function fetchPlayer(key, val) {
-      var query = squel
-                  .select()
-                  .field('u.id')
-                  .field('u.created')
-                  .field('u.blacklist')
-                  .field('u.state_id')
-                  .field('i.inviter_player_id')
-                  .field('p.platform', 'platform')
-                  .field('s.state', 'state')
-                  .from('players', 'u')
-                  .where('u.archived=0')
-                  .left_join('invites', 'i', 'u.id = i.invited_player_id')
-                  .left_join('platforms', 'p', 'p.id = u.platform_id')
-                  .left_join('player_states', 's', 's.id = u.state_id')
-                  .left_join('player_attributes', 'a', 'a.player_id = u.id')
-                  .left_join('player_attribute_keys', 'k', 'a.attribute_id = k.id');
-      if ( key === 'id' ) {
-        query = query.where('u.`'+key+'`=?', val);
-      } else if ( key === 'invited_player_id' ) {
-        query = query.where('i.invited_player_id=?', val);
-      } else {
-        query = query
-                .where('k.`key`=?', key)
-                .where('a.attribute=?', val);
-      }
-
-      return db.query(query.toString()).then(function(players) {
-        if ( ! players.length ) {
-          return null;
-        } else {
-
-          var player = players[0];
-
-          var promises = [
-            function() {
-              var query = squel
-                          .select()
-                          .field('a.attribute')
-                          .field('k.`key`')
-                          .from('player_attributes', 'a')
-                          .left_join('players', 'u', 'u.id = a.player_id')
-                          .left_join('player_attribute_keys', 'k', 'k.id = a.attribute_id')
-                          .where('a.player_id=?',player.id);
-
-              return db.query(query);
-            }(),
-          ];
-
-          if ( player.inviter_player_id ) {
-            promises.push(Player.get({ id: player.inviter_player_id }));
-          }
-
-          return Promise.all(promises).then(function(results) {
-            results[0].map(function(attribute) {
-              player[attribute.key] = attribute.attribute;
-            });
-            if ( results[1] ) {
-              player.inviter = results[1];
-            }
-            //player.game = game;
-            return player;
-          });
-
-        }
+    if ( ! player.id && ! player.invited_player_id && ! player.number ) {
+      throw new Error({
+        message: 'Tried to select on an invalid player key'
       });
+    } 
+
+    let query = squel
+                .select()
+                .field('u.id')
+                .field('u.created')
+                .field('u.blacklist')
+                .field('u.state_id')
+                .field('i.inviter_player_id')
+                .field('p.platform', 'platform')
+                .field('s.state', 'state')
+                .from('players', 'u')
+                .where('u.archived=0')
+                .left_join('invites', 'i', 'u.id = i.invited_player_id')
+                .left_join('platforms', 'p', 'p.id = u.platform_id')
+                .left_join('player_states', 's', 's.id = u.state_id');
+
+    if ( player.id ) {
+      query = query.where('u.`id`=?', player.id);
+    } else if ( player.invited_player_id ) {
+      query = query.where('i.invited_player_id=?', player.invited_player_id);
+    } else {
+      let number_attribute = squel
+                             .select()
+                             .field('attribute')
+                             .field('player_id')
+                             .from('player_attributes')
+                             .where('attribute_id=?', squel
+                                   .select()
+                                   .field('id')
+                                   .from('player_attribute_keys')
+                                   .where('`key`=?','number')
+                                   );
+      query = query
+              .left_join(number_attribute, 'number', 'number.player_id = u.id')
+              .where('number.attribute=?', player.number);
+
+      if ( player.to ) {
+
+        let to_attribute = squel
+                           .select()
+                           .field('attribute')
+                           .field('player_id')
+                           .from('player_attributes')
+                           .where('attribute_id=?', squel
+                                 .select()
+                                 .field('id')
+                                 .from('player_attribute_keys')
+                                 .where('`key`=?','to')
+                                 );
+        query = query
+                .left_join(to_attribute, 'to', 'to.player_id = u.id')
+                .where('to.attribute=?', player.to);
+      }
+
     }
 
-    if ( typeof player === 'object' ) {
-      if ( player.id ) {
-        return fetchPlayer('id', player.id);
-      } else if ( player.number ) {
-        return fetchPlayer('number', player.number);
-      } else if ( player['messenger-name'] ) {
-        return fetchPlayer('messenger-name', player['messenger-name']);
-      } else if ( player.nickname ) {
-        return fetchPlayer('nickname', player.nickname);
-      } else if ( player.invited_player_id ) {
-        return fetchPlayer('invited_player_id', player.invited_player_id);
+    return db.query(query.toString()).then(function(players) {
+      if ( ! players.length ) {
+        return null;
       } else {
-        throw new Error({
-          message: 'Tried to select on an invalid player key'
+
+        let player = players[0];
+
+        let promises = [
+          function() {
+            let query = squel
+                        .select()
+                        .field('a.attribute')
+                        .field('k.`key`')
+                        .from('player_attributes', 'a')
+                        .left_join('players', 'u', 'u.id = a.player_id')
+                        .left_join('player_attribute_keys', 'k', 'k.id = a.attribute_id')
+                        .where('a.player_id=?',player.id);
+
+            return db.query(query);
+          }(),
+        ];
+
+        if ( player.inviter_player_id ) {
+          promises.push(Player.get({ id: player.inviter_player_id }));
+        }
+
+        return Promise.all(promises).then(function(results) {
+          results[0].map(function(attribute) {
+            player[attribute.key] = attribute.attribute;
+          });
+          if ( results[1] ) {
+            player.inviter = results[1];
+          }
+          //player.game = game;
+          return player;
         });
+
       }
-    } else {
-      // we've passed a number
-      return fetchPlayer('number', player);
-    }
+    });
   },
+
   update: function(player, params) {
     // a whitelisted array of arguments we're allowed to update
 
-    var queries = [];
+    let queries = [];
 
     Object.keys(params).map(function(key) {
-      var query;
+      let query;
       switch(key) {
         case 'state' :
           let state = squel
