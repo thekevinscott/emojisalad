@@ -1,11 +1,13 @@
 'use strict';
-var _ = require('lodash');
-var getRandomPhone = require('./getRandomPhone');
-// if a number is the argument, this is the number of users
+const _ = require('lodash');
+const getRandomPhone = require('./getRandomPhone');
+const game_numbers = require('../../../../config/numbers');
+
+// if a number is the argument, this is the number of players
 // to create.
 //
 // if an array is the argument, this is intended to stand
-// in as the users we wish to create. fill in the missing
+// in as the players we wish to create. fill in the missing
 // fields
 
 var listOfNicknames = [
@@ -14,28 +16,29 @@ var listOfNicknames = [
   'SCHLOOOOO',
   'Dave'
 ];
-function getUsers(arg) {
-  var users = [];
+function getPlayers(arg) {
+  var players = [];
   if ( _.isNumber(arg) ) {
     for ( var i=0;i<arg;i++ ) {
-      users.push({
+      players.push({
         number: getRandomPhone(),
-        nickname: listOfNicknames[i]+Math.random()
+        nickname: listOfNicknames[i]+Math.random(),
+        game_number: game_numbers.getDefault()
       });
     }
   } else if ( _.isArray(arg) ) { 
     var nicknameCount = 0;
-    users = arg;
-    users.map(function(user) {
-      if ( ! user.phone ) {
-        user.phone = getRandomPhone();
+    players = arg;
+    players.map(function(player) {
+      if ( ! player.phone ) {
+        player.phone = getRandomPhone();
       }
-      if ( ! user.nickname ) {
-        user.nickname = listOfNicknames[nicknameCount++]+Math.random();
+      if ( ! player.nickname ) {
+        player.nickname = listOfNicknames[nicknameCount++]+Math.random();
       }
     });
   }
-  return users;
+  return players;
 }
 
-module.exports = getUsers;
+module.exports = getPlayers;

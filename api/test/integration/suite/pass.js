@@ -32,11 +32,11 @@ describe('Pass', function() {
   describe('Illegal', function() {
     it('should not let a player pass when they are not guessing', function() {
       var players = getPlayers(3);
-      return startGame(players).then(function(game) {
+      return startGame(players).then(function() {
         return check(
-          { player: game.round.players[0], msg: pass },
+          { player: players[1], msg: pass },
           [
-            { to: game.round.players[0], key: 'pass-rejected-not-playing' }
+            { to: players[1], key: 'pass-rejected-not-playing' }
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -46,11 +46,11 @@ describe('Pass', function() {
 
     it('should not let a submitter pass when guessing', function() {
       var players = getPlayers(3);
-      return startGame(players).then(function(game) {
+      return startGame(players).then(function() {
         return check(
-          { player: game.round.submitter, msg: pass },
+          { player: players[0], msg: pass },
           [
-            { to: game.round.submitter, key: 'pass-rejected-need-a-guess' }
+            { to: players[0], key: 'pass-rejected-need-a-guess' }
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -60,11 +60,11 @@ describe('Pass', function() {
 
     it('should not let a submitter pass when waiting for others to guess', function() {
       var players = getPlayers(3);
-      return playGame(players).then(function(game) {
+      return playGame(players).then(function() {
         return check(
-          { player: game.round.submitter, msg: pass },
+          { player: players[0], msg: pass },
           [
-            { to: game.round.submitter, key: 'pass-rejected-not-guessing' }
+            { to: players[0], key: 'pass-rejected-not-guessing' }
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -128,7 +128,7 @@ describe('Pass', function() {
       var players = getPlayers(3);
       return playGame(players).then(function(game) {
         return check(
-          { player: game.round.players[0], msg: pass },
+          { player: players[1], msg: pass },
           [
             { to: players[0], key: 'player-passed', options: [game.round.players[0].nickname] },
             { to: players[1], key: 'pass', options: [game.round.players[0].nickname] },

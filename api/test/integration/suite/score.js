@@ -18,7 +18,7 @@ const pass = rule('pass').example();
 const EMOJI = '😀';
 const guess = rule('guess').example();
 const rand = require('../lib/getRandomScore');
-let game_number = '12013409832';
+const game_number = require('../../../../config/numbers').getDefault();
 
 describe('Score', function() {
   it('should record a correct guess successfully', function() {
@@ -30,7 +30,7 @@ describe('Score', function() {
     return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { player: game.players[1], msg: guess + 'JURASSIC PARK' },
+          { player: players[1], msg: guess + 'JURASSIC PARK' },
         ]);
       }).then(function() {
         return Game.get({ player: game.players[0], game_number: game_number });
@@ -50,7 +50,7 @@ describe('Score', function() {
     return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { player: game.players[1], msg: pass },
+          { player: players[1], msg: pass },
         ]);
       }).then(function() {
         return Game.get({ player: game.players[0], game_number: game_number });
@@ -71,8 +71,8 @@ describe('Score', function() {
     return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { player: game.players[1], msg: guess + 'foo' },
-          { player: game.players[1], msg: guess + 'JURASSIC PARK' },
+          { player: players[1], msg: guess + 'foo' },
+          { player: players[1], msg: guess + 'JURASSIC PARK' },
         ]);
       }).then(function() {
         return Game.get({ player: game.players[0], game_number: game_number });
@@ -93,9 +93,9 @@ describe('Score', function() {
     return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { player: game.players[2], msg: guess + 'JURASSIC PARK' },
-          { player: game.players[1], msg: EMOJI },
-          { player: game.players[2], msg: guess + 'SILENCE OF THE LAMBS' },
+          { player: players[2], msg: guess + 'JURASSIC PARK' },
+          { player: players[1], msg: EMOJI },
+          { player: players[2], msg: guess + 'SILENCE OF THE LAMBS' },
         ]);
       }).then(function() {
         return Game.get({ player: game.players[0], game_number: game_number });
@@ -117,10 +117,10 @@ describe('Score', function() {
     return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { player: game.players[2], msg: pass },
-          { player: game.players[1], msg: guess + 'JURASSIC PARK' },
-          { player: game.players[1], msg: EMOJI },
-          { player: game.players[2], msg: pass },
+          { player: players[2], msg: pass },
+          { player: players[1], msg: guess + 'JURASSIC PARK' },
+          { player: players[1], msg: EMOJI },
+          { player: players[2], msg: pass },
         ]);
       }).then(function() {
         return Game.get({ player: game.players[0], game_number: game_number });

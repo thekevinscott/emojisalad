@@ -15,8 +15,8 @@ const setup = require('../lib/setup');
 const rule = require('../../../config/rule');
 const help = rule('help').example();
 const guess = rule('guess').example();
-let EMOJI = '😀';
-let game_number = '12013409832';
+const EMOJI = '😀';
+const game_number = require('../../../../config/numbers').getDefault();
 
 describe('Help', function() {
   describe('Submitter', function() {
@@ -25,7 +25,7 @@ describe('Help', function() {
 
       return startGame(players).then(function(game) {
         return check(
-          { player: game.round.submitter, msg: help },
+          { player: game.round.submitter, msg: help, to: game_number },
           [
             { to: game.round.submitter, key: 'help-submitter-waiting-for-submission', },
           ]
@@ -40,13 +40,13 @@ describe('Help', function() {
 
       return startGame(players).then(function(game) {
         return setup([
-          { player: game.round.submitter, msg: EMOJI }
+          { player: game.round.submitter, msg: EMOJI, to: game_number }
         ]).then(function() {
           return game;
         });
       }).then(function(game) {
         return check(
-          { player: game.round.submitter, msg: help },
+          { player: game.round.submitter, msg: help, to: game_number },
           [
             { to: game.round.submitter, key: 'help-submitter-submitted', },
           ]
@@ -65,7 +65,7 @@ describe('Help', function() {
         return invite(players[0], players[2]);
       }).then(function() {
         return check(
-          { player: players[2], msg: help },
+          { player: players[2], msg: help, to: game_number },
           [
             { to: players[2], key: 'help-player-bench' },
           ]
@@ -80,7 +80,7 @@ describe('Help', function() {
 
       return startGame(players).then(function(game) {
         return check(
-          { player: players[2], msg: help },
+          { player: players[2], msg: help, to: game_number },
           [
             { to: players[2], key: 'help-player-ready-for-game', options: [game.round.submitter.nickname] },
           ]
@@ -95,7 +95,7 @@ describe('Help', function() {
 
       return playGame(players).then(function() {
         return check(
-          { player: players[2], msg: help },
+          { player: players[2], msg: help, to: game_number },
           [
             { to: players[2], key: 'help-player-guessing' },
           ]
@@ -118,7 +118,7 @@ describe('Help', function() {
         });
       }).then(function(game) {
         return check(
-          { player: players[2], msg: help },
+          { player: players[2], msg: help, to: game_number },
           [
             { to: players[2], key: 'help-player-waiting-for-round', options: [game.round.submitter.nickname] },
           ]

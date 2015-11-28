@@ -42,17 +42,17 @@ module.exports = function(player, input, game_number) {
           };
         }
       }).then(function(message) {
-        return game.players.map(function(player) {
+        return game.players.map(function(game_player) {
           return _.assign({
-            player: player,
+            player: game_player,
           }, message);
         });
       }).then(function(messages) {
-        return game.players.map(function(player) {
-          if ( player.id !== player.id ) {
+        return game.players.map(function(game_player) {
+          if ( game_player.id !== player.id ) {
             return {
               key: 'says',
-              player: player,
+              player: game_player,
               options: [
                 player.nickname,
                 input

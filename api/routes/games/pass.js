@@ -1,12 +1,12 @@
 'use strict';
-var Player = require('../../models/player');
-//var Message = require('../../models/message');
+let Player = require('../../models/player');
+//let Message = require('../../models/message');
 const Game = require('models/game');
 //const Round = require('models/round');
 const _ = require('lodash');
 
 module.exports = function(player, input, game_number) {
-  var result;
+  let result;
 
   if ( player.state === 'ready-for-game' || player.state === 'waiting-for-round' ) {
     result = 'pass-rejected-not-playing';
@@ -24,15 +24,15 @@ module.exports = function(player, input, game_number) {
     }).then(function(game) {
       Game.updateScore(game, player, 'pass');
 
-      var players_left = game.round.players.filter(function(player) {
-        return player.id !== player.id && player.state === 'guessing';
+      let players_left = game.round.players.filter(function(game_player) {
+        return game_player.id !== player.id && game_player.state === 'guessing';
       });
 
-      var promise;
+      let promise;
 
       if ( players_left.length === 0 ) {
         promise = Game.newRound(game).then(function(round) {
-          var suggestion = {
+          let suggestion = {
             key: 'game-next-round-suggestion',
             options: [
               round.submitter.nickname,
@@ -40,23 +40,23 @@ module.exports = function(player, input, game_number) {
             ]
           };
 
-          var nextRoundInstructions = {
+          let nextRoundInstructions = {
             key: 'game-next-round',
             options: [
               round.submitter.nickname,
             ]
           };
 
-          return round.game.players.map(function(player) {
+          return round.game.players.map(function(game_player) {
             return {
-              player: player,
+              player: game_player,
               key: 'round-over'
             };
-          }).concat(round.game.players.map(function(player) {
-            if ( player.id !== round.submitter.id ) {
-              return _.assign( { player: player }, nextRoundInstructions);
+          }).concat(round.game.players.map(function(game_player) {
+            if ( game_player.id !== round.submitter.id ) {
+              return _.assign( { player: game_player }, nextRoundInstructions);
             } else {
-              return _.assign( { player: player }, suggestion);
+              return _.assign( { player: game_player }, suggestion);
             }
           }));
         });
@@ -68,16 +68,16 @@ module.exports = function(player, input, game_number) {
       }
 
       return promise.then(function(endingMessages) {
-        return game.players.map(function(player) {
-          if ( player.id === player.id ) {
+        return game.players.map(function(game_player) {
+          if ( game_player.id === player.id ) {
             return {
-              player: player,
+              player: game_player,
               key: 'pass',
               options: [player.nickname]
             };
           } else {
             return {
-              player: player,
+              player: game_player,
               key: 'player-passed',
               options: [player.nickname]
             };

@@ -1,5 +1,5 @@
 'use strict';
-//var User = require('../../models/user');
+//var Player = require('../../models/player');
 //var Message = require('../../models/message');
 const Game = require('models/game');
 //const Round = require('models/round');
@@ -15,10 +15,10 @@ var keys = {
 };
 
 function getGame(key) {
-  return function(user, game_number) {
-    return Game.get({ user: user, game_number: game_number }).then(function(game) {
+  return function(player, game_number) {
+    return Game.get({ player: player, game_number: game_number }).then(function(game) {
       return [{
-        user: user,
+        player: player,
         key: key,
         options: [ game.round.submitter.nickname ]
       }];
@@ -26,17 +26,17 @@ function getGame(key) {
   };
 }
 
-module.exports = function(user, input, game_number) {
-  if ( keys[user.state] ) {
-    if ( typeof keys[user.state] === 'function' ) {
-      return keys[user.state](user, game_number);
+module.exports = function(player, input, game_number) {
+  if ( keys[player.state] ) {
+    if ( typeof keys[player.state] === 'function' ) {
+      return keys[player.state](player, game_number);
     } else {
       return [{
-        user: user,
-        key: keys[user.state]
+        player: player,
+        key: keys[player.state]
       }];
     }
   } else {
-    console.error('no help message found for', user.state, user);
+    console.error('no help message found for', player.state, player);
   }
 };

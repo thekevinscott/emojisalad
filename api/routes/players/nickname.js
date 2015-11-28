@@ -1,13 +1,13 @@
 'use strict';
 var Promise = require('bluebird');
 var rule = require('config/rule');
-var User = require('models/user');
+var Player = require('models/player');
 var Game = require('models/game');
 
-module.exports = function(user, input, game_number) {
+module.exports = function(player, input, game_number) {
   if ( rule('invite').test(input) ) {
     return [{
-      user: user,
+      player: player,
       key: 'wait-to-invite'
     }];
   } else {
@@ -15,27 +15,27 @@ module.exports = function(user, input, game_number) {
     // the big leagues.
     //
     // A.K.A., it's time to associate you with a game.
-    if ( user.inviter ) {
+    if ( player.inviter ) {
       // if you've been invited, that means a
       // game already exists.
-      return User.update(user, {
+      return Player.update(player, {
         nickname: input
       }).then(function() {
-        return Game.get({ user: { id: user.inviter.id }, game_number: game_number });
+        return Game.get({ player: { id: player.inviter.id }, game_number: game_number });
       }).then(function(game) {
         if ( game.state === 'pending' ) {
-          return startGame(game, user, input, game_number);
+          return startGame(game, player, input, game_number);
         } else if ( game.state === 'playing' ) {
           if ( ! game.round ) {
             console.error(game);
             throw "This should not happen, there should always be a round";
           }
           if ( game.round.state === 'waiting-for-submission' ) {
-            // the user can jump in.
+            // the player can jump in.
             // the round has yet to begin!
-            return addPlayerToRound(game, user, input, game_number);
+            return addPlayerToRound(game, player, input, game_number);
           } else if ( game.round.state === 'playing' ) {
-            return addPlayerToBench(game, user, input, game_number);
+            return addPlayerToBench(game, player, input, game_number);
           } else {
             console.error("Game round has no state", game.round.state, game.round);
             throw new Error("Game round has no state");
@@ -46,45 +46,45 @@ module.exports = function(user, input, game_number) {
         }
       });
     } else {
-      return createGame(user, input, game_number);
+      return createGame(player, input, game_number);
     }
   }
 };
 
-function addPlayerToBench(game, user, input, game_number) {
-  // this means the invited user must wait until the next round
-  game.players.push(user);
+function addPlayerToBench(game, player, input, game_number) {
+  // this means the invited player must wait until the next round
+  game.players.push(player);
 
-  User.update(user, {
+  Player.update(player, {
     state: 'bench',
   });
 
-  // add this invited user to the game
-  return Game.add(game, [user], game_number).then(function() {
-    return game.players.map(function(player) {
+  // add this invited player to the game
+  return Game.add(game, [player], game_number).then(function() {
+    return game.players.map(function(game_player) {
 
-      if ( player.id === user.id ) {
+      if ( game_player.id === player.id ) {
         return {
           key: 'accepted-inviter-next-round',
-          user: player,
+          player: game_player,
           options: [
             input,
-            user.inviter.nickname
+            player.inviter.nickname
           ]
         };
-      } else if ( player.id === user.inviter.id ) {
+      } else if ( game_player.id === player.inviter.id ) {
         return {
           key: 'accepted-invited-next-round',
-          user: player,
+          player: game_player,
           options: [
             input,
-            user.inviter.nickname
+            player.inviter.nickname
           ]
         };
       } else {
         return {
           key: 'join-game-next-round',
-          user: player,
+          player: game_player,
           options: [
             input
           ]
@@ -94,41 +94,41 @@ function addPlayerToBench(game, user, input, game_number) {
   });
 }
 
-function addPlayerToRound(game, user, input, game_number) {
-  // this means the invited user can join immediately
-  game.players.push(user);
+function addPlayerToRound(game, player, input, game_number) {
+  // this means the invited player can join immediately
+  game.players.push(player);
 
-  User.update(user, {
+  Player.update(player, {
     state: 'ready-for-game',
   });
 
-  // add this invited user to the game
-  return Game.add(game, [user], game_number).then(function() {
-    return Game.get({ user: user, game_number: game_number});
+  // add this invited player to the game
+  return Game.add(game, [player], game_number).then(function() {
+    return Game.get({ player: player, game_number: game_number});
   }).then(function(game) {
-    return game.players.map(function(player) {
-      if ( player.id === user.inviter.id ) {
+    return game.players.map(function(game_player) {
+      if ( game_player.id === player.inviter.id ) {
         return {
           key: 'accepted-invited',
-          user: player,
+          player: game_player,
           options: [
             input,
-            user.inviter.nickname
+            player.inviter.nickname
           ],
         };
-      } else if ( player.id === user.id ) {
+      } else if ( game_player.id === player.id ) {
         return {
           key: 'accepted-inviter',
-          user: player,
+          player: game_player,
           options: [
             input,
-            user.inviter.nickname
+            player.inviter.nickname
           ],
         };
       } else {
         return {
           key: 'join-game',
-          user: player,
+          player: game_player,
           options: [
             input
           ]
@@ -138,17 +138,17 @@ function addPlayerToRound(game, user, input, game_number) {
   });
 }
 
-function startGame(game, user, input, game_number) {
-  game.players.push(user);
-  game.players.map(function(player) {
+function startGame(game, player, input, game_number) {
+  game.players.push(player);
+  game.players.map(function(game_player) {
     // update each game player that its time to begin
-    User.update(player, {
+    Player.update(game_player, {
       state: 'ready-for-game',
     });
   });
-  // add this invited user to the game
+  // add this invited player to the game
   return Promise.join(
-    Game.add(game, [user], game_number),
+    Game.add(game, [player], game_number),
     Game.start(game),
     Game.newRound(game),
     function(_1, _2, round) {
@@ -156,20 +156,20 @@ function startGame(game, user, input, game_number) {
         key: 'accepted-invited',
         options: [
           input,
-          user.inviter.nickname
+          player.inviter.nickname
         ],
-        user: user.inviter
+        player: player.inviter
       };
       let inviterMessage = {
-        user: user,
+        player: player,
         key: 'accepted-inviter',
         options: [
           input,
-          user.inviter.nickname
+          player.inviter.nickname
         ]
       };
 
-      User.update(round.submitter, {
+      Player.update(round.submitter, {
         state: 'waiting-for-submission',
       });
 
@@ -178,7 +178,7 @@ function startGame(game, user, input, game_number) {
         inviterMessage,
         {
           key: 'game-start',
-          user: round.submitter,
+          player: round.submitter,
           options: [
             round.submitter.nickname,
             round.phrase
@@ -189,20 +189,20 @@ function startGame(game, user, input, game_number) {
   );
 }
 
-function createGame(user, input, game_number) {
+function createGame(player, input, game_number) {
   Game.create().then(function(game) {
-    return Game.add(game, [user], game_number);
+    return Game.add(game, [player], game_number);
   }).catch(function(err) {
-    console.error('error adding user 1', err, user);
+    console.error('error adding player 1', err, player);
   });
 
-  User.update(user, {
+  Player.update(player, {
     state: 'waiting-for-invites',
     nickname: input
   });
   return new Promise(function(resolve) {
     resolve([{
-      user: user,
+      player: player,
       key: 'intro_3',
       options: [input]
     }]);

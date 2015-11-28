@@ -261,8 +261,8 @@ var Round = {
     if ( game.round.players[0].id === player.id ) {
       throw "These should not match";
     }
-    var promises = game.round.players.map(function(player) {
-      return Player.update(player, {state: 'guessing' });
+    var promises = game.round.players.map(function(game_player) {
+      return Player.update(game_player, {state: 'guessing' });
     });
     promises.push(function() {
       return Player.update(player, {state: 'submitted'});

@@ -4,15 +4,15 @@ const db = require('db');
 const Promise = require('bluebird');
 let Game;
 
-let User = {
+let Player = {
   // valid phone number test
-  table: 'users',
+  table: 'players',
 
-  // create a new user number
-  create: function(user, entry, platform) {
+  // create a new player number
+  create: function(player, entry, platform) {
     var query = squel
                 .insert()
-                .into('users')
+                .into('players')
                 .setFields({
                   created: squel.fval('NOW(3)')
                 });
@@ -29,73 +29,74 @@ let User = {
       query.setFields({'entry_id': squel
                                  .select()
                                  .field('id')
-                                 .from('user_entries')
+                                 .from('player_entries')
                                  .where('entry=?', entry)});
     }
 
     query.setFields({ 'state_id': squel
                                  .select()
                                  .field('id')
-                                 .from('user_states')
+                                 .from('player_states')
                                  .where('state=?','waiting-for-confirmation')});
 
     return db.query(query.toString()).then(function(rows) {
-      var user_id = rows.insertId;
+      var player_id = rows.insertId;
 
       var attribute_id = squel
                          .select()
                          .field('id')
-                         .from('user_attribute_keys')
+                         .from('player_attribute_keys')
                          .where('`key`=?','number');
       var attb = squel
                  .insert()
-                 .into('user_attributes')
+                 .into('player_attributes')
                  .setFields({
-                   user_id: user_id,
+                   player_id: player_id,
                    attribute_id: attribute_id,
-                   attribute: user.number
+                   attribute: player.number
                  });
 
 
        return db.query(attb.toString()).then(function() {
-         user.id = user_id;
-         return user;
+         player.id = player_id;
+         return player;
        });
     });
   },
-  get: function(user) {
-    function fetchUser(key, val) {
+  get: function(player) {
+    function fetchPlayer(key, val) {
       var query = squel
                   .select()
                   .field('u.id')
                   .field('u.created')
+                  .field('u.blacklist')
                   .field('u.state_id')
-                  .field('i.inviter_id')
+                  .field('i.inviter_player_id')
                   .field('p.platform', 'platform')
                   .field('s.state', 'state')
-                  .from('users', 'u')
+                  .from('players', 'u')
                   .where('u.archived=0')
-                  .left_join('invites', 'i', 'u.id = i.invited_id')
+                  .left_join('invites', 'i', 'u.id = i.invited_player_id')
                   .left_join('platforms', 'p', 'p.id = u.platform_id')
-                  .left_join('user_states', 's', 's.id = u.state_id')
-                  .left_join('user_attributes', 'a', 'a.user_id = u.id')
-                  .left_join('user_attribute_keys', 'k', 'a.attribute_id = k.id');
+                  .left_join('player_states', 's', 's.id = u.state_id')
+                  .left_join('player_attributes', 'a', 'a.player_id = u.id')
+                  .left_join('player_attribute_keys', 'k', 'a.attribute_id = k.id');
       if ( key === 'id' ) {
         query = query.where('u.`'+key+'`=?', val);
-      } else if ( key === 'invited_id' ) {
-        query = query.where('i.invited_id=?', val);
+      } else if ( key === 'invited_player_id' ) {
+        query = query.where('i.invited_player_id=?', val);
       } else {
         query = query
                 .where('k.`key`=?', key)
                 .where('a.attribute=?', val);
       }
 
-      return db.query(query.toString()).then(function(users) {
-        if ( ! users.length ) {
+      return db.query(query.toString()).then(function(players) {
+        if ( ! players.length ) {
           return null;
         } else {
 
-          var user = users[0];
+          var player = players[0];
 
           var promises = [
             function() {
@@ -103,56 +104,56 @@ let User = {
                           .select()
                           .field('a.attribute')
                           .field('k.`key`')
-                          .from('user_attributes', 'a')
-                          .left_join('users', 'u', 'u.id = a.user_id')
-                          .left_join('user_attribute_keys', 'k', 'k.id = a.attribute_id')
-                          .where('a.user_id=?',user.id);
+                          .from('player_attributes', 'a')
+                          .left_join('players', 'u', 'u.id = a.player_id')
+                          .left_join('player_attribute_keys', 'k', 'k.id = a.attribute_id')
+                          .where('a.player_id=?',player.id);
 
               return db.query(query);
             }(),
           ];
 
-          if ( user.inviter_id ) {
-            promises.push(User.get({ id: user.inviter_id }));
+          if ( player.inviter_player_id ) {
+            promises.push(Player.get({ id: player.inviter_player_id }));
           }
 
           return Promise.all(promises).then(function(results) {
             results[0].map(function(attribute) {
-              user[attribute.key] = attribute.attribute;
+              player[attribute.key] = attribute.attribute;
             });
             if ( results[1] ) {
-              user.inviter = results[1];
+              player.inviter = results[1];
             }
-            //user.game = game;
-            return user;
+            //player.game = game;
+            return player;
           });
 
         }
       });
     }
 
-    if ( typeof user === 'object' ) {
-      if ( user.id ) {
-        return fetchUser('id', user.id);
-      } else if ( user.number ) {
-        return fetchUser('number', user.number);
-      } else if ( user['messenger-name'] ) {
-        return fetchUser('messenger-name', user['messenger-name']);
-      } else if ( user.nickname ) {
-        return fetchUser('nickname', user.nickname);
-      } else if ( user.invited_id ) {
-        return fetchUser('invited_id', user.invited_id);
+    if ( typeof player === 'object' ) {
+      if ( player.id ) {
+        return fetchPlayer('id', player.id);
+      } else if ( player.number ) {
+        return fetchPlayer('number', player.number);
+      } else if ( player['messenger-name'] ) {
+        return fetchPlayer('messenger-name', player['messenger-name']);
+      } else if ( player.nickname ) {
+        return fetchPlayer('nickname', player.nickname);
+      } else if ( player.invited_player_id ) {
+        return fetchPlayer('invited_player_id', player.invited_player_id);
       } else {
         throw new Error({
-          message: 'Tried to select on an invalid user key'
+          message: 'Tried to select on an invalid player key'
         });
       }
     } else {
       // we've passed a number
-      return fetchUser('number', user);
+      return fetchPlayer('number', player);
     }
   },
-  update: function(user, params) {
+  update: function(player, params) {
     // a whitelisted array of arguments we're allowed to update
 
     var queries = [];
@@ -164,29 +165,38 @@ let User = {
           let state = squel
                        .select()
                        .field('id')
-                       .from('user_states')
+                       .from('player_states')
                        .where('state=?',params[key]);
-
 
           query = squel
                   .update()
-                  .table('users', 'u')
+                  .table('players', 'u')
                   .where('u.archived=0')
-                  .where('u.id=?', user.id);
+                  .where('u.id=?', player.id);
           query.set('state_id', state, { dontQuote: true });
+          queries.push(query);
+          break;
+        case 'blacklist':
+          query = squel
+                  .update()
+                  .table('players', 'u')
+                  .where('u.archived=0')
+                  .where('u.id=?', player.id);
+
+          query.set(key, params[key]);
           queries.push(query);
           break;
         default:
           let attribute_id = squel
                              .select()
                              .field('id')
-                             .from('user_attribute_keys')
+                             .from('player_attribute_keys')
                              .where('`key`=?',key);
           query = squel
                    .insert()
-                   .into('user_attributes')
+                   .into('player_attributes')
                    .setFields({
-                     user_id: user.id,
+                     player_id: player.id,
                      attribute_id: attribute_id,
                      attribute: params[key]
                    })
@@ -195,34 +205,33 @@ let User = {
          queries.push(query);
          break;
       }
-      user[key] = params[key];
+      player[key] = params[key];
     });
 
     return Promise.all(queries.map(function(query) {
       return db.query(query.toString()).then(function() {
-        return user;
+        return player;
       });
     }));
 
   },
-  logLastActivity: function(user, game_number) {
-    return; 
+  logLastActivity: function(player, game_number) {
     if ( ! Game ) {
       Game = require('./game');
     }
     const promises = [];
-    if ( user && user.id ) {
-      let update_user = squel
+    if ( player && player.id ) {
+      let update_player = squel
                         .update()
-                        .table('users')
+                        .table('players')
                         .setFields({
                           last_activity: squel.fval('NOW(3)')
                         })
-                       .where('id=?',user.id);
+                       .where('id=?',player.id);
 
-      promises.push(db.query(update_user));
+      promises.push(db.query(update_player));
 
-      promises.push(Game.get({ user: user, game_number: game_number }).then(function(game) {
+      promises.push(Game.get({ player: player, game_number: game_number }).then(function(game) {
         if ( game && game.id ) {
 
           let update_game = squel
@@ -242,4 +251,4 @@ let User = {
   }
 };
 
-module.exports = User;
+module.exports = Player;

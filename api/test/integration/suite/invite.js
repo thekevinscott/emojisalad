@@ -8,12 +8,12 @@ const startGame = require('../flows/startGame');
 const Game = require('models/game');
 const Player = require('models/player');
 const EMOJI = '😀';
-const game_number = '12013409832';
+const game_number = require('../../../../config/numbers').getDefault();
 
 describe('Inviting', function() {
   describe('Invalid Phone Numbers', function() {
-    var players = getPlayers(2);
-    var inviter = players[0];
+    let players = getPlayers(2);
+    let inviter = players[0];
 
     before(function() {
       return signup(inviter);
@@ -66,15 +66,15 @@ describe('Inviting', function() {
   });
 
   describe('Valid numbers', function() {
-    var players = getPlayers(2);
-    var inviter = players[0];
+    let players = getPlayers(2);
+    let inviter = players[0];
     before(function() {
       return signup(inviter);
     });
 
     this.timeout(10000);
     it('should be able to invite someone', function() {
-      var player = getPlayers(1)[0];
+      let player = getPlayers(1)[0];
 
       return check(
         // lose the intro of the number for testing
@@ -90,10 +90,10 @@ describe('Inviting', function() {
 
     it('should be able to invite a formatted number', function() {
 
-      var end = Math.floor(1000 + Math.random() * 9000);
-      var num = '+1860460'+end;
+      let end = Math.floor(1000 + Math.random() * 9000);
+      let num = '+1860460'+end;
 
-      var player = getPlayers(1)[0];
+      let player = getPlayers(1)[0];
       player.number = num;
 
       return check(
@@ -108,7 +108,7 @@ describe('Inviting', function() {
     });
 
     it('should not be able to re-invite someone', function() {
-      var player = getPlayers(1)[0];
+      let player = getPlayers(1)[0];
 
       return setup([
         { player: inviter, msg: 'invite '+player.number }
@@ -125,7 +125,7 @@ describe('Inviting', function() {
     });
 
     it('should not be able to invite someone on do-not-call-list', function() {
-      var player = getPlayers(1)[0];
+      let player = getPlayers(1)[0];
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
@@ -143,9 +143,9 @@ describe('Inviting', function() {
     });
 
     it('should be able to onboard an invited player', function() {
-      var player = getPlayers(1)[0];
+      let player = getPlayers(1)[0];
 
-      var firstPhrase = 'JURASSIC PARK';
+      let firstPhrase = 'JURASSIC PARK';
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
@@ -153,12 +153,10 @@ describe('Inviting', function() {
       ]).then(function() {
         return Player.get({ number: inviter.number }).then(function(gotPlayer) {
           return Game.get({ player: gotPlayer, game_number: game_number }).then(function(game) {
-            //console.log('********** 1 game', player.number, game.id, game.random);
             return Game.update(game, { random : 0 });
           });
         });
       }).then(function() {
-        //console.log('********** 2 game', player.number, game.id, game.random);
         return check(
           { player: player, msg: player.nickname },
           [
@@ -176,8 +174,8 @@ describe('Inviting', function() {
   describe('Inviting during a game', function() {
     function runBothPlayers(players) {
       it('should let submitter invite', function() {
-        var inviter = players[0];
-        var invitee = getPlayers(3).pop();
+        let inviter = players[0];
+        let invitee = getPlayers(3).pop();
         return check(
           { player: inviter, msg: 'invite '+invitee.number },
           [
@@ -190,9 +188,8 @@ describe('Inviting', function() {
       });
 
       it('should let player invite', function() {
-        var inviter = players[1];
-        var invitee = getPlayers(3).pop();
-        console.log('should let player invite');
+        let inviter = players[1];
+        let invitee = getPlayers(3).pop();
         return check(
           { player: inviter, msg: 'invite '+invitee.number },
           [
@@ -208,7 +205,7 @@ describe('Inviting', function() {
       // should allow for an invite after a submission (by submitter and other player)
       // should allow for an invite after a correct answer (by submitter and other player)
     describe('before a round starts', function() {
-      var players = getPlayers(2);
+      let players = getPlayers(2);
       before(function() {
         return startGame(players);
       });
@@ -217,7 +214,7 @@ describe('Inviting', function() {
     });
 
     describe('during a round', function() {
-      var players = getPlayers(2);
+      let players = getPlayers(2);
       before(function() {
         return startGame(players).then(function() {
           return setup([
@@ -230,7 +227,7 @@ describe('Inviting', function() {
     });
 
     describe('after guessing incorrectly', function() {
-      var players = getPlayers(2);
+      let players = getPlayers(2);
       before(function() {
         return startGame(players).then(function() {
           return setup([
@@ -244,7 +241,7 @@ describe('Inviting', function() {
     });
 
     describe('after guessing correctly', function() {
-      var players = getPlayers(2);
+      let players = getPlayers(2);
       before(function() {
         return startGame(players).then(function() {
           return setup([
@@ -258,9 +255,8 @@ describe('Inviting', function() {
     });
 
     it('should be able to onboard a third player to the game', function() {
-      var players = getPlayers(2);
-      var invitee = getPlayers(3).pop();
-      console.log('start that game');
+      let players = getPlayers(2);
+      let invitee = getPlayers(3).pop();
       return startGame(players).then(function() {
         return setup([
           { player: players[0], msg: 'invite '+invitee.number },
@@ -281,8 +277,8 @@ describe('Inviting', function() {
     });
 
     it('should make a third player invited in the middle of a round wait until the next round', function() {
-      var players = getPlayers(2);
-      var invitee = getPlayers(3).pop();
+      let players = getPlayers(2);
+      let invitee = getPlayers(3).pop();
       return startGame(players).then(function() {
         return setup([
           { player: players[0], msg: EMOJI },

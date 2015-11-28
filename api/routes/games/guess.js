@@ -23,12 +23,12 @@ module.exports = function(player, input, game_number) {
       }];
     } else {
       return Game.get({ player: player, game_number: game_number }).then(function(game) {
-        var messages = game.players.map(function(player) {
+        var messages = game.players.map(function(game_player) {
           var guess = rule('guess').match(input);
-          if ( player.id !== player.id ) {
+          if ( game_player.id !== player.id ) {
             return {
               key: 'guesses',
-              player: player,
+              player: game_player,
               options: [
                 player.nickname,
                 guess,
@@ -43,14 +43,14 @@ module.exports = function(player, input, game_number) {
             return Game.checkGuess(game, player, guess).then(function(result) {
               if ( result ) {
                 return Game.updateScore(game, player, 'win-round').then(function(game) {
-                  let score = game.players.map(function(player) {
-                    return player.nickname + ': ' + player.score;
+                  let score = game.players.map(function(game_player) {
+                    return game_player.nickname + ': ' + game_player.score;
                   }).join('\n');
 
-                  game.players.map(function(player) {
+                  game.players.map(function(game_player) {
                     messages.push({
                       key: 'correct-guess',
-                      player: player,
+                      player: game_player,
                       options: [
                         player.nickname,
                         score
@@ -59,24 +59,24 @@ module.exports = function(player, input, game_number) {
                   });
 
                   // are there any players waiting in the wings?
-                  game.players.filter(function(player) {
+                  game.players.filter(function(game_player) {
                     // this player is about to join
-                    return player.state === 'bench';
+                    return game_player.state === 'bench';
                   }).map(function(benchedPlayer) {
-                    game.players.map(function(player) {
+                    game.players.map(function(game_player) {
                       messages.push({
                         key: 'join-game',
                         options: [
                           benchedPlayer.nickname
                         ],
-                        player: player
+                        player: game_player
                       });
                     });
                   });
 
                   promises.push(Game.newRound(game).then(function(round) {
-                    round.players.map(function(player) {
-                      Player.update(player, {
+                    round.players.map(function(game_player) {
+                      Player.update(game_player, {
                         state: 'waiting-for-round',
                       });
                     });
@@ -100,9 +100,9 @@ module.exports = function(player, input, game_number) {
                     };
 
                     suggestion.player = round.submitter;
-                    round.game.players.map(function(player) {
-                      if ( player.id !== round.submitter.id ) {
-                        messages.push(_.assign( { player: player }, nextRoundInstructions));
+                    round.game.players.map(function(game_player) {
+                      if ( game_player.id !== round.submitter.id ) {
+                        messages.push(_.assign( { player: game_player }, nextRoundInstructions));
                       } else {
                         messages.push(suggestion);
                       }
@@ -144,8 +144,8 @@ module.exports = function(player, input, game_number) {
                     });
                   }
                 }).then(function(message) {
-                  game.players.map(function(player) {
-                    messages.push(_.assign({ player: player }, message));
+                  game.players.map(function(game_player) {
+                    messages.push(_.assign({ player: game_player }, message));
                   });
 
                   if ( message.key === 'round-over' ) {
@@ -166,11 +166,11 @@ module.exports = function(player, input, game_number) {
                         ]
                       };
 
-                      round.game.players.map(function(player) {
-                        if ( player.id !== round.submitter.id ) {
-                          messages.push(_.assign( { player: player }, nextRoundInstructions));
+                      round.game.players.map(function(game_player) {
+                        if ( game_player.id !== round.submitter.id ) {
+                          messages.push(_.assign( { player: game_player }, nextRoundInstructions));
                         } else {
-                          messages.push(_.assign( { player: player }, suggestion));
+                          messages.push(_.assign( { player: game_player }, suggestion));
                         }
                       });
                     }).then(function() {
@@ -192,8 +192,8 @@ module.exports = function(player, input, game_number) {
             message.options = [
               player.nickname
             ];
-            game.players.map(function(player) {
-              messages.push(_.assign({ player: player }, message));
+            game.players.map(function(game_player) {
+              messages.push(_.assign({ player: game_player }, message));
             });
             return messages;
           }

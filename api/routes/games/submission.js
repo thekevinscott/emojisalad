@@ -1,7 +1,7 @@
 'use strict';
-var _ = require('lodash');
-var Game = require('models/game');
-var rule = require('config/rule');
+const _ = require('lodash');
+const Game = require('models/game');
+const rule = require('config/rule');
 
 module.exports = function(player, input, game_number) {
   if ( rule('invite').test(input) ) {
@@ -41,12 +41,12 @@ module.exports = function(player, input, game_number) {
           key: 'guessing-instructions'
         };
 
-        game.round.players.map(function(player) {
-          messages.push(_.assign({ player: player }, forwarded_message));
+        game.round.players.map(function(game_player) {
+          messages.push(_.assign({ player: game_player }, forwarded_message));
         });
 
-        game.round.players.map(function(player) {
-          messages.push(_.assign({ player: player }, guessing_instructions));
+        game.round.players.map(function(game_player) {
+          messages.push(_.assign({ player: game_player }, guessing_instructions));
         });
         return messages;
       }).catch(function(error) {

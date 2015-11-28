@@ -1,21 +1,21 @@
 'use strict';
-var User = require('models/user');
+var Player = require('models/player');
 var rule = require('config/rule');
 //var Message = require('../../models/message');
 
-module.exports = function(user, input) {
+module.exports = function(player, input) {
   if ( rule('yes').test(input) ) {
-    return User.update(user, {
+    return Player.update(player, {
       state: 'waiting-for-nickname'
     }).then(function() {
       return [{
         key: 'intro_2',
-        user: user
+        player: player
       }];
     });
   } else {
-    User.update(user, {
-      state: 'do-not-contact'
+    Player.update(player, {
+      blacklist: 1
     });
   }
 };

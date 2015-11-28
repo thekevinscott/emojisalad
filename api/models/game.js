@@ -37,7 +37,6 @@ let Game = {
       query.set('random', data.random);
     }
 
-    //console.log('update game', query.toString());
     return db.query(query);
   },
   getNextSubmitter: function(game) {
@@ -45,10 +44,6 @@ let Game = {
       Round.getLast(game),
       this.getBattingOrder(game),
       function(round, order) {
-        //console.log('===================');
-        //console.log('game id', game.id);
-        //console.log('round', round);
-        //console.log('order', order);
         var next;
         if ( round ) {
           for ( let i=0,l=order.length; i<l; i++ ) {
@@ -66,8 +61,7 @@ let Game = {
         } else {
           next = order[0];
         }
-        //console.log('next', next);
-        return Player.get({ id: next.player_id, game_id: game.id });
+        return Player.get({ id: next.player_id });
       }
     );
   },
@@ -75,11 +69,11 @@ let Game = {
     return Round.checkGuess(game, player, guess);
   },
   getGuessesLeft: function(game) {
-    return Promise.all(game.round.players.map(function(player) {
-      if ( player.state === 'passed' || player.state === 'lost' ) {
+    return Promise.all(game.round.players.map(function(game_player) {
+      if ( game_player.state === 'passed' || game_player.state === 'lost' ) {
         return 0;
       } else {
-        return Round.getGuessesLeft(game, player);
+        return Round.getGuessesLeft(game, game_player);
       }
     })).reduce(function(prev, current) {
       return prev + current;
@@ -96,25 +90,27 @@ let Game = {
       return 'text';
     }
   },
-  saveSubmission: function(player, message) {
-    return Round.saveSubmission(player, message).then(function() {
-      return player.game;
+  saveSubmission: function(player, message, game_number) {
+    return this.get({ player: player, game_number: game_number }).then(function(game) {
+      return Round.saveSubmission(game, player, message).then(function() {
+        return game;
+      });
     });
   },
   newRound: function(game) {
     console.debug('new round');
     return Round.create(game).then(function(round) {
       console.debug('round submitter', round.submitter.id, round.submitter.nickname);
-      return Promise.all(game.players.map(function(player) {
-        console.debug('player', player.id, player.nickname);
+      return Promise.all(game.players.map(function(game_player) {
+        console.debug('player', game_player.id, game_player.nickname);
         var state;
-        if ( player.id === round.submitter.id ) {
+        if ( game_player.id === round.submitter.id ) {
           state = 'waiting-for-submission';
         } else {
           state = 'waiting-for-round';
         }
         console.debug('expected state', state);
-        return Player.update(_.assign({ game: game }, player), {
+        return Player.update(game_player, {
           state: state,
         });
       })).then(function() {
@@ -162,14 +158,12 @@ let Game = {
                 .field('u.id')
                 .field('u.created')
                 .field('s.state')
-                .field('n.number','game_number')
                 .field('p.platform as platform')
                 .field('gp.score')
                 .from('game_players', 'gp')
-                .left_join('game_numbers', 'n', 'n.id=gp.game_number_id')
                 .left_join('games', 'g', 'gp.game_id = g.id')
                 .left_join('players', 'u', 'u.id = gp.player_id')
-                .left_join('player_states', 's', 's.id = gp.state_id')
+                .left_join('player_states', 's', 's.id = u.state_id')
                 .left_join('platforms', 'p', 'p.id = u.platform_id')
                 .where('g.id=?', game.id)
                 .where('g.archived=0')
@@ -234,19 +228,18 @@ let Game = {
                 //.limit(1);
 
     if ( params.player ) {
-      if ( params.player.game_number ) {
-        //console.warn('1) when selecting by a player, games should also select on the game_number');
-      //} else {
+      if ( ! params.game_number ) {
+        console.warn('1) when selecting by a player, games should also select on the To number');
+      } else {
         let get_game_number = squel
                               .select()
                               .field('id')
                               .from('game_numbers')
-                              .where('number=?',params.player.game_number);
+                              .where('number=?',params.game_number);
         query.where('p.game_number_id=?',get_game_number);
       }
       query.where('p.player_id=?',params.player.id);
     } else if ( params.players ) {
-      console.warn('3) this method is deprecated');
       if ( ! params.game_number ) {
         console.warn('2) when selecting by a player, games should also select on the To number');
       } else {
@@ -257,8 +250,8 @@ let Game = {
                               .where('number=?',params.game_number);
         query.where('p.game_number_id=?',get_game_number);
       }
-      let player_ids = params.players.map(function(player) {
-        return player.id;
+      let player_ids = params.players.map(function(game_player) {
+        return game_player.id;
       });
       query.where('p.player_id IN ? ',player_ids);
     } else if ( params.id ) {
@@ -281,12 +274,12 @@ let Game = {
             game.players = players;
 
             if ( game.round ) {
-              game.players.map(function(player) {
-                if ( player.id === game.round.submitter_id ) {
-                  game.round.submitter = player;
+              game.players.map(function(game_player) {
+                if ( game_player.id === game.round.submitter_id ) {
+                  game.round.submitter = game_player;
                 } else {
                   if ( ! game.round.players ) { game.round.players = []; }
-                  game.round.players.push(player);
+                  game.round.players.push(game_player);
                 }
               });
             }
@@ -325,9 +318,9 @@ let Game = {
     }.bind(this));
   },
   generateBattingOrder: function(game) {
-    return this.getPlayers(game).then(function(players) {
-      return Promise.all(_.shuffle(players).map(function(player, i) {
-        return this.addBatter(game, player, i);
+    return this.getPlayers(game).then(function(game_players) {
+      return Promise.all(_.shuffle(game_players).map(function(game_player, i) {
+        return this.addBatter(game, game_player, i);
       }.bind(this)));
     }.bind(this));
   },
@@ -340,81 +333,36 @@ let Game = {
                   player_id: player.id,
                   order: order
                 });
-    return db.query(query).then(function() {
-      let participant_query = squel
-                              .select()
-                              .field('p.score')
-                              .field('n.number','game_number')
-                              .field('p.player_id')
-                              .field('p.game_id')
-                              .from('game_players','p')
-                              .left_join('game_numbers', 'n', 'n.id=p.game_number_id')
-                              .where('p.game_id=?',game.id)
-                              .where('p.player_id=?',player.id);
-
-      return db.query(participant_query);
-    }).then(function(rows) {
-      if ( rows && rows.length ) {
-        return rows[0];
-      } else {
-        return null;
-      }
-    });
+    return db.query(query);
   },
   add: function(game, players) {
     return Promise.all(players.map(function(player) {
-      // some players can specify an initial state; for instance,
-      // if they are starting a new game and want to skip the confirmation step
-      let initial_state = player.initial_state || 'waiting-for-confirmation';
-      let existing_game_numbers = squel
-                                  .select()
-                                  .field('game_number_id')
-                                  .from('game_players')
-                                  .where('player_id=?',player.id);
+      //let get_game_number_id = squel
+                               //.select()
+                               //.field('id')
+                               //.from('game_numbers')
+                               //.where('number=?',game_number);
 
-      let get_game_number_id = squel
-                               .select()
-                               .field('id', 'game_number_id')
-                               .from('game_numbers')
-                               .where('id NOT IN (?)', existing_game_numbers)
-                               .order('id')
-                               .limit(1);
-      let state_id = squel
-                     .select()
-                     .field('id')
-                     .from('player_states')
-                     .where('state=?',initial_state);
+      let row = {
+        game_id: game.id,
+        player_id: player.id,
+        game_number_id : 1
+      };
 
-      return db.query(get_game_number_id.toString()).then(function(rows) {
-        if ( rows && rows.length ) {
-          let game_number_id = rows[0].game_number_id;
-          let row = {
-            game_id: game.id,
-            player_id: player.id,
-            game_number_id : game_number_id,
-            state_id: state_id
-          };
+      let query = squel
+                  .insert()
+                  .into('game_players')
+                  .setFields(row);
 
-          let query = squel
-                      .insert()
-                      .into('game_players')
-                      .setFields(row);
-
-          return db.query(query.toString());
-        } else {
-          throw "No game numbers found";
-        }
-      }).then(function(rows) {
+      return db.query(query.toString()).then(function(rows) {
         return {
           id: rows.insertId
         };
       }).then(function() {
         //if ( game.state && game.state !== 'waiting-for-players' ) {
           // game is in progress
-          return this.addToBattingOrder(game, player)
-          //.then(function() {
-          //})
-          .catch(function(err) {
+          this.addToBattingOrder(game, player).then(function() {
+          }).catch(function(err) {
             console.error('error adding player ot batting order',  player, err);
           });
         //}
@@ -470,9 +418,9 @@ let Game = {
     let updates = [];
     if ( type === 'win-round' ) {
       let score_index = 1;
-      game.players.map(function(player) {
-        if ( player.id === player.id ) {
-          score_index += player.guesses;
+      game.players.map(function(game_player) {
+        if ( player.id === game_player.id ) {
+          score_index += game_player.guesses;
         }
       });
 
@@ -524,24 +472,6 @@ let Game = {
 
       return db.query(query.toString());
     }));
-  },
-  getGameNumber: function(game, player) {
-    let participant_query = squel
-                            .select()
-                            .field('n.number','game_number')
-                            .from('game_players','p')
-                            .left_join('game_numbers', 'n', 'n.id=p.game_number_id')
-                            .where('p.game_id=?',game.id)
-                            .where('p.player_id=?',player.id)
-                            .limit(1);
-
-    return db.query(participant_query).then(function(rows) {
-      if ( rows.length ) {
-        return rows[0].game_number;
-      } else {
-        return null;
-      }
-    });
   }
 };
 

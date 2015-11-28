@@ -4,34 +4,34 @@ const _ = require('lodash');
 const Game = require('models/game');
 const rule = require('config/rule');
 
-module.exports = function(user, input, game_number) {
+module.exports = function(player, input, game_number) {
   if ( rule('invite').test(input) ) {
-    return require('../users/invite')(user, input, game_number);
+    return require('../players/invite')(player, input, game_number);
   } else if ( rule('help').test(input) ) {
-    return require('../users/help')(user, input, game_number);
+    return require('../players/help')(player, input, game_number);
   } else if ( rule('pass').test(input) ) {
-    return require('../games/pass')(user, input, game_number);
+    return require('../games/pass')(player, input, game_number);
   } else if ( /^clue/i.test(input) ) {
-    return Game.get({ user: user, game_number: game_number }).then(function(game) {
+    return Game.get({ player: player, game_number: game_number }).then(function(game) {
       var message = {
         key: 'says',
         options: [
-          user.nickname,
+          player.nickname,
           input
         ]
       };
-      var messages = game.players.map(function(player) {
-        if ( player.id !== user.id ) {
+      var messages = game.players.map(function(game_player) {
+        if ( game_player.id !== player.id ) {
           return _.assign({
-            user: player
+            player: game_player
           },
           message);
         }
       }).filter((el) => el);
 
-      messages = messages.concat(game.players.map(function(player) {
+      messages = messages.concat(game.players.map(function(game_player) {
         return {
-          user: player,
+          player: game_player,
           key: 'no-clue-for-submitter'
         };
       }));
@@ -40,20 +40,20 @@ module.exports = function(user, input, game_number) {
         
   } else {
     return Promise.join(
-      Game.get({ user: user, game_number: game_number }),
+      Game.get({ player: player, game_number: game_number }),
       function(game) {
         
         var message = {
           key: 'says',
           options: [
-            user.nickname,
+            player.nickname,
             input
           ]
         };
-        var messages = game.players.map(function(player) {
-          if ( player.id !== user.id ) {
+        var messages = game.players.map(function(game_player) {
+          if ( game_player.id !== player.id ) {
             return _.assign({
-              user: player
+              player: game_player
             },
             message);
           }
@@ -62,12 +62,12 @@ module.exports = function(user, input, game_number) {
         // check that the submitter has not just guessed their own clue
         var regex = new RegExp(game.round.phrase, 'i');
         if ( regex.test(input) ) {
-          messages = messages.concat(game.players.map(function(player) {
+          messages = messages.concat(game.players.map(function(game_player) {
             return {
               key: 'submitter-dont-guess',
-              user: player,
+              player: game_player,
               options: [
-                user.nickname
+                player.nickname
               ]
             };
           }));

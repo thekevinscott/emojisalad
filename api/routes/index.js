@@ -1,9 +1,9 @@
 // a separate router. all routes come in to platforms which then routes them here.
 'use strict';
 
-var Promise = require('bluebird');
-var Player = require('models/player');
-var routes = [];
+let Promise = require('bluebird');
+let Player = require('models/player');
+let routes = [];
 function addRoute(path, fn) {
   routes.push({
     regex: new RegExp(path),
@@ -24,9 +24,12 @@ addRoute('waiting-for-round', require('./players/say'));
 addRoute('passed', require('./players/say'));
 addRoute('lost', require('./players/say'));
 
-var Router = function(player, message, game_number) {
-  var state = player.state;
-  for ( var i=0,l=routes.length; i<l; i++ ) {
+let Router = function(player, message, game_number) {
+  let state = player.state;
+  if ( player.blacklist ) {
+    return Promise.method(require('./players/blackhole'))(player, message, game_number);
+  }
+  for ( let i=0,l=routes.length; i<l; i++ ) {
     let route = routes[i];
     if ( route.regex.test(state) ) {
       Player.logLastActivity(player, game_number);

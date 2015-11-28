@@ -85,6 +85,10 @@ module.exports = function(req, res) {
           player.state,
         ].join(' | '));
       }
+      if ( !req.body.To || req.body.To[0] !== '+' ) {
+        console.error('to', req.body.To);
+        throw "STOP";
+      }
       try {
         track(player.state, player, req.body.Body);
       } catch(e) { console.error('error tracking player', player, req); }
@@ -104,6 +108,7 @@ module.exports = function(req, res) {
     if ( err.sql ) {
       console.error(err.sql);
     }
+    console.error(err);
 
     pmx.notify(err);
 

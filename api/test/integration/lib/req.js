@@ -6,7 +6,7 @@ let _ = require('lodash');
 let xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
 
 let host = 'http://localhost:'+process.env.PORT;
-let twilio_config = require('../../../../config/twilio').production;
+//let twilio_config = require('../../../../config/twilio').production;
 
 function req(options, raw) {
   options = _.assign({
@@ -22,12 +22,14 @@ function req(options, raw) {
       throw "You must provide player as an object now";
     }
     let message = options.form.message;
+    let to = options.form.to || player.game_number;
     delete options.form.playername;
     delete options.form.message;
+    delete options.form.to;
 
     options.form.From = player.number;
-    options.form.To = twilio_config.from;
     options.form.Body = message;
+    options.form.To = to;
   }
 
   return request(options).then(function(response) {

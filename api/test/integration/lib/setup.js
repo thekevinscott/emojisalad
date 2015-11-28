@@ -1,17 +1,18 @@
 'use strict';
-//var Promise = require('bluebird');
-var req = require('./req');
-var sequence = require('./sequence');
-var _ = require('lodash');
+//const Promise = require('bluebird');
+const req = require('./req');
+const sequence = require('./sequence');
+const _ = require('lodash');
 
-var setup = function(arr) {
+function setup(arr) {
   if ( !_.isArray(arr) ) {
     arr = [arr];
   }
 
   return sequence(arr.map(function(a, i) {
-    var player = a.player;
-    var msg = a.msg;
+    const player = a.player;
+    const msg = a.msg;
+    const to = a.to;
     if ( ! player ) {
       console.error(a, i);
       throw "No player provided";
@@ -23,10 +24,11 @@ var setup = function(arr) {
     return function() {
       return req.post({
         player: player,
-        message: msg
+        message: msg,
+        to: to
       }, null, true);
     };
   }));
-};
+}
 
 module.exports = setup;

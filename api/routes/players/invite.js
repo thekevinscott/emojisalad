@@ -3,37 +3,37 @@ var Phone  = require('models/phone');
 var Invite = require('models/invite');
 var rule = require('config/rule');
 
-module.exports = function(invitingUser, input) {
+module.exports = function(invitingPlayer, input) {
   if ( rule('invite').test(input) ) {
     var type = 'twilio';
     input = input.split('invite').pop().trim();
     return Phone.parse(input).then(function(phone) {
-      return Invite.create(type, phone, invitingUser).then(function(invite) {
+      return Invite.create(type, phone, invitingPlayer).then(function(invite) {
         return {
-          invitedUser: invite.invited_user,
-          invitingUser: invite.inviting_user,
+          invitedPlayer: invite.invited_player,
+          invitingPlayer: invite.inviting_player,
         };
-      }).then(function(users) {
-        // let the inviting user know we messaged
+      }).then(function(players) {
+        // let the inviting player know we messaged
         // their buddy, and let the buddy
         // know they've been invited
         return [
           {
-            user: users.invitingUser,
+            player: players.invitingPlayer,
             key: 'intro_4',
             options: [phone]
           },
           {
             key: 'invite',
-            options: [users.invitingUser.nickname],
-            user: users.invitedUser
+            options: [players.invitingPlayer.nickname],
+            player: players.invitedPlayer
           },
         ];
       });
     }).catch(function(error) {
       if ( error && parseInt(error.message) ) {
         return [{
-          user: invitingUser,
+          player: invitingPlayer,
           key: 'error-'+error.message,
           options: [input]
         }];
@@ -44,7 +44,7 @@ module.exports = function(invitingUser, input) {
     });
   } else {
     return [{
-      user: invitingUser,
+      player: invitingPlayer,
       key: 'error-8',
       options: [input]
     }];

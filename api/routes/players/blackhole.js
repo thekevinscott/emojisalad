@@ -1,5 +1,5 @@
 'use strict';
-//var User = require('../../models/user');
+//var Player = require('../../models/player');
 //var Message = require('../../models/message');
 //var Promise = require('bluebird');
 
