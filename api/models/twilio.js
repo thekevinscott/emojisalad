@@ -8,7 +8,7 @@ const send = Promise.promisify(client.sendMessage);
 const message_time = 0;
 
 module.exports = {
-  parse: function(responses, user) {
+  parse: function(responses, player) {
     var twiml = new twilio.TwimlResponse();
     responses.map(function(response) {
       twiml.sms(response.message, {
@@ -16,7 +16,7 @@ module.exports = {
         from: response.from
       });
     });
-    Log.outgoing(responses, user, 'twilio');
+    Log.outgoing(responses, player, 'twilio');
     return new Promise(function(resolve) {
       resolve(twiml);
     });

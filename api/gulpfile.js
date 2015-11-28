@@ -44,7 +44,6 @@ function pullProductionDB() {
   //var destination = tmp+'production.sql.gz';
   var file = 'db_backup.sql';
   var zippedFile = 'db_backup.sql.gz';
-  //mysqldump -u user -p --no-data db > structure.sql; mysqldump -u user -p db table1 table2 >> structure.sql
 
   var dumpSchemas = [
     'mysqldump',
@@ -65,9 +64,9 @@ function pullProductionDB() {
     'messages',
     'platforms',
     'round_states',
-    'user_attribute_keys',
-    'user_entries',
-    'user_states'
+    'player_attribute_keys',
+    'player_entries',
+    'player_states'
   ];
   var dumpData = [
     'mysqldump',

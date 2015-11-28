@@ -1,48 +1,48 @@
 'use strict';
 var Promise = require('bluebird');
 var _ = require('lodash');
-var User = require('models/user');
+var Player = require('models/player');
 var Game = require('models/game');
 var Round = require('models/round');
 var rule = require('config/rule');
 
-module.exports = function(user, input, game_number) {
+module.exports = function(player, input, game_number) {
   const promises = [];
   
   if ( rule('invite').test(input) ) {
-    return require('../users/invite')(user, input, game_number);
+    return require('../players/invite')(player, input, game_number);
   } else if ( rule('pass').test(input) ) {
-    return require('../games/pass')(user, input, game_number);
+    return require('../games/pass')(player, input, game_number);
   } else if ( rule('clue').test(input) ) {
-    return require('../games/clue')(user, input, game_number);
+    return require('../games/clue')(player, input, game_number);
   } else if ( rule('guess').test(input) ) {
-    if ( user.state === 'passed' ) {
+    if ( player.state === 'passed' ) {
       return [{
-        user: user,
+        player: player,
         key: 'no-guessing-after-passing'
       }];
     } else {
-      return Game.get({ user: user, game_number: game_number }).then(function(game) {
+      return Game.get({ player: player, game_number: game_number }).then(function(game) {
         var messages = game.players.map(function(player) {
           var guess = rule('guess').match(input);
-          if ( player.id !== user.id ) {
+          if ( player.id !== player.id ) {
             return {
               key: 'guesses',
-              user: player,
+              player: player,
               options: [
-                user.nickname,
+                player.nickname,
                 guess,
               ]
             };
           }
         }).filter((el) => el);
 
-        return Round.getGuessesLeft(game, user).then(function(guesses_left) {
+        return Round.getGuessesLeft(game, player).then(function(guesses_left) {
           if ( guesses_left > 0 ) {
             var guess = rule('guess').match(input);
-            return Game.checkGuess(game, user, guess).then(function(result) {
+            return Game.checkGuess(game, player, guess).then(function(result) {
               if ( result ) {
-                return Game.updateScore(game, user, 'win-round').then(function(game) {
+                return Game.updateScore(game, player, 'win-round').then(function(game) {
                   let score = game.players.map(function(player) {
                     return player.nickname + ': ' + player.score;
                   }).join('\n');
@@ -50,15 +50,15 @@ module.exports = function(user, input, game_number) {
                   game.players.map(function(player) {
                     messages.push({
                       key: 'correct-guess',
-                      user: player,
+                      player: player,
                       options: [
-                        user.nickname,
+                        player.nickname,
                         score
                       ]
                     });
                   });
 
-                  // are there any users waiting in the wings?
+                  // are there any players waiting in the wings?
                   game.players.filter(function(player) {
                     // this player is about to join
                     return player.state === 'bench';
@@ -69,18 +69,18 @@ module.exports = function(user, input, game_number) {
                         options: [
                           benchedPlayer.nickname
                         ],
-                        user: player
+                        player: player
                       });
                     });
                   });
 
                   promises.push(Game.newRound(game).then(function(round) {
                     round.players.map(function(player) {
-                      User.update(player, {
+                      Player.update(player, {
                         state: 'waiting-for-round',
                       });
                     });
-                    User.update(round.submitter, {
+                    Player.update(round.submitter, {
                       state: 'waiting-for-submission',
                     });
 
@@ -99,10 +99,10 @@ module.exports = function(user, input, game_number) {
                       ]
                     };
 
-                    suggestion.user = round.submitter;
+                    suggestion.player = round.submitter;
                     round.game.players.map(function(player) {
                       if ( player.id !== round.submitter.id ) {
-                        messages.push(_.assign( { user: player }, nextRoundInstructions));
+                        messages.push(_.assign( { player: player }, nextRoundInstructions));
                       } else {
                         messages.push(suggestion);
                       }
@@ -116,21 +116,21 @@ module.exports = function(user, input, game_number) {
               } else {
                 // we do a request to get the up-to-date
                 // guesses, after setting it earlier
-                return Round.getGuessesLeft(game, user).then(function(guesses_left) {
-                  // does the user still have guesses left over?
+                return Round.getGuessesLeft(game, player).then(function(guesses_left) {
+                  // does the player still have guesses left over?
                   if ( guesses_left > 0 ) {
                     return {
                       key: 'incorrect-guess',
-                      options: [user.nickname]
+                      options: [player.nickname]
                     };
                   } else {
-                    return User.update(user, { state: 'lost' }).then(function() {
+                    return Player.update(player, { state: 'lost' }).then(function() {
                       // does the game have ANY players with guesses left?
                       return Game.getGuessesLeft(game);
                     }).then(function(guesses_left) {
                       console.debug('how many guesses be left', guesses_left);
                       if ( guesses_left > 0 ) {
-                        console.debug('user is out of guesses ' + user.id);
+                        console.debug('player is out of guesses ' + player.id);
                         return {
                           key: 'incorrect-out-of-guesses'
                         };
@@ -145,7 +145,7 @@ module.exports = function(user, input, game_number) {
                   }
                 }).then(function(message) {
                   game.players.map(function(player) {
-                    messages.push(_.assign({ user: player }, message));
+                    messages.push(_.assign({ player: player }, message));
                   });
 
                   if ( message.key === 'round-over' ) {
@@ -168,9 +168,9 @@ module.exports = function(user, input, game_number) {
 
                       round.game.players.map(function(player) {
                         if ( player.id !== round.submitter.id ) {
-                          messages.push(_.assign( { user: player }, nextRoundInstructions));
+                          messages.push(_.assign( { player: player }, nextRoundInstructions));
                         } else {
-                          messages.push(_.assign( { user: player }, suggestion));
+                          messages.push(_.assign( { player: player }, suggestion));
                         }
                       });
                     }).then(function() {
@@ -190,10 +190,10 @@ module.exports = function(user, input, game_number) {
             };
 
             message.options = [
-              user.nickname
+              player.nickname
             ];
             game.players.map(function(player) {
-              messages.push(_.assign({ user: player }, message));
+              messages.push(_.assign({ player: player }, message));
             });
             return messages;
           }
@@ -201,7 +201,7 @@ module.exports = function(user, input, game_number) {
       });
     }
   } else {
-    return require('../users/say')(user, input, game_number);
+    return require('../players/say')(player, input, game_number);
   }
 };
 

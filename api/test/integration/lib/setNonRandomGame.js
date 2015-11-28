@@ -2,8 +2,8 @@
 var getGame = require('./getGame');
 var Game = require('models/Game');
 
-var setNonRandomGame = function(user) {
-  return getGame(user).then(function(game) {
+var setNonRandomGame = function(player) {
+  return getGame(player).then(function(game) {
     return Game.update(game, { random: 0 }).then(function() {
       return game;
     });

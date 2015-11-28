@@ -2,26 +2,26 @@
 var Invite = require('models/invite');
 
 module.exports = function(req, res) {
-  var user = req.body.user;
+  var player = req.body.player;
   var type = req.body.type; // for instance, a phone
   var value = req.body.value;
-  if ( ! user ) {
-    res.json({ error: { message: 'You must provide a user', errno: 9 }});
+  if ( ! player ) {
+    res.json({ error: { message: 'You must provide a player', errno: 9 }});
   } else if ( ! type ) {
     res.json({ error: { message: 'You must provide a type', errno: 9 }});
   } else if ( ! value ) {
     res.json({ error: {message: 'You must provide a value', errno: 8 }});
   }
 
-  Invite.create(type, value, user).then(function(invite) {
+  Invite.create(type, value, player).then(function(invite) {
     return {
-      invited_user: invite.invited_user,
-      inviting_user: invite.inviting_user,
+      invited_player: invite.invited_player,
+      inviting_player: invite.inviting_player,
     };
-  }).then(function(users) {
-    res.json(users);
+  }).then(function(players) {
+    res.json(players);
   }).fail(function(err) {
-    console.error('error inviting user', err);
+    console.error('error inviting player', err);
     res.json( err );
   });
 };

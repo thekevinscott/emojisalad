@@ -6,12 +6,12 @@ const Round = require('../../../models/Round');
 // submit any old emoji to start a round
 const EMOJI = '😀';
 
-function playGame(users, options) {
+function playGame(players, options) {
   if ( ! options ) { options = {}; }
-  return startGame(users).then(function(game) {
+  return startGame(players).then(function(game) {
     return setup([
       {
-        user: users[0],
+        player: players[0],
         msg: EMOJI 
       }
     ]).then(function() {

@@ -5,7 +5,7 @@
  * number: (860) 460-8183
  *
  */
-const User = require('../models/user');
+const Player = require('../models/player');
 const Phone = require('../models/phone');
 const TextModel = require('../models/text');
 const Message = require('../models/message');
@@ -26,19 +26,19 @@ module.exports = function(req, res) {
     return res.json({ error: 'You must provide a valid number' });
   }
 
-  var user;
+  var player;
   Phone.parse(req.body.number).then(function(number) {
-    return User.create({ number: number }, entry, platform);
-  }).then(function(newUser) {
-    user = newUser;
+    return Player.create({ number: number }, entry, platform);
+  }).then(function(newPlayer) {
+    player = newPlayer;
 
     return Message.get('intro');
   }).then(function(message) {
-    return TextModel.send(user, message);
+    return TextModel.send(player, message);
   }).then(function() {
     res.json({});
   }).fail(function(err) {
-    console.log('error creating user / sending text', err);
+    console.log('error creating player / sending text', err);
     if ( err.message ) {
       // possible error - number is already registered.
       res.json({ error: err.message });

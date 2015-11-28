@@ -5,8 +5,8 @@
  */
 
 const Game = require('../../../models/game');
-//const User = require('../../../models/user');
-const getUsers = require('../lib/getUsers');
+//const Player = require('../../../models/player');
+const getPlayers = require('../lib/getPlayers');
 //const startGame = require('../flows/startGame');
 const playGame = require('../flows/playGame');
 //const invite = require('../flows/invite');
@@ -22,18 +22,18 @@ let game_number = '12013409832';
 
 describe('Score', function() {
   it('should record a correct guess successfully', function() {
-    var users = getUsers(3);
+    var players = getPlayers(3);
     let defaults = {
       'win-guesser-1': rand(),
       'win-submitter-1': rand()
     };
-    return playGame(users).then(function(game) {
+    return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { user: game.players[1], msg: guess + 'JURASSIC PARK' },
+          { player: game.players[1], msg: guess + 'JURASSIC PARK' },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0], game_number: game_number });
+        return Game.get({ player: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-1']);
         game.players[1].score.should.equal(defaults['win-guesser-1']);
@@ -43,17 +43,17 @@ describe('Score', function() {
   });
 
   it('should record a pass successfully', function() {
-    var users = getUsers(3);
+    var players = getPlayers(3);
     let defaults = {
       'pass': rand(),
     };
-    return playGame(users).then(function(game) {
+    return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { user: game.players[1], msg: pass },
+          { player: game.players[1], msg: pass },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0], game_number: game_number });
+        return Game.get({ player: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(0);
         game.players[1].score.should.equal(defaults.pass);
@@ -63,19 +63,19 @@ describe('Score', function() {
   });
 
   it('should record a correct guess successfully after a wrong guess', function() {
-    var users = getUsers(3);
+    var players = getPlayers(3);
     let defaults = {
       'win-guesser-2': rand(),
       'win-submitter-2': rand()
     };
-    return playGame(users).then(function(game) {
+    return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { user: game.players[1], msg: guess + 'foo' },
-          { user: game.players[1], msg: guess + 'JURASSIC PARK' },
+          { player: game.players[1], msg: guess + 'foo' },
+          { player: game.players[1], msg: guess + 'JURASSIC PARK' },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0], game_number: game_number });
+        return Game.get({ player: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-2']);
         game.players[1].score.should.equal(defaults['win-guesser-2']);
@@ -85,20 +85,20 @@ describe('Score', function() {
   });
 
   it('should sum up points over time from winning', function() {
-    var users = getUsers(3);
+    var players = getPlayers(3);
     let defaults = {
       'win-guesser-1': rand(),
       'win-submitter-1': rand()
     };
-    return playGame(users).then(function(game) {
+    return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { user: game.players[2], msg: guess + 'JURASSIC PARK' },
-          { user: game.players[1], msg: EMOJI },
-          { user: game.players[2], msg: guess + 'SILENCE OF THE LAMBS' },
+          { player: game.players[2], msg: guess + 'JURASSIC PARK' },
+          { player: game.players[1], msg: EMOJI },
+          { player: game.players[2], msg: guess + 'SILENCE OF THE LAMBS' },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0], game_number: game_number });
+        return Game.get({ player: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-1']);
         game.players[1].score.should.equal(defaults['win-submitter-1']);
@@ -108,22 +108,22 @@ describe('Score', function() {
   });
 
   it('should sum up points over time from passing', function() {
-    var users = getUsers(3);
+    var players = getPlayers(3);
     let defaults = {
       'win-guesser-1': rand(),
       'win-submitter-1': rand(),
       'pass': rand() 
     };
-    return playGame(users).then(function(game) {
+    return playGame(players).then(function(game) {
       return Game.updateDefaultScores(game, defaults).then(function() {
         return setup([
-          { user: game.players[2], msg: pass },
-          { user: game.players[1], msg: guess + 'JURASSIC PARK' },
-          { user: game.players[1], msg: EMOJI },
-          { user: game.players[2], msg: pass },
+          { player: game.players[2], msg: pass },
+          { player: game.players[1], msg: guess + 'JURASSIC PARK' },
+          { player: game.players[1], msg: EMOJI },
+          { player: game.players[2], msg: pass },
         ]);
       }).then(function() {
-        return Game.get({ user: game.players[0], game_number: game_number });
+        return Game.get({ player: game.players[0], game_number: game_number });
       }).then(function(game) {
         game.players[0].score.should.equal(defaults['win-submitter-1']);
         game.players[1].score.should.equal(defaults['win-guesser-1']);

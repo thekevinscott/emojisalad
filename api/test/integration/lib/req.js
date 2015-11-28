@@ -16,16 +16,16 @@ function req(options, raw) {
   options.url = host + '/platform/twilio';
 
   if ( options.form ) {
-    let user = options.form.user;
-    if ( ! _.isObject(user) ) {
-      console.error('user', user);
-      throw "You must provide user as an object now";
+    let player = options.form.player;
+    if ( ! _.isObject(player) ) {
+      console.error('player', player);
+      throw "You must provide player as an object now";
     }
     let message = options.form.message;
-    delete options.form.username;
+    delete options.form.playername;
     delete options.form.message;
 
-    options.form.From = user.number;
+    options.form.From = player.number;
     options.form.To = twilio_config.from;
     options.form.Body = message;
   }

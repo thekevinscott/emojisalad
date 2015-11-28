@@ -1,26 +1,26 @@
 'use strict';
-//var User = require('../../models/user');
+//var Player = require('../../models/player');
 //var Message = require('../../models/message');
 const Game = require('models/game');
 const Round = require('models/round');
 const _ = require('lodash');
 
-module.exports = function(user, input, game_number) {
-  if ( user.state === 'passed' ) {
+module.exports = function(player, input, game_number) {
+  if ( player.state === 'passed' ) {
     return [{
-      user: user,
+      player: player,
       key: 'no-clue-after-passing'
     }];
   } else {
-    return Game.get({ user: user, game_number: game_number }).then(function(game) {
+    return Game.get({ player: player, game_number: game_number }).then(function(game) {
       return Round.getCluesLeft(game).then(function(clues_left) {
         if ( clues_left > 0 ) {
-          return Round.getClue(game, user).then(function(roundClue) {
+          return Round.getClue(game, player).then(function(roundClue) {
             if ( roundClue ) {
               return {
                 key: 'clue',
                 options: [
-                  user.nickname,
+                  player.nickname,
                   roundClue.clue
                 ]
               };
@@ -44,17 +44,17 @@ module.exports = function(user, input, game_number) {
       }).then(function(message) {
         return game.players.map(function(player) {
           return _.assign({
-            user: player,
+            player: player,
           }, message);
         });
       }).then(function(messages) {
         return game.players.map(function(player) {
-          if ( player.id !== user.id ) {
+          if ( player.id !== player.id ) {
             return {
               key: 'says',
-              user: player,
+              player: player,
               options: [
-                user.nickname,
+                player.nickname,
                 input
               ]
             };

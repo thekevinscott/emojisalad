@@ -1,18 +1,18 @@
 'use strict';
 
-var getUsers = require('../lib/getUsers');
+var getPlayers = require('../lib/getPlayers');
 var setup = require('../lib/setup');
 var check = require('../lib/check');
 
 describe('Signup', function() {
 
-  describe('Test a brand new user', function() {
+  describe('Test a brand new player', function() {
     it('should introduce itself when contacting for the first time', function() {
-      var user = getUsers(1)[0];
+      var player = getPlayers(1)[0];
       return check(
-        { user: user, msg: 'hello?' },
+        { player: player, msg: 'hello?' },
         [
-          { key: 'intro', to: user }
+          { key: 'intro', to: player }
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -21,19 +21,19 @@ describe('Signup', function() {
 
     describe('Saying yes', function() {
       function reachOut() {
-        var user = getUsers(1)[0];
+        var player = getPlayers(1)[0];
         return setup([
-          { user: user, msg: 'hi' }
+          { player: player, msg: 'hi' }
         ]).then(function() {
-          return user;
+          return player;
         });
       }
 
       function sayYes(message) {
-        return reachOut().then(function(user) {
+        return reachOut().then(function(player) {
           return check(
-            { user: user, msg: message },
-            [{ key: 'intro_2', to: user }]
+            { player: player, msg: message },
+            [{ key: 'intro_2', to: player }]
           );
         });
       }
@@ -64,9 +64,9 @@ describe('Signup', function() {
         });
       });
       it('should start the onboarding with a "yeehaw" response', function() {
-        return reachOut().then(function(user) {
+        return reachOut().then(function(player) {
           return check(
-            { user: user, msg: 'yeehaw' },
+            { player: player, msg: 'yeehaw' },
             []
           );
         }).then(function(obj) {
@@ -76,16 +76,16 @@ describe('Signup', function() {
     });
   });
 
-  it('should prompt the user to invite friends', function() {
-    var user = getUsers(1)[0];
+  it('should prompt the player to invite friends', function() {
+    var player = getPlayers(1)[0];
     return setup([
-      { user: user, msg: 'hello' },
-      { user: user, msg: 'y' },
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'y' },
     ]).then(function() {
       return check(
-        { user: user, msg: user.nickname },
+        { player: player, msg: player.nickname },
         [
-          { key: 'intro_3', options: [ user.nickname ], to: user }
+          { key: 'intro_3', options: [ player.nickname ], to: player }
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -93,14 +93,14 @@ describe('Signup', function() {
     });
   });
 
-  it('should blacklist a new user who messages accidentally', function() {
-    var user = getUsers(1)[0];
+  it('should blacklist a new player who messages accidentally', function() {
+    var player = getPlayers(1)[0];
     return setup([
-      { user: user, msg: 'hello' },
-      { user: user, msg: 'no' },
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'no' },
     ]).then(function() {
       return check(
-        { user: user, msg: 'any response?' },
+        { player: player, msg: 'any response?' },
         [ ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -108,15 +108,15 @@ describe('Signup', function() {
     });
   });
 
-  it('should chide a user who tries to invite users before entering a nickname', function() {
-    var user = getUsers(1)[0];
+  it('should chide a player who tries to invite players before entering a nickname', function() {
+    var player = getPlayers(1)[0];
     return setup([
-      { user: user, msg: 'hello' },
-      { user: user, msg: 'yes' },
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'yes' },
     ]).then(function() {
       return check(
-        { user: user, msg: 'invite foo' },
-        [{ key: 'wait-to-invite', to: user }]
+        { player: player, msg: 'invite foo' },
+        [{ key: 'wait-to-invite', to: player }]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
       });

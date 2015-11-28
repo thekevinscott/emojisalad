@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 const db = require('db');
 const rule = require('config/rule');
 
-const User = require('./user');
+const Player = require('./player');
 var Game;
 //let Game = require('./game');
 
@@ -19,7 +19,7 @@ var Round = {
       return game.round.clues_allowed - rows[0].cnt;
     });
   },
-  getClue: function(game, user) {
+  getClue: function(game, player) {
     var clue_query = squel
                      .select()
                      .field('clue_id')
@@ -45,7 +45,7 @@ var Round = {
                                 .insert()
                                 .into('round_clues')
                                 .setFields({
-                                  user_id: user.id,
+                                  player_id: player.id,
                                   round_id: game.round.id,
                                   clue_id: clue.clue_id
                                 });
@@ -57,7 +57,7 @@ var Round = {
       }
     });
   },
-  checkGuess: function(game, user, guess) {
+  checkGuess: function(game, player, guess) {
     let query = squel
                 .select()
                 .from('phrases')
@@ -72,7 +72,7 @@ var Round = {
                        .insert()
                        .into('guesses')
                        .setFields({
-                         user_id: user.id,
+                         player_id: player.id,
                          round_id: game.round.id,
                          correct: (result) ? 1 : 0,
                          guess: guess
@@ -89,7 +89,7 @@ var Round = {
         var query = squel
                     .update()
                     .table('rounds')
-                    .set('winner_id',user.id)
+                    .set('winner_id',player.id)
                     .set('state_id',state_id)
                     .where('id=?',game.round.id);
         return db.query(query.toString()).then(function() {
@@ -101,7 +101,7 @@ var Round = {
     });
 
   },
-  getGuessesLeft: function(game, user) {
+  getGuessesLeft: function(game, player) {
     var query = squel
                 .select()
                 .field('count(1) as guesses_made')
@@ -109,7 +109,7 @@ var Round = {
                 .from('rounds', 'r')
                 .left_join('guesses', 'g', 'g.round_id=r.id')
                 .where('r.id=?',game.round.id)
-                .where('g.user_id=?',user.id);
+                .where('g.player_id=?',player.id);
 
     return db.query(query).then(function(rows) {
       var row = rows.pop();
@@ -251,21 +251,21 @@ var Round = {
       }
     );
   },
-  saveSubmission: function(game, user) {
-    //if ( ! User ) {
-      //User = require('./user');
+  saveSubmission: function(game, player) {
+    //if ( ! Player ) {
+      //Player = require('./player');
     //}
 
-    // all other users who are not submitter (not the user)
+    // all other players who are not submitter (not the player)
     // should be switched to guessing
-    if ( game.round.players[0].id === user.id ) {
+    if ( game.round.players[0].id === player.id ) {
       throw "These should not match";
     }
     var promises = game.round.players.map(function(player) {
-      return User.update(player, {state: 'guessing' });
+      return Player.update(player, {state: 'guessing' });
     });
     promises.push(function() {
-      return User.update(user, {state: 'submitted'});
+      return Player.update(player, {state: 'submitted'});
     }());
     promises.push(function() {
       return this.update(game.round, { state: 'playing' });

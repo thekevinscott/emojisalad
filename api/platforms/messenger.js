@@ -3,11 +3,11 @@
  * An incoming message from Messenger will contain the following:
  *
  *
- * username: 'foo'
+ * playername: 'foo'
  * body: 'yes'
  */
 //var Log = require('../models/log');
-//var User = require('../models/user');
+//var Player = require('../models/player');
 //var Message = require('../models/message');
 module.exports = function(req, res) {
   console.log(req.body);
@@ -17,21 +17,21 @@ module.exports = function(req, res) {
 
   /*
   var body = req.body.message;
-  var username = req.body.username;
+  var playername = req.body.playername;
   var platform = 'messenger';
   var entry = 'messenger';
 
-  if ( ! username ) {
-    return res.json({ error: "You must provide a username" });
+  if ( ! playername ) {
+    return res.json({ error: "You must provide a playername" });
   } else if ( ! body ) {
     return res.json({ error: "You must provide a message" });
   }
 
-  User.get({ 'messenger-name': username }).then(function(user) {
-    //console.log('back from user')
-    if ( user ) {
-      //console.log('got user in messenger', user);
-      return script(user.state, user, body).then(function(response) {
+  Player.get({ 'messenger-name': playername }).then(function(player) {
+    //console.log('back from player')
+    if ( player ) {
+      //console.log('got player in messenger', player);
+      return script(player.state, player, body).then(function(response) {
         //console.log('script back', response);
         return response.map(function(r) {
           if ( typeof r === 'string' ) {
@@ -44,9 +44,9 @@ module.exports = function(req, res) {
         });
       });
     } else {
-      //console.log('user does not exist');
-      // user does not yet exist; create the user
-      return User.create({ 'messenger-name': username }, entry, platform).then(function() {
+      //console.log('player does not exist');
+      // player does not yet exist; create the player
+      return Player.create({ 'messenger-name': playername }, entry, platform).then(function() {
         return Message.get('intro').then(function(response) {
           // we wrap the response in an array to be consistent;
           // later responses could return multiple responses.

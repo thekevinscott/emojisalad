@@ -1,31 +1,31 @@
 'use strict';
-var User = require('../../models/user');
+var Player = require('../../models/player');
 //var Message = require('../../models/message');
 const Game = require('models/game');
 //const Round = require('models/round');
 const _ = require('lodash');
 
-module.exports = function(user, input, game_number) {
+module.exports = function(player, input, game_number) {
   var result;
 
-  if ( user.state === 'ready-for-game' || user.state === 'waiting-for-round' ) {
+  if ( player.state === 'ready-for-game' || player.state === 'waiting-for-round' ) {
     result = 'pass-rejected-not-playing';
-  } else if ( user.state === 'lost' ) {
+  } else if ( player.state === 'lost' ) {
     result = 'no-pass-after-loss';
-  } else if ( user.state === 'waiting-for-submission' ) {
+  } else if ( player.state === 'waiting-for-submission' ) {
     result = 'pass-rejected-need-a-guess';
-  } else if ( user.state === 'submitted' ) {
+  } else if ( player.state === 'submitted' ) {
     result = 'pass-rejected-not-guessing';
-  } else if ( user.state === 'guessing' ) {
-    result = Game.get({ user: user, game_number: game_number }).then(function(game){
-      return User.update(user, { state: 'passed' }).then(function() {
+  } else if ( player.state === 'guessing' ) {
+    result = Game.get({ player: player, game_number: game_number }).then(function(game){
+      return Player.update(player, { state: 'passed' }).then(function() {
         return game;
       });
     }).then(function(game) {
-      Game.updateScore(game, user, 'pass');
+      Game.updateScore(game, player, 'pass');
 
       var players_left = game.round.players.filter(function(player) {
-        return player.id !== user.id && player.state === 'guessing';
+        return player.id !== player.id && player.state === 'guessing';
       });
 
       var promise;
@@ -49,14 +49,14 @@ module.exports = function(user, input, game_number) {
 
           return round.game.players.map(function(player) {
             return {
-              user: player,
+              player: player,
               key: 'round-over'
             };
           }).concat(round.game.players.map(function(player) {
             if ( player.id !== round.submitter.id ) {
-              return _.assign( { user: player }, nextRoundInstructions);
+              return _.assign( { player: player }, nextRoundInstructions);
             } else {
-              return _.assign( { user: player }, suggestion);
+              return _.assign( { player: player }, suggestion);
             }
           }));
         });
@@ -69,17 +69,17 @@ module.exports = function(user, input, game_number) {
 
       return promise.then(function(endingMessages) {
         return game.players.map(function(player) {
-          if ( player.id === user.id ) {
+          if ( player.id === player.id ) {
             return {
-              user: player,
+              player: player,
               key: 'pass',
-              options: [user.nickname]
+              options: [player.nickname]
             };
           } else {
             return {
-              user: player,
-              key: 'user-passed',
-              options: [user.nickname]
+              player: player,
+              key: 'player-passed',
+              options: [player.nickname]
             };
           }
         }).concat(endingMessages);
@@ -90,7 +90,7 @@ module.exports = function(user, input, game_number) {
 
   if ( typeof result === 'string' ) {
     return [{
-      user: user,
+      player: player,
       key: result 
     }];
   } else {

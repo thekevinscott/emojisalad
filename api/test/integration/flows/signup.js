@@ -1,12 +1,13 @@
-var _ = require('lodash');
-var setup = require('../lib/setup');
+'use strict';
+const _ = require('lodash');
+const setup = require('../lib/setup');
 
-// signup a particular user from scratch
-function signup(user) {
+// signup a particular player from scratch
+function signup(player) {
   return setup([
-    { user: user, msg: 'hi' },
-    { user: user, msg: 'Yes' },
-    { user: user, msg: user.nickname },
+    { player: player, msg: 'hi' },
+    { player: player, msg: 'Yes' },
+    { player: player, msg: player.nickname },
   ]);
 }
 

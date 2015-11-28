@@ -2,12 +2,12 @@
 const Promise = require('bluebird');
 const squel = require('squel');
 const db = require('db');
-const User = require('./user');
+const Player = require('./player');
 const _ = require('lodash');
  
 var Log = {
   incoming: function(response, platform) {
-    return User.get({ number: response.From }).then(function(user) {
+    return Player.get({ number: response.From }).then(function(player) {
       try {
         var platform_id = squel
                           .select()
@@ -27,10 +27,10 @@ var Log = {
                   });
 
 
-      if ( user ) {
+      if ( player ) {
         query.setFields({
-          user_id: user.id,
-          user_state: user.state_id
+          player_id: player.id,
+          player_state: player.state_id
         });
       }
       
@@ -41,14 +41,14 @@ var Log = {
       }
     });
   },
-  outgoing: function(responses, user, platform) {
+  outgoing: function(responses, player, platform) {
     try {
       if ( !_.isArray(responses) ) {
         responses = [responses];
       }
       if ( responses && responses.length ) {
         Promise.all(responses.map(function(message) {
-          return User.get({ id: message.user.id }).then(function(user) {
+          return Player.get({ id: message.player.id }).then(function(player) {
             var platform_id = squel
                               .select()
                               .field('id')
@@ -70,8 +70,8 @@ var Log = {
                         });
 
             query.setFields({
-              user_id: user.id,
-              user_state: user.state_id,
+              player_id: player.id,
+              player_state: player.state_id,
 
             });
 

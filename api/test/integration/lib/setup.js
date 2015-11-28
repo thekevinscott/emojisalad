@@ -10,11 +10,11 @@ var setup = function(arr) {
   }
 
   return sequence(arr.map(function(a, i) {
-    var user = a.user;
+    var player = a.player;
     var msg = a.msg;
-    if ( ! user ) {
+    if ( ! player ) {
       console.error(a, i);
-      throw "No user provided";
+      throw "No player provided";
     }
     if ( ! msg ) {
       console.error(a, i);
@@ -22,7 +22,7 @@ var setup = function(arr) {
     }
     return function() {
       return req.post({
-        user: user,
+        player: player,
         message: msg
       }, null, true);
     };

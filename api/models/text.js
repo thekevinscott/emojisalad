@@ -31,7 +31,7 @@ module.exports = {
         responses.map(function(response) {
           switch(response.type) {
             case 'sms' :
-              let number = response.user.number;
+              let number = response.player.number;
 
               twiml.sms(messages[response.key], {
                 to: number,

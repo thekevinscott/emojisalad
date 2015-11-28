@@ -1,19 +1,19 @@
 'use strict';
-const getUsers = require('../lib/getUsers');
+const getPlayers = require('../lib/getPlayers');
 const setup = require('../lib/setup');
 const check = require('../lib/check');
 //const getGame = require('../lib/getGame');
 const signup = require('../flows/signup');
 const startGame = require('../flows/startGame');
 const Game = require('models/game');
-const User = require('models/user');
+const Player = require('models/player');
 const EMOJI = '😀';
 const game_number = '12013409832';
 
 describe('Inviting', function() {
   describe('Invalid Phone Numbers', function() {
-    var users = getUsers(2);
-    var inviter = users[0];
+    var players = getPlayers(2);
+    var inviter = players[0];
 
     before(function() {
       return signup(inviter);
@@ -21,7 +21,7 @@ describe('Inviting', function() {
 
     it('should reject an invalid invite phrase', function() {
       return check(
-        { user: inviter, msg: 'foobar' },
+        { player: inviter, msg: 'foobar' },
         [{ key: 'error-8', to: inviter }]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -30,7 +30,7 @@ describe('Inviting', function() {
 
     it('should reject a nothing string', function() {
       return check(
-        { user: inviter, msg: 'invite' },
+        { player: inviter, msg: 'invite' },
         [{ key: 'error-8', to: inviter }]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -39,7 +39,7 @@ describe('Inviting', function() {
 
     it('should reject a nothing string, this time with white space', function() {
       return check(
-        { user: inviter, msg: 'invite ' },
+        { player: inviter, msg: 'invite ' },
         [{ key: 'error-8', to: inviter }]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -48,7 +48,7 @@ describe('Inviting', function() {
 
     it('should reject a string as number', function() {
       return check(
-        { user: inviter, msg: 'invite foo' },
+        { player: inviter, msg: 'invite foo' },
         [{ key: 'error-1', options: ['foo'], to: inviter }]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -57,7 +57,7 @@ describe('Inviting', function() {
 
     it('should reject a short number', function() {
       return check(
-        { user: inviter, msg: 'invite 860460' },
+        { player: inviter, msg: 'invite 860460' },
         [{ key: 'error-1', options: ['860460'], to: inviter }]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -66,22 +66,22 @@ describe('Inviting', function() {
   });
 
   describe('Valid numbers', function() {
-    var users = getUsers(2);
-    var inviter = users[0];
+    var players = getPlayers(2);
+    var inviter = players[0];
     before(function() {
       return signup(inviter);
     });
 
     this.timeout(10000);
     it('should be able to invite someone', function() {
-      var user = getUsers(1)[0];
+      var player = getPlayers(1)[0];
 
       return check(
         // lose the intro of the number for testing
-        { user: inviter, msg: 'invite '+user.number.substring(2) },
+        { player: inviter, msg: 'invite '+player.number.substring(2) },
         [
-          { key: 'intro_4', options: [user.number], to: inviter },
-          { key: 'invite', options: [inviter.nickname], to: user }
+          { key: 'intro_4', options: [player.number], to: inviter },
+          { key: 'invite', options: [inviter.nickname], to: player }
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -93,14 +93,14 @@ describe('Inviting', function() {
       var end = Math.floor(1000 + Math.random() * 9000);
       var num = '+1860460'+end;
 
-      var user = getUsers(1)[0];
-      user.number = num;
+      var player = getPlayers(1)[0];
+      player.number = num;
 
       return check(
-        { user: inviter, msg: 'invite '+user.number },
+        { player: inviter, msg: 'invite '+player.number },
         [
-          { key: 'intro_4', options: [user.number], to: inviter },
-          { key: 'invite', options: [inviter.nickname], to: user }
+          { key: 'intro_4', options: [player.number], to: inviter },
+          { key: 'invite', options: [inviter.nickname], to: player }
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -108,15 +108,15 @@ describe('Inviting', function() {
     });
 
     it('should not be able to re-invite someone', function() {
-      var user = getUsers(1)[0];
+      var player = getPlayers(1)[0];
 
       return setup([
-        { user: inviter, msg: 'invite '+user.number }
+        { player: inviter, msg: 'invite '+player.number }
       ]).then(function() {
         return check(
-          { user: inviter, msg: 'invite '+user.number },
+          { player: inviter, msg: 'invite '+player.number },
           [
-            { key: 'error-2', options: [user.number], to: inviter },
+            { key: 'error-2', options: [player.number], to: inviter },
           ]
         );
       }).then(function(obj) {
@@ -125,16 +125,16 @@ describe('Inviting', function() {
     });
 
     it('should not be able to invite someone on do-not-call-list', function() {
-      var user = getUsers(1)[0];
+      var player = getPlayers(1)[0];
 
       return setup([
-        { user: inviter, msg: 'invite '+user.number },
-        { user: user, msg: 'do not invite me again' }
+        { player: inviter, msg: 'invite '+player.number },
+        { player: player, msg: 'do not invite me again' }
       ]).then(function() {
         return check(
-          { user: inviter, msg: 'invite '+user.number },
+          { player: inviter, msg: 'invite '+player.number },
           [
-            { key: 'error-3', options: [user.number], to: inviter },
+            { key: 'error-3', options: [player.number], to: inviter },
           ]
         );
       }).then(function(obj) {
@@ -142,28 +142,28 @@ describe('Inviting', function() {
       });
     });
 
-    it('should be able to onboard an invited user', function() {
-      var user = getUsers(1)[0];
+    it('should be able to onboard an invited player', function() {
+      var player = getPlayers(1)[0];
 
       var firstPhrase = 'JURASSIC PARK';
 
       return setup([
-        { user: inviter, msg: 'invite '+user.number },
-        { user: user, msg: 'yes' },
+        { player: inviter, msg: 'invite '+player.number },
+        { player: player, msg: 'yes' },
       ]).then(function() {
-        return User.get({ number: inviter.number }).then(function(gotUser) {
-          return Game.get({ user: gotUser, game_number: game_number }).then(function(game) {
-            //console.log('********** 1 game', user.number, game.id, game.random);
+        return Player.get({ number: inviter.number }).then(function(gotPlayer) {
+          return Game.get({ player: gotPlayer, game_number: game_number }).then(function(game) {
+            //console.log('********** 1 game', player.number, game.id, game.random);
             return Game.update(game, { random : 0 });
           });
         });
       }).then(function() {
-        //console.log('********** 2 game', user.number, game.id, game.random);
+        //console.log('********** 2 game', player.number, game.id, game.random);
         return check(
-          { user: user, msg: user.nickname },
+          { player: player, msg: player.nickname },
           [
-            { key: 'accepted-invited', options: [user.nickname], to: inviter },
-            { key: 'accepted-inviter', options: [user.nickname, inviter.nickname], to: user },
+            { key: 'accepted-invited', options: [player.nickname], to: inviter },
+            { key: 'accepted-inviter', options: [player.nickname, inviter.nickname], to: player },
             { key: 'game-start', options: [inviter.nickname, firstPhrase], to: inviter },
           ]
         );
@@ -174,12 +174,12 @@ describe('Inviting', function() {
   });
 
   describe('Inviting during a game', function() {
-    function runBothPlayers(users) {
+    function runBothPlayers(players) {
       it('should let submitter invite', function() {
-        var inviter = users[0];
-        var invitee = getUsers(3).pop();
+        var inviter = players[0];
+        var invitee = getPlayers(3).pop();
         return check(
-          { user: inviter, msg: 'invite '+invitee.number },
+          { player: inviter, msg: 'invite '+invitee.number },
           [
             { to: inviter, key: 'intro_4', options: [invitee.number] },
             { to: invitee, key: 'invite', options: [inviter.nickname] }
@@ -190,11 +190,11 @@ describe('Inviting', function() {
       });
 
       it('should let player invite', function() {
-        var inviter = users[1];
-        var invitee = getUsers(3).pop();
+        var inviter = players[1];
+        var invitee = getPlayers(3).pop();
         console.log('should let player invite');
         return check(
-          { user: inviter, msg: 'invite '+invitee.number },
+          { player: inviter, msg: 'invite '+invitee.number },
           [
             { to: inviter, key: 'intro_4', options: [invitee.number] },
             { to: invitee, key: 'invite', options: [inviter.nickname] }
@@ -208,71 +208,71 @@ describe('Inviting', function() {
       // should allow for an invite after a submission (by submitter and other player)
       // should allow for an invite after a correct answer (by submitter and other player)
     describe('before a round starts', function() {
-      var users = getUsers(2);
+      var players = getPlayers(2);
       before(function() {
-        return startGame(users);
+        return startGame(players);
       });
 
-      runBothPlayers(users);
+      runBothPlayers(players);
     });
 
     describe('during a round', function() {
-      var users = getUsers(2);
+      var players = getPlayers(2);
       before(function() {
-        return startGame(users).then(function() {
+        return startGame(players).then(function() {
           return setup([
-            { user: users[0], msg: EMOJI }
+            { player: players[0], msg: EMOJI }
           ]);
         });
       });
 
-      runBothPlayers(users);
+      runBothPlayers(players);
     });
 
     describe('after guessing incorrectly', function() {
-      var users = getUsers(2);
+      var players = getPlayers(2);
       before(function() {
-        return startGame(users).then(function() {
+        return startGame(players).then(function() {
           return setup([
-            { user: users[0], msg: EMOJI },
-            { user: users[1], msg: 'guess foo' }
+            { player: players[0], msg: EMOJI },
+            { player: players[1], msg: 'guess foo' }
           ]);
         });
       });
 
-      runBothPlayers(users);
+      runBothPlayers(players);
     });
 
     describe('after guessing correctly', function() {
-      var users = getUsers(2);
+      var players = getPlayers(2);
       before(function() {
-        return startGame(users).then(function() {
+        return startGame(players).then(function() {
           return setup([
-            { user: users[0], msg: EMOJI },
-            { user: users[1], msg: 'guess JURASSIC PARK' }
+            { player: players[0], msg: EMOJI },
+            { player: players[1], msg: 'guess JURASSIC PARK' }
           ]);
         });
       });
 
-      runBothPlayers(users);
+      runBothPlayers(players);
     });
 
-    it('should be able to onboard a third user to the game', function() {
-      var users = getUsers(2);
-      var invitee = getUsers(3).pop();
+    it('should be able to onboard a third player to the game', function() {
+      var players = getPlayers(2);
+      var invitee = getPlayers(3).pop();
       console.log('start that game');
-      return startGame(users).then(function() {
+      return startGame(players).then(function() {
         return setup([
-          { user: users[0], msg: 'invite '+invitee.number },
-          { user: invitee, msg: 'yes' },
+          { player: players[0], msg: 'invite '+invitee.number },
+          { player: invitee, msg: 'yes' },
         ]);
       }).then(function() {
         return check(
-          { user: invitee, msg: invitee.nickname },
+          { player: invitee, msg: invitee.nickname },
           [
-            { to: users[0], key: 'accepted-invited', options: [invitee.nickname] },
-            { to: users[1], key: 'join-game', options: [invitee.nickname] },
-            { to: invitee, key: 'accepted-inviter', options: [invitee.nickname, users[0].nickname] },
+            { to: players[0], key: 'accepted-invited', options: [invitee.nickname] },
+            { to: players[1], key: 'join-game', options: [invitee.nickname] },
+            { to: invitee, key: 'accepted-inviter', options: [invitee.nickname, players[0].nickname] },
           ]
         );
       }).then(function(obj) {
@@ -280,22 +280,22 @@ describe('Inviting', function() {
       });
     });
 
-    it('should make a third user invited in the middle of a round wait until the next round', function() {
-      var users = getUsers(2);
-      var invitee = getUsers(3).pop();
-      return startGame(users).then(function() {
+    it('should make a third player invited in the middle of a round wait until the next round', function() {
+      var players = getPlayers(2);
+      var invitee = getPlayers(3).pop();
+      return startGame(players).then(function() {
         return setup([
-          { user: users[0], msg: EMOJI },
-          { user: users[0], msg: 'invite '+invitee.number },
-          { user: invitee, msg: 'yes' },
+          { player: players[0], msg: EMOJI },
+          { player: players[0], msg: 'invite '+invitee.number },
+          { player: invitee, msg: 'yes' },
         ]);
       }).then(function() {
         return check(
-          { user: invitee, msg: invitee.nickname },
+          { player: invitee, msg: invitee.nickname },
           [
-            { to: users[0], key: 'accepted-invited-next-round', options: [invitee.nickname] },
-            { to: users[1], key: 'join-game-next-round', options: [invitee.nickname] },
-            { to: invitee, key: 'accepted-inviter-next-round', options: [invitee.nickname, users[0].nickname] },
+            { to: players[0], key: 'accepted-invited-next-round', options: [invitee.nickname] },
+            { to: players[1], key: 'join-game-next-round', options: [invitee.nickname] },
+            { to: invitee, key: 'accepted-inviter-next-round', options: [invitee.nickname, players[0].nickname] },
           ]
         );
       }).then(function(obj) {

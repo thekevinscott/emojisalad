@@ -42,7 +42,7 @@ let Message = {
       }
     });
   },
-  parse: function(responses, user) {
+  parse: function(responses, player) {
     if ( responses && responses.length ) {
       var messages = {};
       var options = {};
@@ -66,12 +66,12 @@ let Message = {
       }).then(function() {
         return responses.map(function(response) {
           var number;
-          if ( ! response.user || ! response.user.number ) {
+          if ( ! response.player || ! response.player.number ) {
             console.warn('##### deprecate passing number directly', response);
-            number = user.number;
+            number = player.number;
             //throw "stop it";
           } else {
-            number = response.user.number;
+            number = response.player.number;
           }
 
           return _.assign({

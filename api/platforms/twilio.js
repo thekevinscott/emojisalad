@@ -27,7 +27,7 @@ const pmx = require('pmx');
 const router = require('routes');
 const Log = require('models/log');
 const Phone = require('models/phone');
-const User = require('models/user');
+const Player = require('models/player');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const track = require('tracking');
@@ -58,42 +58,42 @@ module.exports = function(req, res) {
   // first, we parse the Phone number
   Phone.parse(req.body.From).then(function(parsedNumber) {
     const number = parsedNumber;
-    return User.get({ number: number }).then(function(user) {
-      if ( !user ) {
-        user = {
+    return Player.get({ number: number }).then(function(player) {
+      if ( !player ) {
+        player = {
           number: number,
           state: 'uncreated',
           entry: entry,
           platform: platform
         };
       }
-      return user;
+      return player;
     });
-  }).then(function(user) {
+  }).then(function(player) {
     if ( ! req.body.Body ) {
       // again, this is almost certainly something malicious.
       // it is technically impossible for Twilio to send us a blank message.
-      //errors = [{ key: 'error-11', message: "You must provide a message", type: 'respond', user: user }];
-      //return end(errors, user);
+      //errors = [{ key: 'error-11', message: "You must provide a message", type: 'respond', player: player }];
+      //return end(errors, player);
       return res.end('');
     } else {
       if ( debug ) {
         console.log([
-          user.nickname,
+          player.nickname,
           req.body.From,
           req.body.Body,
-          user.state,
+          player.state,
         ].join(' | '));
       }
       try {
-        track(user.state, user, req.body.Body);
-      } catch(e) { console.error('error tracking user', user, req); }
-      return router(user, body, req.body.To).then(function(response) {
-        return end(response, user);
+        track(player.state, player, req.body.Body);
+      } catch(e) { console.error('error tracking player', player, req); }
+      return router(player, body, req.body.To).then(function(response) {
+        return end(response, player);
       });
     }
   }).catch(function(err) {
-    // this should not notify the user. It means that the incoming request's number
+    // this should not notify the player. It means that the incoming request's number
     // somehow failed validation on Twilio's side, which would be odd because Twilio
     // is providing us with that number.
     //
@@ -110,11 +110,11 @@ module.exports = function(req, res) {
     res.end();
   });
 
-  function end(response, user) {
-    return Message.parse(response, user).then(function(messages) {
+  function end(response, player) {
+    return Message.parse(response, player).then(function(messages) {
       if ( process.env.ENVIRONMENT === 'test' ) {
         // this returns twiml
-        return Twilio.parse(messages, user);
+        return Twilio.parse(messages, player);
       } else {
         // this actually sends out sms
         return Twilio.send(messages);

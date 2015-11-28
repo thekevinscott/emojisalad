@@ -5,9 +5,9 @@ const Mixpanel = require('mixpanel');
 let mixpanel = Mixpanel.init(require('../config/mixpanel')[process.env.ENVIRONMENT]);
 const ua_config = require('../config/google-analytics')[process.env.ENVIRONMENT];
 
-module.exports = function(state, user, input) {
+module.exports = function(state, player, input) {
   if ( process.env.ENVIRONMENT === 'production' ) {
-    var visitor = ua(ua_config, user.id, {
+    var visitor = ua(ua_config, player.id, {
       strictCidFormat: false,
       https: true
     });
@@ -17,12 +17,12 @@ module.exports = function(state, user, input) {
       ea: input,
     }).send();
 
-    var user_id;
-    if ( user && user.id ) {
-      user_id = user.id;
+    var player_id;
+    if ( player && player.id ) {
+      player_id = player.id;
     }
     mixpanel.track(state, {
-      user_id: user_id,
+      player_id: player_id,
       input: input,
       platform: 'twilio'
     });

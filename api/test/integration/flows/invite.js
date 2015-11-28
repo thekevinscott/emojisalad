@@ -1,12 +1,12 @@
-var _ = require('lodash');
-var setup = require('../lib/setup');
+'use strict';
+const setup = require('../lib/setup');
 
-// invite a particular user and have them sign up
+// invite a particular player and have them sign up
 function invite(inviter, invited) {
   return setup([
-    {user: inviter, msg: 'invite '+invited.number},
-    {user: invited, msg: 'yes'},
-    {user: invited, msg: invited.nickname},
+    {player: inviter, msg: 'invite '+invited.number},
+    {player: invited, msg: 'yes'},
+    {player: invited, msg: invited.nickname},
   ]);
 }
 
