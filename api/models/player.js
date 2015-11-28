@@ -41,24 +41,37 @@ let Player = {
 
     return db.query(query.toString()).then(function(rows) {
       var player_id = rows.insertId;
+      player.id = player_id;
 
-      var attribute_id = squel
-                         .select()
-                         .field('id')
-                         .from('player_attribute_keys')
-                         .where('`key`=?','number');
-      var attb = squel
-                 .insert()
-                 .into('player_attributes')
-                 .setFields({
-                   player_id: player_id,
-                   attribute_id: attribute_id,
-                   attribute: player.number
-                 });
+      let insert_to_number = squel
+                             .insert()
+                             .into('player_attributes')
+                             .setFields({
+                               player_id: player_id,
+                               attribute_id: squel
+                                 .select()
+                                 .field('id')
+                                 .from('player_attribute_keys')
+                                 .where('`key`=?','number'),
+                               attribute: player.number
+                             });
 
-
-       return db.query(attb.toString()).then(function() {
-         player.id = player_id;
+      let insert_from_number = squel
+                               .insert()
+                               .into('player_attributes')
+                               .setFields({
+                                 player_id: player_id,
+                                 attribute_id: squel
+                                   .select()
+                                   .field('id')
+                                   .from('player_attribute_keys')
+                                   .where('`key`=?','to'),
+                                 attribute: player.to
+                               });
+       return Promise.join(
+         db.query(insert_from_number.toString()),
+         db.query(insert_to_number.toString())
+       ).then(function() {
          return player;
        });
     });

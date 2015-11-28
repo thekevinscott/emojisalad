@@ -3,13 +3,13 @@ var Phone  = require('models/phone');
 var Invite = require('models/invite');
 var rule = require('config/rule');
 
-module.exports = function(invitingPlayer, input) {
+module.exports = function(invitingPlayer, input, to) {
   if ( rule('invite').test(input) ) {
     var type = 'twilio';
     input = input.split('invite').pop().trim();
     return Phone.parse([input]).then(function(phones) {
       let phone = phones[0];
-      return Invite.create(type, phone, invitingPlayer).then(function(invite) {
+      return Invite.create(type, phone, invitingPlayer, to).then(function(invite) {
         return {
           invitedPlayer: invite.invited_player,
           invitingPlayer: invite.inviting_player,

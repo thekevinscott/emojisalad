@@ -1,3 +1,4 @@
+/*
 'use strict';
 var Invite = require('models/invite');
 
@@ -5,7 +6,6 @@ module.exports = function(req, res) {
   var player = req.body.player;
   var type = req.body.type; // for instance, a phone
   var value = req.body.value;
-  console.log('route invite');
   if ( ! player ) {
     res.json({ error: { message: 'You must provide a player', errno: 9 }});
   } else if ( ! type ) {
@@ -14,7 +14,7 @@ module.exports = function(req, res) {
     res.json({ error: {message: 'You must provide a value', errno: 8 }});
   }
 
-  Invite.create(type, value, player).then(function(invite) {
+  Invite.create(type, value, player, to).then(function(invite) {
     return {
       invited_player: invite.invited_player,
       inviting_player: invite.inviting_player,
@@ -26,3 +26,4 @@ module.exports = function(req, res) {
     res.json( err );
   });
 };
+*/
