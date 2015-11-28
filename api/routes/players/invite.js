@@ -7,7 +7,8 @@ module.exports = function(invitingPlayer, input) {
   if ( rule('invite').test(input) ) {
     var type = 'twilio';
     input = input.split('invite').pop().trim();
-    return Phone.parse(input).then(function(phone) {
+    return Phone.parse([input]).then(function(phones) {
+      let phone = phones[0];
       return Invite.create(type, phone, invitingPlayer).then(function(invite) {
         return {
           invitedPlayer: invite.invited_player,

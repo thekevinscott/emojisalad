@@ -56,8 +56,8 @@ module.exports = function(req, res) {
   const entry = 'text';
 
   // first, we parse the Phone number
-  Phone.parse(req.body.From).then(function(parsedNumber) {
-    const number = parsedNumber;
+  Phone.parse([req.body.From]).then(function(parsedNumbers) {
+    const number = parsedNumbers[0];
     return Player.get({ number: number }).then(function(player) {
       if ( !player ) {
         player = {

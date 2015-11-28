@@ -7,7 +7,8 @@ const Player = require('./player');
 let Invite = {
   create: function(type, value, invitingPlayer) {
     if ( type === 'twilio' ) {
-      return Phone.parse(value).then(function(number) {
+      return Phone.parse([value]).then(function(numbers) {
+        let number = numbers[0];
         // first check to see if player exists
         return Player.get({ number: number }).then(function(player) {
 

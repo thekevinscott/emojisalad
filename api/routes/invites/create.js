@@ -5,6 +5,7 @@ module.exports = function(req, res) {
   var player = req.body.player;
   var type = req.body.type; // for instance, a phone
   var value = req.body.value;
+  console.log('route invite');
   if ( ! player ) {
     res.json({ error: { message: 'You must provide a player', errno: 9 }});
   } else if ( ! type ) {

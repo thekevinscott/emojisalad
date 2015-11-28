@@ -27,7 +27,8 @@ module.exports = function(req, res) {
   }
 
   var player;
-  Phone.parse(req.body.number).then(function(number) {
+  Phone.parse([req.body.number]).then(function(numbers) {
+    let number = numbers[0];
     return Player.create({ number: number }, entry, platform);
   }).then(function(newPlayer) {
     player = newPlayer;
