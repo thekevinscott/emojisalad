@@ -2,36 +2,43 @@
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
+const User = require('models/user');
+const _ = require('lodash');
 let Game;
 
 let Player = {
-  // valid phone number test
-  table: 'players',
+  // create a new player
+  create: function(params) {
+    let number;
+    if ( params.to ) {
+      number = squel
+               .select()
+               .field('id')
+               .from('game_numbers','n')
+               .where('n.number=?', params.to);
+    } else {
+      // no game number has been specified;
+      // for instance, if an invite has
+      // been created.
+      //
+      // In this case, we auto generate a game
+      // number for this player
+      number = squel
+               .select()
+               .field('id')
+               .from('game_numbers','n')
+               .order('id')
+               .limit(1);
+    }
 
-  // create a new player number
-  create: function(player, entry, platform) {
     let query = squel
-                .insert()
+                .insert({ autoQuoteFieldNames: true })
                 .into('players')
                 .setFields({
-                  created: squel.fval('NOW(3)')
+                  to: number,
+                  created: squel.fval('NOW(3)'),
+                  user_id: params.user.id
                 });
-
-    if ( platform ) {
-      query.setFields({'platform_id': squel
-                    .select()
-                    .field('id')
-                    .from('platforms')
-                    .where('platform=?', platform)});
-    }
-
-    if ( entry ) {
-      query.setFields({'entry_id': squel
-                                 .select()
-                                 .field('id')
-                                 .from('player_entries')
-                                 .where('entry=?', entry)});
-    }
 
     query.setFields({ 'state_id': squel
                                  .select()
@@ -40,208 +47,110 @@ let Player = {
                                  .where('state=?','waiting-for-confirmation')});
 
     return db.query(query.toString()).then(function(rows) {
-      let player_id = rows.insertId;
-      player.id = player_id;
+      let player = _.assign({
+        id: rows.insertId,
+        // convenience, so number is
+        // an alias for 'from'
+        number: params.user.from,
+        from: params.user.from
+      }, params);
 
-      let insert_to_number = squel
-                             .insert()
-                             .into('player_attributes')
-                             .setFields({
-                               player_id: player_id,
-                               attribute_id: squel
-                                 .select()
-                                 .field('id')
-                                 .from('player_attribute_keys')
-                                 .where('`key`=?','number'),
-                               attribute: player.number
-                             });
-
-      let insert_from_number = squel
-                               .insert()
-                               .into('player_attributes')
-                               .setFields({
-                                 player_id: player_id,
-                                 attribute_id: squel
-                                   .select()
-                                   .field('id')
-                                   .from('player_attribute_keys')
-                                   .where('`key`=?','to'),
-                                 attribute: player.to
-                               });
-       return Promise.join(
-         db.query(insert_from_number.toString()),
-         db.query(insert_to_number.toString())
-       ).then(function() {
-         return player;
-       });
+      return player;
     });
   },
 
-  get: function(player) {
-    if ( ! player.id && ! player.invited_player_id && ! player.number ) {
+  get: function(params) {
+    //console.log('params', params);
+    if ( !params.id && ( (!params.from && !params.number) || !params.to )) {
       throw new Error({
-        message: 'Tried to select on an invalid player key'
+        message: 'Tried to select on an invalid params key'
       });
     } 
 
-    let query = squel
-                .select()
-                .field('u.id')
-                .field('u.created')
-                .field('u.blacklist')
-                .field('u.state_id')
-                .field('i.inviter_player_id')
-                .field('p.platform', 'platform')
-                .field('s.state', 'state')
-                .from('players', 'u')
-                .where('u.archived=0')
-                .left_join('invites', 'i', 'u.id = i.invited_player_id')
-                .left_join('platforms', 'p', 'p.id = u.platform_id')
-                .left_join('player_states', 's', 's.id = u.state_id');
-
-    if ( player.id ) {
-      query = query.where('u.`id`=?', player.id);
-    } else if ( player.invited_player_id ) {
-      query = query.where('i.invited_player_id=?', player.invited_player_id);
-    } else {
-      let number_attribute = squel
-                             .select()
-                             .field('attribute')
-                             .field('player_id')
-                             .from('player_attributes')
-                             .where('attribute_id=?', squel
-                                   .select()
-                                   .field('id')
-                                   .from('player_attribute_keys')
-                                   .where('`key`=?','number')
-                                   );
-      query = query
-              .left_join(number_attribute, 'number', 'number.player_id = u.id')
-              .where('number.attribute=?', player.number);
-
-      if ( player.to ) {
-
-        let to_attribute = squel
-                           .select()
-                           .field('attribute')
-                           .field('player_id')
-                           .from('player_attributes')
-                           .where('attribute_id=?', squel
-                                 .select()
-                                 .field('id')
-                                 .from('player_attribute_keys')
-                                 .where('`key`=?','to')
-                                 );
-        query = query
-                .left_join(to_attribute, 'to', 'to.player_id = u.id')
-                .where('to.attribute=?', player.to);
-      }
-
+    let user_params = {};
+    if ( params.from ) {
+      user_params.from = params.from;
+    } else if ( params.number ) {
+      user_params.from = params.number;
+    } else if ( params.id ) {
+      user_params.player_id = params.id;
     }
 
-    return db.query(query.toString()).then(function(players) {
-      if ( ! players.length ) {
+    //console.log('params', params);
+    //console.log('user_params', user_params);
+    return User.get(user_params).then(function(user) {
+      if ( ! user ) {
         return null;
       } else {
 
-        let player = players[0];
+        let query = squel
+                    .select({ autoEscapeFieldNames: true })
+                    .field('p.id')
+                    .field('p.created')
+                    .field('p.blacklist')
+                    .field('p.state_id')
+                    .field('p.to')
+                    //.field('i.inviter_params_id')
+                    .field('s.state', 'state')
+                    .field('u.id', 'user_id')
+                    .field('u.blacklist')
+                    .field('u.nickname')
+                    .from('players', 'p')
+                    //.left_join('invites', 'i', 'p.id = i.invited_params_id')
+                    .left_join('player_states', 's', 's.id = p.state_id')
+                    .left_join('users', 'u', 'u.id = p.user_id')
+                    .where('u.id=?', user.id);
 
-        let promises = [
-          function() {
-            let query = squel
-                        .select()
-                        .field('a.attribute')
-                        .field('k.`key`')
-                        .from('player_attributes', 'a')
-                        .left_join('players', 'u', 'u.id = a.player_id')
-                        .left_join('player_attribute_keys', 'k', 'k.id = a.attribute_id')
-                        .where('a.player_id=?',player.id);
-
-            return db.query(query);
-          }(),
-        ];
-
-        if ( player.inviter_player_id ) {
-          promises.push(Player.get({ id: player.inviter_player_id }));
+        if ( params.id ) {
+          query = query.where('p.`id`=?', params.id);
+        //} else if ( params.invited_params_id ) {
+          //query = query.where('i.invited_params_id=?', params.invited_params_id);
+        } else if ( params.to ) {
+          query = query
+                  .left_join('game_numbers','n','n.id=p.`to`')
+                  .where('n.number=?',params.to);
         }
 
-        return Promise.all(promises).then(function(results) {
-          results[0].map(function(attribute) {
-            player[attribute.key] = attribute.attribute;
-          });
-          if ( results[1] ) {
-            player.inviter = results[1];
+        //console.log(query.toString());
+        return db.query(query.toString()).then(function(players) {
+          if ( ! players.length ) {
+            return null;
+          } else {
+
+            let player = players[0];
+
+            player.number = user.from;
+            player.from = user.from;
+            player.user_id = user.id;
+            player.user = user;
+
+            return player;
           }
-          //player.game = game;
-          return player;
         });
-
       }
     });
   },
 
-  update: function(player, params) {
-    // a whitelisted array of arguments we're allowed to update
+  update: Promise.coroutine(function* (player, params) {
 
-    let queries = [];
+    let query = squel
+                .update()
+                .table('players', 'p')
+                .where('p.id=?', player.id);
 
-    Object.keys(params).map(function(key) {
-      let query;
-      switch(key) {
-        case 'state' :
-          let state = squel
-                       .select()
-                       .field('id')
-                       .from('player_states')
-                       .where('state=?',params[key]);
+    if ( params.state ) {
+        let state = squel
+                     .select()
+                     .field('id')
+                     .from('player_states')
+                     .where('state=?', params.state);
 
-          query = squel
-                  .update()
-                  .table('players', 'u')
-                  .where('u.archived=0')
-                  .where('u.id=?', player.id);
-          query.set('state_id', state, { dontQuote: true });
-          queries.push(query);
-          break;
-        case 'blacklist':
-          query = squel
-                  .update()
-                  .table('players', 'u')
-                  .where('u.archived=0')
-                  .where('u.id=?', player.id);
+        query.set('state_id', state, { dontQuote: true });
+    }
 
-          query.set(key, params[key]);
-          queries.push(query);
-          break;
-        default:
-          let attribute_id = squel
-                             .select()
-                             .field('id')
-                             .from('player_attribute_keys')
-                             .where('`key`=?',key);
-          query = squel
-                   .insert()
-                   .into('player_attributes')
-                   .setFields({
-                     player_id: player.id,
-                     attribute_id: attribute_id,
-                     attribute: params[key]
-                   })
-                   .onDupUpdate('attribute', params[key]);
-
-         queries.push(query);
-         break;
-      }
-      player[key] = params[key];
-    });
-
-    return Promise.all(queries.map(function(query) {
-      return db.query(query.toString()).then(function() {
-        return player;
-      });
-    }));
-
-  },
+    yield db.query(query.toString());
+    return player;
+  }),
   logLastActivity: function(player, game_number) {
     if ( ! Game ) {
       Game = require('./game');

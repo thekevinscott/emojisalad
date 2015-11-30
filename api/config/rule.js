@@ -5,13 +5,6 @@ const sprintf = require('sprintf');
 //};
 
 const rules = {
-  'invite': {
-    pattern: '^invite(.*)',// + snippets.phone+'$',
-    flags: 'i',
-    example: [
-      'invite '
-    ]
-  },
   'clue': {
     pattern: '^clue(.*)',
     flags: 'i',
@@ -31,6 +24,20 @@ const rules = {
     flags: 'i',
     example: [
       'help'
+    ]
+  },
+  'invite': {
+    pattern: '^invite(.*)',// + snippets.phone+'$',
+    flags: 'i',
+    example: [
+      'invite '
+    ]
+  },
+  'new-game': {
+    pattern: '^new game(.*)',
+    flags: 'i',
+    example: [
+      'new game'
     ]
   },
   'pass': {

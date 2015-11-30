@@ -80,7 +80,7 @@ describe('Inviting', function() {
         // lose the intro of the number for testing
         { player: inviter, msg: 'invite '+player.number.substring(2) },
         [
-          { key: 'intro_4', options: [player.number], to: inviter },
+          { key: 'intro_4', options: [player.number.substring(2)], to: inviter },
           { key: 'invite', options: [inviter.nickname], to: player }
         ]
       ).then(function(obj) {
@@ -143,7 +143,9 @@ describe('Inviting', function() {
     });
 
     it('should be able to onboard an invited player', function() {
-      let player = getPlayers(1)[0];
+      // get a kevin user, to make it easier
+      // to parse who is who
+      let player = getPlayers(2)[1];
 
       let firstPhrase = 'JURASSIC PARK';
 
@@ -151,7 +153,7 @@ describe('Inviting', function() {
         { player: inviter, msg: 'invite '+player.number },
         { player: player, msg: 'yes' },
       ]).then(function() {
-        return Player.get({ number: inviter.number }).then(function(gotPlayer) {
+        return Player.get({ from: inviter.number, to: game_number }).then(function(gotPlayer) {
           return Game.get({ player: gotPlayer, game_number: game_number }).then(function(game) {
             return Game.update(game, { random : 0 });
           });

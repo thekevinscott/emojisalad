@@ -25,9 +25,11 @@
  */
 const pmx = require('pmx');
 const router = require('routes');
+//const _ = require('lodash');
 const Log = require('models/log');
 const Phone = require('models/phone');
 const Player = require('models/player');
+const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const track = require('tracking');
@@ -50,25 +52,34 @@ module.exports = function(req, res) {
   }
 
   const body = req.body.Body;
-  Log.incoming(req.body, 'twilio');
-
-  const platform = 'twilio';
-  const entry = 'text';
+  Log.incoming(req.body);
 
   // first, we parse the Phone number
   Phone.parse([req.body.From, req.body.To]).then(function(parsed_numbers) {
-    const number = parsed_numbers[0];
+    const from = parsed_numbers[0];
     const to = parsed_numbers[1];
-    return Player.get({ number: number, to: to }).then(function(player) {
+    return Player.get({ from: from, to: to }).then(function(player) {
       if ( !player ) {
-        player = {
-          number: number,
-          state: 'uncreated',
-          entry: entry,
-          platform: platform
-        };
+        // does a user exist?
+        return User.get({ from: from }).then(function(user) {
+          if ( user ) {
+            //console.log('b', user);
+            return {
+              state: 'uncreated',
+              user_id: user.id,
+              to: to,
+              number: user.from
+            };
+          } else {
+            return {
+              number: from,
+              state: 'uncreated',
+            };
+          }
+        });
+      } else {
+        return player;
       }
-      return player;
     });
   }).then(function(player) {
     if ( ! req.body.Body ) {
@@ -92,7 +103,9 @@ module.exports = function(req, res) {
       }
       try {
         track(player.state, player, req.body.Body);
-      } catch(e) { console.error('error tracking player', player, req); }
+      } catch(e) {
+        console.error('error tracking player', player, req);
+      }
       return router(player, body, req.body.To).then(function(response) {
         return end(response, player);
       });

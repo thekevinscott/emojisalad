@@ -62,10 +62,7 @@ function pullProductionDB() {
     'game_numbers',
     'game_states',
     'messages',
-    'platforms',
     'round_states',
-    'player_attribute_keys',
-    'player_entries',
     'player_states'
   ];
   var dumpData = [

@@ -162,8 +162,8 @@ var Round = {
       }
     });
   },
-  getLast: function(game) {
-    var query = squel
+  getLast: Promise.coroutine(function* (game) {
+    let query = squel
                 .select()
                 .field('r.id')
                 .field('r.submitter_id')
@@ -184,17 +184,14 @@ var Round = {
                 //.group('r.id')
                 .limit(1);
                         
-    return db.query(query).then(function(rounds) {
-      if ( rounds.length ) {
-        var round = rounds[0];
-        //round.guesses_left = round.guesses - round.guesses_made;
-        //delete round.guesses_made;
-        return round;
-      } else {
-        return null;
-      }
-    });
-  },
+    let rounds = yield db.query(query);
+    if ( rounds.length ) {
+      var round = rounds[0];
+      return round;
+    } else {
+      return null;
+    }
+  }),
   create: function(game) {
     if ( ! Game ) {
       Game = require('./game');

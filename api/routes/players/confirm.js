@@ -1,5 +1,6 @@
 'use strict';
 var Player = require('models/player');
+var User = require('models/user');
 var rule = require('config/rule');
 //var Message = require('../../models/message');
 
@@ -14,7 +15,7 @@ module.exports = function(player, input) {
       }];
     });
   } else {
-    Player.update(player, {
+    return User.update({ id: player.user.id }, {
       blacklist: 1
     });
   }

@@ -6,15 +6,9 @@ const Player = require('./player');
 const _ = require('lodash');
  
 var Log = {
-  incoming: function(response, platform) {
-    return Player.get({ number: response.From }).then(function(player) {
+  incoming: function(response) {
+    return Player.get({ number: response.From, to: response.To }).then(function(player) {
       try {
-        var platform_id = squel
-                          .select()
-                          .field('id')
-                          .from('platforms')
-                          .where('platform=?',platform);
-        platform_id = 1;
 
       var query = squel
                   .insert()
@@ -22,7 +16,6 @@ var Log = {
                   .setFields({
                     message: response.Body,
                     response: JSON.stringify(response),
-                    platform_id: platform_id,
                     created: squel.fval('NOW(3)')
                   });
 
@@ -41,7 +34,7 @@ var Log = {
       }
     });
   },
-  outgoing: function(responses, player, platform) {
+  outgoing: function(responses) {
     try {
       if ( !_.isArray(responses) ) {
         responses = [responses];
@@ -49,13 +42,6 @@ var Log = {
       if ( responses && responses.length ) {
         Promise.all(responses.map(function(message) {
           return Player.get({ id: message.player.id }).then(function(player) {
-            var platform_id = squel
-                              .select()
-                              .field('id')
-                              .from('platforms')
-                              .where('platform=?',platform);
-
-            platform_id = 1;
 
             var query = squel
                         .insert()
@@ -65,7 +51,6 @@ var Log = {
                           options: JSON.stringify(message.options || []),
                           message: message.message,
                           type: message.type,
-                          platform_id: platform_id,
                           created: squel.fval('NOW(3)')
                         });
 

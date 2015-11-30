@@ -154,21 +154,22 @@ let Game = {
   getPlayers: function(game) {
 
     let query = squel
-                .select()
-                .field('u.id')
-                .field('u.created')
+                .select({ autoEscapeFieldNames: true })
+                .field('p.id')
+                .field('p.created')
+                .field('p.to','game_number')
+                .field('u.from')
+                .field('u.from', 'number')
+                .field('u.id', 'user_id')
                 .field('s.state')
-                .field('p.platform as platform')
                 .field('gp.score')
                 .from('game_players', 'gp')
                 .left_join('games', 'g', 'gp.game_id = g.id')
-                .left_join('players', 'u', 'u.id = gp.player_id')
-                .left_join('player_states', 's', 's.id = u.state_id')
-                .left_join('platforms', 'p', 'p.id = u.platform_id')
+                .left_join('players', 'p', 'p.id = gp.player_id')
+                .left_join('users', 'u', 'u.id = p.user_id')
+                .left_join('player_states', 's', 's.id = p.state_id')
                 .where('g.id=?', game.id)
-                .where('g.archived=0')
-                .where('u.archived=0')
-                .order('u.id');
+                .order('p.id');
 
     if ( game.round ) {
       let guesses = squel
@@ -181,36 +182,9 @@ let Game = {
       query = query.field('e.guesses');
     }
 
-    return db.query(query).then(function(players) {
-      return Promise.all(players.map(function(player) {
-        let query = squel
-                    .select()
-                    .field('a.attribute')
-                    .field('k.`key`')
-                    .from('player_attributes', 'a')
-                    .left_join('players', 'u', 'u.id = a.player_id')
-                    .left_join('player_attribute_keys', 'k', 'k.id = a.attribute_id')
-                    //.where('k.`key`=?', key)
-                    //.where('a.attribute=?', val)
-                    .where('a.player_id=?',player.id);
-
-        return Promise.join(
-          db.query(query),
-          function(attributes) {
-            attributes.map(function(attribute) {
-              player[attribute.key] = attribute.attribute;
-            });
-            return player;
-          }
-        );
-      }.bind(this)));
-
-    }.bind(this));
+    return db.query(query);
   },
-  getRound: function(game) {
-    return Round.getLast(game);
-  },
-  get: function(params) {
+  get: Promise.coroutine(function* (params) {
     let query = squel
                 .select()
                 .field('g.id')
@@ -222,38 +196,10 @@ let Game = {
                 .left_join('game_states', 's', 's.id = g.state_id')
                 .left_join('players', 'u', 'u.id=p.player_id')
                 .group('g.id')
-                .where('g.archived=0')
-                .where('u.archived=0')
                 .order('g.created', false);
-                //.limit(1);
 
     if ( params.player ) {
-      if ( ! params.game_number ) {
-        console.warn('1) when selecting by a player, games should also select on the To number');
-      } else {
-        let get_game_number = squel
-                              .select()
-                              .field('id')
-                              .from('game_numbers')
-                              .where('number=?',params.game_number);
-        query.where('p.game_number_id=?',get_game_number);
-      }
       query.where('p.player_id=?',params.player.id);
-    } else if ( params.players ) {
-      if ( ! params.game_number ) {
-        console.warn('2) when selecting by a player, games should also select on the To number');
-      } else {
-        let get_game_number = squel
-                              .select()
-                              .field('id')
-                              .from('game_numbers')
-                              .where('number=?',params.game_number);
-        query.where('p.game_number_id=?',get_game_number);
-      }
-      let player_ids = params.players.map(function(game_player) {
-        return game_player.id;
-      });
-      query.where('p.player_id IN ? ',player_ids);
     } else if ( params.id ) {
       query.where('g.id=?',params.id);
     }
@@ -265,38 +211,45 @@ let Game = {
     console.debug('params', params);
     console.debug(query.toString());
 
-    return db.query(query.toString()).then(function(rows) {
-      if ( rows.length ) {
-        let game = rows[0];
-        return this.getRound(game).then(function(round) {
-          game.round = round;
-          return this.getPlayers(game).then(function(players) {
-            game.players = players;
+    let rows = yield db.query(query.toString());
+    if ( rows.length ) {
+      let game = rows[0];
+      game.round = yield Round.getLast(game);
+      game.players = yield this.getPlayers(game);
 
-            if ( game.round ) {
-              game.players.map(function(game_player) {
-                if ( game_player.id === game.round.submitter_id ) {
-                  game.round.submitter = game_player;
-                } else {
-                  if ( ! game.round.players ) { game.round.players = []; }
-                  game.round.players.push(game_player);
-                }
-              });
-            }
-            return game;
-          });
-        }.bind(this));
-      } else {
-        return null;
+      if ( game.round ) {
+        game.players.map(function(game_player) {
+          console.log('game player', game_player.id);
+          if ( game_player.id === game.round.submitter_id ) {
+            console.log('submitter', game_player.id);
+            game.round.submitter = game_player;
+          } else {
+            if ( ! game.round.players ) { game.round.players = []; }
+            game.round.players.push(game_player);
+          }
+        });
+      } else if ( game.state !== 'pending' ) {
+        console.error(game);
+        throw "Non pending games should have an associated round";
       }
-    }.bind(this));
-  },
-  start: function(game) {
-    this.update(game, {
-      state: 'playing'
-    });
-    return this.generateBattingOrder(game);
-  },
+      return game;
+    } else {
+      return null;
+    }
+  }),
+  start: Promise.coroutine(function* (game) {
+    return yield Promise.join(
+      Game.newRound(game),
+      this.update(game, {
+        state: 'playing'
+      }),
+      this.generateBattingOrder(game),
+      function(round) {
+        game.round = round;
+        return game;
+      }
+    );
+  }),
   getBattingOrder: function(game) {
     let query = squel
                 .select({ autoQuoteFieldNames: true })
@@ -337,16 +290,10 @@ let Game = {
   },
   add: function(game, players) {
     return Promise.all(players.map(function(player) {
-      //let get_game_number_id = squel
-                               //.select()
-                               //.field('id')
-                               //.from('game_numbers')
-                               //.where('number=?',game_number);
 
       let row = {
         game_id: game.id,
         player_id: player.id,
-        game_number_id : 1
       };
 
       let query = squel

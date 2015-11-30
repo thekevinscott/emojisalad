@@ -1,40 +1,36 @@
 'use strict';
-var Phone  = require('models/phone');
-var Invite = require('models/invite');
-var rule = require('config/rule');
+const Promise = require('bluebird');
+//const Phone  = require('models/phone');
+const Invite = require('models/invite');
+const rule = require('config/rule');
 
-module.exports = function(invitingPlayer, input, to) {
+module.exports = Promise.coroutine(function* (inviter, input) {
   if ( rule('invite').test(input) ) {
-    var type = 'twilio';
+    //var type = 'twilio';
     input = input.split('invite').pop().trim();
-    return Phone.parse([input]).then(function(phones) {
-      let phone = phones[0];
-      return Invite.create(type, phone, invitingPlayer, to).then(function(invite) {
-        return {
-          invitedPlayer: invite.invited_player,
-          invitingPlayer: invite.inviting_player,
-        };
-      }).then(function(players) {
-        // let the inviting player know we messaged
-        // their buddy, and let the buddy
-        // know they've been invited
-        return [
-          {
-            player: players.invitingPlayer,
-            key: 'intro_4',
-            options: [phone]
-          },
-          {
-            key: 'invite',
-            options: [players.invitingPlayer.nickname],
-            player: players.invitedPlayer
-          },
-        ];
-      });
-    }).catch(function(error) {
+    try {
+      //let phones = yield Phone.parse([input]);
+      //let phone = phones[0];
+      let players = yield Invite.create(inviter, input);
+      // let the inviting player know we messaged
+      // their buddy, and let the buddy
+      // know they've been invited
+      return [
+        {
+          player: players.inviting_player,
+          key: 'intro_4',
+          options: [input]
+        },
+        {
+          key: 'invite',
+          options: [players.inviting_player.nickname],
+          player: players.invited_player
+        },
+      ];
+    } catch(error) {
       if ( error && parseInt(error.message) ) {
         return [{
-          player: invitingPlayer,
+          player: inviter,
           key: 'error-'+error.message,
           options: [input]
         }];
@@ -42,13 +38,13 @@ module.exports = function(invitingPlayer, input, to) {
         console.error('HANDLE THIS', error.message);
         throw error;
       }
-    });
+    }
   } else {
     return [{
-      player: invitingPlayer,
+      player: inviter,
       key: 'error-8',
       options: [input]
     }];
   }
 
-};
+});
