@@ -22,7 +22,7 @@ function req(options, raw) {
       throw "You must provide player as an object now";
     }
     let message = options.form.message;
-    let to = options.form.to || player.game_number;
+    let to = options.form.to || player.to;
     delete options.form.playername;
     delete options.form.message;
     delete options.form.to;

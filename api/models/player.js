@@ -62,6 +62,7 @@ let Player = {
   get: function(params) {
     //console.log('params', params);
     if ( !params.id && ( (!params.from && !params.number) || !params.to )) {
+      console.error('params', params);
       throw new Error({
         message: 'Tried to select on an invalid params key'
       });

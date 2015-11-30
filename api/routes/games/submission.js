@@ -25,19 +25,19 @@ module.exports = function(player, input, game_number) {
       });
     } else if ( type_of_input === 'emoji' ) {
       return Game.saveSubmission(player, input, game_number).then(function(game) {
-        var messages = [{
+        let messages = [{
           player: player,
           key: 'game-submission-sent'
         }];
 
-        var forwarded_message = {
+        let forwarded_message = {
           key: 'says',
           options: [
             game.round.submitter.nickname, input 
           ]
         };
 
-        var guessing_instructions = {
+        let guessing_instructions = {
           key: 'guessing-instructions'
         };
 

@@ -11,7 +11,7 @@ const EMOJI = '😀';
 
 describe('Submissions', function() {
   it('should forward a text submission', function() {
-    var players = getPlayers(3);
+    let players = getPlayers(3);
 
     return startGame(players).then(function() {
       let msg = 'foo';
@@ -28,7 +28,7 @@ describe('Submissions', function() {
   });
 
   it('should forward a mixed text emoji submission and hint the submitter on how to send a submission', function() {
-    var players = getPlayers(3);
+    let players = getPlayers(3);
 
     return startGame(players).then(function() {
       let msg = EMOJI + 'foo' + EMOJI ;
@@ -46,7 +46,7 @@ describe('Submissions', function() {
   });
 
   it('should forward the submission to other players', function() {
-    var players = getPlayers(3);
+    let players = getPlayers(3);
 
     return startGame(players).then(function() {
       return check(

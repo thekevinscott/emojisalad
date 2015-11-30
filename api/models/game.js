@@ -158,6 +158,7 @@ let Game = {
                 .field('p.id')
                 .field('p.created')
                 .field('p.to','game_number')
+                .field('u.nickname')
                 .field('u.from')
                 .field('u.from', 'number')
                 .field('u.id', 'user_id')
@@ -178,7 +179,7 @@ let Game = {
                     .field('COALESCE(count(1), 0) as guesses')
                     .from('guesses')
                     .where('round_id=?',game.round.id);
-      query = query.left_join(guesses, 'e', 'e.player_id=u.id');
+      query = query.left_join(guesses, 'e', 'e.player_id=p.id');
       query = query.field('e.guesses');
     }
 
@@ -219,9 +220,7 @@ let Game = {
 
       if ( game.round ) {
         game.players.map(function(game_player) {
-          console.log('game player', game_player.id);
           if ( game_player.id === game.round.submitter_id ) {
-            console.log('submitter', game_player.id);
             game.round.submitter = game_player;
           } else {
             if ( ! game.round.players ) { game.round.players = []; }

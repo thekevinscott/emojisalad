@@ -5,7 +5,7 @@ const game_numbers = require('../../../../config/numbers');
 
 function getGame(player) {
   if ( ! player.id ) {
-    return Player.get({ number: player.number }).then(function(player) {
+    return Player.get({ number: player.number, to: player.to }).then(function(player) {
       return Game.get({ player: player, game_number: game_numbers.getDefault() });
     });
   } else {

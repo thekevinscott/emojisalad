@@ -23,7 +23,7 @@ function getPlayers(arg) {
       players.push({
         number: getRandomPhone(),
         nickname: listOfNicknames[i]+Math.random(),
-        game_number: game_numbers.getDefault()
+        to: game_numbers.getDefault()
       });
     }
   } else if ( _.isArray(arg) ) { 
