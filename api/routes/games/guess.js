@@ -11,6 +11,8 @@ module.exports = function(player, input, game_number) {
   
   if ( rule('invite').test(input) ) {
     return require('../players/invite')(player, input, game_number);
+  } else if ( rule('new-game').test(input) ) {
+    return require('../games/new-game')(player, input, game_number);
   } else if ( rule('pass').test(input) ) {
     return require('../games/pass')(player, input, game_number);
   } else if ( rule('clue').test(input) ) {

@@ -6,6 +6,8 @@ const rule = require('config/rule');
 module.exports = function(player, input, game_number) {
   if ( rule('invite').test(input) ) {
     return require('../players/invite')(player, input, game_number);
+  } else if ( rule('new-game').test(input) ) {
+    return require('../games/new-game')(player, input, game_number);
   } else if ( rule('help').test(input) ) {
     return require('../players/help')(player, input, game_number);
   } else {

@@ -9,7 +9,7 @@ const Round = require('models/round');
 const setNonRandomGame = require('../lib/setNonRandomGame');
 
 // submit any old emoji to start a round
-const EMOJI = 'ðŸ˜€';
+const EMOJI = '😀';
 
 // invite a particular player and have them sign up
 function newGame(players, options) {

@@ -13,12 +13,14 @@ let Invite = {
 
     // does a user already exist for this number?
     let user = yield User.get({ from: number });
+    console.log('user exists?', user);
     if ( user && user.blacklist ) {
       throw new Error(3);
     } else if ( ! user ) {
       user = yield User.create({ from: number });
     }
 
+    console.log('user', user);
     let invite = yield this.get(inviter, number);
     if ( invite ) {
       throw new Error(2);
@@ -26,6 +28,7 @@ let Invite = {
 
     let invited_player = yield Player.create({ from: number, user: user });
 
+    console.log('created player', invited_player);
     let query = squel
                 .insert()
                 .into('invites')
@@ -66,6 +69,7 @@ let Invite = {
                 .left_join('players', 'p', 'p.id=i.invited_player_id')
                 .left_join('users', 'u', 'u.id=p.user_id')
                 .where('u.from=?', number)
+                .where('i.used=0')
                 .where('inviter_player_id=?',inviter.id);
 
     let invites = yield db.query(query.toString());

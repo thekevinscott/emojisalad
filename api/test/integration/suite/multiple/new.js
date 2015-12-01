@@ -25,7 +25,7 @@ describe('New Game', function() {
     });
 
     describe('Inviting', function() {
-      it('should send out an invite to a brand new player from the first game number with a regular onboarding process', function() {
+      it.only('should send out an invite to a brand new player from the first game number with a regular onboarding process', function() {
         let players = getPlayers(3);
         let new_player = getPlayers(1)[0];
         return playGame(players).then(function() {
@@ -33,6 +33,7 @@ describe('New Game', function() {
             { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
           ]);
         }).then(function() {
+          console.log('here we go!');
           return check(
             { player: players[0], msg: rule('invite').example() + new_player.number, to: game_numbers[1] },
             [

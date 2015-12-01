@@ -52,6 +52,29 @@ const User = {
     yield db.query(query.toString());
     return user;
   }),
+  getPlayersNum: Promise.coroutine(function* (params) {
+    let query = squel
+                .select()
+                .field('count(1) as players')
+                .from('users', 'u')
+                .left_join('players', 'p', 'p.user_id=u.id')
+                ;
+
+    if ( params.id ) {
+      query = query.where('u.id=?',params.id);
+    }
+    
+    if ( params.from ) {
+      query = query.where('u.`from`=?',params.from);
+    }
+
+    let rows = yield db.query(query.toString());
+    if ( rows.length ) {
+      return rows[0].players;
+    } else {
+      return null;
+    }
+  }),
   get: Promise.coroutine(function* (params) {
     let query = squel
                 .select()
@@ -75,6 +98,8 @@ const User = {
     let rows = yield db.query(query.toString());
     if ( rows.length ) {
       let user = rows[0];
+      // TODO: Set this intelligently.
+      user.maximum_games = 2;
       return user;
     } else {
       return null;

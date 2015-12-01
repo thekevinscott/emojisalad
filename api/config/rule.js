@@ -34,7 +34,7 @@ const rules = {
     ]
   },
   'new-game': {
-    pattern: '^new game(.*)',
+    pattern: '^new game',
     flags: 'i',
     example: [
       'new game'

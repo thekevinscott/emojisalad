@@ -6,18 +6,18 @@ const Player = require('./player');
 const _ = require('lodash');
  
 var Log = {
-  incoming: function(response) {
-    return Player.get({ number: response.From, to: response.To }).then(function(player) {
-      try {
-
-      var query = squel
-                  .insert()
-                  .into('incomingMessages') 
-                  .setFields({
-                    message: response.Body,
-                    response: JSON.stringify(response),
-                    created: squel.fval('NOW(3)')
-                  });
+  incoming: Promise.coroutine(function *(response) {
+    let player = yield Player.get({ number: response.From, to: response.To });
+    let query;
+    try {
+      query = squel
+              .insert()
+              .into('incomingMessages') 
+              .setFields({
+                message: response.Body,
+                response: JSON.stringify(response),
+                created: squel.fval('NOW(3)')
+              });
 
 
       if ( player ) {
@@ -27,13 +27,12 @@ var Log = {
         });
       }
       
-      return db.query(query);
-      } catch(e) {
-        // fail relatively silently
-        console.error('error inserting into DB', query.toString());
-      }
-    });
-  },
+      return yield db.query(query);
+    } catch(e) {
+      // fail relatively silently
+      console.error('error inserting into DB', query.toString());
+    }
+  }),
   outgoing: function(responses) {
     try {
       if ( !_.isArray(responses) ) {

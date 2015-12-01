@@ -5,12 +5,15 @@ const Invite = require('models/invite');
 const rule = require('config/rule');
 
 module.exports = Promise.coroutine(function* (inviter, input) {
-  if ( rule('invite').test(input) ) {
+  if ( rule('new-game').test(input) ) {
+    return require('../games/new-game')(inviter, input);
+
+  } else if ( rule('invite').test(input) ) {
+    console.log('invite time!');
     //var type = 'twilio';
     input = input.split('invite').pop().trim();
     try {
-      //let phones = yield Phone.parse([input]);
-      //let phone = phones[0];
+      console.log('GREAT READY TO CREATE THAT INVITE');
       let players = yield Invite.create(inviter, input);
       // let the inviting player know we messaged
       // their buddy, and let the buddy

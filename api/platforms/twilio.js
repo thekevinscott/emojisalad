@@ -33,7 +33,7 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const track = require('tracking');
-const debug = false;
+const debug = true;
 module.exports = function(req, res) {
   if ( debug ) {
     console.log('\n================twilio=================\n');
@@ -106,7 +106,7 @@ module.exports = function(req, res) {
       } catch(e) {
         console.error('error tracking player', player, req);
       }
-      return router(player, body, req.body.To).then(function(response) {
+      return router(player, body, req.body.To, debug).then(function(response) {
         return end(response, player);
       });
     }

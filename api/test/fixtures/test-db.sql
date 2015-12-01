@@ -209,7 +209,6 @@ DROP TABLE IF EXISTS `invites`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invites` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `game_id` int(11) DEFAULT NULL,
   `invited_player_id` int(11) DEFAULT NULL,
   `inviter_player_id` int(11) DEFAULT NULL,
   `used` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -409,6 +408,7 @@ CREATE TABLE `users` (
   `last_activity` timestamp(6) NULL DEFAULT NULL,
   `created` timestamp(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `from` (`from`),
   KEY `from_index` (`from`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -422,7 +422,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-29 18:38:02
+-- Dump completed on 2015-12-01 11:27:58
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -600,4 +600,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-29 18:38:05
+-- Dump completed on 2015-12-01 11:27:59
