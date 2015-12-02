@@ -406,6 +406,7 @@ CREATE TABLE `users` (
   `from` varchar(15) NOT NULL DEFAULT '',
   `nickname` varchar(255) DEFAULT NULL,
   `last_activity` timestamp(6) NULL DEFAULT NULL,
+  `maximum_games` int(11) unsigned NOT NULL DEFAULT '2',
   `created` timestamp(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `from` (`from`),
@@ -422,7 +423,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-01 11:27:58
+-- Dump completed on 2015-12-01 12:07:03
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -600,4 +601,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-01 11:27:59
+-- Dump completed on 2015-12-01 12:07:04

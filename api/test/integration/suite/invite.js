@@ -6,6 +6,7 @@ const check = require('../lib/check');
 const signup = require('../flows/signup');
 const startGame = require('../flows/startGame');
 const Game = require('models/game');
+const Invite = require('models/invite');
 const Player = require('models/player');
 const EMOJI = '😀';
 const game_number = require('../../../../config/numbers').getDefault();
@@ -299,6 +300,22 @@ describe('Inviting', function() {
       }).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
       });
+    });
+  });
+
+  it('should mark an invite as used after using it', function() {
+    let players = getPlayers(2);
+    return signup(players[0]).then(function() {
+      return setup([
+        { player: players[0], msg: 'invite '+players[1].number },
+        { player: players[1], msg: 'yes' },
+      ]);
+    }).then(function() {
+      return Player.get(players[1]);
+    }).then(function(player) {
+      return Invite.getInvite(player);
+    }).then(function(invite) {
+      invite.used.should.equal(1);
     });
   });
 });

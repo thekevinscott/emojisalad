@@ -24,6 +24,7 @@ addRoute('bench', './players/say');
 addRoute('waiting-for-round', './players/say');
 addRoute('passed', './players/say');
 addRoute('lost', './players/say');
+addRoute('invited-to-new-game', './players/invited-to-new-game');
 
 let Router = function(player, message, game_number, debug) {
   let state = player.state;

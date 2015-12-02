@@ -30,13 +30,22 @@ let Player = {
                          .from('players','p')
                          .where('p.user_id=?',params.user.id);
 
-      number = squel
-               .select()
-               .field('id')
-               .from('game_numbers','n')
-               .where('n.id NOT IN ?', get_to_query)
-               .order('id')
-               .limit(1);
+      let number_query = squel
+                         .select()
+                         .field('id')
+                         .from('game_numbers','n')
+                         .where('n.id NOT IN ?', get_to_query)
+                         .order('id')
+                         .limit(1);
+
+      let numbers_rows = yield db.query(number_query.toString());
+
+      if ( numbers_rows.length ) {
+        number = numbers_rows[0].id;
+      } else {
+        console.error(number_query.toString());
+        throw "No game number found";
+      }
     }
 
     let query = squel
@@ -51,6 +60,7 @@ let Player = {
     let state;
     if ( params.initial_state ) {
       state = params.initial_state;
+      delete params.initial_state;
     } else {
       state = 'waiting-for-confirmation';
     }
@@ -61,8 +71,6 @@ let Player = {
                                  .from('player_states')
                                  .where('state=?',state)});
 
-                                 console.log('***** PARAMS');
-                                 console.log(params,query.toString());
     let rows = yield db.query(query.toString());
     if ( rows.insertId ) {
       let player = _.assign({
@@ -72,10 +80,10 @@ let Player = {
         // an alias for 'from'
         number: params.user.from,
         from: params.user.from,
-        nickname: params.user.nickname
+        nickname: params.user.nickname,
+        state: state
       }, params);
 
-      console.log('player create', query.toString());
       return player;
     } else {
       console.error(query.toString());
@@ -131,7 +139,6 @@ let Player = {
                 .where('n.number=?',params.to);
       }
 
-      //console.log(query.toString());
       let players = yield db.query(query.toString());
 
       if ( ! players.length ) {

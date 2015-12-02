@@ -4,7 +4,9 @@ const playGame = require('test/integration/flows/playGame');
 const check = require('test/integration/lib/check');
 const setup = require('test/integration/lib/setup');
 const rule = require('config/rule');
-const Player = require('models/player');
+const User = require('models/User');
+const Invite = require('models/Invite');
+const Player = require('models/Player');
 
 const game_numbers = require('../../../../../config/numbers');
 
@@ -25,7 +27,7 @@ describe('New Game', function() {
     });
 
     describe('Inviting', function() {
-      it.only('should send out an invite to a brand new player from the first game number with a regular onboarding process', function() {
+      it('should send out an invite to a brand new player from the first game number with a regular onboarding process', function() {
         let players = getPlayers(3);
         let new_player = getPlayers(1)[0];
         return playGame(players).then(function() {
@@ -33,7 +35,6 @@ describe('New Game', function() {
             { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
           ]);
         }).then(function() {
-          console.log('here we go!');
           return check(
             { player: players[0], msg: rule('invite').example() + new_player.number, to: game_numbers[1] },
             [
@@ -54,7 +55,6 @@ describe('New Game', function() {
             { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
           ]);
         }).then(function() {
-          console.log('money shot here');
           return check(
             { player: players[0], msg: rule('invite').example() + existing_player.number, to: game_numbers[1] },
             [
@@ -74,7 +74,7 @@ describe('New Game', function() {
       let players = getPlayers(3);
       return playGame(players).then(function() {
         return Player.get(players[0]).then(function(player) {
-          return Player.update(player, { maximum_games: 2 });
+          return User.update(player.user, { maximum_games: 2 });
         });
       }).then(function() {
         return setup([
@@ -95,8 +95,8 @@ describe('New Game', function() {
     it('should disallow a player from inviting a player currently playing the maximum number of games', function() {
       let players = getPlayers(3);
       return playGame(players).then(function() {
-        return Player.get(players[2]).then(function(player) {
-          return Player.update(player, { maximum_games: 2 });
+        return Player.get(players[0]).then(function(player) {
+          return User.update(player.user, { maximum_games: 2 });
         });
       }).then(function() {
         return setup([
@@ -174,6 +174,40 @@ describe('New Game', function() {
   });
 
   it('should be able to receive a text from a new game number and not create another user but create another player and another game', function() {
-    throw 'fix';
+    let players = getPlayers(3);
+    //let existing_player = players[1];
+    return playGame(players).then(function() {
+      //return setup([
+        //{ player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
+        //{ player: players[0], msg: rule('invite').example() + existing_player.number, to: game_numbers[1] },
+      //]);
+    }).then(function() {
+      return check(
+        { player: players[0], msg: 'sup', to: game_numbers[1] },
+        [
+          { key: 'new-game', options: [players[0].nickname], to: players[0], from: game_numbers[1] },
+        ]
+      );
+    }).then(function(obj) {
+      obj.output.should.deep.equal(obj.expected);
+    });
+  });
+
+  it('should mark an invite as used after using it', function() {
+    let players = getPlayers(2);
+    let existing_player = players[1];
+    return playGame(players).then(function() {
+      return setup([
+        { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
+        { player: players[0], msg: rule('invite').example() + existing_player.number, to: game_numbers[1] },
+        { player: existing_player, msg: 'yes', to: game_numbers[1] },
+      ]);
+    }).then(function() {
+      return Player.get(existing_player);
+    }).then(function(player) {
+      return Invite.getInvite(player);
+    }).then(function(invite) {
+      invite.used.should.equal(1);
+    });
   });
 });

@@ -1,22 +1,29 @@
 'use strict';
-var Player = require('models/player');
-var User = require('models/user');
-var rule = require('config/rule');
+const Promise = require('bluebird');
+const Player = require('models/player');
+const Invite = require('models/invite');
+const User = require('models/user');
+const rule = require('config/rule');
 //var Message = require('../../models/message');
 
-module.exports = function(player, input) {
+module.exports = Promise.coroutine(function* (player, input) {
   if ( rule('yes').test(input) ) {
-    return Player.update(player, {
+    let inviter = yield Invite.getInviter(player);
+    if ( inviter ) {
+      let invite = yield Invite.getInvite(player);
+      yield Invite.use(invite);
+    }
+
+    yield Player.update(player, {
       state: 'waiting-for-nickname'
-    }).then(function() {
-      return [{
-        key: 'intro_2',
-        player: player
-      }];
     });
+    return [{
+      key: 'intro_2',
+      player: player
+    }];
   } else {
-    return User.update({ id: player.user.id }, {
+    return yield User.update({ id: player.user.id }, {
       blacklist: 1
     });
   }
-};
+});

@@ -7,29 +7,45 @@ const rule = require('config/rule');
 module.exports = Promise.coroutine(function* (inviter, input) {
   if ( rule('new-game').test(input) ) {
     return require('../games/new-game')(inviter, input);
-
   } else if ( rule('invite').test(input) ) {
-    console.log('invite time!');
     //var type = 'twilio';
     input = input.split('invite').pop().trim();
     try {
-      console.log('GREAT READY TO CREATE THAT INVITE');
       let players = yield Invite.create(inviter, input);
       // let the inviting player know we messaged
       // their buddy, and let the buddy
       // know they've been invited
-      return [
-        {
-          player: players.inviting_player,
-          key: 'intro_4',
-          options: [input]
-        },
-        {
-          key: 'invite',
-          options: [players.inviting_player.nickname],
-          player: players.invited_player
-        },
-      ];
+      if ( players.invited_player.state === 'invited-to-new-game' ) {
+        return [
+          {
+            player: players.inviting_player,
+            key: 'intro_existing_player',
+            options: [input]
+          },
+          {
+            key: 'invite_existing_player',
+            options: [players.invited_player.nickname, players.inviting_player.nickname],
+            player: players.invited_player
+          },
+        ];
+      } else if ( players.invited_player.state === 'waiting-for-confirmation' ) {
+        return [
+          {
+            player: players.inviting_player,
+            key: 'intro_4',
+            options: [input]
+          },
+          {
+            key: 'invite',
+            options: [players.inviting_player.nickname],
+            player: players.invited_player
+          },
+        ];
+      } else {
+        console.error(players);
+        throw "Unsupported state for invited player";
+      }
+
     } catch(error) {
       if ( error && parseInt(error.message) ) {
         return [{

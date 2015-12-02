@@ -11,7 +11,8 @@ const Round = require('models/round');
 const Message = require('models/Message');
 
 const game_numbers = require('../../../../../config/numbers');
-// each test should test with different games back to back
+
+/*
 describe('Play', function() {
   it('should be able to submit submissions to two simultaneous games', function() {
     let players = getPlayers(3);
@@ -185,3 +186,4 @@ function getGames(player, fn) {
     });
   }));
 }
+*/

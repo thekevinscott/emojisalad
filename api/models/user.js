@@ -8,7 +8,6 @@ const User = {
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
-    //console.log('put user query together', params);
     let query = squel
                 .insert({ autoQuoteFieldNames: true })
                 .into('users')
@@ -18,7 +17,6 @@ const User = {
                   from: params.from
                 });
 
-                //console.log('query', query.toString());
     let rows = yield db.query(query);
 
     if ( rows && rows.insertId ) {
@@ -26,7 +24,6 @@ const User = {
         id: rows.insertId,
         from: params.from
       };
-      //console.log('return user', user);
       return user;
     } else {
       console.error(query.toString());
@@ -48,6 +45,9 @@ const User = {
       query.set('blacklist', params.blacklist);
     }
 
+    if ( params.maximum_games !== undefined ) {
+      query.set('maximum_games', params.maximum_games);
+    }
 
     yield db.query(query.toString());
     return user;
@@ -99,7 +99,6 @@ const User = {
     if ( rows.length ) {
       let user = rows[0];
       // TODO: Set this intelligently.
-      user.maximum_games = 2;
       return user;
     } else {
       return null;

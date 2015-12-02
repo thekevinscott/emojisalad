@@ -33,7 +33,7 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const track = require('tracking');
-const debug = true;
+const debug = false;
 module.exports = function(req, res) {
   if ( debug ) {
     console.log('\n================twilio=================\n');
@@ -63,12 +63,12 @@ module.exports = function(req, res) {
         // does a user exist?
         return User.get({ from: from }).then(function(user) {
           if ( user ) {
-            //console.log('b', user);
             return {
               state: 'uncreated',
               user_id: user.id,
               to: to,
-              number: user.from
+              //number: user.from,
+              user: user
             };
           } else {
             return {
