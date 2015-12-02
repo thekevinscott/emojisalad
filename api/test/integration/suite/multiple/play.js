@@ -12,7 +12,7 @@ const Message = require('models/Message');
 
 const game_numbers = require('../../../../../config/numbers');
 
-describe('Play', function() {
+describe.only('Play', function() {
   it('should be able to submit submissions to two simultaneous games', function() {
     let players = getPlayers(3);
     //let existing_player = players[1];
