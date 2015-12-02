@@ -9,13 +9,13 @@ let Game;
 let Player = {
   // create a new player
   create: Promise.coroutine(function* (params) {
-    let number;
+    let number_query;
     if ( params.to ) {
-      number = squel
-               .select()
-               .field('id')
-               .from('game_numbers','n')
-               .where('n.number=?', params.to);
+      number_query = squel
+                     .select()
+                     .field('id')
+                     .from('game_numbers','n')
+                     .where('n.number=?', params.to);
     } else {
       // no game number has been specified;
       // for instance, if an invite has
@@ -30,29 +30,30 @@ let Player = {
                          .from('players','p')
                          .where('p.user_id=?',params.user.id);
 
-      let number_query = squel
-                         .select()
-                         .field('id')
-                         .from('game_numbers','n')
-                         .where('n.id NOT IN ?', get_to_query)
-                         .order('id')
-                         .limit(1);
-
-      let numbers_rows = yield db.query(number_query.toString());
-
-      if ( numbers_rows.length ) {
-        number = numbers_rows[0].id;
-      } else {
-        console.error(number_query.toString());
-        throw "No game number found";
-      }
+      number_query = squel
+                     .select()
+                     .field('id')
+                     .field('number')
+                     .from('game_numbers','n')
+                     .where('n.id NOT IN ?', get_to_query)
+                     .order('id')
+                     .limit(1);
     }
+
+    let numbers_rows = yield db.query(number_query.toString());
+
+    if ( !numbers_rows.length ) {
+      console.error(number_query.toString());
+      throw "No game number found";
+    }
+
+    let to = numbers_rows[0];
 
     let query = squel
                 .insert({ autoQuoteFieldNames: true })
                 .into('players')
                 .setFields({
-                  to: number,
+                  to: to.id,
                   created: squel.fval('NOW(3)'),
                   user_id: params.user.id
                 });
@@ -75,11 +76,13 @@ let Player = {
     if ( rows.insertId ) {
       let player = _.assign({
         id: rows.insertId,
+        to: to.number,
 
         // convenience, so number is
         // an alias for 'from'
         number: params.user.from,
         from: params.user.from,
+
         nickname: params.user.nickname,
         state: state
       }, params);

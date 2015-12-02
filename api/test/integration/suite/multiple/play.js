@@ -12,11 +12,12 @@ const Message = require('models/Message');
 
 const game_numbers = require('../../../../../config/numbers');
 
-describe.only('Play', function() {
+describe('Play', function() {
   it('should be able to submit submissions to two simultaneous games', function() {
     let players = getPlayers(3);
     //let existing_player = players[1];
     return playGames(players, 2).then(function() {
+      players[0].to = game_numbers[0];
       return Player.get(players[0]);
     }).then(function(player) {
       return getGames(player, function(game) {
@@ -124,7 +125,9 @@ describe.only('Play', function() {
         ]);
       })).then(function(responses) {
         responses.length.should.equal(2);
+        console.log('UPDATE THIS get function to use the new way');
         return Message.get(['help-player-guessing']).then(function(message) {
+          message = message.pop();
           let first = responses[0][0];
           let second = responses[1][0];
           first.Response.Sms[0]._.should.equal(message.message);

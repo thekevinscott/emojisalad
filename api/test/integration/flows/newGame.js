@@ -18,8 +18,17 @@ function newGame(players, options) {
   return setup([
     { player: inviter, msg: rule('new-game').example() },
   ]).then(function(response) {
-    //console.log('el responso', response[0].Response.Sms[0]);
-    inviter.game_number = response[0].Response.Sms[0].$.from;
+    let to = response[0].Response.Sms[0].$.to; // the receiving user
+    let from = response[0].Response.Sms[0].$.from; // game number
+
+    // this is flipped; the response's to field
+    // is our player's from field.
+    //
+    // aka, the system sends a message TO a specific
+    // number, and that number is what we send messages
+    // FROM as a user.
+    inviter.to = from;
+    inviter.from = to;
     return Player.get(inviter);
   }).then(function(player) {
     inviter = player;

@@ -17,7 +17,12 @@ var check = function(action, expected) {
   }).filter(function(el) {
     return el;
   }).map(function(message) {
-    return Message.get([message.key], message.options);
+    let options = {};
+    options[message.key] = message.options;
+    return Message.get([message.key], options, 1).then(function(msg) {
+      return msg[0];
+    });
+    //return Message.get([message.key], message.options);
   });
   fns = fns.concat(expected_fns);
 

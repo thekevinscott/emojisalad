@@ -11,6 +11,7 @@ function playGames(players, numberOfGames, options) {
   return playGame(players, options).then(function(game) {
     numberOfGames -= 1;
     if ( numberOfGames > 0) {
+      console.log('a game has started, now onto the next one');
       return sequence(Array.from({ length: numberOfGames }).map(function() {
         return function() {
           return newGame(players);

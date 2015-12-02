@@ -282,40 +282,4 @@ describe('Guessing', function() {
       });
     });
   });
-
-  //it.only('should handle the bug I saw in production', function() {
-    //let players = getPlayers(3);
-
-    //let msg2 = 'TIME AFTER TIME';
-
-    //return playGame(players).then(function() {
-      //return setup([
-        //{ player: players[2], msg: guess + 'JURASSIC PARK' },
-        //{ player: players[1], msg: EMOJI },
-        //{ player: players[1], msg: EMOJI },
-        //{ player: players[0], msg: guess + 'planet of the apes' },
-        //{ player: players[0], msg: guess + 'space chimps' },
-        //{ player: players[2], msg: clue },
-        //{ player: players[2], msg: guess + '2001' },
-      //]);
-    //}).then(function() {
-      //let the_guess = 'foo';
-      //return check(
-        //{ player: players[2], msg: guess + the_guess },
-        //[
-          //{ to: players[0], key: 'guesses', options: [players[2].nickname, the_guess] },
-          //{ to: players[1], key: 'guesses', options: [players[2].nickname, the_guess] },
-          //{ to: players[0], key: 'round-over', options: [players[2].nickname] },
-          //{ to: players[1], key: 'round-over', options: [players[2].nickname] },
-          //{ to: players[2], key: 'round-over', options: [players[2].nickname] },
-          //{ to: players[0], key: 'game-next-round', options: [players[2].nickname] },
-          //{ to: players[1], key: 'game-next-round', options: [players[2].nickname] },
-          //{ to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, msg2] },
-        //]
-      //).then(function(obj) {
-        //obj.output.should.deep.equal(obj.expected);
-      //});
-    //});
-  //});
-
 });

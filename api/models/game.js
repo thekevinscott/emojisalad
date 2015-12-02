@@ -157,7 +157,7 @@ let Game = {
                 .select({ autoEscapeFieldNames: true })
                 .field('p.id')
                 .field('p.created')
-                .field('p.to','game_number')
+                .field('n.number', 'to')
                 .field('u.nickname')
                 .field('u.from')
                 .field('u.from', 'number')
@@ -169,6 +169,7 @@ let Game = {
                 .left_join('players', 'p', 'p.id = gp.player_id')
                 .left_join('users', 'u', 'u.id = p.user_id')
                 .left_join('player_states', 's', 's.id = p.state_id')
+                .left_join('game_numbers', 'n', 'n.id = p.to')
                 .where('g.id=?', game.id)
                 .order('p.id');
 

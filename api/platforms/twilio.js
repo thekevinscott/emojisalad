@@ -107,7 +107,7 @@ module.exports = function(req, res) {
         console.error('error tracking player', player, req);
       }
       return router(player, body, req.body.To, debug).then(function(response) {
-        return end(response, player);
+        return end(response);
       });
     }
   }).catch(function(err) {
@@ -129,11 +129,11 @@ module.exports = function(req, res) {
     res.end();
   });
 
-  function end(response, player) {
-    return Message.parse(response, player).then(function(messages) {
+  function end(response) {
+    return Message.parse(response).then(function(messages) {
       if ( process.env.ENVIRONMENT === 'test' ) {
         // this returns twiml
-        return Twilio.parse(messages, player);
+        return Twilio.parse(messages);
       } else {
         // this actually sends out sms
         return Twilio.send(messages);
