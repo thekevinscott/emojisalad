@@ -2,7 +2,8 @@
 const _ = require('lodash');
 const getPlayers = require('test/integration/lib/getPlayers');
 const playGames = require('test/integration/flows/playGames');
-//const check = require('test/integration/lib/check');
+const playGame = require('test/integration/flows/playGame');
+const check = require('test/integration/lib/check');
 const setup = require('test/integration/lib/setup');
 const rule = require('config/rule');
 const Game = require('models/game');
@@ -10,9 +11,142 @@ const Player = require('models/player');
 const Round = require('models/round');
 const Message = require('models/Message');
 
+const EMOJI = '😀';
 const game_numbers = require('../../../../../config/numbers');
 
-describe('Play', function() {
+describe.only('Play', function() {
+  describe('Existing Player', function() {
+    it('should onboard an existing user to a new pending game', function() {
+      let players = getPlayers(2);
+      return setupTwoGames(players).then(function() {
+        let firstPhrase = 'JURASSIC PARK';
+        return check(
+          { player: players[1], msg: 'yes', to: game_numbers[1] },
+          [
+            { key: 'accepted-invited', options: [players[1].nickname], to: players[0] },
+            { key: 'accepted-inviter', options: [players[1].nickname, players[0].nickname], to: players[1] },
+            { key: 'game-start', options: [players[0].nickname, firstPhrase], to: players[0] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
+    it('should onboard an existing user to a new game where the submitter has yet to submit', function() {
+      let players = getPlayers(3);
+      return setupTwoGames(players).then(function() {
+        return setup([
+          { player: players[1], msg: 'yes', to: game_numbers[1] },
+        ]);
+      }).then(function() {
+        return check(
+          { player: players[2], msg: 'yes', to: game_numbers[1] },
+          [
+            { key: 'accepted-invited', options: [players[2].nickname], to: players[0] },
+            { key: 'join-game', options: [players[2].nickname], to: players[1] },
+            { key: 'accepted-inviter', options: [players[2].nickname, players[0].nickname], to: players[2] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
+    it('should onboard an existing user to the bench of a new game', function() {
+      let players = getPlayers(3);
+      return setupTwoGames(players).then(function() {
+        return setup([
+          { player: players[1], msg: 'yes', to: game_numbers[1] },
+          { player: players[0], msg: EMOJI, to: game_numbers[1] },
+        ]);
+      }).then(function() {
+        //let firstPhrase = 'JURASSIC PARK';
+        return check(
+          { player: players[2], msg: 'yes', to: game_numbers[1] },
+          [
+            { key: 'accepted-invited-next-round', options: [players[2].nickname], to: players[0] },
+            { key: 'join-game-next-round', options: [players[2].nickname], to: players[1] },
+            { key: 'accepted-inviter-next-round', options: [players[2].nickname, players[0].nickname], to: players[2] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+  });
+
+  describe('New Player', function() {
+    it('should onboard an existing user to a new pending game', function() {
+      let players = getPlayers(2);
+      let invitee = getPlayers(4).pop();
+      return setupTwoGames(players, invitee).then(function() {
+        return setup([
+          { player: invitee, msg: 'yes', to: game_numbers[0] },
+        ]);
+      }).then(function() {
+        let firstPhrase = 'JURASSIC PARK';
+        return check(
+          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
+          [
+            { key: 'accepted-invited', options: [invitee.nickname], to: players[0] },
+            { key: 'accepted-inviter', options: [invitee.nickname, players[0].nickname], to: invitee },
+            { key: 'game-start', options: [players[0].nickname, firstPhrase], to: players[0] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
+    it('should onboard an existing user to a new game where the submitter has yet to submit', function() {
+      let players = getPlayers(2);
+      let invitee = getPlayers(4).pop();
+      return setupTwoGames(players).then(function() {
+        return setup([
+          { player: players[1], msg: 'yes', to: game_numbers[1] },
+          { player: players[0], msg: 'invite '+invitee.number, to: game_numbers[1] },
+          { player: invitee, msg: 'yes', to: game_numbers[0] },
+        ]);
+      }).then(function() {
+        return check(
+          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
+          [
+            { key: 'accepted-invited', options: [invitee.nickname], to: players[0] },
+            { key: 'join-game', options: [invitee.nickname], to: players[1] },
+            { key: 'accepted-inviter', options: [invitee.nickname, players[0].nickname], to: invitee },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
+    it('should onboard an existing user to the bench of a new game', function() {
+      let players = getPlayers(3);
+      let invitee = getPlayers(4).pop();
+      return setupTwoGames(players).then(function() {
+        return setup([
+          { player: players[0], msg: 'invite '+invitee.number, to: game_numbers[1] },
+          { player: players[1], msg: 'yes', to: game_numbers[1] },
+          { player: players[0], msg: EMOJI, to: game_numbers[1] },
+          { player: invitee, msg: 'yes', to: game_numbers[0] },
+        ]);
+      }).then(function() {
+        return check(
+          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
+          [
+            { key: 'accepted-invited-next-round', options: [invitee.nickname], to: players[0] },
+            { key: 'join-game-next-round', options: [invitee.nickname], to: players[1] },
+            { key: 'accepted-inviter-next-round', options: [invitee.nickname, players[0].nickname], to: invitee },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+  });
+
   it('should be able to submit submissions to two simultaneous games', function() {
     let players = getPlayers(3);
     //let existing_player = players[1];
@@ -197,4 +331,29 @@ function getPlayerFromGame(game, player) {
   });
 
   return players[0];
+}
+
+function setupTwoGames(players, invitee) {
+  let inviter = players[0];
+  return playGame(players).then(function() {
+    return setup([
+      { player: inviter, msg: rule('new-game').example() },
+    ]);
+  }).then(function() {
+    if ( invitee ) {
+      return setup([
+        { player: inviter, msg: 'invite '+invitee.number, to: game_numbers[1]}
+      ]);
+    } else {
+      return setup(players.slice(1).map(function(player) {
+        return { player: inviter, msg: 'invite '+player.number, to: game_numbers[1]};
+      }));
+    }
+  }).then(function() {
+    return Player.get({ from: inviter.number, to: game_numbers[1] }).then(function(gotPlayer) {
+      return Game.get({ player: gotPlayer }).then(function(game) {
+        return Game.update(game, { random : 0 });
+      });
+    });
+  });
 }

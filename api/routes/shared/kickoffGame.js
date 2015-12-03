@@ -51,7 +51,7 @@ function addPlayerToBench(game, player, input, game_number) {
           key: 'accepted-inviter-next-round',
           player: game_player,
           options: [
-            input,
+            player.nickname,
             player.inviter.nickname
           ]
         };
@@ -60,7 +60,7 @@ function addPlayerToBench(game, player, input, game_number) {
           key: 'accepted-invited-next-round',
           player: game_player,
           options: [
-            input,
+            player.nickname,
             player.inviter.nickname
           ]
         };
@@ -69,7 +69,7 @@ function addPlayerToBench(game, player, input, game_number) {
           key: 'join-game-next-round',
           player: game_player,
           options: [
-            input
+            player.nickname
           ]
         };
       }
@@ -79,7 +79,7 @@ function addPlayerToBench(game, player, input, game_number) {
 
 function addPlayerToRound(game, player, input, game_number) {
   // this means the invited player can join immediately
-  game.players.push(player);
+  //game.players.push(player);
 
   Player.update(player, {
     state: 'ready-for-game',
@@ -95,7 +95,7 @@ function addPlayerToRound(game, player, input, game_number) {
           key: 'accepted-invited',
           player: game_player,
           options: [
-            input,
+            player.nickname,
             player.inviter.nickname
           ],
         };
@@ -104,7 +104,7 @@ function addPlayerToRound(game, player, input, game_number) {
           key: 'accepted-inviter',
           player: game_player,
           options: [
-            input,
+            player.nickname,
             player.inviter.nickname
           ],
         };
@@ -113,11 +113,13 @@ function addPlayerToRound(game, player, input, game_number) {
           key: 'join-game',
           player: game_player,
           options: [
-            input
+            player.nickname
           ]
         };
       }
     });
+  }).then(function(msgs) {
+    return msgs;
   });
 }
 
@@ -136,7 +138,7 @@ var startGame = Promise.coroutine(function* (unstarted_game, player, input, game
   let invitedMessage = {
     key: 'accepted-invited',
     options: [
-      input,
+      player.nickname,
       player.inviter.nickname
     ],
     player: player.inviter
@@ -146,7 +148,7 @@ var startGame = Promise.coroutine(function* (unstarted_game, player, input, game
     player: player,
     key: 'accepted-inviter',
     options: [
-      input,
+      player.nickname,
       player.inviter.nickname
     ]
   };

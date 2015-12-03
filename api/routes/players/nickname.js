@@ -30,7 +30,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       player.user = yield User.update({ id: player.user.id }, {
         nickname: input
       });
-      player.nickname = player.user.nickname;
+      player.nickname = input;
       player.inviter = inviter;
 
       return yield kickoffGame(player, input, game_number);

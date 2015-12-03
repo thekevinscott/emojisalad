@@ -18,7 +18,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
     let invite = yield Invite.getInvite(player);
     yield Invite.use(invite);
 
-    yield kickoffGame(player, input, game_number);
+    return yield kickoffGame(player, input, game_number);
 
   } else {
     throw "WHAT HAPPENS HERE WHEN A USER REJECTS?";
