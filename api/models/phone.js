@@ -6,27 +6,27 @@ const LookupsClient = require('twilio').LookupsClient;
 const client = new LookupsClient(config.accountSid, config.authToken);
 
 let Phone = {
-  parse: function(passed_numbers) {
-    return Promise.all(passed_numbers.map(function(passed_number) {
+  parse: Promise.coroutine(function* (passed_numbers) {
+    return yield Promise.all(passed_numbers.map(function(passed_number) {
       if ( ! passed_number ) {
-        return Promise.reject(new Error(8));
+        throw new Error(8);
       } else {
         let getAsync = Promise.promisify(client.phoneNumbers(passed_number).get);
 
         return getAsync().then(function(number) {
           return number.phoneNumber;
         }).catch(function(err) {
-          // 20404 means phone number was invalid
+          // 20404 means phone number was invalid,
+          // so only show the error if it is 
+          // not that
           if ( err && err.code !== 20404 ) {
-            console.error('Error parsing Twilio number', err);
+            console.error('Twilio Error', err);
           }
           throw new Error(1);
         });
       }
-    })).then(function(results) {
-      return results;
-    });
-  }
+    }));
+  })
 };
 
 module.exports = Phone;

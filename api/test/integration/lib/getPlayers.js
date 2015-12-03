@@ -16,12 +16,15 @@ var listOfNicknames = [
   'SCHLOOOOO',
   'Dave'
 ];
+
 function getPlayers(arg) {
   var players = [];
   if ( _.isNumber(arg) ) {
     for ( var i=0;i<arg;i++ ) {
+      let number = getRandomPhone();
       players.push({
-        number: getRandomPhone(),
+        number: number,
+        from: number,
         nickname: listOfNicknames[i]+Math.random(),
         to: game_numbers.getDefault()
       });

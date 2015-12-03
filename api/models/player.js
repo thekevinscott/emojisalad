@@ -122,14 +122,13 @@ let Player = {
                   .field('p.created')
                   .field('p.blacklist')
                   .field('p.state_id')
-                  .field('p.to')
-                  //.field('i.inviter_params_id')
+                  .field('n.number','to')
                   .field('s.state', 'state')
                   .field('u.id', 'user_id')
                   .field('u.blacklist')
                   .field('u.nickname')
                   .from('players', 'p')
-                  //.left_join('invites', 'i', 'p.id = i.invited_params_id')
+                  .left_join('game_numbers','n','n.id=p.`to`')
                   .left_join('player_states', 's', 's.id = p.state_id')
                   .left_join('users', 'u', 'u.id = p.user_id')
                   .where('u.id=?', user.id);
@@ -138,7 +137,6 @@ let Player = {
         query = query.where('p.`id`=?', params.id);
       } else if ( params.to ) {
         query = query
-                .left_join('game_numbers','n','n.id=p.`to`')
                 .where('n.number=?',params.to);
       }
 

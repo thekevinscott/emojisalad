@@ -17,7 +17,6 @@ describe('Play', function() {
     let players = getPlayers(3);
     //let existing_player = players[1];
     return playGames(players, 2).then(function() {
-      players[0].to = game_numbers[0];
       return Player.get(players[0]);
     }).then(function(player) {
       return getGames(player, function(game) {
@@ -42,13 +41,8 @@ describe('Play', function() {
         ]);
       })).then(function() {
         return getGames(player, function(game) {
-          game.round.players.map(function(player) {
-            if ( player.id === player.id ) {
-              return player;
-            }
-          }).filter(function(el) {
-            return el;
-          }).pop().guesses.should.equal(1);
+          let game_player = getPlayerFromGame(game, player);
+          game_player.guesses.should.equal(1);
 
           return game.id;
         });
@@ -72,14 +66,8 @@ describe('Play', function() {
         ]);
       })).then(function() {
         return getGames(player, function(game) {
-          game.round.players.map(function(player) {
-            if ( player.id === player.id ) {
-              return player;
-            }
-          }).filter(function(el) {
-            return el;
-          }).pop().state.should.equal('lost');
-
+          let game_player = getPlayerFromGame(game, player);
+          game_player.state.should.equal('lost');
           return game.id;
         });
       });
@@ -125,7 +113,6 @@ describe('Play', function() {
         ]);
       })).then(function(responses) {
         responses.length.should.equal(2);
-        console.log('UPDATE THIS get function to use the new way');
         return Message.get(['help-player-guessing']).then(function(message) {
           message = message.pop();
           let first = responses[0][0];
@@ -163,9 +150,9 @@ describe('Play', function() {
       ]).then(function() {
         return getGames(player, function(game) {
           let matching_player;
-          game.players.map(function(player) {
-            if ( player.id === player.id ) {
-              matching_player = player;
+          game.players.map(function(game_player) {
+            if ( game_player.user_id === player.user_id ) {
+              matching_player = game_player;
             }
           });
           return matching_player;
@@ -180,11 +167,34 @@ describe('Play', function() {
 
 });
 
-function getGames(player, fn) {
+function getGames(player_object, fn) {
   return Promise.all(game_numbers.map(function(game_number) {
-    player.game_number = game_number;
-    return Game.get({ player: player }).then(function(game) {
-      return fn(game);
+    let player_params = {
+      to: game_number,
+      from: player_object.from
+    };
+    return Player.get(player_params).then(function(player) {
+      return Game.get({ player: player }).then(function(game) {
+        return fn(game);
+      });
     });
   }));
+}
+
+function getPlayerFromGame(game, player) {
+  let user = {
+    id: player.user_id,
+    number: player.number,
+    from: player.from
+  };
+
+  let players = game.round.players.map(function(game_player) {
+    if ( user.id === game_player.user_id ) {
+      return game_player;
+    }
+  }).filter(function(el) {
+    return el;
+  });
+
+  return players[0];
 }

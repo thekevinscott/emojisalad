@@ -177,11 +177,11 @@ let Game = {
       let guesses = squel
                     .select()
                     .field('player_id')
-                    .field('COALESCE(count(1), 0) as guesses')
+                    .field('count(1) as guesses')
                     .from('guesses')
                     .where('round_id=?',game.round.id);
       query = query.left_join(guesses, 'e', 'e.player_id=p.id');
-      query = query.field('e.guesses');
+      query = query.field('COALESCE(e.guesses, 0) as guesses');
     }
 
     return db.query(query);

@@ -37,6 +37,7 @@ const debug = false;
 module.exports = function(req, res) {
   if ( debug ) {
     console.log('\n================twilio=================\n');
+    console.log(req.body.From, req.body.Body, req.body.To);
     //console.log('req headers from twilio', req.headers.host);
   }
   res.writeHead(200, {'Content-Type': 'text/xml'});
@@ -91,6 +92,7 @@ module.exports = function(req, res) {
     } else {
       if ( debug ) {
         console.log([
+          player.id,
           player.nickname,
           req.body.From,
           req.body.Body,

@@ -1,15 +1,17 @@
 'use strict';
-var getGame = require('./getGame');
-var Game = require('models/Game');
+const getGame = require('./getGame');
+const Game = require('models/Game');
+const Promise = require('bluebird');
 
-var setNonRandomGame = function(player) {
-  //console.log('in set non random game, player', player);
-  return getGame(player).then(function(game) {
-    //console.log('game', game);
-    return Game.update(game, { random: 0 }).then(function() {
-      return game;
-    });
-  });
-};
+let setNonRandomGame = Promise.coroutine(function* (player) {
+  let game = yield getGame(player);
+  if ( ! game || ! game.id ) {
+    console.error(player);
+    console.error(game);
+    throw "There is no game ID";
+  }
+  yield Game.update(game, { random: 0 });
+  return game;
+});
 
 module.exports = setNonRandomGame;
