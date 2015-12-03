@@ -14,7 +14,7 @@ const Message = require('models/Message');
 const EMOJI = '😀';
 const game_numbers = require('../../../../../config/numbers');
 
-describe.only('Play', function() {
+describe('Play', function() {
   describe('Existing Player', function() {
     it('should onboard an existing user to a new pending game', function() {
       let players = getPlayers(2);
