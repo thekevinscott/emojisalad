@@ -8,9 +8,12 @@ function getDayAgo() {
 }
 
 function checkGames() {
+  console.log('check games');
   // get a list of games with no activity for at least 24 hours.
   Game.get({ last_activity: getDayAgo() }).then(function(games) {
+    console.log('there are', games.length, ' with no activity');
     games.map(function(game) {
+      console.log('game', game);
       // if there's no game round, probably an error
       if ( game.round ) {
         if ( game.round.state === 'waiting-for-submission' ) {

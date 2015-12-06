@@ -48,6 +48,7 @@ describe('Game', function() {
         '©',
         '®',
         '8️⃣',
+        '🗣'
       ];
 
       it('should check all emoji', function() {
