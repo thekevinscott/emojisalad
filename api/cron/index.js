@@ -15,4 +15,3 @@ let job = Promise.coroutine(function* () {
   return Twilio.send(messages);
 });
 crontab.scheduleJob(time, job);
-});
