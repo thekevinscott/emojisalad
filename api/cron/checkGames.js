@@ -1,5 +1,6 @@
 'use strict';
 const Game = require('models/game');
+const Promise = require('bluebird');
 
 function getDayAgo() {
   const day_ago = new Date();
@@ -7,30 +8,35 @@ function getDayAgo() {
   return day_ago;
 }
 
-function checkGames() {
+var checkGames = Promise.coroutine(function* () {
   console.log('check games');
+
+  try {
   // get a list of games with no activity for at least 24 hours.
-  Game.get({ last_activity: getDayAgo() }).then(function(games) {
-    console.log('there are', games.length, ' with no activity');
-    games.map(function(game) {
-      console.log('game', game);
-      // if there's no game round, probably an error
-      if ( game.round ) {
-        if ( game.round.state === 'waiting-for-submission' ) {
-          sendAlert('waiting-for-submission', [game.round.submitter]);
-        } else if ( game.round.state === 'playing' ) {
-          sendAlert('playing', game.players);
-        } else {
-          console.log('No correct round state, how odd');
-          console.log(game);
-        }
+  let games = yield Game.get({ last_activity: getDayAgo() });
+  } catch(err) {
+    console.error('error', err);
+  }
+  
+  console.log('there are', games.length, ' with no activity');
+  return games.map(function(game) {
+    console.log('game', game);
+    // if there's no game round, probably an error
+    if ( game.round ) {
+      if ( game.round.state === 'waiting-for-submission' ) {
+        return sendAlert('waiting-for-submission', [game.round.submitter]);
+      } else if ( game.round.state === 'playing' ) {
+        return sendAlert('playing', game.players);
       } else {
-        console.log('No Game round, how odd');
+        console.log('No correct round state, how odd');
         console.log(game);
       }
-    });
+    } else {
+      console.log('No Game round, how odd');
+      console.log(game);
+    }
   });
-}
+});
 
 function sendAlert(key, players) {
   if ( key === 'waiting-for-submission' ) {
