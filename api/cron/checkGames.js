@@ -9,12 +9,16 @@ function getDayAgo() {
 }
 
 var checkGames = Promise.coroutine(function* () {
+  let games;
   console.log('check games');
 
   try {
+    console.log('begin the try');
   // get a list of games with no activity for at least 24 hours.
-  let games = yield Game.get({ last_activity: getDayAgo() });
+  games = yield Game.get({ last_activity: getDayAgo() });
+  console.log('end of the try');
   } catch(err) {
+  console.log('err', err);
     console.error('error', err);
   }
   
