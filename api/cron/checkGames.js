@@ -24,6 +24,7 @@ var checkGames = Promise.coroutine(function* () {
     console.debug('game', game);
     // if there's no game round, probably an error
     if ( game.round ) {
+      return sendAlert('bump', game.players);
       if ( game.round.state === 'waiting-for-submission' ) {
         return sendAlert('waiting-for-submission', [game.round.submitter]);
       } else if ( game.round.state === 'playing' ) {
@@ -39,15 +40,26 @@ var checkGames = Promise.coroutine(function* () {
   });
 });
 
-function sendAlert(key, players) {
-  if ( key === 'waiting-for-submission' ) {
-    console.debug('waiting for submission key');
-  } else if ( key === 'playing' ) {
-    console.debug('playign key');
-  }
-
-  players.map(function(player) {
-    console.debug('send', key, 'to player', player.nickname);
+function sendAlert(key, game_players) {
+  return game_players.map(function(game_player) {
+    console.debug('send', key, 'to player', game_player.nickname);
+    return {
+      player: game_player,
+      key: says,
+      options: [
+        'Emojibot',
+        'The time is: ' + new Date()
+      ]
+    };
+    //if ( key === 'waiting-for-submission' ) {
+      //return {
+        //player: game_player,
+        //key: 
+      //};
+      //console.debug('waiting for submission key');
+    //} else if ( key === 'playing' ) {
+      //console.debug('playign key');
+    //}
   });
 }
 
