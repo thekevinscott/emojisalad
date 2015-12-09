@@ -187,6 +187,33 @@ let Game = {
     return db.query(query);
   },
   get: Promise.coroutine(function* (params) {
+    let games = yield this.getAll(params);
+    if ( games.length ) {
+      let game = games[0];
+      game.round = yield Round.getLast(game);
+      game.players = yield this.getPlayers(game);
+
+      if ( game.round ) {
+        console.debug('game round exists');
+        game.players.map(function(game_player) {
+          if ( game_player.id === game.round.submitter_id ) {
+            game.round.submitter = game_player;
+          } else {
+            if ( ! game.round.players ) { game.round.players = []; }
+            game.round.players.push(game_player);
+          }
+        });
+      } else if ( game.state !== 'pending' ) {
+        console.error(game);
+        throw "Non pending games should have an associated round";
+      }
+      console.debug('game returned', game);
+      return game;
+    } else {
+      return null;
+    }
+  }),
+  getAll: Promise.coroutine(function* (params) {
     let query = squel
                 .select()
                 .field('g.id')
@@ -213,32 +240,9 @@ let Game = {
     console.debug('params', params);
     console.debug(query.toString());
 
-    let rows = yield db.query(query.toString());
-    console.debug('games', rows);
-    if ( rows.length ) {
-      let game = rows[0];
-      game.round = yield Round.getLast(game);
-      game.players = yield this.getPlayers(game);
-
-      if ( game.round ) {
-        console.debug('game round exists');
-        game.players.map(function(game_player) {
-          if ( game_player.id === game.round.submitter_id ) {
-            game.round.submitter = game_player;
-          } else {
-            if ( ! game.round.players ) { game.round.players = []; }
-            game.round.players.push(game_player);
-          }
-        });
-      } else if ( game.state !== 'pending' ) {
-        console.error(game);
-        throw "Non pending games should have an associated round";
-      }
-      console.debug('game returned', game);
-      return game;
-    } else {
-      return null;
-    }
+    let games = yield db.query(query.toString());
+    console.debug('games', games);
+    return games;
   }),
   start: Promise.coroutine(function* (game) {
     return yield Promise.join(
