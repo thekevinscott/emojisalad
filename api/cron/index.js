@@ -12,11 +12,11 @@ let job = Promise.coroutine(function* () {
   console.debug('The time is ', new Date());
   let game_responses = yield checkGames();
   console.debug('response', game_responses);
-  return game_responses.map(function(response) {
+  return game_responses.map(Promise.coroutine(function* (response) {
     let messages = yield Message.parse(response)
     console.debug('messages', messages);
     return Twilio.send(messages);
-  });
+  }));
   } catch(err) {
     console.debug('error with cron job', err);
     console.error('error with cron job', err);
