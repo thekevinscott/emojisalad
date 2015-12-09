@@ -13,10 +13,12 @@ console.debug = function() {
   }
 };
 pmx.action('debug:on', function(reply) {
+  console.log('debug is on');
   DEBUG = true;
   reply({DEBUG : DEBUG});
 });
 pmx.action('debug:off', function(reply) {
+  console.log('debug is off');
   DEBUG = false;
   reply({DEBUG : DEBUG});
 });
