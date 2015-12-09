@@ -43,23 +43,22 @@ var checkGames = Promise.coroutine(function* () {
 function sendAlert(key, game_players) {
   return game_players.map(function(game_player) {
     console.debug('send', key, 'to player', game_player.nickname);
-    return {
-      player: game_player,
-      key: says,
-      options: [
-        'Emojibot',
-        'The time is: ' + new Date()
-      ]
-    };
-    //if ( key === 'waiting-for-submission' ) {
+    if ( key === 'bump' ) {
+      return {
+        player: game_player,
+        key: says,
+        options: [
+          'Emojibot',
+          'The time is: ' + new Date()
+        ]
+      };
+    } else if ( key === 'waiting-for-submission' ) {
       //return {
         //player: game_player,
-        //key: 
+        //key 
       //};
-      //console.debug('waiting for submission key');
-    //} else if ( key === 'playing' ) {
-      //console.debug('playign key');
-    //}
+    } else if ( key === 'playing' ) {
+    }
   });
 }
 
