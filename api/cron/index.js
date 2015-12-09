@@ -4,10 +4,10 @@ const Message = require('models/message');
 const Twilio = require('models/twilio');
 const Promise = require('bluebird');
 
-const time = '00 00 12 * * *';
+const time = '00 00 * * * *';
 const checkGames = require('./checkGames');
 let job = Promise.coroutine(function* () {
-  console.log('The time is 12 o clock');
+  console.log('The time is ', new Date());
   let response = yield checkGames();
   console.log('response', response);
   let messages = yield Message.parse(response)
