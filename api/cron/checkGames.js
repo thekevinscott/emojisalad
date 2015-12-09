@@ -17,6 +17,7 @@ var checkGames = Promise.coroutine(function* () {
   // or associated players. Those are all pretty heavy queries.
   //games = yield Game.getAll({ last_activity: getDayAgo() });
   games = yield Game.get({ id: 73 }); // get kevin's game
+  games = [games];
   
   console.debug('there are', games.length, 'games with no activity');
   return games.map(function(game) {
