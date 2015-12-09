@@ -10,19 +10,17 @@ function getDayAgo() {
 
 var checkGames = Promise.coroutine(function* () {
   let games;
-  console.log('check games');
 
-  try {
-    // get a list of games with no activity for at least 24 hours.
-    //games = yield Game.getAll({ last_activity: getDayAgo() });
-    games = yield Game.getAll({ id: 73 }); // get kevin's game
-  } catch(err) {
-    console.error('error', err);
-  }
+  // get a list of games with no activity for at least 24 hours.
+  // THIS DOESNT WORK BECAUSE
+  // games returned via all don't include associated rounds,
+  // or associated players. Those are all pretty heavy queries.
+  //games = yield Game.getAll({ last_activity: getDayAgo() });
+  games = yield Game.get({ id: 73 }); // get kevin's game
   
-  console.log('there are', games.length, 'games with no activity');
+  console.debug('there are', games.length, 'games with no activity');
   return games.map(function(game) {
-    console.log('game', game);
+    console.debug('game', game);
     // if there's no game round, probably an error
     if ( game.round ) {
       if ( game.round.state === 'waiting-for-submission' ) {
@@ -30,25 +28,25 @@ var checkGames = Promise.coroutine(function* () {
       } else if ( game.round.state === 'playing' ) {
         return sendAlert('playing', game.players);
       } else {
-        console.log('No correct round state, how odd');
-        console.log(game);
+        console.debug('No correct round state, how odd');
+        console.debug(game);
       }
     } else {
-      console.log('No Game round, how odd');
-      console.log(game);
+      console.debug('No Game round, how odd');
+      console.debug(game);
     }
   });
 });
 
 function sendAlert(key, players) {
   if ( key === 'waiting-for-submission' ) {
-    console.log('waiting for submission key');
+    console.debug('waiting for submission key');
   } else if ( key === 'playing' ) {
-    console.log('playign key');
+    console.debug('playign key');
   }
 
   players.map(function(player) {
-    console.log('send', key, 'to player', player.nickname);
+    console.debug('send', key, 'to player', player.nickname);
   });
 }
 
