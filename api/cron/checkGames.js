@@ -13,16 +13,13 @@ var checkGames = Promise.coroutine(function* () {
   console.log('check games');
 
   try {
-    console.log('begin the try');
-  // get a list of games with no activity for at least 24 hours.
-  games = yield Game.get({ last_activity: getDayAgo() });
-  console.log('end of the try');
+    // get a list of games with no activity for at least 24 hours.
+    games = yield Game.get({ last_activity: getDayAgo() });
   } catch(err) {
-  console.log('err', err);
     console.error('error', err);
   }
   
-  console.log('there are', games.length, ' with no activity');
+  console.log('there are', games.length, 'games with no activity');
   return games.map(function(game) {
     console.log('game', game);
     // if there's no game round, probably an error

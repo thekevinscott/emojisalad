@@ -214,12 +214,14 @@ let Game = {
     console.debug(query.toString());
 
     let rows = yield db.query(query.toString());
+    console.debug('games', rows);
     if ( rows.length ) {
       let game = rows[0];
       game.round = yield Round.getLast(game);
       game.players = yield this.getPlayers(game);
 
       if ( game.round ) {
+        console.debug('game round exists');
         game.players.map(function(game_player) {
           if ( game_player.id === game.round.submitter_id ) {
             game.round.submitter = game_player;
@@ -232,6 +234,7 @@ let Game = {
         console.error(game);
         throw "Non pending games should have an associated round";
       }
+      console.debug('game returned', game);
       return game;
     } else {
       return null;
