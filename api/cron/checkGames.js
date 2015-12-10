@@ -46,7 +46,7 @@ function sendAlert(key, game_players) {
     if ( key === 'bump' ) {
       return {
         player: game_player,
-        key: says,
+        key: 'says',
         options: [
           'Emojibot',
           'The time is: ' + new Date()
