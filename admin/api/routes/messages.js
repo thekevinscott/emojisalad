@@ -17,10 +17,12 @@ module.exports = function(app) {
   app.post('/api/messages', function(req, res) {
     var key = req.body.key;
     var message = req.body.message;
+    var name = req.body.name;
     var query = squel
         .insert()
         .into('messages')
         .set('message', message)
+        .set('name', name)
         .set('key', key);
 
     db.query(query).then(function() {
