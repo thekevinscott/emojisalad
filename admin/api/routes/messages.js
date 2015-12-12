@@ -19,7 +19,7 @@ module.exports = function(app) {
     var message = req.body.message;
     var name = req.body.name;
     var query = squel
-        .insert()
+        .insert({ autoEscapeFieldNames: true })
         .into('messages')
         .set('message', message)
         .set('name', name)
