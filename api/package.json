@@ -11,6 +11,7 @@
   "dependencies": {
     "app-module-path": "^1.0.4",
     "auto-loader": "^0.2.0",
+    "autosuggest": "git+ssh://git@bitbucket.org/thekevinscott/autosuggest.git",
     "babel": "^5.8.23",
     "bluebird": "^2.9.34",
     "body-parser": "^1.13.3",
@@ -19,6 +20,7 @@
     "emoji-exists": "^0.0.2",
     "express": "^4.13.3",
     "gulp-nodemon": "^2.0.3",
+    "levenshtein": "^1.0.5",
     "lodash": "^3.10.1",
     "mixpanel": "^0.3.1",
     "mysql": "^2.8.0",

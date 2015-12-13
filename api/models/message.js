@@ -33,7 +33,11 @@ let Message = {
       // }
       return messages.map(function(obj) {
         if ( options[obj.key] ) {
-          obj.message = sprintf.apply(null, [obj.message].concat(options[obj.key]));
+          if ( _.isArray(options[obj.key]) ) {
+            obj.message = sprintf.apply(null, [obj.message].concat(options[obj.key]));
+          } else {
+            obj.message = sprintf(obj.message, { game: { round: {submitter: {nickname: 'foobar'} } } });
+          }
         }
         return obj;
       });

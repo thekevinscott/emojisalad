@@ -20,7 +20,10 @@ function getGame(key) {
       return [{
         player: player,
         key: key,
-        options: [ game.round.submitter.nickname ]
+        options: {
+          game: game
+        }
+        //options: [ game.round.submitter.nickname ]
       }];
     });
   };
