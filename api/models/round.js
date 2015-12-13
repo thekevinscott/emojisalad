@@ -89,12 +89,16 @@ var Round = {
     }
 
     if ( ! result ) {
-      // finally, ping google and see what they say about this phrase
-      // only check the first result though.
-      let suggested_results = yield autosuggest(guess);
-      if ( suggested_results.length ) {
-        let top_result = suggested_results[0].result;
-        result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(top_result));
+      try {
+        // finally, ping google and see what they say about this phrase
+        // only check the first result though.
+        let suggested_results = yield autosuggest(guess);
+        if ( suggested_results.length ) {
+          let top_result = suggested_results[0].result;
+          result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(top_result));
+        }
+      } catch (err) {
+        console.error('google choked', err);
       }
     }
 
