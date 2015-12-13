@@ -26,7 +26,7 @@ require('./help');
 require('./pass');
 
 // tests that scoring works correctly
-require('./score');
+//require('./score');
 
 // tests for multiple games
 require('./multiple');

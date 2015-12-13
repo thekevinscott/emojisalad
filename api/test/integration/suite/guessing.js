@@ -5,6 +5,7 @@
  */
 
 const Game = require('../../../models/game');
+const Player = require('../../../models/player');
 const getPlayers = require('../lib/getPlayers');
 const playGame = require('../flows/playGame');
 const setup = require('../lib/setup');
@@ -129,8 +130,8 @@ describe('Guessing', function() {
         return setup([
           { player: players[2], msg: guess + game.round.phrase },
         ]).then(function() {
-          return Game.updateDefaultScores(game, defaults).then(function() {
-            return game;
+          return Player.get(players[2]).then(function(player) {
+            return Game.get({ player: player });
           });
         });
       }).then(function(game) {
@@ -166,8 +167,8 @@ describe('Guessing', function() {
         return setup([
           { player: players[2], msg: guess + game.round.phrase },
         ]).then(function() {
-          return Game.updateDefaultScores(game, defaults).then(function() {
-            return game;
+          return Player.get(players[1]).then(function(player) {
+            return Game.get({ player: player });
           });
         });
       }).then(function(game) {
@@ -195,26 +196,55 @@ describe('Guessing', function() {
     });
   });
 
-  it('should be notified on an incorrect guess', function() {
-    let players = getPlayers(3);
+  describe('Incorrect', function() {
+    it('should be notified on an incorrect guess', function() {
+      let players = getPlayers(3);
 
-    return playGame(players).then(function() {
+      return playGame(players).then(function() {
+        let the_guess = 'foo';
+        return check(
+          { player: players[1], msg: guess + the_guess},
+          [
+            { to: players[0], key: 'guesses', options: [players[1].nickname, the_guess] },
+            { to: players[2], key: 'guesses', options: [players[1].nickname, the_guess] },
+            { to: players[0], key: 'incorrect-guess', options: [players[1].nickname] },
+            { to: players[1], key: 'incorrect-guess', options: [players[1].nickname] },
+            { to: players[2], key: 'incorrect-guess', options: [players[1].nickname] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
+    it('should let people guess as many times as they want', function() {
+      let players = getPlayers(3);
+
       let the_guess = 'foo';
-      return check(
-        { player: players[1], msg: guess + the_guess},
-        [
-          { to: players[0], key: 'guesses', options: [players[1].nickname, the_guess] },
-          { to: players[2], key: 'guesses', options: [players[1].nickname, the_guess] },
-          { to: players[0], key: 'incorrect-guess', options: [players[1].nickname] },
-          { to: players[1], key: 'incorrect-guess', options: [players[1].nickname] },
-          { to: players[2], key: 'incorrect-guess', options: [players[1].nickname] },
-        ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
+      return playGame(players).then(function() {
+        return setup([
+          { player: players[1], msg: guess + the_guess},
+          { player: players[1], msg: guess + the_guess},
+          { player: players[1], msg: guess + the_guess},
+        ]);
+      }).then(function() {
+        return check(
+          { player: players[1], msg: guess + the_guess},
+          [
+            { to: players[0], key: 'guesses', options: [players[1].nickname, the_guess] },
+            { to: players[2], key: 'guesses', options: [players[1].nickname, the_guess] },
+            { to: players[0], key: 'incorrect-guess', options: [players[1].nickname] },
+            { to: players[1], key: 'incorrect-guess', options: [players[1].nickname] },
+            { to: players[2], key: 'incorrect-guess', options: [players[1].nickname] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
       });
     });
   });
 
+  /*
   it('should send a sad message when you run out of guesses', function() {
     let players = getPlayers(3);
 
@@ -389,4 +419,5 @@ describe('Guessing', function() {
       });
     });
   });
+  */
 });
