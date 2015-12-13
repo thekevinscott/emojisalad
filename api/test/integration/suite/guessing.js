@@ -5,6 +5,7 @@
  */
 
 const Game = require('../../../models/game');
+const Player = require('../../../models/player');
 const getPlayers = require('../lib/getPlayers');
 const playGame = require('../flows/playGame');
 const setup = require('../lib/setup');
@@ -129,8 +130,8 @@ describe('Guessing', function() {
         return setup([
           { player: players[2], msg: guess + game.round.phrase },
         ]).then(function() {
-          return Game.updateDefaultScores(game, defaults).then(function() {
-            return game;
+          return Player.get(players[2]).then(function(player) {
+            return Game.get({ player: player });
           });
         });
       }).then(function(game) {
@@ -166,8 +167,8 @@ describe('Guessing', function() {
         return setup([
           { player: players[2], msg: guess + game.round.phrase },
         ]).then(function() {
-          return Game.updateDefaultScores(game, defaults).then(function() {
-            return game;
+          return Player.get(players[1]).then(function(player) {
+            return Game.get({ player: player });
           });
         });
       }).then(function(game) {
