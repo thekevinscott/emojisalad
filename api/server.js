@@ -40,7 +40,10 @@ app.get('/test', function(req, res) {
 });
 
 // this handles all replies
-app.post('/platform/:platform', require('./platforms/'));
+app.post('/platform/:platform', function(req, res) {
+  req.debug = DEBUG;
+  return require('./platforms/')(req, res);
+});
 
 require('./cron');
 

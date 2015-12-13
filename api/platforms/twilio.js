@@ -33,8 +33,11 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const track = require('tracking');
-const debug = true;
+let debug = false;
 module.exports = function(req, res) {
+  if ( req.debug ) {
+    debug = req.debug;
+  }
   if ( debug ) {
     console.log('\n================twilio=================\n');
     console.log(req.body.From, req.body.Body, req.body.To);

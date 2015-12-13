@@ -82,7 +82,7 @@ describe('Help', function() {
         return check(
           { player: players[2], msg: help, to: game_number },
           [
-            { to: players[2], key: 'help-player-ready-for-game', options: [game.round.submitter.nickname] },
+            { to: players[2], key: 'help-player-ready-for-game', options: { game: game }},
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -120,7 +120,7 @@ describe('Help', function() {
         return check(
           { player: players[2], msg: help, to: game_number },
           [
-            { to: players[2], key: 'help-player-waiting-for-round', options: [game.round.submitter.nickname] },
+            { to: players[2], key: 'help-player-waiting-for-round', options: { game: game } },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);

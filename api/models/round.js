@@ -62,10 +62,17 @@ var Round = {
                 .select()
                 .from('phrases')
                 .where('id=?', game.round.phrase_id);
+
+    function parsePhrase(phrase) {
+      let p = phrase.split(' ').filter(function(word) {
+        return ['the', 'of', 'a', 'an'].indexOf(word.toLowerCase()) === -1;
+      }).join(' ');
+      return p;
+    }
                         
     return db.query(query.toString()).then(function(phrases) {
       const phrase = phrases[0].phrase;
-      const result = rule('phrase', {phrase: phrase}).test(guess);
+      const result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
 
       // we save the guess
       let guessQuery = squel
