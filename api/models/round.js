@@ -3,6 +3,7 @@ const squel = require('squel');
 const Promise = require('bluebird');
 const db = require('db');
 const rule = require('config/rule');
+const levenshtein = require('levenshtein');
 
 const Player = require('./player');
 var Game;
@@ -72,7 +73,18 @@ var Round = {
                         
     return db.query(query.toString()).then(function(phrases) {
       const phrase = phrases[0].phrase;
-      const result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
+      let result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
+
+      // check levenshtein as well, in case there's typos
+      // but we limit it to a phrase of 5 characters or more.
+      // cause anything shorter, typos are tough shit.
+      if ( ! result && phrase.length > 5 ) {
+        const distance = levenshtein(phrase, guess) / phrase.length;
+        // accept it if its lower than a certain difference.
+        if ( distance < .15 ) {
+          result = true;
+        }
+      }
 
       // we save the guess
       let guessQuery = squel

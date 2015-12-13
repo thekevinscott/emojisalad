@@ -102,12 +102,12 @@ describe('Guessing', function() {
         updates[players[1].nickname] = defaults['win-guesser-1'];
         updates[players[0].nickname] = defaults['win-submitter-1'];
         let score = getScore(game, updates);
-        let the_guess = 'SILENCE OF THE LAMB';
+        let the_guess = 'JURASIC PARK';
         return check(
           { player: players[1], msg: guess + the_guess },
           [
-            { to: players[0],key: 'guesses', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
-            { to: players[2],key: 'guesses', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
+            { to: players[0],key: 'guesses', options: [players[1].nickname, the_guess] },
+            { to: players[2],key: 'guesses', options: [players[1].nickname, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[1].nickname, score] },
             { to: players[1], key: 'correct-guess', options: [players[1].nickname, score] },
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, score] },
