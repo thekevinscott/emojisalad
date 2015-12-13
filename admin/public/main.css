@@ -12,6 +12,18 @@ body {
   background: #eee;
   font-family: sans-serif;
 }
+.new-message-input label {
+  display: block;
+}
+.new-message-input input {
+  width: 100%;
+}
+.new-message-input textarea {
+  width: 100%;
+}
+.new-message-input button {
+  display: block;
+}
 a {
   text-decoration: underline;
   cursor: pointer;

@@ -9,6 +9,20 @@ import { Base } from './base';
 export var Messages = React.createClass({
   mixins: [Base], // Use the mixin
   url: '/api/messages',
+  NewMessage: function(message, e) {
+    var key = document.getElementById('key-input').value;
+    var newName = document.getElementById('name-input').value; //FIGURE THIS OUT.
+    var message = document.getElementById('message-input').value;
+    reqwest({
+      url: this.url,
+      method: 'post',
+      data: {
+        key: key,
+        message: message
+      }
+    })
+  }
+  ,
   save: function(message, e) {
     var val = e.target.parentNode.parentNode.getElementsByTagName('textarea')[0].value;
     message.saving = true;
@@ -42,12 +56,45 @@ export var Messages = React.createClass({
           save = <p>saving...</p>;
         } else {
           save = <a onClick={this.save.bind(this, message)}>Save</a>;
-        }
+        } 
         return (
-          <tr><td>{message.key}</td><td className="full"><textarea>{message.message}</textarea></td><td>{save}</td></tr>
+          <tr>
+            <td>{message.key}</td>
+            <td>{message.name}</td>
+            {/* <td>{message.state}</td> */}
+            <td className="full">
+              <textarea>{message.message}</textarea>
+            </td>
+            <td>{message.versions}</td>
+            <td>{save}</td>
+          </tr>
         );
       }.bind(this));
-      content = (<table><thead><tr><td>Key</td><td>Message</td><td>Save</td></tr></thead>{messages}</table>);
+      var entry = (
+        <div className='new-message-input'>
+          <label for='key-input'>Key</label>
+          <input type='text' id='key-input'></input>
+          <label for='name-input'>Name</label>
+          <input type='text' id='name-input'></input>
+          <label for='message-input'>Message</label>
+          <textarea id='message-input'></textarea>
+          <button id='submit-message' onClick={this.NewMessage}>Submit Message</button>
+        </div>);
+      content = (
+        <div>{entry}
+        <table>
+          <thead>
+            <tr>
+              <td>Key</td>
+              <td>Name</td>
+              {/* <td>Game state</td> */}
+              <td>Message</td>
+              <td>Versions</td>
+              <td>Save</td>
+            </tr>
+          </thead>
+          {messages}
+        </table></div>);
     }
     return (
       <div className="players page">
