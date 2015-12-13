@@ -66,7 +66,7 @@ var Round = {
                 .where('id=?', game.round.phrase_id);
 
     function parsePhrase(phrase) {
-      let p = phrase.split(' ').replace(/['"]/ig, '').filter(function(word) {
+      let p = phrase.replace(/['"]/ig, '').split(' ').filter(function(word) {
         return ['the', 'of', 'a', 'an'].indexOf(word.toLowerCase()) === -1;
       }).join(' ');
       return p;

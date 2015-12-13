@@ -88,7 +88,7 @@ describe('Game', function() {
   });
 
   describe('Player order', function() {
-    it('should loop back to first player in the third round of a two person game', function() {
+    it.only('should loop back to first player in the third round of a two person game', function() {
       var players = getPlayers(2);
 
       return playGame(players).then(function(game) {
