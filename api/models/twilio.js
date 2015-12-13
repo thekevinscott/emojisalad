@@ -40,7 +40,7 @@ module.exports = {
           output.message += '\n'+response.message;
         }
         return output;
-      }, {});
+      }, null);
     });
 
     console.log('new responses', newResponses);
