@@ -34,11 +34,17 @@ module.exports = {
     console.log('players', players);
     let newResponses = Object.keys(players).map(function(player_id) {
       return players[player_id].reduce(function(output, response) {
-        return response;
+        if (! output) {
+          output = response;
+        } else {
+          output.message += '\n'+response.message;
+        }
+        return output;
       }, {});
     });
+
     console.log('new responses', newResponses);
-    return Promise.reduce(responses, function(output, response) {
+    return Promise.reduce(newResponses, function(output, response) {
       // add 1000 to the sending time. Twilio limits
       // outgoing messages to 1 per second anyways,
       // so we can't actually do anything faster than this.
