@@ -35,12 +35,19 @@ module.exports = {
     let newResponses = Object.keys(players).map(function(player_id) {
       return players[player_id].reduce(function(output, response) {
         if (! output) {
-          output = response;
+          output = {
+            to: response.to,
+            from: response.from,
+            message: [response.message]
+          };
         } else {
-          output.message += '\n'+response.message;
+          output.message.push(response.message);
         }
         return output;
-      }, null);
+      });
+    }).map(function(response) {
+      response.message = response.message.join('\n');
+      return response;
     });
 
     console.log('new responses', newResponses);
