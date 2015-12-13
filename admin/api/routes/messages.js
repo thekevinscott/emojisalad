@@ -23,15 +23,23 @@ module.exports = function(app) {
         .into('messages')
         .set('message', message)
         .set('name', name)
-        .set('key', key);
+        .set('`key`', key);
 
-    db.query(query).then(function() {
-      var query = squel
-          .select()
-          .from('messages');
-      return db.query(query).then(function(rows) {
-        res.json(rows);
+    db.query(query).then(function(row) {
+      res.json({
+        id: row.insertId,
+        name: name,
+        message: message,
+        key: key
+
       });
+
+      // var query = squel
+      //     .select()
+      //     .from('messages');
+      // return db.query(query).then(function(rows) {
+      //   res.json(rows);
+      // });
     }).catch(function(err) {
       res.json({error: err});
     });
@@ -55,7 +63,8 @@ module.exports = function(app) {
   app.get('/api/messages', function(req, res) {
     var query = squel
         .select()
-        .from('messages');
+        .from('messages')
+        .order('id',true);
     db.query(query).then(function(rows) {
       res.json(rows);
     }).catch(function(err) {
