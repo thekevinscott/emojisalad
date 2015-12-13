@@ -50,8 +50,8 @@ module.exports = {
       return response;
     });
 
-    console.log('new responses', newResponses);
-    return Promise.reduce(responses, function(output, response) {
+    //console.log('new responses', newResponses);
+    return Promise.reduce(newResponses, function(output, response) {
       // add 1000 to the sending time. Twilio limits
       // outgoing messages to 1 per second anyways,
       // so we can't actually do anything faster than this.
