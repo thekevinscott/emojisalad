@@ -12,8 +12,12 @@ body {
   background: #eee;
   font-family: sans-serif;
 }
+.new-message-input details {
+  cursor: pointer;
+}
 .new-message-input label {
   display: block;
+  padding-top: 10px;
 }
 .new-message-input input {
   width: 100%;
@@ -23,6 +27,8 @@ body {
 }
 .new-message-input button {
   display: block;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 a {
   text-decoration: underline;

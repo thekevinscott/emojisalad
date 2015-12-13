@@ -10,6 +10,9 @@ export var Messages = React.createClass({
   mixins: [Base], // Use the mixin
   url: '/api/messages',
   NewMessage: function(message, e) {
+    this.setState({
+      adding: true
+    });
     var key = document.getElementById('key-input').value;
     var newName = document.getElementById('name-input').value; //FIGURE THIS OUT.
     var message = document.getElementById('message-input').value;
@@ -20,7 +23,19 @@ export var Messages = React.createClass({
         key: key,
         message: message
       }
-    })
+    }).then(function(message) {
+      this.setState({
+        adding: false,
+        data: this.state.data.concat([message])
+      });
+      // this.forceUpdate();
+    }.bind(this)).fail(function(err) {
+      this.setState({
+      adding: false
+    });
+      // this.forceUpdate();
+      alert('There was an error saving: ' + err);
+    }.bind(this));
   }
   ,
   save: function(message, e) {
@@ -70,16 +85,30 @@ export var Messages = React.createClass({
           </tr>
         );
       }.bind(this));
+      if (this.state.adding) {
+        var entry = (
+          <div>
+          butts
+          </div>
+          )
+
+      } else {
+
+
       var entry = (
         <div className='new-message-input'>
-          <label for='key-input'>Key</label>
-          <input type='text' id='key-input'></input>
-          <label for='name-input'>Name</label>
-          <input type='text' id='name-input'></input>
-          <label for='message-input'>Message</label>
-          <textarea id='message-input'></textarea>
-          <button id='submit-message' onClick={this.NewMessage}>Submit Message</button>
+        <details>
+          <summary>Add a new message</summary>
+            <label for='key-input'>Key</label>
+            <input type='text' id='key-input'></input>
+            <label for='name-input'>Name</label>
+            <input type='text' id='name-input' disabled></input>
+            <label for='message-input'>Message</label>
+            <textarea id='message-input'></textarea>
+            <button id='submit-message' onClick={this.NewMessage}>Submit Message</button>
+          </details>
         </div>);
+    }
       content = (
         <div>{entry}
         <table>
