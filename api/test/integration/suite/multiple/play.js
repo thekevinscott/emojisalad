@@ -186,6 +186,7 @@ describe('Play', function() {
     });
   });
 
+  /*
   it('should be able to lose on two simultaneous games', function() {
     let players = getPlayers(3);
     let guesser = players[1];
@@ -209,28 +210,30 @@ describe('Play', function() {
       _.uniq(game_ids).length.should.equal(2);
     });
   });
+  */
 
   it('should be able to ask for clues to two simultaneous games', function() {
     let players = getPlayers(3);
     let guesser = players[1];
-    //let existing_player = players[1];
     return playGames(players, 2).then(function() {
       return Player.get(guesser);
     }).then(function(player) {
       return Promise.all(game_numbers.map(function(game_number) {
-        return setup([
-          { player: player, msg: rule('clue').example(), to: game_number },
-        ]);
-      })).then(function() {
-        return getGames(player, function(game) {
-          return Round.getCluesLeft(game).then(function(clues_left) {
-            clues_left.should.equal(0);
-            return game.id;
-          });
+        return check(
+          { player: players[2], msg: rule('clue').example(), to: game_number },
+          [
+            { key: 'says', options: [players[2].nickname, rule('clue').example()], to: players[0] },
+            { key: 'says', options: [players[2].nickname, rule('clue').example()], to: players[1] },
+            { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[0] },
+            { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[1] },
+            { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[2] }
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
         });
+      })).then(function(responses) {
+        responses.length.should.equal(2);
       });
-    }).then(function(game_ids) {
-      _.uniq(game_ids).length.should.equal(2);
     });
   });
 
@@ -260,6 +263,7 @@ describe('Play', function() {
     });
   });
 
+  /*
   it('should track points separately for two simultaneous games', function() {
     this.timeout(60*2*1000);
     let players = getPlayers(3);
@@ -298,6 +302,7 @@ describe('Play', function() {
       });
     });
   });
+  */
 
 });
 

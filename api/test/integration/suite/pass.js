@@ -90,6 +90,7 @@ describe('Pass', function() {
       });
     });
 
+    /*
     it('should not let a player pass if they have run out of guesses', function() {
       var players = getPlayers(3);
       return playGame(players).then(function(game) {
@@ -105,6 +106,7 @@ describe('Pass', function() {
         });
       });
     });
+    */
 
     it('should not let a player guess if they have already passed', function() {
       var players = getPlayers(3);
@@ -160,6 +162,7 @@ describe('Pass', function() {
       });
     });
 
+    /*
     it('should end a round if one player is out of guesses and the other player passes', function() {
       var players = getPlayers(3);
       var nextClue = 'SILENCE OF THE LAMBS';
@@ -184,6 +187,7 @@ describe('Pass', function() {
         });
       });
     });
+   */
 
     it('should allow the second player to guess successfully after the first player passes', function() {
       var players = getPlayers(3);
@@ -221,6 +225,7 @@ describe('Pass', function() {
       });
     });
 
+    /*
     it('should end a round if one player passes and the other player runs out of guesses', function() {
       var players = getPlayers(3);
       var nextClue = 'SILENCE OF THE LAMBS';
@@ -253,6 +258,7 @@ describe('Pass', function() {
         });
       });
     });
+    */
 
     it('should end a round if both players pass', function() {
       var players = getPlayers(3);

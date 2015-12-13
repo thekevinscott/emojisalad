@@ -8,6 +8,7 @@ const Player = require('models/player');
 const Game = require('models/game');
 const Round = require('models/round');
 const setNonRandomGame = require('../lib/setNonRandomGame');
+const _ = require('lodash');
 
 // submit any old emoji to start a round
 const EMOJI = '😀';
@@ -15,7 +16,7 @@ const EMOJI = '😀';
 // invite a particular player and have them sign up
 let newGame = Promise.coroutine(function* (players, options) {
   if ( ! options ) { options = {}; }
-  let inviter = players.shift();
+  let inviter = _.clone(players).shift();
   let response = yield setup([
     { player: inviter, msg: rule('new-game').example() },
   ]);

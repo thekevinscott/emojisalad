@@ -186,8 +186,8 @@ let Game = {
 
     return db.query(query);
   },
-  get: Promise.coroutine(function* (params) {
-    let games = yield this.getAll(params);
+  get: Promise.coroutine(function* (params, debug) {
+    let games = yield this.getAll(params, debug);
     if ( games.length ) {
       let game = games[0];
       game.round = yield Round.getLast(game);
@@ -213,7 +213,7 @@ let Game = {
       return null;
     }
   }),
-  getAll: Promise.coroutine(function* (params) {
+  getAll: Promise.coroutine(function* (params, debug) {
     let query = squel
                 .select()
                 .field('g.id')
@@ -241,6 +241,9 @@ let Game = {
     console.debug(query.toString());
 
     let games = yield db.query(query.toString());
+    if ( !games.length && debug ) {
+      console.log('no games found', query.toString());
+    }
     console.debug('games', games);
     return games;
   }),

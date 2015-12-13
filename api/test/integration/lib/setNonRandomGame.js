@@ -4,10 +4,10 @@ const Game = require('models/Game');
 const Promise = require('bluebird');
 
 let setNonRandomGame = Promise.coroutine(function* (player) {
-  let game = yield getGame(player);
+  let game = yield getGame(player, true);
   if ( ! game || ! game.id ) {
-    console.error(player);
-    console.error(game);
+    console.error('player', player);
+    console.error('game', game);
     throw "There is no game ID";
   }
   yield Game.update(game, { random: 0 });
