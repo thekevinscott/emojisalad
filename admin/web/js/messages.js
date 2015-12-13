@@ -9,7 +9,7 @@ import { Base } from './base';
 export var Messages = React.createClass({
   mixins: [Base], // Use the mixin
   url: '/api/messages',
-  NewMessage: function(message, e) {
+  newMessage: function(message, e) {
     this.setState({
       adding: true
     });
@@ -105,7 +105,7 @@ export var Messages = React.createClass({
             <input type='text' id='name-input' disabled></input>
             <label for='message-input'>Message</label>
             <textarea id='message-input'></textarea>
-            <button id='submit-message' onClick={this.NewMessage}>Submit Message</button>
+            <button id='submit-message' onClick={this.newMessage}>Submit Message</button>
           </details>
         </div>);
     }
