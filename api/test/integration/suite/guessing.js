@@ -121,7 +121,7 @@ describe('Guessing', function() {
       });
     });
 
-    it.only('should be able to successfully guess with the a similar enough guess through google', function() {
+    it('should be able to successfully guess with the a similar enough guess through google', function() {
       const players = getPlayers(3);
       const msg3 = 'TIME AFTER TIME';
 

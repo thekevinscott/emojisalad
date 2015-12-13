@@ -22,6 +22,11 @@ module.exports = {
     });
   },
   send: function(responses) {
+    let players = {};
+    for ( var i=0; i<responses.length; i++ ) {
+      let response = responses[i];
+      console.log('response', response);
+    }
     return Promise.reduce(responses, function(output, response) {
       // add 1000 to the sending time. Twilio limits
       // outgoing messages to 1 per second anyways,
