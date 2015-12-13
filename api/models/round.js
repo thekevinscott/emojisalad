@@ -21,7 +21,7 @@ var Round = {
       return game.round.clues_allowed - rows[0].cnt;
     });
   },
-  getClue: function(game, player) {
+  getClue: Promise.coroutine(function* (game, player) {
     var clue_query = squel
                      .select()
                      .field('clue_id')
@@ -40,25 +40,28 @@ var Round = {
                 .limit(1);
 
 
-    return db.query(select_query.toString()).then(function(rows) {
-      var clue = rows[0];
-      if ( clue ) {
-        var update_clue_query = squel
-                                .insert()
-                                .into('round_clues')
-                                .setFields({
-                                  player_id: player.id,
-                                  round_id: game.round.id,
-                                  clue_id: clue.clue_id
-                                });
+    let rows = yield db.query(select_query.toString());
+    return rows[0];
+    //var clue = rows[0];
 
-        db.query(update_clue_query);
-        return clue;
-      } else {
-        return null;
-      }
-    });
-  },
+    //if ( clue ) {
+      /*
+      var update_clue_query = squel
+                              .insert()
+                              .into('round_clues')
+                              .setFields({
+                                player_id: player.id,
+                                round_id: game.round.id,
+                                clue_id: clue.clue_id
+                              });
+
+      db.query(update_clue_query);
+      */
+      //return clue;
+    //} else {
+      //return null;
+    //}
+  }),
   checkGuess: Promise.coroutine(function* (game, player, guess) {
     let query = squel
                 .select()
