@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 const db = require('db');
 const rule = require('config/rule');
 const levenshtein = require('levenshtein');
+const autosuggest = require('autosuggest');
 
 const Player = require('./player');
 var Game;
@@ -58,7 +59,7 @@ var Round = {
       }
     });
   },
-  checkGuess: function(game, player, guess) {
+  checkGuess: Promise.coroutine(function* (game, player, guess) {
     let query = squel
                 .select()
                 .from('phrases')
@@ -71,55 +72,64 @@ var Round = {
       return p;
     }
                         
-    return db.query(query.toString()).then(function(phrases) {
-      const phrase = phrases[0].phrase;
-      let result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
+    let phrases = yield db.query(query.toString());
 
-      // check levenshtein as well, in case there's typos
-      // but we limit it to a phrase of 5 characters or more.
-      // cause anything shorter, typos are tough shit.
-      if ( ! result && phrase.length > 5 ) {
-        const distance = levenshtein(phrase, guess) / phrase.length;
-        // accept it if its lower than a certain difference.
-        if ( distance < .15 ) {
-          result = true;
-        }
+    const phrase = phrases[0].phrase;
+    let result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
+
+    // check levenshtein as well, in case there's typos
+    // but we limit it to a phrase of 5 characters or more.
+    // cause anything shorter, typos are tough shit.
+    if ( ! result && phrase.length > 5 ) {
+      const distance = levenshtein(phrase, guess) / phrase.length;
+      // accept it if its lower than a certain difference.
+      if ( distance < .15 ) {
+        result = true;
       }
+    }
 
-      // we save the guess
-      let guessQuery = squel
-                       .insert()
-                       .into('guesses')
-                       .setFields({
-                         player_id: player.id,
-                         round_id: game.round.id,
-                         correct: (result) ? 1 : 0,
-                         guess: guess
-                       });
-      db.query(guessQuery.toString());
-
-      if ( result ) {
-        var state_id = squel
-                       .select()
-                       .field('id')
-                       .from('round_states')
-                       .where('state=?', 'won');
-
-        var query = squel
-                    .update()
-                    .table('rounds')
-                    .set('winner_id',player.id)
-                    .set('state_id',state_id)
-                    .where('id=?',game.round.id);
-        return db.query(query.toString()).then(function() {
-          return true;
-        });
-      } else {
-        return false;
+    if ( ! result ) {
+      // finally, ping google and see what they say about this phrase
+      // only check the first result though.
+      let suggested_results = yield autosuggest(guess);
+      if ( suggested_results.length ) {
+        let top_result = suggested_results[0].result;
+        result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(top_result));
       }
-    });
+    }
 
-  },
+    // we save the guess
+    let guessQuery = squel
+                     .insert()
+                     .into('guesses')
+                     .setFields({
+                       player_id: player.id,
+                       round_id: game.round.id,
+                       correct: (result) ? 1 : 0,
+                       guess: guess
+                     });
+
+    yield db.query(guessQuery.toString());
+
+    if ( result ) {
+      let state_id = squel
+                     .select()
+                     .field('id')
+                     .from('round_states')
+                     .where('state=?', 'won');
+
+      let update_rounds_query = squel
+                                .update()
+                                .table('rounds')
+                                .set('winner_id',player.id)
+                                .set('state_id',state_id)
+                                .where('id=?',game.round.id);
+      yield db.query(update_rounds_query.toString());
+      return true;
+    } else {
+      return false;
+    }
+  }),
   getGuessesLeft: function(game, player) {
     var query = squel
                 .select()

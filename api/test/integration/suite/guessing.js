@@ -89,7 +89,7 @@ describe('Guessing', function() {
       });
     });
 
-    it.only('should be able to successfully guess with the maximum number of typos', function() {
+    it('should be able to successfully guess with the maximum number of typos', function() {
       const players = getPlayers(3);
       const msg2 = 'SILENCE OF THE LAMBS';
 
@@ -114,6 +114,42 @@ describe('Guessing', function() {
             { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
             { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
+    it.only('should be able to successfully guess with the a similar enough guess through google', function() {
+      const players = getPlayers(3);
+      const msg3 = 'TIME AFTER TIME';
+
+      return playGame(players).then(function(game) {
+        return setup([
+          { player: players[2], msg: guess + game.round.phrase },
+        ]).then(function() {
+          return Game.updateDefaultScores(game, defaults).then(function() {
+            return game;
+          });
+        });
+      }).then(function(game) {
+        let updates = {};
+        updates[players[1].nickname] = defaults['win-guesser-1'];
+        updates[players[0].nickname] = defaults['win-submitter-1'];
+        let score = getScore(game, updates);
+        let the_guess = 'SILENCE OF THE';
+        return check(
+          { player: players[2], msg: guess + the_guess },
+          [
+            { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
+            { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
+            { to: players[0], key: 'correct-guess', options: [players[2].nickname, score] },
+            { to: players[1], key: 'correct-guess', options: [players[2].nickname, score] },
+            { to: players[2], key: 'correct-guess', options: [players[2].nickname, score] },
+            { to: players[0], key: 'game-next-round', options: [players[2].nickname] },
+            { to: players[1], key: 'game-next-round', options: [players[2].nickname] },
+            { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, msg3] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
