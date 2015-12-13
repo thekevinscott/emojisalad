@@ -90,7 +90,7 @@ CREATE TABLE `game_phrases` (
   `phrase_id` int(11) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `game_players` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `one_user_per_game` (`player_id`,`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,7 +179,7 @@ CREATE TABLE `guesses` (
   `correct` tinyint(1) DEFAULT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=142 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,7 +197,7 @@ CREATE TABLE `incomingMessages` (
   `response` text COLLATE utf8mb4_unicode_ci,
   `created` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=815 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=959 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,7 +215,7 @@ CREATE TABLE `invites` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `unique-invites` (`invited_player_id`,`inviter_player_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,7 +233,7 @@ CREATE TABLE `messages` (
   `comments` text COLLATE utf8mb4_unicode_ci,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -253,7 +253,7 @@ CREATE TABLE `outgoingMessages` (
   `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2247 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2417 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -289,7 +289,7 @@ CREATE TABLE `player_order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`player_id`,`game_id`),
   UNIQUE KEY `order` (`order`,`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -322,7 +322,7 @@ CREATE TABLE `players` (
   `last_activity` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   `created` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=458 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=460 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -339,7 +339,7 @@ CREATE TABLE `round_clues` (
   `clue_id` int(11) DEFAULT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -374,7 +374,7 @@ CREATE TABLE `rounds` (
   `clues_allowed` int(11) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,7 +404,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `blacklist` tinyint(1) NOT NULL DEFAULT '0',
-  `from` varchar(15) NOT NULL DEFAULT '',
+  `from` varchar(15) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `nickname` varchar(255) DEFAULT NULL,
   `last_activity` timestamp(6) NULL DEFAULT NULL,
   `maximum_games` int(11) unsigned NOT NULL DEFAULT '2',
@@ -412,7 +412,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `from` (`from`),
   KEY `from_index` (`from`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -424,7 +424,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-12 18:50:14
+-- Dump completed on 2015-12-12 22:09:57
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -533,7 +533,7 @@ CREATE TABLE `messages` (
   `comments` text COLLATE utf8mb4_unicode_ci,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -542,7 +542,7 @@ CREATE TABLE `messages` (
 
 LOCK TABLES `messages` WRITE;
 /*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-INSERT INTO `messages` VALUES (1,'intro',NULL,'? Hey! I’m Emojibot! I run a game called Emojifun!! - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-15 19:19:42'),(2,'intro_2',NULL,'? I’m glad you said yes! First off, what should I call you?',NULL,'2015-08-16 03:35:18'),(6,'intro_3',NULL,'? Nice to meet you, %1$s! Now we need to add some friends to play with. Text INVITE followed by a friend’s 10-digit phone number to invite them to the game.\n(e.g. ‘INVITE 555-555-5555’)',NULL,'2015-08-16 04:10:23'),(7,'invite',NULL,'? Hi, I’m Emojibot! %1$s has invited you to play Emojifun - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-16 14:17:39'),(8,'intro_4',NULL,'? %1$s has been invited. Now we just have to wait for slowpoke there to accept.',NULL,'2015-08-16 14:18:06'),(9,'invite_error',NULL,'%1$s',NULL,'2015-08-16 14:24:50'),(10,'intro_error',NULL,'Error %1$s',NULL,'2015-08-16 15:47:31'),(11,'already_invited',NULL,'We already invited %1$s; slow yo\' roll',NULL,'2015-08-16 16:07:32'),(12,'not_yet_onboarded_error',NULL,'Please CORRECTLY finish the onboarding process: %1$s','This is for when a user has begun onboarding, but has not yet completed (like giving a nickname or responding affirmatively with yes) and tries to invite someone','2015-08-16 18:35:23'),(14,'accepted-invited',NULL,'? %1$s has accepted your invitation and joined the game! Game on!',NULL,'2015-08-16 20:00:14'),(15,'wait-to-invite',NULL,'I understand you\'re excited to invite users to your game; I am too! But hold yo\' ride, first tell me your name.','If we\'re expecting a nickname but they ask to invite someone, tell them to slow their ride','2015-08-17 20:51:57'),(17,'error-1',NULL,'You entered an invalid number: %1$s','This is for when a number is invalid format','2015-08-17 22:56:46'),(18,'error-2',NULL,'Slow yo\' roll, the phone %1$s has already been invited.','This is for when a user has already invited another user','2015-08-17 22:57:08'),(19,'error-3',NULL,'The number %1$s asked us not to contact us again. So we won\'t. If you want to reach out to them personally, you can.','User is on the do not call list.','2015-08-17 22:57:44'),(20,'error-4',NULL,'You must provide a user with valid identifying info',NULL,'2015-08-17 23:13:39'),(21,'error-5',NULL,'There was an unknown error registering the phone number',NULL,'2015-08-17 23:13:55'),(22,'error-6',NULL,'The number %1$s is unverified. Trial accounts cannot send messages to unverified numbers; verify +17243836654 at twilio.com/user/account/phone-numbers/verified, or purchase a Twilio number to send messages to unverified numbers.','This is what Twilio says when a number is unverified','2015-08-18 00:08:51'),(23,'accepted-inviter',NULL,'Nice to meet you, %1$s! %2$s is going to start us off. When he texts a series of emojis, you have to guess what his phrase is.',NULL,'2015-08-18 00:58:02'),(24,'error-7',NULL,'You must provide a valid user',NULL,'2015-08-21 16:58:10'),(25,'error-8',NULL,'You entered a blank number. Try sending something like: INVITE 555-555-5555',NULL,'2015-08-21 22:29:19'),(26,'game-start',NULL,'? You’ll start us off, %1$s! Your phrase is: %2$s\n\nReply using emojis only. Your goal is to get the other players to guess your phrase. Text HELP if you get stuck, and PASS if you give up. (PASS will cost you 1 point).',NULL,'2015-08-26 18:09:48'),(27,'error-9',NULL,'That\'s not valid emoji! >:(',NULL,'2015-08-26 19:09:53'),(29,'game-submission-sent',NULL,'? Cool, I sent your emoji phrase to the group. Let’s see what these losers come up with.',NULL,'2015-08-26 20:02:15'),(30,'says',NULL,'%1$s says: %2$s',NULL,'2015-08-26 20:03:46'),(31,'guessing-instructions',NULL,'? Text HELP if you get stuck, and PASS if you give up. (PASS will cost you 1 point).',NULL,'2015-08-26 20:04:32'),(32,'correct-guess',NULL,'⛑⛑KAPOW %1$s GOT IT RIGHT!⛑⛑',NULL,'2015-08-26 21:30:08'),(33,'game-next-round',NULL,'⛑ Now it’s %1$s’s turn. When he replies, you have to guess what his phrase is.',NULL,'2015-08-27 06:04:03'),(34,'game-next-round-suggestion',NULL,'⛑ It’s your turn, %1$s. Your phrase is: %2$s\n\nReply using emojis only. Your goal is to get the other players to guess your phrase. Text HELP if you get stuck, and PASS if you give up..',NULL,'2015-08-27 06:05:16'),(35,'incorrect-guess',NULL,'⛑ THAT IS THE WRONG GUESS, %1$s',NULL,'2015-08-30 05:45:22'),(36,'join-game',NULL,'⛑ %1$s has joined the game! Game on!',NULL,'2015-08-31 01:20:04'),(37,'accepted-invited-next-round',NULL,'⛑ %1$s has accepted your invitation and will join at the next round!',NULL,'2015-08-31 03:00:05'),(38,'join-game-next-round',NULL,'⛑ %1$s will join the game at the next round!',NULL,'2015-08-31 03:00:27'),(39,'accepted-inviter-next-round',NULL,'Nice to meet you, %1$s! A game is progress but you\'ll join at the next round.',NULL,'2015-08-31 03:02:09'),(40,'error-10',NULL,'You must provide a phone number',NULL,'2015-09-02 18:36:56'),(41,'error-11',NULL,'You must provide a message',NULL,'2015-09-02 18:37:09'),(42,'incorrect-out-of-guesses',NULL,'That is the wrong guess, AND you\'re out of guesses. Sucks to be you... why don\'t you sit and think about what you\'ve done.',NULL,'2015-09-04 06:02:19'),(43,'out-of-guesses',NULL,'I refuse to dignify that with an answer; YOU\'RE OUT OF GUESSES, %1$s. Don\'t make me come over there...',NULL,'2015-09-04 06:31:03'),(44,'round-over',NULL,'Welp, that\'s it. You all lose. None of you got it correct.',NULL,'2015-09-04 06:57:58'),(45,'submitter-dont-guess',NULL,'%1$s, that\'s called *cheating* and you\'ve just ruined the round for everyone. Good job.',NULL,'2015-09-04 17:32:40'),(46,'clue',NULL,'%1$s asked for a clue! All right then, your clue is: %2$s',NULL,'2015-09-04 22:14:24'),(47,'no-clue-for-submitter',NULL,'Dude, you\'re not even playing! You can\'t ask for a clue.',NULL,'2015-09-04 23:05:19'),(48,'no-more-clues-allowed',NULL,'Sorry, you only get %1$s per round.',NULL,'2015-09-04 23:16:49'),(49,'no-more-clues-available',NULL,'Sorry, I don\'t have any more clues in my records for this round. You\'re on your own!',NULL,'2015-09-04 23:26:36'),(51,'guesses',NULL,'%1$s guesses: %2$s',NULL,'2015-09-15 00:06:29'),(52,'help-submitter-waiting-for-submission',NULL,'If it\'s help you need, it\'s help I got! You\'re up to submit a phrase for the others to guess. To submit a phrase, text me something like:\n\nsubmission ????\n\nThen I\'ll forward that to the group.',NULL,'2015-09-17 20:22:49'),(53,'help-submitter-submitted',NULL,'Sit tight! Your work here is done. Now you just have to wait for everyone else to guess correctly.',NULL,'2015-09-17 20:37:58'),(54,'help-player-bench',NULL,'Help, huh? You\'re waiting until the next round; once this round is complete you\'ll be in the game.',NULL,'2015-09-17 20:47:12'),(55,'help-player-ready-for-game',NULL,'We\'re waiting for %(game.round.submitter.nickname)s to submit a clue. Once the submission is in we\'ll forward it along and you can guess.',NULL,'2015-09-17 20:52:06'),(56,'help-player-guessing',NULL,'Here comes help!',NULL,'2015-09-17 21:00:06'),(57,'help-player-waiting-for-round',NULL,'We\'re just waiting for the next round. %(game.round.submitter.nickname)s is going to guess next.',NULL,'2015-09-17 21:02:17'),(58,'pass-rejected-not-playing',NULL,'You\'re not currently in a round, so you can\'t guess.',NULL,'2015-09-22 00:35:50'),(59,'pass-rejected-not-guessing',NULL,'You\'re the submitter, you can\'t pass.',NULL,'2015-09-22 01:06:27'),(60,'pass-rejected-need-a-guess',NULL,'You can\'t skip, you need to submit something as a clue.',NULL,'2015-09-22 01:11:03'),(61,'pass',NULL,'You\'ve passed successfully, %1$s',NULL,'2015-09-22 02:00:07'),(62,'player-passed',NULL,'%1$s has chosen to pass this round.',NULL,'2015-09-22 02:00:20'),(63,'no-clue-after-passing',NULL,'You can\'t ask for a clue, you\'ve already passed.',NULL,'2015-09-22 02:10:42'),(64,'no-pass-after-loss',NULL,'You can\'t pass, you\'ve already lost this round',NULL,'2015-09-22 02:29:12'),(65,'no-guessing-after-passing',NULL,'You can\'t guess, you already passed this round.',NULL,'2015-09-22 02:35:41'),(66,'mixed-emoji',NULL,'You sent mixed emoji, %1$s; did you mean to send a submission? If so, you must send only emoji.',NULL,'2015-09-30 18:58:50'),(67,'new-game',NULL,'Welcome to your new game, %1$s. Go ahead and invite some people.',NULL,'2015-10-20 23:03:33'),(68,'intro_existing_player',NULL,'⛑ %1$s has been invited to your new game.',NULL,'2015-10-21 00:33:17'),(69,'invite_existing_player',NULL,'Hey %1$s, %2$s has challenged you to a new game. Text YES to start playing. Text NO and you won\'t.',NULL,'2015-10-21 00:33:44'),(70,'error-maximum-games',NULL,'Sorry, you\'re currently playing the maximum number of games. NO MORE GAMES FOR YOU',NULL,'2015-10-21 01:40:22'),(71,'error-12',NULL,'Sorry, that user is already playing the maximum number of games.',NULL,'2015-10-21 02:03:14'),(72,'error-13',NULL,'Finish the onboarding process first before starting a new game.',NULL,'2015-10-21 02:29:26');
+INSERT INTO `messages` VALUES (1,'intro',NULL,'? Hey! I’m Emojibot! I run a game called Emojifun!! - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-15 19:19:42'),(2,'intro_2',NULL,'? I’m glad you said yes! First off, what should I call you?',NULL,'2015-08-16 03:35:18'),(6,'intro_3',NULL,'? Nice to meet you, %1$s! Now we need to add some friends to play with. Text INVITE followed by a friend’s 10-digit phone number to invite them to the game.\n(e.g. ‘INVITE 555-555-5555’)',NULL,'2015-08-16 04:10:23'),(7,'invite',NULL,'? Hi, I’m Emojibot! %1$s has invited you to play Emojifun - think Pictionary, but with emojis. Want to play? Text YES to start playing. Text FUCK OFF and I won’t bother you anymore.',NULL,'2015-08-16 14:17:39'),(8,'intro_4',NULL,'? %1$s has been invited. Now we just have to wait for slowpoke there to accept.',NULL,'2015-08-16 14:18:06'),(9,'invite_error',NULL,'%1$s',NULL,'2015-08-16 14:24:50'),(10,'intro_error',NULL,'Error %1$s',NULL,'2015-08-16 15:47:31'),(11,'already_invited',NULL,'We already invited %1$s; slow yo\' roll',NULL,'2015-08-16 16:07:32'),(12,'not_yet_onboarded_error',NULL,'Please CORRECTLY finish the onboarding process: %1$s','This is for when a user has begun onboarding, but has not yet completed (like giving a nickname or responding affirmatively with yes) and tries to invite someone','2015-08-16 18:35:23'),(14,'accepted-invited',NULL,'? %1$s has accepted your invitation and joined the game! Game on!',NULL,'2015-08-16 20:00:14'),(15,'wait-to-invite',NULL,'I understand you\'re excited to invite users to your game; I am too! But hold yo\' ride, first tell me your name.','If we\'re expecting a nickname but they ask to invite someone, tell them to slow their ride','2015-08-17 20:51:57'),(17,'error-1',NULL,'You entered an invalid number: %1$s','This is for when a number is invalid format','2015-08-17 22:56:46'),(18,'error-2',NULL,'Slow yo\' roll, the phone %1$s has already been invited.','This is for when a user has already invited another user','2015-08-17 22:57:08'),(19,'error-3',NULL,'The number %1$s asked us not to contact us again. So we won\'t. If you want to reach out to them personally, you can.','User is on the do not call list.','2015-08-17 22:57:44'),(20,'error-4',NULL,'You must provide a user with valid identifying info',NULL,'2015-08-17 23:13:39'),(21,'error-5',NULL,'There was an unknown error registering the phone number',NULL,'2015-08-17 23:13:55'),(22,'error-6',NULL,'The number %1$s is unverified. Trial accounts cannot send messages to unverified numbers; verify +17243836654 at twilio.com/user/account/phone-numbers/verified, or purchase a Twilio number to send messages to unverified numbers.','This is what Twilio says when a number is unverified','2015-08-18 00:08:51'),(23,'accepted-inviter',NULL,'Nice to meet you, %1$s! %2$s is going to start us off. When he texts a series of emojis, you have to guess what his phrase is.',NULL,'2015-08-18 00:58:02'),(24,'error-7',NULL,'You must provide a valid user',NULL,'2015-08-21 16:58:10'),(25,'error-8',NULL,'You entered a blank number. Try sending something like: INVITE 555-555-5555',NULL,'2015-08-21 22:29:19'),(26,'game-start',NULL,'? You’ll start us off, %1$s! Your phrase is: %2$s\n\nReply using emojis only. Your goal is to get the other players to guess your phrase. Text HELP if you get stuck, and PASS if you give up. (PASS will cost you 1 point).',NULL,'2015-08-26 18:09:48'),(27,'error-9',NULL,'That\'s not valid emoji! >:(',NULL,'2015-08-26 19:09:53'),(29,'game-submission-sent',NULL,'? Cool, I sent your emoji phrase to the group. Let’s see what these losers come up with.',NULL,'2015-08-26 20:02:15'),(30,'says',NULL,'%1$s: %2$s',NULL,'2015-08-26 20:03:46'),(31,'guessing-instructions',NULL,'? Text HELP if you get stuck, and PASS if you give up. (PASS will cost you 1 point).',NULL,'2015-08-26 20:04:32'),(32,'correct-guess',NULL,'⛑⛑KAPOW %1$s GOT IT RIGHT! The phrase was %2$1⛑⛑',NULL,'2015-08-26 21:30:08'),(33,'game-next-round',NULL,'⛑ Now it’s %1$s’s turn. When he replies, you have to guess what his phrase is.',NULL,'2015-08-27 06:04:03'),(34,'game-next-round-suggestion',NULL,'⛑ It’s your turn, %1$s. Your phrase is: %2$s\n\nReply using emojis only. Your goal is to get the other players to guess your phrase. Text HELP if you get stuck, and PASS if you give up..',NULL,'2015-08-27 06:05:16'),(35,'incorrect-guess',NULL,'⛑ THAT IS THE WRONG GUESS, %1$s',NULL,'2015-08-30 05:45:22'),(36,'join-game',NULL,'⛑ %1$s has joined the game! Game on!',NULL,'2015-08-31 01:20:04'),(37,'accepted-invited-next-round',NULL,'⛑ %1$s has accepted your invitation and will join at the next round!',NULL,'2015-08-31 03:00:05'),(38,'join-game-next-round',NULL,'⛑ %1$s will join the game at the next round!',NULL,'2015-08-31 03:00:27'),(39,'accepted-inviter-next-round',NULL,'Nice to meet you, %1$s! A game is progress but you\'ll join at the next round.',NULL,'2015-08-31 03:02:09'),(40,'error-10',NULL,'You must provide a phone number',NULL,'2015-09-02 18:36:56'),(41,'error-11',NULL,'You must provide a message',NULL,'2015-09-02 18:37:09'),(42,'incorrect-out-of-guesses',NULL,'That is the wrong guess, AND you\'re out of guesses. Sucks to be you... why don\'t you sit and think about what you\'ve done.',NULL,'2015-09-04 06:02:19'),(43,'out-of-guesses',NULL,'I refuse to dignify that with an answer; YOU\'RE OUT OF GUESSES, %1$s. Don\'t make me come over there...',NULL,'2015-09-04 06:31:03'),(44,'round-over',NULL,'Welp, that\'s it. You all lose. None of you got it correct.',NULL,'2015-09-04 06:57:58'),(45,'submitter-dont-guess',NULL,'%1$s, that\'s called *cheating* and you\'ve just ruined the round for everyone. Good job.',NULL,'2015-09-04 17:32:40'),(46,'clue',NULL,'%1$s asked for a clue! All right then, your clue is: %2$s',NULL,'2015-09-04 22:14:24'),(47,'no-clue-for-submitter',NULL,'Dude, you\'re not even playing! You can\'t ask for a clue.',NULL,'2015-09-04 23:05:19'),(48,'no-more-clues-allowed',NULL,'Sorry, you only get %1$s per round.',NULL,'2015-09-04 23:16:49'),(49,'no-more-clues-available',NULL,'Sorry, I don\'t have any more clues in my records for this round. You\'re on your own!',NULL,'2015-09-04 23:26:36'),(51,'guesses',NULL,'%1$s guesses: %2$s',NULL,'2015-09-15 00:06:29'),(52,'help-submitter-waiting-for-submission',NULL,'If it\'s help you need, it\'s help I got! You\'re up to submit a phrase for the others to guess. To submit a phrase, text me something like:\n\nsubmission ????\n\nThen I\'ll forward that to the group.',NULL,'2015-09-17 20:22:49'),(53,'help-submitter-submitted',NULL,'Sit tight! Your work here is done. Now you just have to wait for everyone else to guess correctly.',NULL,'2015-09-17 20:37:58'),(54,'help-player-bench',NULL,'Help, huh? You\'re waiting until the next round; once this round is complete you\'ll be in the game.',NULL,'2015-09-17 20:47:12'),(55,'help-player-ready-for-game',NULL,'We\'re waiting for %(game.round.submitter.nickname)s to submit a clue. Once the submission is in we\'ll forward it along and you can guess.',NULL,'2015-09-17 20:52:06'),(56,'help-player-guessing',NULL,'Here comes help!',NULL,'2015-09-17 21:00:06'),(57,'help-player-waiting-for-round',NULL,'We\'re just waiting for the next round. %(game.round.submitter.nickname)s is going to guess next.',NULL,'2015-09-17 21:02:17'),(58,'pass-rejected-not-playing',NULL,'You\'re not currently in a round, so you can\'t guess.',NULL,'2015-09-22 00:35:50'),(59,'pass-rejected-not-guessing',NULL,'You\'re the submitter, you can\'t pass.',NULL,'2015-09-22 01:06:27'),(60,'pass-rejected-need-a-guess',NULL,'You can\'t skip, you need to submit something as a clue.',NULL,'2015-09-22 01:11:03'),(61,'pass',NULL,'You\'ve passed successfully, %1$s',NULL,'2015-09-22 02:00:07'),(62,'player-passed',NULL,'%1$s has chosen to pass this round.',NULL,'2015-09-22 02:00:20'),(63,'no-clue-after-passing',NULL,'You can\'t ask for a clue, you\'ve already passed.',NULL,'2015-09-22 02:10:42'),(64,'no-pass-after-loss',NULL,'You can\'t pass, you\'ve already lost this round',NULL,'2015-09-22 02:29:12'),(65,'no-guessing-after-passing',NULL,'You can\'t guess, you already passed this round.',NULL,'2015-09-22 02:35:41'),(66,'mixed-emoji',NULL,'You sent mixed emoji, %1$s; did you mean to send a submission? If so, you must send only emoji.',NULL,'2015-09-30 18:58:50'),(67,'new-game',NULL,'Welcome to your new game, %1$s. Go ahead and invite some people.',NULL,'2015-10-20 23:03:33'),(68,'intro_existing_player',NULL,'⛑ %1$s has been invited to your new game.',NULL,'2015-10-21 00:33:17'),(69,'invite_existing_player',NULL,'Hey %1$s, %2$s has challenged you to a new game. Text YES to start playing. Text NO and you won\'t.',NULL,'2015-10-21 00:33:44'),(70,'error-maximum-games',NULL,'Sorry, you\'re currently playing the maximum number of games. NO MORE GAMES FOR YOU',NULL,'2015-10-21 01:40:22'),(71,'error-12',NULL,'Sorry, that user is already playing the maximum number of games.',NULL,'2015-10-21 02:03:14'),(72,'error-13',NULL,'Finish the onboarding process first before starting a new game.',NULL,'2015-10-21 02:29:26'),(86,'Test',NULL,'Test',NULL,'2015-12-13 03:04:10');
 /*!40000 ALTER TABLE `messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -603,4 +603,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-12 18:50:17
+-- Dump completed on 2015-12-12 22:09:59

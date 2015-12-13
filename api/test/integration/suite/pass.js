@@ -208,9 +208,9 @@ describe('Pass', function() {
           [
             { to: players[0], key: 'guesses', options: [players[1].nickname, firstClue] },
             { to: players[2], key: 'guesses', options: [players[1].nickname, firstClue] },
-            { to: players[0], key: 'correct-guess', options: [players[1].nickname, score] },
-            { to: players[1], key: 'correct-guess', options: [players[1].nickname, score] },
-            { to: players[2], key: 'correct-guess', options: [players[1].nickname, score] },
+            { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
+            { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
+            { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, nextClue] },
             { to: players[2], key: 'game-next-round', options: [players[1].nickname] },

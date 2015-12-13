@@ -55,6 +55,7 @@ module.exports = function(player, input, game_number) {
                       player: game_player,
                       options: [
                         player.nickname,
+                        game.round.phrase,
                         score
                       ]
                     });
