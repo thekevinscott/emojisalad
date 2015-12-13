@@ -46,8 +46,7 @@ module.exports = {
         return output;
       }, null);
     }).map(function(response) {
-      console.log('response', response);
-      //response.message = response.message.join('\n');
+      response.message = response.message.join('\n');
       return response;
     });
 
