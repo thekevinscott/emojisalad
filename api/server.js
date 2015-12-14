@@ -9,7 +9,9 @@ const app = express();
 let DEBUG = false;
 console.debug = function() {
   if ( DEBUG ) {
-    console.log.apply(null, arguments);
+    let args = Array.prototype.slice.call(arguments);
+    args.unshift(new Date());
+    console.log.apply(null, args);
   }
 };
 let consoleError = console.error;
