@@ -15,17 +15,18 @@ module.exports = function(player, input, game_number) {
 
     if ( type_of_input === 'text' ) {
       return require('../players/say')(player, input, game_number);
-    } else if ( type_of_input === 'mixed-emoji' ) {
-      return require('../players/say')(player, input, game_number).then(function(responses) {
-        return responses.concat([
-          {
-            player: player,
-            key: 'mixed-emoji',
-            options: [player.nickname]
-          }
-        ]);
-      });
-    } else if ( type_of_input === 'emoji' ) {
+    //} else if ( type_of_input === 'mixed-emoji' ) {
+      //return require('../players/say')(player, input, game_number).then(function(responses) {
+        //return responses.concat([
+          //{
+            //player: player,
+            //key: 'mixed-emoji',
+            //options: [player.nickname]
+          //}
+        //]);
+      //});
+    //} else if ( type_of_input === 'emoji' ) {
+    } else {
       return Game.saveSubmission(player, input, game_number).then(function(game) {
         let messages = [{
           player: player,

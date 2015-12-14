@@ -12,6 +12,12 @@ console.debug = function() {
     console.log.apply(null, arguments);
   }
 };
+let consoleError = console.error;
+console.error = function() {
+  let args = Array.prototype.slice.call(arguments);
+  args.unshift(new Date());
+  consoleError.apply(null, args);
+};
 pmx.action('debug:on', function(reply) {
   console.log('debug is on');
   DEBUG = true;
