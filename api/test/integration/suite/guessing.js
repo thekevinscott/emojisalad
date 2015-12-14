@@ -194,6 +194,34 @@ describe('Guessing', function() {
         });
       });
     });
+
+    it('should be able to guess without considering punctuation', function() {
+      const players = getPlayers(3);
+      const msg2 = 'SILENCE OF THE LAMBS';
+
+      return playGame(players).then(function(game) {
+        let updates = {};
+        updates[players[1].nickname] = defaults['win-guesser-1'];
+        updates[players[0].nickname] = defaults['win-submitter-1'];
+        let score = getScore(game, updates);
+        let the_guess = 'JURASSIC !@#$%^&*()-=_+~`,./?><\'";:[]{}|\ PARK';
+        return check(
+          { player: players[2], msg: guess + the_guess},
+          [
+            { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
+            { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
+            { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
+            { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
+            { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
+            { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
+            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
   });
 
   describe('Incorrect', function() {
