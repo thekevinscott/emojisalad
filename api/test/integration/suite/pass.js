@@ -311,6 +311,27 @@ describe('Pass', function() {
         });
       });
     });
+
+    it('should allow an initiator to pass', function() {
+      var players = getPlayers(3);
+      var nextClue = 'SILENCE OF THE LAMBS';
+      return playGame(players).then(function() {
+        return check(
+          { player: players[0], msg: pass },
+          [
+            { to: players[0], key: 'pass-initiator' },
+            { to: players[1], key: 'player-passed', options: [players[0].nickname] },
+            { to: players[2], key: 'player-passed', options: [players[0].nickname] },
+
+            { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
+            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, nextClue] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
   });
 });
 
