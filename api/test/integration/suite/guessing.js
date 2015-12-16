@@ -27,7 +27,7 @@ const defaults = {
 describe('Guessing', function() {
 
   describe('Correct', function() {
-    it('should be able to successfully guess', function() {
+    it.only('should be able to successfully guess', function() {
       var players = getPlayers(3);
       var msg2 = 'SILENCE OF THE LAMBS';
 

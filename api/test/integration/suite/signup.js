@@ -7,7 +7,7 @@ const Player = require('models/player');
 const rule = require('config/rule');
 const EMOJI = '🐳';
 
-describe.only('Signup', function() {
+describe('Signup', function() {
 
   describe('Test a brand new player', function() {
     it('should introduce itself when contacting for the first time', function() {
@@ -79,7 +79,7 @@ describe.only('Signup', function() {
     });
   });
 
-  it.only('should allow the player to submit a nickname', function() {
+  it('should allow the player to submit a nickname', function() {
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },

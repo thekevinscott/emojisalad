@@ -1,5 +1,6 @@
 'use strict';
 const setup = require('../lib/setup');
+const rule = require('config/rule');
 
 // invite a particular player and have them sign up
 function invite(inviter, invited) {
@@ -11,6 +12,7 @@ function invite(inviter, invited) {
     return setup([
       { player: invited, msg: 'yes'},
       { player: invited, msg: invited.nickname},
+      { player: invited, msg: rule('keep').example() },
     ]);
   });
 }
