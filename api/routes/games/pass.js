@@ -16,49 +16,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
   } else if ( player.state === 'waiting-for-submission' ) {
     result = 'pass-rejected-need-a-guess';
   } else if ( player.state === 'submitted' ) {
-    let game = yield Game.get({ player: player, game_number: game_number });
-
-    let ending_messages = [];
-    let round = yield Game.newRound(game);
-
-    let suggestion = {
-      key: 'game-next-round-suggestion',
-      options: [
-        round.submitter.nickname,
-        round.phrase
-      ]
-    };
-
-    let nextRoundInstructions = {
-      key: 'game-next-round',
-      options: [
-        round.submitter.nickname,
-      ]
-    };
-
-    ending_messages = round.game.players.map(function(game_player) {
-      if ( game_player.id !== round.submitter.id ) {
-        return _.assign( { player: game_player }, nextRoundInstructions);
-      } else {
-        return _.assign( { player: game_player }, suggestion);
-      }
-    });
-
-    result = game.players.map(function(game_player) {
-      if ( game_player.id === player.id ) {
-        return {
-          player: game_player,
-          key: 'pass-initiator',
-          //options: [player.nickname]
-        };
-      } else {
-        return {
-          player: game_player,
-          key: 'player-passed',
-          options: [player.nickname]
-        };
-      }
-    }).concat(ending_messages);
+    result = 'pass-rejected-not-guessing';
   } else if ( player.state === 'guessing' ) {
     let game = yield Game.get({ player: player, game_number: game_number });
     yield Player.update(player, { state: 'passed' });
