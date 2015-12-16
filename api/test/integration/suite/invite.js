@@ -81,7 +81,7 @@ describe('Inviting', function() {
         // lose the intro of the number for testing
         { player: inviter, msg: 'invite '+player.number.substring(2) },
         [
-          { key: 'intro_4', options: [player.number.substring(2)], to: inviter },
+          { key: 'intro_5', options: [player.number.substring(2)], to: inviter },
           { key: 'invite', options: [inviter.nickname], to: player }
         ]
       ).then(function(obj) {
@@ -100,7 +100,7 @@ describe('Inviting', function() {
       return check(
         { player: inviter, msg: 'invite '+player.number },
         [
-          { key: 'intro_4', options: [player.number], to: inviter },
+          { key: 'intro_5', options: [player.number], to: inviter },
           { key: 'invite', options: [inviter.nickname], to: player }
         ]
       ).then(function(obj) {
@@ -182,7 +182,7 @@ describe('Inviting', function() {
         return check(
           { player: inviter, msg: 'invite '+invitee.number },
           [
-            { to: inviter, key: 'intro_4', options: [invitee.number] },
+            { to: inviter, key: 'intro_5', options: [invitee.number] },
             { to: invitee, key: 'invite', options: [inviter.nickname] }
           ]
         ).then(function(obj) {
@@ -196,7 +196,7 @@ describe('Inviting', function() {
         return check(
           { player: inviter, msg: 'invite '+invitee.number },
           [
-            { to: inviter, key: 'intro_4', options: [invitee.number] },
+            { to: inviter, key: 'intro_5', options: [invitee.number] },
             { to: invitee, key: 'invite', options: [inviter.nickname] }
           ]
         ).then(function(obj) {

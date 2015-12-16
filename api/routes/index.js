@@ -14,6 +14,7 @@ function addRoute(path, fn_path) {
 addRoute('uncreated', './players/create');
 addRoute('waiting-for-confirmation', './players/confirm');
 addRoute('waiting-for-nickname', './players/nickname');
+addRoute('waiting-for-avatar', './players/avatar');
 addRoute('waiting-for-invites', './players/invite');
 addRoute('do-not-contact', './players/blackhole');
 addRoute('waiting-for-submission', './games/submission');

@@ -26,6 +26,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       return game_player.id !== player.id && game_player.state === 'guessing';
     });
 
+    let original_prompt = game.round.phrase;
     let ending_messages = [];
     if ( players_left.length === 0 ) {
       let round = yield Game.newRound(game);
@@ -48,7 +49,10 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       ending_messages = round.game.players.map(function(game_player) {
         return {
           player: game_player,
-          key: 'round-over'
+          key: 'round-over',
+          options: [
+            original_prompt
+          ]
         };
       }).concat(round.game.players.map(function(game_player) {
         if ( game_player.id !== round.submitter.id ) {

@@ -33,6 +33,13 @@ const rules = {
       'invite '
     ]
   },
+  'keep': {
+    pattern: '^keep',// + snippets.phone+'$',
+    flags: 'i',
+    example: [
+      'keep'
+    ]
+  },
   'new-game': {
     pattern: '^new game',
     flags: 'i',

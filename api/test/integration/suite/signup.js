@@ -1,14 +1,17 @@
 'use strict';
 
-var getPlayers = require('../lib/getPlayers');
-var setup = require('../lib/setup');
-var check = require('../lib/check');
+const getPlayers = require('../lib/getPlayers');
+const setup = require('../lib/setup');
+const check = require('../lib/check');
+const Player = require('models/player');
+const rule = require('config/rule');
+const EMOJI = '🐳';
 
-describe('Signup', function() {
+describe.only('Signup', function() {
 
   describe('Test a brand new player', function() {
     it('should introduce itself when contacting for the first time', function() {
-      var player = getPlayers(1)[0];
+      let player = getPlayers(1)[0];
       return check(
         { player: player, msg: 'hello?' },
         [
@@ -21,7 +24,7 @@ describe('Signup', function() {
 
     describe('Saying yes', function() {
       function reachOut() {
-        var player = getPlayers(1)[0];
+        let player = getPlayers(1)[0];
         return setup([
           { player: player, msg: 'hi' }
         ]).then(function() {
@@ -76,16 +79,96 @@ describe('Signup', function() {
     });
   });
 
-  it('should prompt the player to invite friends', function() {
-    var player = getPlayers(1)[0];
+  it.only('should allow the player to submit a nickname', function() {
+    let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
       { player: player, msg: 'y' },
     ]).then(function() {
+      return Player.get(player).then(function(p) {
+        return p.avatar;
+      });
+    }).then(function(avatar) {
       return check(
         { player: player, msg: player.nickname },
         [
-          { key: 'intro_3', options: [ player.nickname ], to: player }
+          { key: 'intro_3', options: [ player.nickname, avatar ], to: player }
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
+  it('should allow the player to accept the emoji', function() {
+    let player = getPlayers(1)[0];
+    return setup([
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'y' },
+      { player: player, msg: player.nickname }
+    ]).then(function() {
+      return Player.get(player).then(function(p) {
+        return p.avatar;
+      });
+    }).then(function(avatar) {
+      return check(
+        { player: player, msg: rule('keep').example() },
+        [
+          { key: 'intro_4', options: [ player.nickname, avatar ], to: player }
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
+  it('should allow the player to change the emoji', function() {
+    let player = getPlayers(1)[0];
+    return setup([
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'y' },
+      { player: player, msg: player.nickname }
+    ]).then(function() {
+      return check(
+        { player: player, msg: EMOJI },
+        [
+          { key: 'intro_4', options: [ player.nickname, EMOJI ], to: player }
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
+  it('should disallow a player from submitting invalid emoji', function() {
+    let player = getPlayers(1)[0];
+    return setup([
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'y' },
+      { player: player, msg: player.nickname },
+    ]).then(function() {
+      return check(
+        { player: player, msg: 'foo' },
+        [
+          { key: 'error-14', to: player }
+        ]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
+  it('should disallow a player from submitting more than one emoji', function() {
+    let player = getPlayers(1)[0];
+    return setup([
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'y' },
+      { player: player, msg: player.nickname },
+    ]).then(function() {
+      return check(
+        { player: player, msg: EMOJI+EMOJI },
+        [
+          { key: 'error-14', to: player }
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -94,7 +177,7 @@ describe('Signup', function() {
   });
 
   it('should blacklist a new player who messages accidentally', function() {
-    var player = getPlayers(1)[0];
+    let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
       { player: player, msg: 'no' },
@@ -109,7 +192,7 @@ describe('Signup', function() {
   });
 
   it('should chide a player who tries to invite players before entering a nickname', function() {
-    var player = getPlayers(1)[0];
+    let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
       { player: player, msg: 'yes' },
@@ -122,4 +205,21 @@ describe('Signup', function() {
       });
     });
   });
+
+  it('should chide a player who tries to invite players before entering an avatar', function() {
+    let player = getPlayers(1)[0];
+    return setup([
+      { player: player, msg: 'hello' },
+      { player: player, msg: 'yes' },
+      { player: player, msg: player.nickname } ,
+    ]).then(function() {
+      return check(
+        { player: player, msg: 'invite foo' },
+        [{ key: 'wait-to-invite', to: player }]
+      ).then(function(obj) {
+        obj.output.should.deep.equal(obj.expected);
+      });
+    });
+  });
+
 });

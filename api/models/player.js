@@ -151,6 +151,7 @@ let Player = {
         player.number = user.from;
         player.from = user.from;
         player.user_id = user.id;
+        player.avatar = user.avatar;
         player.user = user;
 
         return player;

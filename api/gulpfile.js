@@ -67,6 +67,7 @@ function pullProductionDB() {
   ];
   var dumpData = [
     'mysqldump',
+    '--opt',
     getConnectionString(config),
     tablesHavingData.join(' '),
     '|',

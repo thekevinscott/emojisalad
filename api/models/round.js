@@ -7,12 +7,12 @@ const levenshtein = require('levenshtein');
 const autosuggest = require('autosuggest');
 
 const Player = require('./player');
-var Game;
+let Game;
 //let Game = require('./game');
 
-var Round = {
+let Round = {
   getCluesLeft: function(game) {
-    var clue_query = squel
+    let clue_query = squel
                      .select()
                      .field('count(1) as cnt')
                      .from('round_clues')
@@ -22,13 +22,13 @@ var Round = {
     });
   },
   getClue: Promise.coroutine(function* (game, player) {
-    var clue_query = squel
+    let clue_query = squel
                      .select()
                      .field('clue_id')
                      .from('round_clues')
                      .where('round_id=?',game.round.id);
 
-    var select_query = squel
+    let select_query = squel
                 .select()
                 .field('c.id as clue_id')
                 .field('c.clue')
@@ -42,11 +42,11 @@ var Round = {
 
     let rows = yield db.query(select_query.toString());
     return rows[0];
-    //var clue = rows[0];
+    //let clue = rows[0];
 
     //if ( clue ) {
       /*
-      var update_clue_query = squel
+      let update_clue_query = squel
                               .insert()
                               .into('round_clues')
                               .setFields({
@@ -138,7 +138,7 @@ var Round = {
     }
   }),
   getGuessesLeft: function(game, player) {
-    var query = squel
+    let query = squel
                 .select()
                 .field('count(1) as guesses_made')
                 .field('r.guesses')
@@ -148,7 +148,7 @@ var Round = {
                 .where('g.player_id=?',player.id);
 
     return db.query(query).then(function(rows) {
-      var row = rows.pop();
+      let row = rows.pop();
       return parseInt(row.guesses) - parseInt(row.guesses_made);
     });
   },
@@ -156,20 +156,20 @@ var Round = {
     if ( ! Game ) {
       Game = require('./game');
     }
-    var game_phrases = squel
+    let game_phrases = squel
                        .select()
                        .field('phrase_id')
                        .from('game_phrases')
                        .where('game_id=?', game.id);
 
-    var order;
+    let order;
     if ( game.random ) {
       order = 'RAND()';
     } else {
       order = 'p.id';
     }
 
-    var query = squel
+    let query = squel
                 .select()
                 .from('phrases', 'p')
                 .field('p.phrase')
@@ -180,9 +180,9 @@ var Round = {
 
     return db.query(query).then(function(rows) {
       if ( rows ) {
-        var phrase = rows[0];
+        let phrase = rows[0];
         // mark this phrase as used
-        var markPhrase = squel
+        let markPhrase = squel
                          .insert()
                          .into('game_phrases')
                          .setFields({
@@ -220,7 +220,7 @@ var Round = {
                         
     let rounds = yield db.query(query);
     if ( rounds.length ) {
-      var round = rounds[0];
+      let round = rounds[0];
       return round;
     } else {
       return null;
@@ -235,26 +235,26 @@ var Round = {
       Game.getNextSubmitter(game),
       this.getPhrase(game),
       function(submitter, phrase) {
-        var state = 'waiting-for-submission';
-        var state_id = squel
+        let state = 'waiting-for-submission';
+        let state_id = squel
                        .select()
                        .field('id')
                        .from('round_states')
                        .where('state=?',state);
 
-        var clues_allowed = squel
+        let clues_allowed = squel
                       .select()
                       .field('clues_allowed')
                       .from('games')
                       .where('id=?',game.id);
 
-        var guesses = squel
+        let guesses = squel
                       .select()
                       .field('guesses')
                       .from('games')
                       .where('id=?',game.id);
 
-        var query = squel
+        let query = squel
                     .insert()
                     .into('rounds')
                     .setFields({
@@ -291,7 +291,7 @@ var Round = {
     if ( game.round.players[0].id === player.id ) {
       throw "These should not match";
     }
-    var promises = game.round.players.map(function(game_player) {
+    let promises = game.round.players.map(function(game_player) {
       return Player.update(game_player, {state: 'guessing' });
     });
     promises.push(function() {
@@ -303,12 +303,12 @@ var Round = {
     return Promise.all(promises);
   },
   update: function(round, data) {
-    var query = squel
+    let query = squel
                 .update()
                 .table('rounds', 'r')
                 .where('r.id=?',round.id);
     if ( data.state ) {
-      var state_id = squel
+      let state_id = squel
                      .select()
                      .field('id')
                      .from('round_states')

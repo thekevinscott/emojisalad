@@ -14,7 +14,9 @@ const User = {
                 .setFields({
                   created: squel.fval('NOW(3)'),
                   last_activity: squel.fval('NOW(3)'),
-                  from: params.from
+                  from: params.from,
+                  avatar: '😀'
+                  //this.getRandomAvatar()
                 });
 
     let rows = yield db.query(query);
@@ -32,22 +34,22 @@ const User = {
 
   }),
   update: Promise.coroutine(function* (user, params) {
+    let whitelist = [
+      'nickname',
+      'blacklist',
+      'maximum_games',
+      'avatar'
+    ];
     let query = squel
                 .update()
                 .table('users', 'u')
                 .where('u.id=?', user.id);
 
-    if ( params.nickname ) {
-      query.set('nickname', params.nickname);
-    }
-
-    if ( params.blacklist !== undefined ) {
-      query.set('blacklist', params.blacklist);
-    }
-
-    if ( params.maximum_games !== undefined ) {
-      query.set('maximum_games', params.maximum_games);
-    }
+    whitelist.map(function(key) {
+      if ( params[key] ) {
+        query.set(key, params[key]);
+      }
+    });
 
     yield db.query(query.toString());
     return user;
@@ -103,6 +105,9 @@ const User = {
     } else {
       return null;
     }
+  }),
+  getRandomAvatar: Promise.coroutine(function* () {
+    return '😀';
   })
 };
 

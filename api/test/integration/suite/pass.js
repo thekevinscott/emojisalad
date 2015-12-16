@@ -31,7 +31,7 @@ let defaults = {
 describe('Pass', function() {
   describe('Illegal', function() {
     it('should not let a player pass when they are not guessing', function() {
-      var players = getPlayers(3);
+      let players = getPlayers(3);
       return startGame(players).then(function() {
         return check(
           { player: players[1], msg: pass },
@@ -45,7 +45,7 @@ describe('Pass', function() {
     });
 
     //it('should not let a submitter pass when guessing', function() {
-      //var players = getPlayers(3);
+      //let players = getPlayers(3);
       //return startGame(players).then(function() {
         //return check(
           //{ player: players[0], msg: pass },
@@ -59,7 +59,7 @@ describe('Pass', function() {
     //});
 
     it('should not let a submitter pass when waiting for others to guess', function() {
-      var players = getPlayers(3);
+      let players = getPlayers(3);
       return playGame(players).then(function() {
         return check(
           { player: players[0], msg: pass },
@@ -73,7 +73,7 @@ describe('Pass', function() {
     });
 
     it('should not let a player ask for a clue if they have passed', function() {
-      var players = getPlayers(3);
+      let players = getPlayers(3);
       return playGame(players).then(function() {
         return setup([
           { player: players[1], msg: pass }
@@ -92,7 +92,7 @@ describe('Pass', function() {
 
     /*
     it('should not let a player pass if they have run out of guesses', function() {
-      var players = getPlayers(3);
+      let players = getPlayers(3);
       return playGame(players).then(function(game) {
         return setup(exhaustGuesses(game, players[1]));
       }).then(function() {
@@ -109,7 +109,7 @@ describe('Pass', function() {
     */
 
     it('should not let a player guess if they have already passed', function() {
-      var players = getPlayers(3);
+      let players = getPlayers(3);
       return playGame(players).then(function() {
         return setup({ player: players[1], msg: pass });
       }).then(function() {
@@ -127,7 +127,7 @@ describe('Pass', function() {
 
   describe('Legal', function() {
     it('should let a player pass during a round and allow the round to continue', function() {
-      var players = getPlayers(3);
+      let players = getPlayers(3);
       return playGame(players).then(function(game) {
         return check(
           { player: players[1], msg: pass },
@@ -143,19 +143,19 @@ describe('Pass', function() {
     });
 
     it('should let a player pass during a round and end the round if there are no more players', function() {
-      var players = getPlayers(2);
-      var lastClue = 'JURASSIC PARK';
-      var nextClue = 'SILENCE OF THE LAMBS';
+      let players = getPlayers(2);
+      let lastPrompt = 'JURASSIC PARK';
+      let nextPrompt = 'SILENCE OF THE LAMBS';
       return playGame(players).then(function() {
         return check(
           { player: players[1], msg: pass },
           [
             { to: players[0], key: 'player-passed', options: [ players[1].nickname ]},
             { to: players[1], key: 'pass', options: [ players[1].nickname ]},
-            { to: players[0], key: 'round-over', options: [lastClue] },
-            { to: players[1], key: 'round-over', options: [lastClue] },
+            { to: players[0], key: 'round-over', options: [lastPrompt] },
+            { to: players[1], key: 'round-over', options: [lastPrompt] },
             { to: players[0], key: 'game-next-round', options: [ players[1].nickname ]},
-            { to: players[1], key: 'game-next-round-suggestion', options: [ players[1].nickname, nextClue ]},
+            { to: players[1], key: 'game-next-round-suggestion', options: [ players[1].nickname, nextPrompt ]},
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -165,8 +165,8 @@ describe('Pass', function() {
 
     /*
     it('should end a round if one player is out of guesses and the other player passes', function() {
-      var players = getPlayers(3);
-      var nextClue = 'SILENCE OF THE LAMBS';
+      let players = getPlayers(3);
+      let nextClue = 'SILENCE OF THE LAMBS';
       return playGame(players).then(function(game) {
         return setup(exhaustGuesses(game, players[2]));
       }).then(function() {
@@ -191,9 +191,9 @@ describe('Pass', function() {
    */
 
     it('should allow the second player to guess successfully after the first player passes', function() {
-      var players = getPlayers(3);
-      var nextClue = 'SILENCE OF THE LAMBS';
-      var firstClue = 'JURASSIC PARK';
+      let players = getPlayers(3);
+      let nextClue = 'SILENCE OF THE LAMBS';
+      let firstClue = 'JURASSIC PARK';
       return playGame(players).then(function(game) {
         return Game.updateDefaultScores(game, defaults).then(function() {
           return setup([
@@ -228,15 +228,15 @@ describe('Pass', function() {
 
     /*
     it('should end a round if one player passes and the other player runs out of guesses', function() {
-      var players = getPlayers(3);
-      var nextClue = 'SILENCE OF THE LAMBS';
-      //var firstClue = 'JURASSIC PARK';
+      let players = getPlayers(3);
+      let nextClue = 'SILENCE OF THE LAMBS';
+      //let firstClue = 'JURASSIC PARK';
       return playGame(players).then(function(game) {
-        var promises = [
+        let promises = [
           { player: players[2], msg: pass },
         ];
 
-        for ( var i=0;i<game.round.guesses-1;i++ ) {
+        for ( let i=0;i<game.round.guesses-1;i++ ) {
           promises.push({ player: players[1], msg: guess + EMOJI });
         }
 
@@ -262,9 +262,9 @@ describe('Pass', function() {
     */
 
     it('should end a round if both players pass', function() {
-      var players = getPlayers(3);
-      var nextClue = 'SILENCE OF THE LAMBS';
-      //var firstClue = 'JURASSIC PARK';
+      let players = getPlayers(3);
+      let nextClue = 'SILENCE OF THE LAMBS';
+      let lastPrompt = 'JURASSIC PARK';
       return playGame(players).then(function() {
         return setup([
           { player: players[2], msg: pass },
@@ -276,9 +276,9 @@ describe('Pass', function() {
             { to: players[0], key: 'player-passed', options: [ players[1].nickname ]},
             { to: players[1], key: 'pass', options: [ players[1].nickname ]},
             { to: players[2], key: 'player-passed', options: [ players[1].nickname ]},
-            { to: players[0], key: 'round-over' },
-            { to: players[1], key: 'round-over' },
-            { to: players[2], key: 'round-over' },
+            { to: players[0], key: 'round-over', options: [lastPrompt] },
+            { to: players[1], key: 'round-over', options: [lastPrompt] },
+            { to: players[2], key: 'round-over', options: [lastPrompt] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, nextClue] },
             { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
@@ -290,8 +290,8 @@ describe('Pass', function() {
     });
 
     it('should allow a game to move on if everyone passes', function() {
-      var players = getPlayers(3);
-      //var nextClue = 'SILENCE OF THE LAMBS';
+      let players = getPlayers(3);
+      //let nextClue = 'SILENCE OF THE LAMBS';
       return playGame(players).then(function() {
         return setup([
           { player: players[2], msg: pass },
@@ -314,8 +314,8 @@ describe('Pass', function() {
     });
 
     it('should allow an initiator to pass', function() {
-      var players = getPlayers(3);
-      var nextClue = 'SILENCE OF THE LAMBS';
+      let players = getPlayers(3);
+      let nextClue = 'SILENCE OF THE LAMBS';
       return startGame(players).then(function() {
         return check(
           { player: players[0], msg: pass },
@@ -337,8 +337,8 @@ describe('Pass', function() {
 });
 
 function exhaustGuesses(game, player) {
-  var guesses = [];
-  for ( var i=0;i<game.round.guesses;i++ ) {
+  let guesses = [];
+  for ( let i=0;i<game.round.guesses;i++ ) {
     guesses.push({ player: player, msg: guess + EMOJI });
   }
   return guesses;
