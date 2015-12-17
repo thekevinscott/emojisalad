@@ -20,10 +20,10 @@ const rules = {
     ]
   },
   'help': {
-    pattern: '^help(.*)',
+    pattern: '^options(.*)',
     flags: 'i',
     example: [
-      'help'
+      'options'
     ]
   },
   'invite': {

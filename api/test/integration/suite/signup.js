@@ -23,6 +23,15 @@ describe('Signup', function() {
     });
 
     describe('Saying yes', function() {
+      function reachOut() {
+        let player = getPlayers(1)[0];
+        return setup([
+          { player: player, msg: 'hi' }
+        ]).then(function() {
+          return player;
+        });
+      }
+
       function sayYes(message) {
         return reachOut().then(function(player) {
           return check(
@@ -239,13 +248,3 @@ describe('Signup', function() {
   });
 
 });
-
-function reachOut() {
-  let player = getPlayers(1)[0];
-  return setup([
-    { player: player, msg: 'hi' }
-  ]).then(function() {
-    return player;
-  });
-}
-
