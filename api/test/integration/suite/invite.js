@@ -8,6 +8,7 @@ const startGame = require('../flows/startGame');
 const Game = require('models/game');
 const Invite = require('models/invite');
 const Player = require('models/player');
+const rule = require('config/rule');
 const EMOJI = '😀';
 const game_number = require('../../../../config/numbers').getDefault();
 
@@ -130,7 +131,7 @@ describe('Inviting', function() {
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
-        { player: player, msg: 'do not invite me again' }
+        { player: player, msg: rule('no').example() }
       ]).then(function() {
         return check(
           { player: inviter, msg: 'invite '+player.number },

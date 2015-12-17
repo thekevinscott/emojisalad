@@ -66,16 +66,6 @@ describe('Signup', function() {
           obj.output.should.deep.equal(obj.expected);
         });
       });
-      it('should start the onboarding with a "yeehaw" response', function() {
-        return reachOut().then(function(player) {
-          return check(
-            { player: player, msg: 'yeehaw' },
-            []
-          );
-        }).then(function(obj) {
-          obj.output.should.deep.equal(obj.expected);
-        });
-      });
     });
   });
 
@@ -83,7 +73,7 @@ describe('Signup', function() {
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
-      { player: player, msg: 'y' },
+      { player: player, msg: rule('yes').example() },
     ]).then(function() {
       return Player.get(player).then(function(p) {
         return p.avatar;
@@ -104,7 +94,7 @@ describe('Signup', function() {
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
-      { player: player, msg: 'y' },
+      { player: player, msg: rule('yes').example() },
       { player: player, msg: player.nickname }
     ]).then(function() {
       return Player.get(player).then(function(p) {
@@ -220,7 +210,7 @@ describe('Signup', function() {
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
-      { player: player, msg: 'yes' },
+      { player: player, msg: rule('yes').example() },
     ]).then(function() {
       return check(
         { player: player, msg: 'invite foo' },
@@ -235,7 +225,7 @@ describe('Signup', function() {
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
-      { player: player, msg: 'yes' },
+      { player: player, msg: rule('yes').example() },
       { player: player, msg: player.nickname } ,
     ]).then(function() {
       return check(
