@@ -21,9 +21,14 @@ module.exports = Promise.coroutine(function* (player, input) {
       key: 'intro_2',
       player: player
     }];
-  } else {
+  } else if ( rule('no').test(input) ) {
     return yield User.update({ id: player.user.id }, {
       blacklist: 1
     });
+  } else {
+    return [{
+      key: 'onboarding_wtf',
+      player: player
+    }];
   }
 });

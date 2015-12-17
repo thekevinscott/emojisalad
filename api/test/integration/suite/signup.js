@@ -23,15 +23,6 @@ describe('Signup', function() {
     });
 
     describe('Saying yes', function() {
-      function reachOut() {
-        let player = getPlayers(1)[0];
-        return setup([
-          { player: player, msg: 'hi' }
-        ]).then(function() {
-          return player;
-        });
-      }
-
       function sayYes(message) {
         return reachOut().then(function(player) {
           return check(
@@ -176,17 +167,42 @@ describe('Signup', function() {
     });
   });
 
-  it('should blacklist a new player who messages accidentally', function() {
-    let player = getPlayers(1)[0];
-    return setup([
-      { player: player, msg: 'hello' },
-      { player: player, msg: 'no' },
-    ]).then(function() {
-      return check(
-        { player: player, msg: 'any response?' },
-        [ ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
+  describe('Blacklist', function() {
+    function blacklistCheck(msg) {
+      let player = getPlayers(1)[0];
+      return setup([
+        { player: player, msg: 'hello' },
+        { player: player, msg: msg },
+      ]).then(function() {
+        return check(
+          { player: player, msg: 'any response?' },
+          [ ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    }
+    it('should blacklist a new player who says no', function() {
+      blacklistCheck('no');
+    });
+
+    it('should blacklist a new player who says fuck off', function() {
+      blacklistCheck('fuck off');
+    });
+
+    it('should huh anything else', function() {
+      let player = getPlayers(1)[0];
+      return setup([
+        { player: player, msg: 'hello' },
+      ]).then(function() {
+        return check(
+          { player: player, msg: 'boo urns' },
+          [
+            { key: 'onboarding_wtf', to: player }
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
       });
     });
   });
@@ -223,3 +239,13 @@ describe('Signup', function() {
   });
 
 });
+
+function reachOut() {
+  let player = getPlayers(1)[0];
+  return setup([
+    { player: player, msg: 'hi' }
+  ]).then(function() {
+    return player;
+  });
+}
+

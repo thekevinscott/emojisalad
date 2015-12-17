@@ -47,6 +47,13 @@ const rules = {
       'new game'
     ]
   },
+  'no': {
+    pattern: '^no|^nope|^fuck off$',
+    flags: 'i',
+    example: [
+      'no'
+    ]
+  },
   'pass': {
     pattern: '^pass(.*)',
     flags: 'i',
