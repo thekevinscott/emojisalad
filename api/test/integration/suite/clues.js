@@ -20,8 +20,8 @@ describe('Clues', function() {
       return check(
         { player: players[1], msg: clue },
         [
-          { key: 'says', options: [players[1].nickname, clue], to: players[0] },
-          { key: 'says', options: [players[1].nickname, clue], to: players[2] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[0] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[2] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[0] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[1] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[2] }
@@ -43,8 +43,8 @@ describe('Clues', function() {
       return check(
         { player: players[1], msg: clue },
         [
-          { key: 'says', options: [players[1].nickname, clue], to: players[0] },
-          { key: 'says', options: [players[1].nickname, clue], to: players[2] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[0] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[2] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[0] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[1] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[2] }
@@ -62,8 +62,8 @@ describe('Clues', function() {
       return check(
         { player: players[0], msg: clue },
         [
-          { key: 'says', options: [players[0].nickname, clue], to: players[1] },
-          { key: 'says', options: [players[0].nickname, clue], to: players[2] },
+          { key: 'says', options: [players[0].nickname, players[0].avatar, clue], to: players[1] },
+          { key: 'says', options: [players[0].nickname, players[0].avatar, clue], to: players[2] },
           { key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[0] },
           { key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[1] },
           { key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[2] }
@@ -86,8 +86,8 @@ describe('Clues', function() {
       return check(
         { player: players[1], msg: clue },
         [
-          { key: 'says', options: [players[1].nickname, clue], to: players[0] },
-          { key: 'says', options: [players[1].nickname, clue], to: players[2] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[0] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[2] },
           { key: 'no-more-clues-allowed', options: ['1 clue'], to: players[0] },
           { key: 'no-more-clues-allowed', options: ['1 clue'], to: players[1] },
           { key: 'no-more-clues-allowed', options: ['1 clue'], to: players[2] }
@@ -112,8 +112,8 @@ describe('Clues', function() {
       return check(
         { player: players[1], msg: clue },
         [
-          { key: 'says', options: [players[1].nickname, clue], to: players[0] },
-          { key: 'says', options: [players[1].nickname, clue], to: players[2] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[0] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[2] },
           { key: 'no-more-clues-available', to: players[0] },
           { key: 'no-more-clues-available', to: players[1] },
           { key: 'no-more-clues-available', to: players[2] }

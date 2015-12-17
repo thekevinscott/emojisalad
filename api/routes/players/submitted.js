@@ -19,6 +19,7 @@ module.exports = function(player, input, game_number) {
         key: 'says',
         options: [
           player.nickname,
+          player.avatar,
           input
         ]
       };
@@ -49,6 +50,7 @@ module.exports = function(player, input, game_number) {
           key: 'says',
           options: [
             player.nickname,
+            player.avatar,
             input
           ]
         };

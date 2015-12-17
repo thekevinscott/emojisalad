@@ -32,7 +32,7 @@ module.exports = Promise.coroutine(function* (inviter, input) {
         return [
           {
             player: players.inviting_player,
-            key: 'intro_4',
+            key: 'intro_5',
             options: [input]
           },
           {

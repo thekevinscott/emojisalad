@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const getRandomPhone = require('./getRandomPhone');
 const game_numbers = require('../../../../config/numbers');
+const EMOJI = '🐳';
 
 // if a number is the argument, this is the number of players
 // to create.
@@ -38,6 +39,9 @@ function getPlayers(arg) {
       }
       if ( ! player.nickname ) {
         player.nickname = listOfNicknames[nicknameCount++]+Math.random();
+      }
+      if ( ! player.avatar ) {
+        player.avatar = EMOJI;
       }
     });
   }

@@ -27,7 +27,7 @@ const defaults = {
 describe('Guessing', function() {
 
   describe('Correct', function() {
-    it.only('should be able to successfully guess', function() {
+    it('should be able to successfully guess', function() {
       var players = getPlayers(3);
       var msg2 = 'SILENCE OF THE LAMBS';
 
@@ -437,8 +437,8 @@ describe('Guessing', function() {
         { player: players[1], msg: EMOJI },
         [
           { to: players[1], key: 'game-submission-sent'},
-          { to: players[0], key: 'says', options: [players[1].nickname, EMOJI] },
-          { to: players[2], key: 'says', options: [players[1].nickname, EMOJI] },
+          { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, EMOJI] },
+          { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, EMOJI] },
           { to: players[0], key: 'guessing-instructions' },
           { to: players[2], key: 'guessing-instructions' }
         ]

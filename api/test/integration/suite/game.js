@@ -61,8 +61,8 @@ describe('Game', function() {
       return check(
         { player: players[1], msg: msg },
         [
-          { to: players[0], key: 'says', options: [players[1].nickname, msg] },
-          { to: players[2], key: 'says', options: [players[1].nickname, msg] },
+          { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar,  msg] },
+          { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar,  msg] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -78,8 +78,8 @@ describe('Game', function() {
       return check(
         { player: players[0], msg: msg },
         [
-          { to: players[1], key: 'says', options: [players[0].nickname, msg] },
-          { to: players[2], key: 'says', options: [players[0].nickname, msg] },
+          { to: players[1], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
+          { to: players[2], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);

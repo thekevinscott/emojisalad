@@ -1,6 +1,7 @@
 'use strict';
 const Game = require('models/game');
 const Promise = require('bluebird');
+const EMOJI = '👾';
 
 function getDayAgo() {
   const day_ago = new Date();
@@ -49,6 +50,7 @@ function sendAlert(key, game_players) {
         key: 'says',
         options: [
           'Emojibot',
+          EMOJI,
           'The time is: ' + new Date()
         ]
       };

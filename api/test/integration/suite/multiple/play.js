@@ -222,8 +222,8 @@ describe('Play', function() {
         return check(
           { player: players[2], msg: rule('clue').example(), to: game_number },
           [
-            { key: 'says', options: [players[2].nickname, rule('clue').example()], to: players[0] },
-            { key: 'says', options: [players[2].nickname, rule('clue').example()], to: players[1] },
+            { key: 'says', options: [players[2].nickname, players[2].avatar, rule('clue').example()], to: players[0] },
+            { key: 'says', options: [players[2].nickname, players[2].avatar, rule('clue').example()], to: players[1] },
             { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[0] },
             { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[1] },
             { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[2] }

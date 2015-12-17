@@ -18,8 +18,8 @@ describe('Submissions', function() {
       return check(
         { player: players[0], msg: msg },
         [
-          { to: players[1], key: 'says', options: [players[0].nickname, msg] },
-          { to: players[2], key: 'says', options: [players[0].nickname, msg] },
+          { to: players[1], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
+          { to: players[2], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -36,8 +36,8 @@ describe('Submissions', function() {
       return check(
         { player: players[0], msg: msg},
         [
-          { to: players[1], key: 'says', options: [players[0].nickname, msg] },
-          { to: players[2], key: 'says', options: [players[0].nickname, msg] },
+          { to: players[1], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
+          { to: players[2], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
           { to: players[0], key: 'mixed-emoji', options: [players[0].nickname] },
         ]
       ).then(function(obj) {
@@ -55,8 +55,8 @@ describe('Submissions', function() {
         { player: players[0], msg: EMOJI },
         [
           { key: 'game-submission-sent', to: players[0] },
-          { key: 'says', options: [players[0].nickname, EMOJI], to: players[1] },
-          { key: 'says', options: [players[0].nickname, EMOJI], to: players[2] },
+          { key: 'says', options: [players[0].nickname, players[0].avatar, EMOJI], to: players[1] },
+          { key: 'says', options: [players[0].nickname, players[0].avatar, EMOJI], to: players[2] },
           { key: 'guessing-instructions', to: players[1] },
           { key: 'guessing-instructions', to: players[2] }
         ]
@@ -75,8 +75,8 @@ describe('Submissions', function() {
         { player: players[0], msg: msg },
         [
           { key: 'game-submission-sent', to: players[0] },
-          { key: 'says', options: [players[0].nickname, msg ], to: players[1] },
-          { key: 'says', options: [players[0].nickname, msg ], to: players[2] },
+          { key: 'says', options: [players[0].nickname, players[0].avatar,  msg ], to: players[1] },
+          { key: 'says', options: [players[0].nickname, players[0].avatar,  msg ], to: players[2] },
           { key: 'guessing-instructions', to: players[1] },
           { key: 'guessing-instructions', to: players[2] }
         ]

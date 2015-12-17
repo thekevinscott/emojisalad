@@ -65,6 +65,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
           player: game_player,
           options: [
             player.nickname,
+            player.avatar,
             input
           ]
         };

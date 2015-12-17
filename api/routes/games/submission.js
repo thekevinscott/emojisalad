@@ -83,7 +83,9 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       let forwarded_message = {
         key: 'says',
         options: [
-          game.round.submitter.nickname, input 
+          game.round.submitter.nickname,
+          game.round.submitter.avatar,
+          input 
         ]
       };
 
