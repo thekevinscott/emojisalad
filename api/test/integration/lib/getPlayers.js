@@ -27,7 +27,8 @@ function getPlayers(arg) {
         number: number,
         from: number,
         nickname: listOfNicknames[i]+Math.random(),
-        to: game_numbers.getDefault()
+        to: game_numbers.getDefault(),
+        avatar: EMOJI
       });
     }
   } else if ( _.isArray(arg) ) { 

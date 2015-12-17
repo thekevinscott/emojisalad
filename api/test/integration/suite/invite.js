@@ -153,6 +153,7 @@ describe('Inviting', function() {
       return setup([
         { player: inviter, msg: 'invite '+player.number },
         { player: player, msg: 'yes' },
+        { player: player, msg: player.nickname },
       ]).then(function() {
         return Player.get({ from: inviter.number, to: game_number }).then(function(gotPlayer) {
           return Game.get({ player: gotPlayer, game_number: game_number }).then(function(game) {
@@ -161,7 +162,7 @@ describe('Inviting', function() {
         });
       }).then(function() {
         return check(
-          { player: player, msg: player.nickname },
+          { player: player, msg: player.avatar },
           [
             { key: 'accepted-invited', options: [player.nickname], to: inviter },
             { key: 'accepted-inviter', options: [player.nickname, inviter.nickname], to: player },
@@ -264,10 +265,11 @@ describe('Inviting', function() {
         return setup([
           { player: players[0], msg: 'invite '+invitee.number },
           { player: invitee, msg: 'yes' },
+          { player: invitee, msg: invitee.nickname },
         ]);
       }).then(function() {
         return check(
-          { player: invitee, msg: invitee.nickname },
+          { player: invitee, msg: invitee.avatar },
           [
             { to: players[0], key: 'accepted-invited', options: [invitee.nickname] },
             { to: players[1], key: 'join-game', options: [invitee.nickname] },
@@ -287,10 +289,11 @@ describe('Inviting', function() {
           { player: players[0], msg: EMOJI },
           { player: players[0], msg: 'invite '+invitee.number },
           { player: invitee, msg: 'yes' },
+          { player: invitee, msg: invitee.nickname },
         ]);
       }).then(function() {
         return check(
-          { player: invitee, msg: invitee.nickname },
+          { player: invitee, msg: invitee.avatar },
           [
             { to: players[0], key: 'accepted-invited-next-round', options: [invitee.nickname] },
             { to: players[1], key: 'join-game-next-round', options: [invitee.nickname] },

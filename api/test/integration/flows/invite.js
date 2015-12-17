@@ -10,9 +10,9 @@ function invite(inviter, invited) {
     let numbers = response[0].Response.Sms[0].$;
     invited.to = numbers.from;
     return setup([
-      { player: invited, msg: 'yes'},
-      { player: invited, msg: invited.nickname},
-      { player: invited, msg: rule('keep').example() },
+      { player: invited, msg: 'yes' },
+      { player: invited, msg: invited.nickname },
+      { player: invited, msg: invited.avatar },
     ]);
   });
 }

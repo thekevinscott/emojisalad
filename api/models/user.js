@@ -8,6 +8,7 @@ const User = {
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
+    let avatar = yield this.getRandomAvatar();
     let query = squel
                 .insert({ autoQuoteFieldNames: true })
                 .into('users')
@@ -15,8 +16,7 @@ const User = {
                   created: squel.fval('NOW(3)'),
                   last_activity: squel.fval('NOW(3)'),
                   from: params.from,
-                  avatar: '😀'
-                  //this.getRandomAvatar()
+                  avatar: avatar
                 });
 
     let rows = yield db.query(query);
@@ -107,7 +107,15 @@ const User = {
     }
   }),
   getRandomAvatar: Promise.coroutine(function* () {
-    return '😀';
+    let query = squel
+                .select()
+                .field('avatar')
+                .from('avatars')
+                .order('rand()')
+                .limit(1);
+
+    let rows = yield db.query(query);
+    return rows[0].avatar;
   })
 };
 

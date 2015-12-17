@@ -59,6 +59,7 @@ function pullProductionDB() {
   // and need
   var tablesHavingData = [
     'admins',
+    'avatars',
     'game_numbers',
     'game_states',
     'messages',

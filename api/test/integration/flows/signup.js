@@ -9,7 +9,7 @@ function signup(player) {
     { player: player, msg: 'hi' },
     { player: player, msg: rule('yes').example() },
     { player: player, msg: player.nickname },
-    { player: player, msg: rule('keep').example() },
+    { player: player, msg: player.avatar },
   ]);
 }
 
