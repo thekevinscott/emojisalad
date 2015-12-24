@@ -44,6 +44,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
             player: game_player,
             options: [
               player.nickname,
+              player.avatar,
               guess,
             ]
           };
@@ -61,6 +62,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
             player: game_player,
             options: [
               player.nickname,
+              player.avatar,
               game.round.phrase,
             ]
           });

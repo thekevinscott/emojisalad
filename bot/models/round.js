@@ -87,6 +87,7 @@ let Round = {
     // cause anything shorter, typos are tough shit.
     if ( ! result && phrase.length > 5 ) {
       const distance = levenshtein(phrase, guess) / phrase.length;
+      console.log(levenshtein('super mario brothers', 'super mario bros') / 'super mario brothers'.length);
       // accept it if its lower than a certain difference.
       if ( distance < .15 ) {
         result = true;
