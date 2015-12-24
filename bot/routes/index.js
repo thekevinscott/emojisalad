@@ -27,22 +27,18 @@ addRoute('passed', './players/say');
 addRoute('lost', './players/say');
 addRoute('invited-to-new-game', './players/invited-to-new-game');
 
-let Router = function(player, message, game_number, debug) {
+let Router = function(player, message, game_number) {
   let state = player.state;
   if ( player.blacklist ) {
-    if ( debug ) {
-      console.log('route: blackhole');
-    }
+    console.debug('route: blackhole');
     return Promise.method(require('./players/blackhole'))(player, message, game_number);
   }
   for ( let i=0,l=routes.length; i<l; i++ ) {
     let route = routes[i];
     if ( route.regex.test(state) ) {
       Player.logLastActivity(player, game_number);
-      //console.log('player', player.state, player.number, game_number);
-      if ( debug ) {
-        console.log('route: '+route.path);
-      }
+      //console.debug('player', player.state, player.number, game_number);
+      console.debug('route: '+route.path);
       return route.fn(player, message, game_number);
       //break;
     }

@@ -6,7 +6,7 @@ const pmx = require('pmx');
 const express = require('express');
 const app = express();
 
-let DEBUG = false;
+let DEBUG = true;
 console.debug = function() {
   if ( DEBUG ) {
     let args = Array.prototype.slice.call(arguments);

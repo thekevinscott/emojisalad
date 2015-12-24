@@ -33,16 +33,10 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const track = require('tracking');
-let debug = false;
 module.exports = function(req, res) {
-  if ( req.debug ) {
-    debug = req.debug;
-  }
-  if ( debug ) {
-    console.log('\n================twilio=================\n');
-    console.log(req.body.From, req.body.Body, req.body.To);
-    //console.log('req headers from twilio', req.headers.host);
-  }
+  console.debug('\n================twilio=================\n');
+  console.debug(req.body.From, req.body.Body, req.body.To);
+  //console.debug('req headers from twilio', req.headers.host);
   res.writeHead(200, {'Content-Type': 'text/xml'});
 
 
@@ -93,15 +87,13 @@ module.exports = function(req, res) {
       //return end(errors, player);
       return res.end('');
     } else {
-      if ( debug ) {
-        console.log([
-          player.id,
-          player.nickname,
-          req.body.From,
-          req.body.Body,
-          player.state,
-        ].join(' | '));
-      }
+      console.debug([
+        player.id,
+        player.nickname,
+        req.body.From,
+        req.body.Body,
+        player.state,
+      ].join(' | '));
       if ( !req.body.To || req.body.To[0] !== '+' ) {
         console.error('to', req.body.To);
         throw "STOP";
@@ -111,7 +103,7 @@ module.exports = function(req, res) {
       } catch(e) {
         console.error('error tracking player', player, req);
       }
-      return router(player, body, req.body.To, debug).then(function(response) {
+      return router(player, body, req.body.To).then(function(response) {
         return end(response);
       });
     }
