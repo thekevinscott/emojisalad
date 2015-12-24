@@ -64,18 +64,18 @@ module.exports = function(player, input, game_number) {
         }).filter((el) => el);
 
         // check that the submitter has not just guessed their own clue
-        var regex = new RegExp(game.round.phrase, 'i');
-        if ( regex.test(input) ) {
-          messages = messages.concat(game.players.map(function(game_player) {
-            return {
-              key: 'submitter-dont-guess',
-              player: game_player,
-              options: [
-                player.nickname
-              ]
-            };
-          }));
-        }
+        //var regex = new RegExp(game.round.phrase, 'i');
+        //if ( regex.test(input) ) {
+          //messages = messages.concat(game.players.map(function(game_player) {
+            //return {
+              //key: 'submitter-dont-guess',
+              //player: game_player,
+              //options: [
+                //player.nickname
+              //]
+            //};
+          //}));
+        //}
 
         return messages;
 

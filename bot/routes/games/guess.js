@@ -79,7 +79,8 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
             messages.push({
               key: 'join-game',
               options: [
-                benchedPlayer.nickname
+                benchedPlayer.nickname,
+                benchedPlayer.avatar
               ],
               player: game_player
             });

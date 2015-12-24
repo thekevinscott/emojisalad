@@ -38,6 +38,7 @@ var Log = {
       if ( !_.isArray(responses) ) {
         responses = [responses];
       }
+      console.debug('outgoing responses', responses);
       if ( responses && responses.length ) {
         Promise.all(responses.map(function(message) {
           console.debug('message', message);
