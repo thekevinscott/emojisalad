@@ -196,7 +196,7 @@ describe('Guessing', function() {
       });
     });
 
-    it.only('should let people guess as many times as they want', function() {
+    it('should let people guess as many times as they want', function() {
       let players = getPlayers(3);
 
       let the_guess = 'foo';
