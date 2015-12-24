@@ -7,21 +7,15 @@ var Round = require('models/round');
 var rule = require('config/rule');
 
 module.exports = Promise.coroutine(function* (player, input, game_number) {
-  console.debug('guess route, then:');
   if ( rule('invite').test(input) ) {
-    console.debug('invite route');
     return require('../players/invite')(player, input, game_number);
   } else if ( rule('new-game').test(input) ) {
-    console.debug('new game route');
     return require('../games/new-game')(player, input, game_number);
   } else if ( rule('pass').test(input) ) {
-    console.debug('pass route');
     return require('../games/pass')(player, input, game_number);
   } else if ( rule('clue').test(input) ) {
-    console.debug('clue route');
     return require('../games/clue')(player, input, game_number);
   } else if ( rule('guess').test(input) ) {
-    console.debug('guess! route');
     let messages = [];
     if ( player.state === 'passed' ) {
       messages.push({
