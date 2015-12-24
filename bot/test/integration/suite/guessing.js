@@ -27,19 +27,14 @@ const defaults = {
 describe('Guessing', function() {
 
   describe('Correct', function() {
-    it('should be able to successfully guess', function() {
+    it.only('should be able to successfully guess', function() {
       var players = getPlayers(3);
       var msg2 = 'SILENCE OF THE LAMBS';
 
+      console.log('1');
       return playGame(players).then(function(game) {
-        return Game.updateDefaultScores(game, defaults).then(function() {
-          return game;
-        });
-      }).then(function(game) {
+        console.log('2');
         let updates = {};
-        updates[players[1].nickname] = defaults['win-guesser-1'];
-        updates[players[0].nickname] = defaults['win-submitter-1'];
-        let score = getScore(game, updates);
         return check(
           { player: players[1], msg: guess + game.round.phrase },
           [

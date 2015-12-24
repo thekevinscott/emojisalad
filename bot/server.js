@@ -56,7 +56,7 @@ app.post('/platform/:platform', function(req, res) {
 require('./cron');
 
 app.listen(app.get('port'), function() {
-  console.log('EmojinaryFriend API');
+  console.debug('EmojinaryFriend API');
 });
 
 app.use(pmx.expressErrorHandler());
