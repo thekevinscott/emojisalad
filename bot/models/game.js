@@ -244,7 +244,7 @@ let Game = {
     if ( !games.length && debug ) {
       console.log('no games found', query.toString());
     }
-    console.debug('games', games);
+    //console.debug('games', games);
     return games;
   }),
   start: Promise.coroutine(function* (game) {

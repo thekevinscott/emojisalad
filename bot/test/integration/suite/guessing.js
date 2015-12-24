@@ -17,7 +17,7 @@ const EMOJI = '😀';
 describe('Guessing', function() {
 
   describe('Correct', function() {
-    it.only('should be able to successfully guess', function() {
+    it('should be able to successfully guess', function() {
       var players = getPlayers(3);
       var msg2 = 'SILENCE OF THE LAMBS';
 
@@ -196,7 +196,7 @@ describe('Guessing', function() {
       });
     });
 
-    it('should let people guess as many times as they want', function() {
+    it.only('should let people guess as many times as they want', function() {
       let players = getPlayers(3);
 
       let the_guess = 'foo';
@@ -212,9 +212,6 @@ describe('Guessing', function() {
           [
             { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
             { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
-            { to: players[0], key: 'incorrect-guess', options: [players[1].nickname] },
-            { to: players[1], key: 'incorrect-guess', options: [players[1].nickname] },
-            { to: players[2], key: 'incorrect-guess', options: [players[1].nickname] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
