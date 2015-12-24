@@ -30,9 +30,9 @@ describe('Guessing', function() {
             { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase], to: players[0] },
             { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase], to: players[1] },
             { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase], to: players[2] },
-            { key: 'game-next-round', options: [players[1].nickname], to: players[0] },
-            { key: 'game-next-round-suggestion', options: [players[1].nickname, msg2], to: players[1] },
-            { key: 'game-next-round', options: [players[1].nickname], to: players[2] },
+            { key: 'game-next-round', options: [players[1].nickname, players[1].avatar,], to: players[0] },
+            { key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, msg2], to: players[1] },
+            { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -54,9 +54,9 @@ describe('Guessing', function() {
             { to: players[0], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase] },
-            { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
-            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
-            { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
+            { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, msg2] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -78,9 +78,9 @@ describe('Guessing', function() {
             { to: players[0], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game.round.phrase] },
-            { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
-            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
-            { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
+            { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, msg2] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -110,9 +110,9 @@ describe('Guessing', function() {
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
-            { to: players[0], key: 'game-next-round', options: [players[2].nickname] },
-            { to: players[1], key: 'game-next-round', options: [players[2].nickname] },
-            { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, msg3] },
+            { to: players[0], key: 'game-next-round', options: [players[2].nickname, players[2].avatar] },
+            { to: players[1], key: 'game-next-round', options: [players[2].nickname, players[2].avatar] },
+            { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, players[2].avatar, msg3] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -143,9 +143,9 @@ describe('Guessing', function() {
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
-            { to: players[0], key: 'game-next-round', options: [players[2].nickname] },
-            { to: players[1], key: 'game-next-round', options: [players[2].nickname] },
-            { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, msg3] },
+            { to: players[0], key: 'game-next-round', options: [players[2].nickname, players[2].avatar] },
+            { to: players[1], key: 'game-next-round', options: [players[2].nickname, players[2].avatar] },
+            { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, players[2].avatar, msg3] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -167,9 +167,9 @@ describe('Guessing', function() {
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, players[2].avatar, game.round.phrase] },
-            { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
-            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
-            { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
+            { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, msg2] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
