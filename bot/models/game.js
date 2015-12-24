@@ -159,6 +159,7 @@ let Game = {
                 .field('p.created')
                 .field('n.number', 'to')
                 .field('u.nickname')
+                .field('u.avatar')
                 .field('u.from')
                 .field('u.from', 'number')
                 .field('u.id', 'user_id')
