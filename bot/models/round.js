@@ -5,9 +5,8 @@ const db = require('db');
 const rule = require('config/rule');
 const levenshtein = require('levenshtein');
 const autosuggest = require('autosuggest');
-const Player = require('./player');
-const articles = ['the', 'of', 'a', 'an', 'his', 'her', 'then', 'than', 'it'];
 
+const Player = require('./player');
 let Game;
 //let Game = require('./game');
 
@@ -71,7 +70,7 @@ let Round = {
 
     function parsePhrase(phrase) {
       let p = phrase.replace(/[^\w\s]|_/g, '').split(' ').filter(function(word) {
-        return articles.indexOf(word.toLowerCase()) === -1;
+        return ['the', 'of', 'a', 'an'].indexOf(word.toLowerCase()) === -1;
       }).join(' ');
       return p;
     }
@@ -80,7 +79,6 @@ let Round = {
 
     const phrase = phrases[0].phrase;
     let result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
-    console.debug('checking phrase', phrase, 'straight match', result);
 
     // check levenshtein as well, in case there's typos
     // but we limit it to a phrase of 5 characters or more.
@@ -91,7 +89,6 @@ let Round = {
       if ( distance < .15 ) {
         result = true;
       }
-      console.debug('checking levenshtein', result, distance);
     }
 
     if ( ! result ) {
@@ -102,7 +99,6 @@ let Round = {
         if ( suggested_results.length ) {
           let top_result = suggested_results[0].result;
           result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(top_result));
-          console.debug('checking google', result, top_result, suggested_results);
         }
       } catch (err) {
         console.error('google choked', err);
