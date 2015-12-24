@@ -25,8 +25,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + game.round.phrase },
           [
-            { key: 'guesses', options: [players[1].nickname, game.round.phrase], to: players[0] },
-            { key: 'guesses', options: [players[1].nickname, game.round.phrase], to: players[2] },
+            { key: 'says', options: [players[1].nickname, game.round.phrase], to: players[0] },
+            { key: 'says', options: [players[1].nickname, game.round.phrase], to: players[2] },
             { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[0] },
             { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[1] },
             { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[2] },
@@ -49,8 +49,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + game.round.phrase.toLowerCase() },
           [
-            { to: players[0],key: 'guesses', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
-            { to: players[2],key: 'guesses', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
+            { to: players[0],key: 'says', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
+            { to: players[2],key: 'says', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
             { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
@@ -73,8 +73,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + the_guess },
           [
-            { to: players[0],key: 'guesses', options: [players[1].nickname, the_guess] },
-            { to: players[2],key: 'guesses', options: [players[1].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[1].nickname, the_guess] },
+            { to: players[2],key: 'says', options: [players[1].nickname, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
@@ -105,8 +105,8 @@ describe('Guessing', function() {
         return check(
           { player: players[2], msg: guess + the_guess },
           [
-            { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
-            { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[2].nickname, the_guess] },
+            { to: players[1],key: 'says', options: [players[2].nickname, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
@@ -138,8 +138,8 @@ describe('Guessing', function() {
         return check(
           { player: players[2], msg: guess + the_guess},
           [
-            { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
-            { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[2].nickname, the_guess] },
+            { to: players[1],key: 'says', options: [players[2].nickname, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
@@ -162,8 +162,8 @@ describe('Guessing', function() {
         return check(
           { player: players[2], msg: guess + the_guess},
           [
-            { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
-            { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[2].nickname, the_guess] },
+            { to: players[1],key: 'says', options: [players[2].nickname, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
@@ -179,7 +179,7 @@ describe('Guessing', function() {
   });
 
   describe('Incorrect', function() {
-    it('should be notified on an incorrect guess', function() {
+    it('should not be notified on an incorrect guess', function() {
       let players = getPlayers(3);
 
       return playGame(players).then(function() {
@@ -187,11 +187,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + the_guess},
           [
-            { to: players[0], key: 'guesses', options: [players[1].nickname, the_guess] },
-            { to: players[2], key: 'guesses', options: [players[1].nickname, the_guess] },
-            { to: players[0], key: 'incorrect-guess', options: [players[1].nickname] },
-            { to: players[1], key: 'incorrect-guess', options: [players[1].nickname] },
-            { to: players[2], key: 'incorrect-guess', options: [players[1].nickname] },
+            { to: players[0], key: 'says', options: [players[1].nickname, the_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, the_guess] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -213,8 +210,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + the_guess},
           [
-            { to: players[0], key: 'guesses', options: [players[1].nickname, the_guess] },
-            { to: players[2], key: 'guesses', options: [players[1].nickname, the_guess] },
+            { to: players[0], key: 'says', options: [players[1].nickname, the_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, the_guess] },
             { to: players[0], key: 'incorrect-guess', options: [players[1].nickname] },
             { to: players[1], key: 'incorrect-guess', options: [players[1].nickname] },
             { to: players[2], key: 'incorrect-guess', options: [players[1].nickname] },
@@ -227,7 +224,7 @@ describe('Guessing', function() {
   });
 
   /*
-  it('should send a sad message when you run out of guesses', function() {
+  it('should send a sad message when you run out of says', function() {
     let players = getPlayers(3);
 
     let the_guess = ' foo';
@@ -239,11 +236,11 @@ describe('Guessing', function() {
       return check(
         { player: players[1], msg: guess + the_guess },
         [
-          { key: 'guesses', options: [players[1].nickname, the_guess.trim()], to: players[0] },
-          { key: 'guesses', options: [players[1].nickname, the_guess.trim()], to: players[2] },
-          { key: 'incorrect-out-of-guesses', to: players[0] },
-          { key: 'incorrect-out-of-guesses', to: players[1] },
-          { key: 'incorrect-out-of-guesses', to: players[2] },
+          { key: 'says', options: [players[1].nickname, the_guess.trim()], to: players[0] },
+          { key: 'says', options: [players[1].nickname, the_guess.trim()], to: players[2] },
+          { key: 'incorrect-out-of-says', to: players[0] },
+          { key: 'incorrect-out-of-says', to: players[1] },
+          { key: 'incorrect-out-of-says', to: players[2] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -251,7 +248,7 @@ describe('Guessing', function() {
     });
   });
 
-  it('should chide you if you continue to guess after running out of guesses', function() {
+  it('should chide you if you continue to guess after running out of says', function() {
     let players = getPlayers(3);
 
     let the_guess = 'foo';
@@ -264,11 +261,11 @@ describe('Guessing', function() {
       return check(
         { player: players[1], msg: guess + the_guess },
         [
-          { key: 'guesses', options: [players[1].nickname, the_guess], to: players[0] },
-          { key: 'guesses', options: [players[1].nickname, the_guess], to: players[2] },
-          { key: 'out-of-guesses', options: [players[1].nickname], to: players[0] },
-          { key: 'out-of-guesses', options: [players[1].nickname], to: players[1] },
-          { key: 'out-of-guesses', options: [players[1].nickname], to: players[2] },
+          { key: 'says', options: [players[1].nickname, the_guess], to: players[0] },
+          { key: 'says', options: [players[1].nickname, the_guess], to: players[2] },
+          { key: 'out-of-says', options: [players[1].nickname], to: players[0] },
+          { key: 'out-of-says', options: [players[1].nickname], to: players[1] },
+          { key: 'out-of-says', options: [players[1].nickname], to: players[2] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -290,11 +287,11 @@ describe('Guessing', function() {
       return check(
         { player: players[1], msg: guess + the_guess },
         [
-          { key: 'guesses', options: [players[1].nickname, the_guess], to: players[0] },
-          { key: 'guesses', options: [players[1].nickname, the_guess], to: players[2] },
-          { key: 'out-of-guesses', options: [players[1].nickname], to: players[0] },
-          { key: 'out-of-guesses', options: [players[1].nickname], to: players[1] },
-          { key: 'out-of-guesses', options: [players[1].nickname], to: players[2] },
+          { key: 'says', options: [players[1].nickname, the_guess], to: players[0] },
+          { key: 'says', options: [players[1].nickname, the_guess], to: players[2] },
+          { key: 'out-of-says', options: [players[1].nickname], to: players[0] },
+          { key: 'out-of-says', options: [players[1].nickname], to: players[1] },
+          { key: 'out-of-says', options: [players[1].nickname], to: players[2] },
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -327,8 +324,8 @@ describe('Guessing', function() {
       return check(
         { player: players[2], msg: guess + correct },
         [
-          { to: players[0], key: 'guesses', options: [players[2].nickname, correct] },
-          { to: players[1], key: 'guesses', options: [players[2].nickname, correct] },
+          { to: players[0], key: 'says', options: [players[2].nickname, correct] },
+          { to: players[1], key: 'says', options: [players[2].nickname, correct] },
           { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
           { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
           { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
@@ -358,8 +355,8 @@ describe('Guessing', function() {
       return check(
         { player: players[2], msg: guess + the_guess },
         [
-          { key: 'guesses', options: [players[2].nickname, the_guess], to: players[0] },
-          { key: 'guesses', options: [players[2].nickname, the_guess], to: players[1] },
+          { key: 'says', options: [players[2].nickname, the_guess], to: players[0] },
+          { key: 'says', options: [players[2].nickname, the_guess], to: players[1] },
           { key: 'round-over', options: [players[2].nickname], to: players[0] },
           { key: 'round-over', options: [players[2].nickname], to: players[1] },
           { key: 'round-over', options: [players[2].nickname], to: players[2] },

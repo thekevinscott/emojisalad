@@ -7,29 +7,40 @@ var Round = require('models/round');
 var rule = require('config/rule');
 
 module.exports = Promise.coroutine(function* (player, input, game_number) {
+  console.debug('top of guess route');
   if ( rule('invite').test(input) ) {
+    console.debug('invite in guess');
     return require('../players/invite')(player, input, game_number);
   } else if ( rule('new-game').test(input) ) {
+    console.debug('new game in guess');
     return require('../games/new-game')(player, input, game_number);
   } else if ( rule('pass').test(input) ) {
+    console.debug('pass in guess');
     return require('../games/pass')(player, input, game_number);
   } else if ( rule('clue').test(input) ) {
+    console.debug('clue in guess');
     return require('../games/clue')(player, input, game_number);
   } else if ( rule('guess').test(input) ) {
+    console.debug('GUESS in guess');
     let messages = [];
     if ( player.state === 'passed' ) {
+      console.debug('user already passed');
       messages.push({
         player: player,
         key: 'no-guessing-after-passing'
       });
     } else {
+      console.debug('checking guess');
       let game = yield Game.get({ player: player });
 
+      console.debug('game', game);
+      let guess = rule('guess').match(input);
+      console.debug('the guess', guess);
+
       messages = game.players.map(function(game_player) {
-        let guess = rule('guess').match(input);
         if ( game_player.id !== player.id ) {
           return {
-            key: 'guesses',
+            key: 'says',
             player: game_player,
             options: [
               player.nickname,
@@ -39,9 +50,9 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
         }
       }).filter((el) => el);
 
-      let guesses_left = yield Round.getGuessesLeft(game, player);
-      var guess = rule('guess').match(input);
+      //let guesses_left = yield Round.getGuessesLeft(game, player);
       let result = yield Game.checkGuess(game, player, guess);
+      console.debug('result of the guess', result);
       if ( result ) {
         for ( var i=0; i<game.players.length; i++ ) {
           let game_player = game.players[i];
@@ -108,15 +119,6 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
           } else {
             messages.push(suggestion);
           }
-        }
-      } else {
-        let message = {
-          key: 'incorrect-guess',
-          options: [player.nickname]
-        };
-
-        for ( var i=0; i<game.players.length; i++ ) {
-          messages.push(_.assign({ player: game.players[i] }, message));
         }
       }
     }

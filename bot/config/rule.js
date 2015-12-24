@@ -13,10 +13,10 @@ const rules = {
     ]
   },
   'guess': {
-    pattern: '^guess(.*)',
+    pattern: '^(.*)',
     flags: 'i',
     example: [
-      'guess '
+      ''
     ]
   },
   'help': {
