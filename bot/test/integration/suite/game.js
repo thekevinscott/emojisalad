@@ -112,9 +112,9 @@ describe.only('Game', function() {
 
       return playGame(players).then(function(game) {
         return setup([
-          { player: players[1], msg: guess+game.round.phrase },
+          { player: players[1], msg: guess + game.round.phrase },
           { player: players[1], msg: EMOJI },
-          { player: players[0], msg: guess+' SILENCE OF THE LAMBS' },
+          { player: players[0], msg: guess + ' SILENCE OF THE LAMBS' },
           { player: players[2], msg: EMOJI },
         ]);
       }).then(function() {
@@ -180,7 +180,7 @@ describe.only('Game', function() {
       return startGame(players.slice(0, 2)).then(function(game) {
         return setup([
           { player: players[0], msg: EMOJI },
-          { player: players[1], msg: 'guess JURASSIC PARK' },
+          { player: players[1], msg: guess + 'JURASSIC PARK' },
           { player: players[1], msg: EMOJI },
           { player: players[0], msg: 'invite '+players[2].number },
           { player: players[2], msg: 'y' },
@@ -216,9 +216,9 @@ describe.only('Game', function() {
       return startGame(players.slice(0, 3)).then(function(game) {
         return setup([
           { player: players[0], msg: EMOJI },
-          { player: players[1], msg: 'guess JURASSIC PARK' },
+          { player: players[1], msg: guess + 'JURASSIC PARK' },
           { player: players[1], msg: EMOJI },
-          { player: players[0], msg: 'guess SILENCE OF THE LAMBS' },
+          { player: players[0], msg: guess + 'SILENCE OF THE LAMBS' },
           { player: players[0], msg: 'invite '+players[3].number },
           { player: players[2], msg: EMOJI },
           { player: players[3], msg: 'y' },
