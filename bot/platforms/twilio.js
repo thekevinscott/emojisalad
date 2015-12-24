@@ -88,11 +88,11 @@ module.exports = function(req, res) {
       return res.end('');
     } else {
       console.debug([
-        player.id,
-        player.nickname,
-        req.body.From,
-        req.body.Body,
-        player.state,
+        'player.id: ' + player.id,
+        'player.nickname: ' + player.nickname,
+        'From: ' + req.body.From,
+        'Body: ' + req.body.Body,
+        'player.state: ' + player.state,
       ].join(' | '));
       if ( !req.body.To || req.body.To[0] !== '+' ) {
         console.error('to', req.body.To);

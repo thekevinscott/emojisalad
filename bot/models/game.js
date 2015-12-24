@@ -237,7 +237,7 @@ let Game = {
       query.where('g.last_activity<?', params.last_activity);
     }
 
-    console.debug('params', params);
+    //console.debug('params', params);
     console.debug(query.toString());
 
     let games = yield db.query(query.toString());
