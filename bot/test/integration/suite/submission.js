@@ -10,7 +10,7 @@ const check = require('../lib/check');
 const EMOJI = '😀';
 
 describe('Submissions', function() {
-  it.only('should forward a text submission', function() {
+  it('should forward a text submission', function() {
     let players = getPlayers(3);
 
     return startGame(players).then(function() {
