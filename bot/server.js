@@ -6,7 +6,7 @@ const pmx = require('pmx');
 const express = require('express');
 const app = express();
 
-let DEBUG = process.env.DEBUG || false;
+let DEBUG = process.env.DEBUG || true;
 if ( !console.debug ) {
   console.debug = function() {
     if ( DEBUG ) {
