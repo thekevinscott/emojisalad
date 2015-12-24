@@ -71,7 +71,7 @@ let Round = {
 
     function parsePhrase(phrase) {
       let p = phrase.replace(/[^\w\s]|_/g, '').split(' ').filter(function(word) {
-        return ['the', 'of', 'a', 'an'].indexOf(word.toLowerCase()) === -1;
+        return ['the', 'of', 'a', 'an'].indexOf(word.toLowerCase()) === -1 && word;
       }).join(' ');
       return p;
     }
