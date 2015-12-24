@@ -25,8 +25,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + game.round.phrase },
           [
-            { key: 'says', options: [players[1].nickname, game.round.phrase], to: players[0] },
-            { key: 'says', options: [players[1].nickname, game.round.phrase], to: players[2] },
+            { key: 'says', options: [players[1].nickname, players[1].avatar, game.round.phrase], to: players[0] },
+            { key: 'says', options: [players[1].nickname, players[1].avatar, game.round.phrase], to: players[2] },
             { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[0] },
             { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[1] },
             { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[2] },
@@ -49,8 +49,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + game.round.phrase.toLowerCase() },
           [
-            { to: players[0],key: 'says', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
-            { to: players[2],key: 'says', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
+            { to: players[0],key: 'says', options: [players[1].nickname, players[1].avatar, game.round.phrase.toLowerCase()] },
+            { to: players[2],key: 'says', options: [players[1].nickname, players[1].avatar, game.round.phrase.toLowerCase()] },
             { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
@@ -73,8 +73,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + the_guess },
           [
-            { to: players[0],key: 'says', options: [players[1].nickname, the_guess] },
-            { to: players[2],key: 'says', options: [players[1].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
+            { to: players[2],key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
@@ -105,8 +105,8 @@ describe('Guessing', function() {
         return check(
           { player: players[2], msg: guess + the_guess },
           [
-            { to: players[0],key: 'says', options: [players[2].nickname, the_guess] },
-            { to: players[1],key: 'says', options: [players[2].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[2].nickname, players[2].avatar, the_guess] },
+            { to: players[1],key: 'says', options: [players[2].nickname, players[2].avatar, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
@@ -138,8 +138,8 @@ describe('Guessing', function() {
         return check(
           { player: players[2], msg: guess + the_guess},
           [
-            { to: players[0],key: 'says', options: [players[2].nickname, the_guess] },
-            { to: players[1],key: 'says', options: [players[2].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[2].nickname, players[2].avatar, the_guess] },
+            { to: players[1],key: 'says', options: [players[2].nickname, players[2].avatar, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
@@ -162,8 +162,8 @@ describe('Guessing', function() {
         return check(
           { player: players[2], msg: guess + the_guess},
           [
-            { to: players[0],key: 'says', options: [players[2].nickname, the_guess] },
-            { to: players[1],key: 'says', options: [players[2].nickname, the_guess] },
+            { to: players[0],key: 'says', options: [players[2].nickname, players[2].avatar, the_guess] },
+            { to: players[1],key: 'says', options: [players[2].nickname, players[2].avatar, the_guess] },
             { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
@@ -187,8 +187,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + the_guess},
           [
-            { to: players[0], key: 'says', options: [players[1].nickname, the_guess] },
-            { to: players[2], key: 'says', options: [players[1].nickname, the_guess] },
+            { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -210,8 +210,8 @@ describe('Guessing', function() {
         return check(
           { player: players[1], msg: guess + the_guess},
           [
-            { to: players[0], key: 'says', options: [players[1].nickname, the_guess] },
-            { to: players[2], key: 'says', options: [players[1].nickname, the_guess] },
+            { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
             { to: players[0], key: 'incorrect-guess', options: [players[1].nickname] },
             { to: players[1], key: 'incorrect-guess', options: [players[1].nickname] },
             { to: players[2], key: 'incorrect-guess', options: [players[1].nickname] },
