@@ -207,7 +207,7 @@ let Game = {
         console.error(game);
         throw "Non pending games should have an associated round";
       }
-      console.debug('game returned', game);
+      //console.debug('game returned', game);
       return game;
     } else {
       return null;
