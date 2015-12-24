@@ -194,7 +194,7 @@ let Game = {
       game.players = yield this.getPlayers(game);
 
       if ( game.round ) {
-        console.debug('game round exists');
+        //console.debug('game round exists');
         game.players.map(function(game_player) {
           if ( game_player.id === game.round.submitter_id ) {
             game.round.submitter = game_player;
