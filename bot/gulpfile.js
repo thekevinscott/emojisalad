@@ -2,6 +2,7 @@
 // set require path
 require('app-module-path').addPath(__dirname);
 var gulp = require('gulp');
+var util = require('gulp-util');
 var Promise = require('bluebird');
 var childExec = require('child_process').exec;
 var argv = require('yargs').argv;
@@ -196,6 +197,7 @@ function startServer(server) {
       //"restart": "osascript -e 'display notification \"app restarted\" with title \"nodemon\"'"
     },
     env: {
+      DEBUG: util.env.debug ? util.env.debug : false
       //ENVIRONMENT : 'test',
       //PORT : '5005'
     },
@@ -204,6 +206,7 @@ function startServer(server) {
 }
 function runTests() {
   var deferred = Promise.pending();
+  process.env.DEBUG = util.env.debug || false;
   gulp.src(['test/index.js'], { read: false })
   .pipe(mocha({
     timeout: 60000,

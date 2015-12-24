@@ -6,14 +6,16 @@ const pmx = require('pmx');
 const express = require('express');
 const app = express();
 
-let DEBUG = true;
-console.debug = function() {
-  if ( DEBUG ) {
-    let args = Array.prototype.slice.call(arguments);
-    args.unshift(new Date());
-    console.log.apply(null, args);
-  }
-};
+let DEBUG = process.env.DEBUG || false;
+if ( !console.debug ) {
+  console.debug = function() {
+    if ( DEBUG ) {
+      let args = Array.prototype.slice.call(arguments);
+      args.unshift(new Date());
+      console.log.apply(null, args);
+    }
+  };
+}
 let consoleError = console.error;
 console.error = function() {
   let args = Array.prototype.slice.call(arguments);

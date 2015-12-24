@@ -10,44 +10,26 @@ const getPlayers = require('../lib/getPlayers');
 const playGame = require('../flows/playGame');
 const setup = require('../lib/setup');
 const check = require('../lib/check');
-const getScore = require('../lib/getScore');
 const rule = require('../../../config/rule');
 const guess = rule('guess').example();
-const rand = require('../lib/getRandomScore');
 const EMOJI = '😀';
-
-const defaults = {
-  'win-guesser-1': rand(),
-  'win-submitter-1': rand(),
-  'win-guesser-2': rand(),
-  'win-submitter-2': rand(),
-  'pass': rand()
-};
 
 describe('Guessing', function() {
 
   describe('Correct', function() {
-    it('should be able to successfully guess', function() {
+    it.only('should be able to successfully guess', function() {
       var players = getPlayers(3);
       var msg2 = 'SILENCE OF THE LAMBS';
 
       return playGame(players).then(function(game) {
-        return Game.updateDefaultScores(game, defaults).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        let updates = {};
-        updates[players[1].nickname] = defaults['win-guesser-1'];
-        updates[players[0].nickname] = defaults['win-submitter-1'];
-        let score = getScore(game, updates);
         return check(
           { player: players[1], msg: guess + game.round.phrase },
           [
             { key: 'guesses', options: [players[1].nickname, game.round.phrase], to: players[0] },
             { key: 'guesses', options: [players[1].nickname, game.round.phrase], to: players[2] },
-            { key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score], to: players[0] },
-            { key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score], to: players[1] },
-            { key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score], to: players[2] },
+            { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[0] },
+            { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[1] },
+            { key: 'correct-guess', options: [players[1].nickname, game.round.phrase], to: players[2] },
             { key: 'game-next-round', options: [players[1].nickname], to: players[0] },
             { key: 'game-next-round-suggestion', options: [players[1].nickname, msg2], to: players[1] },
             { key: 'game-next-round', options: [players[1].nickname], to: players[2] },
@@ -64,22 +46,14 @@ describe('Guessing', function() {
       const msg2 = 'SILENCE OF THE LAMBS';
 
       return playGame(players).then(function(game) {
-        return Game.updateDefaultScores(game, defaults).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        let updates = {};
-        updates[players[1].nickname] = defaults['win-guesser-1'];
-        updates[players[0].nickname] = defaults['win-submitter-1'];
-        let score = getScore(game, updates);
         return check(
           { player: players[1], msg: guess + game.round.phrase.toLowerCase() },
           [
             { to: players[0],key: 'guesses', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
             { to: players[2],key: 'guesses', options: [players[1].nickname, game.round.phrase.toLowerCase()] },
-            { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
-            { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
-            { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
+            { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
+            { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
+            { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
             { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
@@ -95,23 +69,15 @@ describe('Guessing', function() {
       const msg2 = 'SILENCE OF THE LAMBS';
 
       return playGame(players).then(function(game) {
-        return Game.updateDefaultScores(game, defaults).then(function() {
-          return game;
-        });
-      }).then(function(game) {
-        let updates = {};
-        updates[players[1].nickname] = defaults['win-guesser-1'];
-        updates[players[0].nickname] = defaults['win-submitter-1'];
-        let score = getScore(game, updates);
         let the_guess = 'JURASIC PARK';
         return check(
           { player: players[1], msg: guess + the_guess },
           [
             { to: players[0],key: 'guesses', options: [players[1].nickname, the_guess] },
             { to: players[2],key: 'guesses', options: [players[1].nickname, the_guess] },
-            { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
-            { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
-            { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase, score] },
+            { to: players[0], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
+            { to: players[1], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
+            { to: players[2], key: 'correct-guess', options: [players[1].nickname, game.round.phrase] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
             { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
@@ -135,19 +101,15 @@ describe('Guessing', function() {
           });
         });
       }).then(function(game) {
-        let updates = {};
-        updates[players[1].nickname] = defaults['win-guesser-1'];
-        updates[players[0].nickname] = defaults['win-submitter-1'];
-        let score = getScore(game, updates);
         let the_guess = 'SILENCE OF THE';
         return check(
           { player: players[2], msg: guess + the_guess },
           [
             { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
             { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
-            { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
-            { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
-            { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
+            { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
+            { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
+            { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[0], key: 'game-next-round', options: [players[2].nickname] },
             { to: players[1], key: 'game-next-round', options: [players[2].nickname] },
             { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, msg3] },
@@ -172,19 +134,15 @@ describe('Guessing', function() {
           });
         });
       }).then(function(game) {
-        let updates = {};
-        updates[players[1].nickname] = defaults['win-guesser-1'];
-        updates[players[0].nickname] = defaults['win-submitter-1'];
-        let score = getScore(game, updates);
         let the_guess = 'SILENCE LAMBS';
         return check(
           { player: players[2], msg: guess + the_guess},
           [
             { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
             { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
-            { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
-            { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
-            { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
+            { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
+            { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
+            { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[0], key: 'game-next-round', options: [players[2].nickname] },
             { to: players[1], key: 'game-next-round', options: [players[2].nickname] },
             { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, msg3] },
@@ -200,19 +158,15 @@ describe('Guessing', function() {
       const msg2 = 'SILENCE OF THE LAMBS';
 
       return playGame(players).then(function(game) {
-        let updates = {};
-        updates[players[1].nickname] = defaults['win-guesser-1'];
-        updates[players[0].nickname] = defaults['win-submitter-1'];
-        let score = getScore(game, updates);
         let the_guess = 'JURASSIC !@#$%^&*()-=_+~`,./?><\'";:[]{}|\ PARK';
         return check(
           { player: players[2], msg: guess + the_guess},
           [
             { to: players[0],key: 'guesses', options: [players[2].nickname, the_guess] },
             { to: players[1],key: 'guesses', options: [players[2].nickname, the_guess] },
-            { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
-            { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
-            { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase, score] },
+            { to: players[0], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
+            { to: players[1], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
+            { to: players[2], key: 'correct-guess', options: [players[2].nickname, game.round.phrase] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, msg2] },
             { to: players[2], key: 'game-next-round', options: [players[1].nickname] },
