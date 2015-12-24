@@ -40,6 +40,7 @@ var Log = {
       }
       if ( responses && responses.length ) {
         Promise.all(responses.map(function(message) {
+          console.debug('message', message);
           return Player.get({ id: message.player.id }).then(function(player) {
 
             var query = squel
