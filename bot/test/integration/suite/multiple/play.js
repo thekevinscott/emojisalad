@@ -169,20 +169,20 @@ describe('Play', function() {
     return playGames(players, 2).then(function() {
       return Player.get(guesser);
     }).then(function(player) {
+      let msg = 'foo';
       return Promise.all(game_numbers.map(function(game_number) {
-        return setup([
-          { player: player, msg: rule('guess').example(), to: game_number },
-        ]);
-      })).then(function() {
-        return getGames(player, function(game) {
-          let game_player = getPlayerFromGame(game, player);
-          game_player.guesses.should.equal(1);
-
-          return game.id;
+        return Game.get({ player: player }).then(function(game) {
+          return check(
+            { player: player, msg: rule('guess').example()+msg, to: game_number },
+            [
+              { key: 'says', options: [player.nickname, player.avatar, rule('guess').example() + msg], to: players[0] },
+              { key: 'says', options: [player.nickname, player.avatar, rule('guess').example() + msg], to: players[2] },
+            ]
+          ).then(function(obj) {
+            obj.output.should.deep.equal(obj.expected);
+          });
         });
-      });
-    }).then(function(game_ids) {
-      _.uniq(game_ids).length.should.equal(2);
+      }));
     });
   });
 
@@ -347,11 +347,11 @@ function setupTwoGames(players, invitee) {
   }).then(function() {
     if ( invitee ) {
       return setup([
-        { player: inviter, msg: 'invite '+invitee.number, to: game_numbers[1]}
+        { player: inviter, msg: rule('invite').example()+invitee.number, to: game_numbers[1]}
       ]);
     } else {
       return setup(players.slice(1).map(function(player) {
-        return { player: inviter, msg: 'invite '+player.number, to: game_numbers[1]};
+        return { player: inviter, msg: rule('invite').example()+player.number, to: game_numbers[1]};
       }));
     }
   }).then(function() {

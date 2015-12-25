@@ -18,7 +18,7 @@ function setup(arr) {
       throw "No player provided";
     }
     if ( ! msg ) {
-      console.error(a, i);
+      console.error('index', i, 'array', arr);
       throw "No msg provided";
     }
     return function() {

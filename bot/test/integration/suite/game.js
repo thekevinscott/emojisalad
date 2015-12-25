@@ -17,7 +17,7 @@ const rule = require('../../../config/rule');
 const EMOJI = '😀';
 const guess = rule('guess').example();
 
-describe.only('Game', function() {
+describe('Game', function() {
 
   it('should initiate the game with the person who started it', function() {
     const players = getPlayers(2);

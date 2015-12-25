@@ -42,11 +42,13 @@ let newGame = Promise.coroutine(function* (players, options) {
     };
   }));
 
-  yield setup([{
+  let msg = {
     player: inviter,
     msg: EMOJI,
     to: inviter.game_number
-  }]);
+  };
+
+  yield setup([msg]);
 
   let game = yield Game.get({ player: inviter });
   if ( options.clues_allowed ) {
