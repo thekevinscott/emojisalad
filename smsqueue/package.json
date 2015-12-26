@@ -1,0 +1,26 @@
+{
+  "name": "smsqueue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "app-module-path": "^1.0.5",
+    "babel": "^6.3.26",
+    "bluebird": "^3.1.1",
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "moment": "^2.10.6",
+    "node-mysql": "^0.4.2",
+    "pmx": "^0.5.8",
+    "sequelize": "^3.15.1",
+    "twilio": "^2.8.0"
+  },
+  "devDependencies": {
+    "ngrok": "^0.2.2"
+  }
+}
