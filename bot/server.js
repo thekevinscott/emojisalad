@@ -6,31 +6,6 @@ const pmx = require('pmx');
 const express = require('express');
 const app = express();
 
-let DEBUG = (process.env.DEBUG !== undefined) ? process.env.DEBUG : true;
-console.debug = function() {
-  if ( DEBUG === true ) {
-    let args = Array.prototype.slice.call(arguments);
-    args.unshift(new Date());
-    console.log.apply(null, args);
-  }
-};
-let consoleError = console.error;
-console.error = function() {
-  let args = Array.prototype.slice.call(arguments);
-  args.unshift(new Date());
-  consoleError.apply(null, args);
-};
-pmx.action('debug:on', function(reply) {
-  console.log('debug is on');
-  DEBUG = true;
-  reply({DEBUG : DEBUG});
-});
-pmx.action('debug:off', function(reply) {
-  console.log('debug is off');
-  DEBUG = false;
-  reply({DEBUG : DEBUG});
-});
-
 app.set('port', (process.env.PORT || 5000));
 
 const bodyParser = require('body-parser');
@@ -47,10 +22,39 @@ app.get('/test', function(req, res) {
   res.json({ success: 1 });
 });
 
-// this handles all replies
+const bot = require('config/services').bot;
+const request = require('request');
+const Promise = require('bluebird');
+Promise.promisifyAll(request);
+
+app.get('/ping', Promise.coroutine(function* (req, res) {
+  const response = yield request.getAsync([
+    bot.host,
+    ':',
+    bot.port,
+    '/received'
+  ].join(''));
+  
+  let messages = response[1];
+  try {
+    messages = JSON.parse(messages);
+  } catch(err) {}
+
+  messages.map(function(message) {
+    req.body = {
+      From: message.from,
+      To: message.to,
+      Body: message.body,
+    }
+    //console.log('body', req.body);
+    //return require('./platforms/twilio')(req, res);
+  });
+  // query for recent messages
+  // if there are any messages
+}));
+
 app.post('/platform/:platform', function(req, res) {
-  req.debug = DEBUG;
-  return require('./platforms/')(req, res);
+  return require('./platforms')(req, res);
 });
 
 require('./cron');

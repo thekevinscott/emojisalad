@@ -154,8 +154,8 @@ describe('Pass', function() {
             { to: players[1], key: 'pass', options: [ players[1].nickname ]},
             { to: players[0], key: 'round-over', options: [lastPrompt] },
             { to: players[1], key: 'round-over', options: [lastPrompt] },
-            { to: players[0], key: 'game-next-round', options: [ players[1].nickname ]},
-            { to: players[1], key: 'game-next-round-suggestion', options: [ players[1].nickname, nextPrompt ]},
+            { to: players[0], key: 'game-next-round', options: [ players[1].nickname, players[1].avatar ]},
+            { to: players[1], key: 'game-next-round-suggestion', options: [ players[1].nickname, players[1].avatar, nextPrompt ]},
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
@@ -302,8 +302,8 @@ describe('Pass', function() {
           { player: players[1], msg: EMOJI },
           [
             { to: players[1], key: 'game-submission-sent'},
-            { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, EMOJI] },
-            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, EMOJI] },
+            { to: players[0], key: 'emojis', options: [players[1].nickname, players[1].avatar, EMOJI] },
+            { to: players[2], key: 'emojis', options: [players[1].nickname, players[1].avatar, EMOJI] },
             { to: players[0], key: 'guessing-instructions' },
             { to: players[2], key: 'guessing-instructions' }
           ]

@@ -55,8 +55,8 @@ describe('Submissions', function() {
         { player: players[0], msg: EMOJI },
         [
           { key: 'game-submission-sent', to: players[0] },
-          { key: 'says', options: [players[0].nickname, players[0].avatar, EMOJI], to: players[1] },
-          { key: 'says', options: [players[0].nickname, players[0].avatar, EMOJI], to: players[2] },
+          { key: 'emojis', options: [players[0].nickname, players[0].avatar, EMOJI], to: players[1] },
+          { key: 'emojis', options: [players[0].nickname, players[0].avatar, EMOJI], to: players[2] },
           { key: 'guessing-instructions', to: players[1] },
           { key: 'guessing-instructions', to: players[2] }
         ]
@@ -75,8 +75,8 @@ describe('Submissions', function() {
         { player: players[0], msg: msg },
         [
           { key: 'game-submission-sent', to: players[0] },
-          { key: 'says', options: [players[0].nickname, players[0].avatar,  msg ], to: players[1] },
-          { key: 'says', options: [players[0].nickname, players[0].avatar,  msg ], to: players[2] },
+          { key: 'emojis', options: [players[0].nickname, players[0].avatar,  msg ], to: players[1] },
+          { key: 'emojis', options: [players[0].nickname, players[0].avatar,  msg ], to: players[2] },
           { key: 'guessing-instructions', to: players[1] },
           { key: 'guessing-instructions', to: players[2] }
         ]

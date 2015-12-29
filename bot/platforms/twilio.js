@@ -26,7 +26,7 @@
 const pmx = require('pmx');
 const router = require('routes');
 //const _ = require('lodash');
-const Log = require('models/log');
+//const Log = require('models/log');
 const Phone = require('models/phone');
 const Player = require('models/player');
 const User = require('models/user');
@@ -50,7 +50,7 @@ module.exports = function(req, res) {
   }
 
   const body = req.body.Body;
-  Log.incoming(req.body);
+  //Log.incoming(req.body);
 
   // first, we parse the Phone number
   Phone.parse([req.body.From, req.body.To]).then(function(parsed_numbers) {

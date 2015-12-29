@@ -1,7 +1,7 @@
 'use strict';
 const twilio = require('twilio');
 const config = require('../../config/twilio')[process.env.ENVIRONMENT];
-const Log = require('./log');
+//const Log = require('./log');
 const Promise = require('bluebird');
 const client = twilio(config.accountSid, config.authToken);
 const send = Promise.promisify(client.sendMessage);
@@ -16,7 +16,7 @@ module.exports = {
         from: response.from
       });
     });
-    Log.outgoing(responses, player, 'twilio');
+    //Log.outgoing(responses, player, 'twilio');
     return new Promise(function(resolve) {
       resolve(twiml);
     });
@@ -59,7 +59,7 @@ module.exports = {
           from: response.from,
           body: response.message
         };
-        Log.outgoing(response, null, 'twilio');
+        //Log.outgoing(response, null, 'twilio');
         return send(creds);
       }).then(function(send_output) {
         return output.concat(send_output);

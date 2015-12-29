@@ -11,6 +11,9 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
   if ( rule('invite').test(input) ) {
     console.debug('invite in guess');
     return require('../players/invite')(player, input, game_number);
+  } else if ( rule('help').test(input) ) {
+    console.debug('help in guess');
+    return require('../players/help')(player, input, game_number);
   } else if ( rule('new-game').test(input) ) {
     console.debug('new game in guess');
     return require('../games/new-game')(player, input, game_number);

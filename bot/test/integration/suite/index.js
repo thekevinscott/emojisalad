@@ -1,5 +1,6 @@
 // tests that a single player can sign up and get onboarded
 require('./signup');
+
 // tests that a player can invite other players,
 // and those players can get onboarded
 require('./invite');
