@@ -27,7 +27,9 @@ const request = require('request');
 const Promise = require('bluebird');
 Promise.promisifyAll(request);
 
+// this method will retrieve new messages
 app.get('/ping', Promise.coroutine(function* (req, res) {
+  //let = getMessages();
   const response = yield request.getAsync([
     bot.host,
     ':',
@@ -64,3 +66,6 @@ app.listen(app.get('port'), function() {
 });
 
 app.use(pmx.expressErrorHandler());
+
+//let getMessages = Promise.coroutine(function* () {
+//});
