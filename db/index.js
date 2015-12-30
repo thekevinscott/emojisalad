@@ -9,7 +9,8 @@ Promise.promisifyAll(require("mysql/lib/Pool").prototype);
 let pool;
 
 if ( ! process.env.ENVIRONMENT ) {
-  throw "You must specify a DB environment";
+  process.env.ENVIRONMENT = 'development';
+  //throw "You must specify a DB environment";
 }
 
 let config = require('../config/db')[process.env.ENVIRONMENT];

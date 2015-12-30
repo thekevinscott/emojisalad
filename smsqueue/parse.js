@@ -25,14 +25,14 @@
 module.exports = twilio;
 
 function twilio(params) {
-  if ( !params.From ) {
+  if ( !params.from && ! params.From) {
     console.error('Potentially malicious error, invalid params', params);
     throw new Error();
   } else {
     return {
-      body: params.Body,
-      to: params.To,
-      from: params.From,
+      body: params.body || params.Body,
+      to: params.to || params.To,
+      from: params.from || params.From,
       data: JSON.stringify(params)
     }
   }

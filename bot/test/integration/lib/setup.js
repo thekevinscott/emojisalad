@@ -22,11 +22,11 @@ function setup(arr) {
       throw "No msg provided";
     }
     return function() {
-      return req.post({
+      return req({
         player: player,
         message: msg,
         to: to
-      }, null, true);
+      }, true);
     };
   }));
 }

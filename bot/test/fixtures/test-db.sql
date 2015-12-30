@@ -33,6 +33,21 @@ CREATE TABLE `admins` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `attributes`
+--
+
+DROP TABLE IF EXISTS `attributes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attributes` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) DEFAULT NULL,
+  `value` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `avatars`
 --
 
@@ -89,7 +104,7 @@ CREATE TABLE `game_numbers` (
   `number` varchar(255) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -440,7 +455,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-28 21:46:54
+-- Dump completed on 2015-12-30  0:30:46
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -522,7 +537,7 @@ CREATE TABLE `game_numbers` (
   `number` varchar(255) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -531,7 +546,7 @@ CREATE TABLE `game_numbers` (
 
 LOCK TABLES `game_numbers` WRITE;
 /*!40000 ALTER TABLE `game_numbers` DISABLE KEYS */;
-INSERT INTO `game_numbers` VALUES (1,'+12013409832','2015-10-05 22:43:43'),(2,'+14692426535','2015-10-11 23:10:42'),(3,'+15133604807','2015-12-24 22:55:49'),(4,'+13614334077','2015-12-24 22:55:54');
+INSERT INTO `game_numbers` VALUES (1,'+12013409832','2015-10-05 22:43:43'),(2,'+14692426535','2015-10-11 23:10:42'),(3,'+15133604807','2015-12-24 22:55:49'),(4,'+13614334077','2015-12-24 22:55:54'),(5,'+15024140048','2015-12-29 15:59:08');
 /*!40000 ALTER TABLE `game_numbers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -644,4 +659,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-28 21:47:00
+-- Dump completed on 2015-12-30  0:30:56

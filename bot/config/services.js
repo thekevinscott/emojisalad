@@ -1,9 +1,15 @@
+const sms_endpoint = 'http://localhost:5009/';
+
 const services = {
   queues: {
     // how to do a javascript getter
     sms: {
-      host: 'http://localhost',
-      port: '5009',
+      get send() {
+        return sms_endpoint + 'send'
+      },
+      get received() {
+        return sms_endpoint + 'received'
+      }
     }
   }
 }

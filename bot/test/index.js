@@ -1,7 +1,7 @@
 'use strict';
 require('chai').should();
 let Promise = require('bluebird');
-Promise.longStackTraces();
+//Promise.longStackTraces();
 
 let DEBUG = (process.env.DEBUG !== undefined) ? process.env.DEBUG : false;
 console.debug = function() {
