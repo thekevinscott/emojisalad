@@ -8,7 +8,7 @@ const queues = require('config/services').queues;
 
 const request = Promise.promisify(require('request'));
 
-const runTime = 10;
+const runTime = 30;
 
 let timer;
 
@@ -74,6 +74,7 @@ const concatenate = function(responses) {
     }
     tos[to].push(response);
   }
+  console.debug('tos', tos);
   let newResponses = Object.keys(tos).map(function(to) {
     return tos[to].reduce(function(output, response) {
       if (! output) {
@@ -97,6 +98,7 @@ const concatenate = function(responses) {
 
 let sendMessages = Promise.coroutine(function* (messages) {
   messages = concatenate(messages);
+  console.debug('sending messages', messages);
   yield request({
     url: queues.sms.send,
     method: 'POST',
