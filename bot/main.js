@@ -69,6 +69,7 @@ const concatenate = function(responses) {
   let tos = {};
   for ( var i=0; i<responses.length; i++ ) {
     let response = responses[i];
+    console.debug('response', response);
     let to = response.to;
     if ( !tos[to] ) {
       tos[to] = [];
