@@ -107,7 +107,6 @@ describe('Signup', function() {
           { key: 'intro_4', options: [ player.nickname, avatar ], to: player }
         ]
       ).then(function(obj) {
-        console.log(obj.output);
         obj.output.should.deep.equal(obj.expected);
       });
     });

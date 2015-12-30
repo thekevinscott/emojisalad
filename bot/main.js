@@ -55,8 +55,6 @@ let main = Promise.coroutine(function* (req, res) {
         timer = setTimeout(main, runTime*1000);
       }
       return processed_messages;
-    }).then(function(messages) {
-      return concatenate(messages);
     });
   }
 
@@ -98,6 +96,7 @@ const concatenate = function(responses) {
 };
 
 let sendMessages = Promise.coroutine(function* (messages) {
+  messages = concatenate(messages);
   yield request({
     url: queues.sms.send,
     method: 'POST',
