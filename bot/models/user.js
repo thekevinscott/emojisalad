@@ -19,6 +19,7 @@ const User = {
                   avatar: avatar
                 });
 
+    console.debug(query.toString());
     let rows = yield db.query(query);
 
     if ( rows && rows.insertId ) {
@@ -114,7 +115,9 @@ const User = {
                 .order('rand()')
                 .limit(1);
 
+    console.debug(query.toString());
     let rows = yield db.query(query);
+    console.debug('avatar', rows);
     return rows[0].avatar;
   })
 };

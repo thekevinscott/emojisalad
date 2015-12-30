@@ -5,26 +5,17 @@ const _ = require('lodash');
 const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
 const host = 'http://localhost:'+process.env.PORT;
 const proxyquire =  require('proxyquire')
-let message = {
-  body: 'this needs to be filled out',
-  to: 'this needs to be filled out',
-  from: 'fill this out'
-};
 
-const main = proxyquire('main', {
-  request: function(options, callback) {
-    callback(null, [message]);
-  }
-});
+const handle = require('main').handle;
 
 const req = Promise.coroutine(function* (data, raw) {
-  let player = data.player;
+  const player = data.player;
   if ( ! _.isObject(player) ) {
     console.error('player', player);
     throw "You must provide player as an object now";
   }
 
-  message = {
+  const message = {
     body: data.message,
     to: data.to || player.to,
     from: player.number
@@ -34,8 +25,10 @@ const req = Promise.coroutine(function* (data, raw) {
   // matching the messages waiting in the queue.
   // Because we are simulating a super fast queue,
   // we only ever have one message in the queue.
-  let response = yield main();
-  let body = response[0];
+  //let response = yield main(message);
+  //let body = response[0];
+  const response = yield handle(message);
+  const body = response;
 
   if ( raw ) {
     return xml2js(body);

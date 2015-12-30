@@ -1,3 +1,4 @@
+'use strict';
 const Promise = require('bluebird');
 const db = require('db');
 const squel = require('squel').useFlavour('mysql');

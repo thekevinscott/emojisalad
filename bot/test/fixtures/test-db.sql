@@ -43,8 +43,9 @@ CREATE TABLE `attributes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `key` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key` (`key`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +121,7 @@ CREATE TABLE `game_phrases` (
   `phrase_id` int(11) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=178 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=180 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +141,7 @@ CREATE TABLE `game_players` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `one_user_per_game` (`player_id`,`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +159,7 @@ CREATE TABLE `game_scores` (
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -191,7 +192,7 @@ CREATE TABLE `games` (
   `last_activity` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   `created` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=83 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,7 +210,7 @@ CREATE TABLE `guesses` (
   `correct` tinyint(1) DEFAULT NULL,
   `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=368 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=370 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +246,7 @@ CREATE TABLE `invites` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `unique-invites` (`invited_player_id`,`inviter_player_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,7 +320,7 @@ CREATE TABLE `player_order` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`player_id`,`game_id`),
   UNIQUE KEY `order` (`order`,`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -352,7 +353,7 @@ CREATE TABLE `players` (
   `last_activity` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   `created` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=475 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=479 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,7 +405,7 @@ CREATE TABLE `rounds` (
   `clues_allowed` int(11) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=176 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=178 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -437,13 +438,13 @@ CREATE TABLE `users` (
   `from` varchar(15) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `nickname` varchar(255) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
-  `maximum_games` int(11) unsigned NOT NULL DEFAULT '2',
+  `maximum_games` int(11) unsigned NOT NULL DEFAULT '5',
   `last_activity` timestamp(6) NULL DEFAULT NULL,
   `created` timestamp(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `from` (`from`),
   KEY `from_index` (`from`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -455,7 +456,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-30  0:30:46
+-- Dump completed on 2015-12-30  9:00:34
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -521,7 +522,7 @@ CREATE TABLE `avatars` (
 
 LOCK TABLES `avatars` WRITE;
 /*!40000 ALTER TABLE `avatars` DISABLE KEYS */;
-INSERT INTO `avatars` VALUES (1,'⚽️','2015-12-17 17:00:14'),(2,'?','2015-12-17 17:01:03'),(3,'?','2015-12-17 17:01:14'),(4,'?','2015-12-17 17:01:13'),(5,'?','2015-12-17 17:01:12'),(6,'?','2015-12-17 17:01:10'),(7,'⚾️','2015-12-17 17:01:09'),(8,'?','2015-12-17 17:01:05'),(9,'?','2015-12-17 17:01:17'),(10,'?','2015-12-17 17:01:19'),(11,'?','2015-12-17 17:01:22'),(12,'?','2015-12-17 17:01:24'),(13,'?','2015-12-17 17:01:27'),(14,'?','2015-12-17 17:01:30'),(15,'?','2015-12-17 17:01:32'),(16,'?','2015-12-17 17:01:35'),(17,'?','2015-12-17 17:01:37'),(18,'?','2015-12-17 17:01:39'),(19,'⛄️','2015-12-17 17:01:45'),(20,'⚡️','2015-12-17 17:01:48'),(21,'?','2015-12-17 17:01:50'),(22,'?','2015-12-17 17:01:52'),(23,'?','2015-12-17 17:01:54'),(24,'?','2015-12-17 17:01:56'),(25,'?','2015-12-17 17:01:58'),(26,'?','2015-12-17 17:02:00'),(27,'?','2015-12-17 17:02:03'),(28,'☂','2015-12-17 17:02:07'),(29,'?','2015-12-17 17:02:09');
+INSERT INTO `avatars` VALUES (1,'⚽️','2015-12-17 17:00:14'),(7,'⚾️','2015-12-17 17:01:09'),(19,'⛄️','2015-12-17 17:01:45'),(20,'⚡️','2015-12-17 17:01:48'),(28,'☂','2015-12-17 17:02:07');
 /*!40000 ALTER TABLE `avatars` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -659,4 +660,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-30  0:30:56
+-- Dump completed on 2015-12-30  9:00:36
