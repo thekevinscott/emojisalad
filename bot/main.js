@@ -34,15 +34,15 @@ let main = Promise.coroutine(function* (req, res) {
 
   let lastRecordedTimestamp = yield getLastRecordedTimestamp();
 
-  //console.log('lastRecord', lastRecordedTimestamp);
+  console.debug('lastRecord', lastRecordedTimestamp);
 
   let messages = yield getMessages(lastRecordedTimestamp);
-  //console.log('messagess', messages);
+  console.debug('messagess', messages);
 
   if ( messages.length ) {
     // make a note of the last messages timestamp
     let lastMessageTimestamp = messages[messages.length-1].timestamp;
-    //console.log('last message timestamp', lastMessageTimestamp);
+    console.debug('last message timestamp', lastMessageTimestamp);
     yield recordTimestamp(lastMessageTimestamp);
 
     yield Promise.all(messages.map(handle)).then(function(processed_messages) {
@@ -100,10 +100,10 @@ const getLastRecordedTimestamp = Promise.coroutine(function* () {
               .select({ autoEscapeFieldNames: true })
               .from('attributes')
               .where('`key`="timestamp"')
-              //console.log(query.toString());
+              console.debug(query.toString());
 
   let rows = yield db.query(query);
-  //console.log('rows', rows);
+  console.debug('rows', rows);
   if ( rows && rows.length ) {
     return rows[0].value;
   }
@@ -119,7 +119,7 @@ const recordTimestamp = Promise.coroutine(function* (timestamp) {
               })
               .onDupUpdate('value', timestamp);
 
-              //console.log(query.toString());
+              console.debug(query.toString());
 
   return yield db.query(query);
   //const db = yield getConnectionAsync();
