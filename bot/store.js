@@ -1,7 +1,7 @@
 const Promise = require('bluebird');
 const db = require('db');
 const squel = require('squel').useFlavour('mysql');
-const mongodb = Promise.promisifyAll(require('MongoDB'));
+//const mongodb = Promise.promisifyAll(require('MongoDB'));
 
 function store(key, val) {
   if ( val !== undefined ) {
@@ -42,7 +42,7 @@ function getConnectionAsync() {
   //.disposer(function(connection){
     //connection.close();
   //});
-  return mongodb.MongoClient.connectAsync(url);
+  //return mongodb.MongoClient.connectAsync(url);
 }
 
 module.exports = store;

@@ -5,7 +5,6 @@ const twilio2 = require('./platforms/twilio2');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const store = require('store');
-//const MongoClient = require('mongodb').MongoClient;
 
 const request = Promise.promisify(require('request'));
 
