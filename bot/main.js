@@ -102,8 +102,12 @@ const getLastRecordedTimestamp = Promise.coroutine(function* () {
               .where('`key`="timestamp"')
               console.debug(query.toString());
 
+              try {
   let rows = yield db.query(query);
   console.debug('rows', rows);
+              } catch (err ) {
+                console.debug('error', err);
+              }
   if ( rows && rows.length ) {
     return rows[0].value;
   }
