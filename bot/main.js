@@ -8,6 +8,8 @@ const store = require('store');
 
 const request = Promise.promisify(require('request'));
 
+const runTime = 10;
+
 let timer;
 
 let handle = Promise.coroutine(function* (message) {
@@ -31,7 +33,10 @@ let main = Promise.coroutine(function* (req, res) {
   }
 
   let lastRecordedTimestamp = yield store('timestamp');
-
+  let previousRunTime = (new Date()).getTime()/1000 - runTime;
+  if ( lastRecordedTimestamp < previousRunTime ) {
+    lastRecordedTimestamp = previousRunTime;
+  }
 
   console.debug('lastRecord', lastRecordedTimestamp);
 
@@ -47,7 +52,7 @@ let main = Promise.coroutine(function* (req, res) {
 
     yield Promise.all(messages.map(handle)).then(function(processed_messages) {
       if ( process.env.ENVIRONMENT !== 'test' ) {
-        timer = setTimeout(main, 10*1000);
+        timer = setTimeout(main, runTime*1000);
       }
       return processed_messages;
     });
