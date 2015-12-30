@@ -65,7 +65,7 @@ let main = Promise.coroutine(function* (req, res) {
   }
 });
 
-const concatenate = function(messages) {
+const concatenate = function(responses) {
   let tos = {};
   for ( var i=0; i<responses.length; i++ ) {
     let response = responses[i];
