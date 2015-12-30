@@ -4,8 +4,7 @@ const queues = require('config/services').queues;
 const twilio2 = require('./platforms/twilio2');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
-//const mongodb = Promise.promisifyAll(require('MongoDB'));
-const squel = require('squel').useFlavour('mysql');
+const store = require('store');
 //const MongoClient = require('mongodb').MongoClient;
 
 const request = Promise.promisify(require('request'));
@@ -32,7 +31,8 @@ let main = Promise.coroutine(function* (req, res) {
     clearTimeout(timer);
   }
 
-  let lastRecordedTimestamp = yield getLastRecordedTimestamp();
+  let lastRecordedTimestamp = yield store('timestamp');
+
 
   console.debug('lastRecord', lastRecordedTimestamp);
 
@@ -43,7 +43,8 @@ let main = Promise.coroutine(function* (req, res) {
     // make a note of the last messages timestamp
     let lastMessageTimestamp = messages[messages.length-1].timestamp;
     console.debug('last message timestamp', lastMessageTimestamp);
-    yield recordTimestamp(lastMessageTimestamp);
+    yield store('timestamp', lastMessageTimestamp);
+
 
     yield Promise.all(messages.map(handle)).then(function(processed_messages) {
       if ( process.env.ENVIRONMENT !== 'test' ) {
@@ -93,51 +94,3 @@ let getMessages = Promise.coroutine(function* (timestamp) {
 });
 
 module.exports = main;
-
-const db = require('db');
-const getLastRecordedTimestamp = Promise.coroutine(function* () {
-  let query = squel
-              .select({ autoEscapeFieldNames: true })
-              .from('attributes')
-              .where('`key`="timestamp"')
-              console.debug(query.toString());
-
-              try {
-  let rows = yield db.query(query);
-  console.debug('rows', rows);
-              } catch (err ) {
-                console.debug('error', err);
-              }
-  if ( rows && rows.length ) {
-    return rows[0].value;
-  }
-});
-
-const recordTimestamp = Promise.coroutine(function* (timestamp) {
-  let query = squel
-              .insert({ autoEscapeFieldNames: true })
-              .into('attributes')
-              .setFields({
-                '`key`': 'timestamp',
-                value: timestamp
-              })
-              .onDupUpdate('value', timestamp);
-
-              console.debug(query.toString());
-
-  return yield db.query(query);
-  //const db = yield getConnectionAsync();
-
-  //let result = yield db.collection(key).update(db.collection(key).find(), { val: timestamp }, {upsert: true} );
-  //return result;
-});
-
-function getConnectionAsync() {
-  let url = 'mongodb://localhost:27017/bot';
-  //return mongodb.MongoClient.connectAsync(url)
-  //.disposer(function(connection){
-    //connection.close();
-  //});
-  return mongodb.MongoClient.connectAsync(url);
-}
-
