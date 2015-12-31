@@ -21,9 +21,7 @@ let handle = Promise.coroutine(function* (message) {
   //console.debug('params', params);
   let response = yield twilio2(params);
   let messages = yield Message.parse(response);
-  yield sendMessages(messages);
-  let twiml = yield Twilio.parse(messages);
-  return twiml.toString();
+  return messages;
 });
 
 let main = Promise.coroutine(function* (req, res) {
@@ -49,12 +47,13 @@ let main = Promise.coroutine(function* (req, res) {
     console.debug('last message timestamp', lastMessageTimestamp);
     yield store('timestamp', lastMessageTimestamp);
 
-
     yield Promise.all(messages.map(handle)).then(function(processed_messages) {
+      return sendMessages(processed_messages);
+    }).then(function(msg) {
       if ( process.env.ENVIRONMENT !== 'test' ) {
         timer = setTimeout(main, runTime*1000);
       }
-      return processed_messages;
+      return msg;
     });
   }
 
@@ -99,19 +98,24 @@ const concatenate = function(responses) {
 let sendMessages = Promise.coroutine(function* (messages) {
   messages = concatenate(messages);
   console.debug('sending messages', messages);
-  yield request({
-    url: queues.sms.send,
-    method: 'POST',
-    form: {
-      messages: messages.map(function(message) {
-        return {
-          to: message.to,
-          from: message.from,
-          body: message.message 
-        }
-      })
-    }
-  });
+
+  if ( process.env.ENVIRONMENT !== 'test' ) {
+    yield request({
+      url: queues.sms.send,
+      method: 'POST',
+      form: {
+        messages: messages.map(function(message) {
+          return {
+            to: message.to,
+            from: message.from,
+            body: message.message 
+          }
+        })
+      }
+    });
+  } else {
+    throw "WTF SHOULD NOT HAPPEN";
+  }
 });
 
 let getMessages = Promise.coroutine(function* (timestamp) {

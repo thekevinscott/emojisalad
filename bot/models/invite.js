@@ -8,19 +8,24 @@ const User = require('./user');
 
 let Invite = {
   create: Promise.coroutine(function* (inviter, value) {
+    console.debug('invite create 1');
     let numbers = yield Phone.parse([value]);
     let number = numbers[0];
 
     // does a user already exist for this number?
     let user = yield User.get({ from: number });
     let initial_state = 'invited-to-new-game';
+    console.debug('invite create 2');
     if ( user && user.blacklist ) {
+      console.debug('invite create 3');
       throw new Error(3);
     } else if ( ! user ) {
+      console.debug('invite create 4');
       user = yield User.create({ from: number });
       initial_state = 'waiting-for-confirmation';
     }
 
+    console.debug('invite create 5');
     // see if an invite exists
     let invite_exists = squel
                         .select()
@@ -31,10 +36,12 @@ let Invite = {
                         .where('i.used=0')
                         .where('inviter_player_id=?',inviter.id);
 
+    console.debug('invite create 6');
     let invites = yield db.query(invite_exists);
     if ( invites.length ) {
       throw new Error(2);
     }
+    console.debug('invite create 7');
 
     // user already exists; 
     // are they playing less than the max
@@ -44,14 +51,17 @@ let Invite = {
       throw new Error(12);
     }
 
+    console.debug('invite create 8');
     let invited_player = yield Player.create({ from: number, user: user, initial_state: initial_state });
 
+    console.debug('invite create 9');
     let query = squel
                 .insert()
                 .into('invites')
                 .set('invited_player_id', invited_player.id)
                 .set('inviter_player_id', inviter.id);
     
+                console.debug(query.toString());
     let rows = yield db.query(query);
 
     if ( rows && rows.insertId ) {
@@ -70,6 +80,7 @@ let Invite = {
                 .select()
                 .from('invites', 'i')
                 .where('i.invited_player_id=?', inviter.id);
+                console.debug(query.toString());
     let rows = yield db.query(query.toString());
     if ( rows && rows.length ) {
       return rows[0];

@@ -36,7 +36,8 @@ let Message = {
           if ( _.isArray(options[obj.key]) ) {
             obj.message = sprintf.apply(null, [obj.message].concat(options[obj.key]));
           } else {
-            obj.message = sprintf(obj.message, { game: { round: {submitter: {nickname: 'foobar'} } } });
+            //let old = { game: { round: {submitter: {nickname: 'foobar'} } } };
+            obj.message = sprintf(obj.message, options[obj.key]);
           }
         }
         return obj;

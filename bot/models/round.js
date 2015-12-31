@@ -142,21 +142,21 @@ let Round = {
       return false;
     }
   }),
-  getGuessesLeft: function(game, player) {
-    let query = squel
-                .select()
-                .field('count(1) as guesses_made')
-                .field('r.guesses')
-                .from('rounds', 'r')
-                .left_join('guesses', 'g', 'g.round_id=r.id')
-                .where('r.id=?',game.round.id)
-                .where('g.player_id=?',player.id);
+  //getGuessesLeft: function(game, player) {
+    //let query = squel
+                //.select()
+                //.field('count(1) as guesses_made')
+                //.field('r.guesses')
+                //.from('rounds', 'r')
+                //.left_join('guesses', 'g', 'g.round_id=r.id')
+                //.where('r.id=?',game.round.id)
+                //.where('g.player_id=?',player.id);
 
-    return db.query(query).then(function(rows) {
-      let row = rows.pop();
-      return parseInt(row.guesses) - parseInt(row.guesses_made);
-    });
-  },
+    //return db.query(query).then(function(rows) {
+      //let row = rows.pop();
+      //return parseInt(row.guesses) - parseInt(row.guesses_made);
+    //});
+  //},
   getPhrase: function(game) {
     if ( ! Game ) {
       Game = require('./game');
@@ -211,6 +211,7 @@ let Round = {
                 .field('r.created')
                 .field('r.guesses')
                 .field('r.clues_allowed')
+                .field('n.submission')
                 //.field('COUNT(1) as guesses_made')
                 .field('p.phrase')
                 .field('s.state')
@@ -218,14 +219,17 @@ let Round = {
                 //.left_join('guesses', 'g', 'g.round_id=r.id')
                 .left_join('round_states', 's', 's.id=r.state_id')
                 .left_join('phrases', 'p', 'p.id=r.phrase_id')
+                .left_join('submissions', 'n', 'n.round_id=r.id')
                 .where('r.game_id=?',game.id)
                 .order('r.id', false)
                 //.group('r.id')
                 .limit(1);
                         
+                //console.log(query.toString());
     let rounds = yield db.query(query);
     if ( rounds.length ) {
       let round = rounds[0];
+      console.debug('round', round);
       return round;
     } else {
       return null;
@@ -286,10 +290,7 @@ let Round = {
       }
     );
   },
-  saveSubmission: function(game, player) {
-    //if ( ! Player ) {
-      //Player = require('./player');
-    //}
+  saveSubmission: Promise.coroutine(function* (game, player, submission) {
 
     // all other players who are not submitter (not the player)
     // should be switched to guessing
@@ -297,16 +298,25 @@ let Round = {
       throw "These should not match";
     }
     let promises = game.round.players.map(function(game_player) {
-      return Player.update(game_player, {state: 'guessing' });
+      if ( game_player.id !== player.id ) {
+        return Player.update(game_player, {state: 'guessing' });
+      } else {
+        return Player.update(player, {state: 'submitted'});
+      }
     });
-    promises.push(function() {
-      return Player.update(player, {state: 'submitted'});
-    }());
-    promises.push(function() {
-      return this.update(game.round, { state: 'playing' });
-    }.bind(this)());
-    return Promise.all(promises);
-  },
+    yield Promise.all(promises);
+    yield this.update(game.round, { state: 'playing' });
+    let query = squel
+                .insert()
+                .into('submissions')
+                .setFields({
+                  submission: submission,
+                  round_id: game.round.id,
+                  player_id: player.id
+                });
+
+    yield db.query(query);
+  }),
   update: function(round, data) {
     let query = squel
                 .update()

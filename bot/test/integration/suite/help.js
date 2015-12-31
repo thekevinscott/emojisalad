@@ -92,12 +92,19 @@ describe('Help', function() {
 
     it('should give help to a player during a game', function() {
       var players = getPlayers(3);
-
-      return playGame(players).then(function() {
+      const EMOJI_CLUE = '😀';
+      return playGame(players).then(function(game) {
+        let options = {
+          game: {
+            round: {
+              submission: EMOJI_CLUE
+            }
+          }
+        };
         return check(
           { player: players[2], msg: help, to: game_number },
           [
-            { to: players[2], key: 'help-player-guessing' },
+            { to: players[2], key: 'help-player-guessing', options: options },
           ]
         ).then(function(obj) {
           obj.output.should.deep.equal(obj.expected);

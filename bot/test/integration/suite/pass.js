@@ -34,6 +34,27 @@ describe('Pass', function() {
       });
     });
 
+    it('should let a submitter pass', function() {
+      let players = getPlayers(2);
+      let lastPrompt = 'JURASSIC PARK';
+      let nextPrompt = 'SILENCE OF THE LAMBS';
+      return startGame(players).then(function(game) {
+        return check(
+          { player: players[0], msg: pass },
+          [
+            { to: players[0], key: 'pass-initiator', options: [players[0].nickname] },
+            { to: players[1], key: 'player-passed', options: [players[0].nickname] },
+            //{ to: players[0], key: 'round-over', options: [lastPrompt] },
+            //{ to: players[1], key: 'round-over', options: [lastPrompt] },
+            { to: players[0], key: 'game-next-round', options: [ players[1].nickname, players[1].avatar ]},
+            { to: players[1], key: 'game-next-round-suggestion', options: [ players[1].nickname, players[1].avatar, nextPrompt ]},
+          ]
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
+      });
+    });
+
     //it('should not let a submitter pass when guessing', function() {
       //let players = getPlayers(3);
       //return startGame(players).then(function() {

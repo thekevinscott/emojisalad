@@ -1,6 +1,16 @@
 'use strict';
 const twilio = require('twilio');
-const config = require('../../config/twilio')[process.env.ENVIRONMENT];
+let config;
+if ( process.env.ENVIRONMENT !== 'test' ) {
+  config = require('../../config/twilio')[process.env.ENVIRONMENT];
+} else {
+  //config = require('../../../../../config/twilio')[process.env.ENVIRONMENT];
+  config = {
+    accountSid: 'ACf2076b907d44abdd8dc8d262ff941ee4',
+    authToken: '0d7b1b491ca038d4ff4fdf674cd46aa1',
+    from : "12013409832"
+  };
+}
 //const Log = require('./log');
 const Promise = require('bluebird');
 const client = twilio(config.accountSid, config.authToken);

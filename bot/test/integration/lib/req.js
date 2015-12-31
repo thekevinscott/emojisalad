@@ -1,10 +1,23 @@
 'use strict';
 const Promise = require('bluebird');
+const Twilio = require('models/twilio');
 const request = Promise.promisify(require("request"));
 const _ = require('lodash');
 const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
 const host = 'http://localhost:'+process.env.PORT;
 const proxyquire =  require('proxyquire')
+
+//const handle = proxyquire('main', {
+  //'./platforms/twilio2': proxyquire('../../../platforms/twilio2', {
+    //'models/phone': {
+      //parse: function(phones) {
+        //return new Promise(function(resolve) {
+          //resolve(phones);
+        //});
+      //}
+    //}
+  //})
+//}).handle;
 
 const handle = require('main').handle;
 
@@ -27,8 +40,10 @@ const req = Promise.coroutine(function* (data, raw) {
   // we only ever have one message in the queue.
   //let response = yield main(message);
   //let body = response[0];
-  const response = yield handle(message);
-  const body = response;
+  const messages = yield handle(message);
+  let twiml = yield Twilio.parse(messages);
+  const body = twiml.toString();
+  //const body = response;
 
   if ( raw ) {
     return xml2js(body);

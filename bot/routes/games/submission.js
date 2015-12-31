@@ -21,6 +21,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       key: 'game-next-round-suggestion',
       options: [
         round.submitter.nickname,
+        round.submitter.avatar,
         round.phrase
       ]
     };
@@ -29,6 +30,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       key: 'game-next-round',
       options: [
         round.submitter.nickname,
+        round.submitter.avatar
       ]
     };
 

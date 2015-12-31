@@ -77,17 +77,18 @@ describe('Play', function() {
   });
 
   describe('New Player', function() {
-    it('should onboard an existing user to a new pending game', function() {
+    it('should onboard a new user to a new pending game', function() {
       let players = getPlayers(2);
       let invitee = getPlayers(4).pop();
       return setupTwoGames(players, invitee).then(function() {
         return setup([
-          { player: invitee, msg: 'yes', to: game_numbers[0] },
+          { player: invitee, msg: rule('yes').example(), to: game_numbers[0] },
+          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
         ]);
       }).then(function() {
         let firstPhrase = 'JURASSIC PARK';
         return check(
-          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
+          { player: invitee, msg: rule('keep').example(), to: game_numbers[0] },
           [
             { key: 'accepted-invited', options: [invitee.nickname], to: players[0] },
             { key: 'accepted-inviter', options: [invitee.nickname, players[0].nickname], to: invitee },
@@ -99,18 +100,20 @@ describe('Play', function() {
       });
     });
 
-    it('should onboard an existing user to a new game where the submitter has yet to submit', function() {
+    it('should onboard a new user to a new game where the submitter has yet to submit', function() {
       let players = getPlayers(2);
       let invitee = getPlayers(4).pop();
       return setupTwoGames(players).then(function() {
         return setup([
-          { player: players[1], msg: 'yes', to: game_numbers[1] },
-          { player: players[0], msg: 'invite '+invitee.number, to: game_numbers[1] },
-          { player: invitee, msg: 'yes', to: game_numbers[0] },
+
+          { player: players[1], msg: rule('yes').example(), to: game_numbers[1] },
+          { player: players[0], msg: rule('invite').example()+invitee.number, to: game_numbers[1] },
+          { player: invitee, msg: rule('yes').example(), to: game_numbers[0] },
+          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
         ]);
       }).then(function() {
         return check(
-          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
+          { player: invitee, msg: rule('keep').example(), to: game_numbers[0] },
           [
             { key: 'accepted-invited', options: [invitee.nickname], to: players[0] },
             { key: 'join-game', options: [invitee.nickname], to: players[1] },
@@ -122,19 +125,20 @@ describe('Play', function() {
       });
     });
 
-    it('should onboard an existing user to the bench of a new game', function() {
+    it('should onboard a new user to the bench of a new game', function() {
       let players = getPlayers(3);
       let invitee = getPlayers(4).pop();
       return setupTwoGames(players).then(function() {
         return setup([
-          { player: players[0], msg: 'invite '+invitee.number, to: game_numbers[1] },
-          { player: players[1], msg: 'yes', to: game_numbers[1] },
+          { player: players[0], msg: rule('invite').example()+invitee.number, to: game_numbers[1] },
+          { player: players[1], msg: rule('yes').example(), to: game_numbers[1] },
           { player: players[0], msg: EMOJI, to: game_numbers[1] },
-          { player: invitee, msg: 'yes', to: game_numbers[0] },
+          { player: invitee, msg: rule('yes').example(), to: game_numbers[0] },
+          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
         ]);
       }).then(function() {
         return check(
-          { player: invitee, msg: invitee.nickname, to: game_numbers[0] },
+          { player: invitee, msg: rule('keep').example(), to: game_numbers[0] },
           [
             { key: 'accepted-invited-next-round', options: [invitee.nickname], to: players[0] },
             { key: 'join-game-next-round', options: [invitee.nickname], to: players[1] },
@@ -249,8 +253,10 @@ describe('Play', function() {
           { player: player, msg: rule('help').example(), to: game_number },
         ]);
       })).then(function(responses) {
+        const EMOJI_CLUE = '😀';
+        const game = { round: { submission: EMOJI_CLUE } };
         responses.length.should.equal(2);
-        return Message.get(['help-player-guessing']).then(function(message) {
+        return Message.get(['help-player-guessing'], {'help-player-guessing': {game: game}}).then(function(message) {
           message = message.pop();
           let first = responses[0][0];
           let second = responses[1][0];

@@ -61,7 +61,7 @@ function pullProductionDB() {
   var tablesHavingData = [
     'admins',
     'avatars',
-    'game_numbers',
+    //'game_numbers',
     'game_states',
     'messages',
     'round_states',
@@ -164,6 +164,17 @@ function resetTestingDB() {
                 ]);
     return db.query(query.toString());
   }).then(function() {
+    // set up game numbers
+    var query = squel
+                .insert()
+                .into('game_numbers')
+                .setFieldsRows([
+                  { id: 1, number: '+15559999999' },
+                  { id: 2, number: '+15551111111' },
+                ]);
+    return db.query(query.toString());
+
+  }).then(function() {
     // set up clues
     var query = squel
                 .insert()
@@ -205,23 +216,30 @@ function startServer(server) {
   });
 }
 function runTests() {
-  var deferred = Promise.pending();
-  process.env.DEBUG = util.env.debug || false;
-  gulp.src(['test/index.js'], { read: false })
-  .pipe(mocha({
-    timeout: 60000,
-    slow: 3000,
-    bail: true
-  }))
-  .on('error', function(data) {
-    console.log(data.message);
-  })
-  .once('end', function() {
-    deferred.resolve();
+  return resetTestingDB().then(function() {
+    //var deferred = Promise.pending();
+    process.env.DEBUG = util.env.debug || false;
+    return gulp.src(['test/index.js'], { read: false })
+    .pipe(mocha({
+      timeout: 10000,
+      slow: 500,
+      bail: true
+    }))
+    .on('error', function(data) {
+      console.log(data.message);
+      process.exit(1);
+    })
+    .once('end', function() {
+      process.exit();
+      //deferred.resolve();
+    });
   });
-  return deferred.promise;
+  //return deferred.promise;
 }
 gulp.task('test', function() {
+  process.env.ENVIRONMENT = 'test';
+  process.env.PORT = '5005';
+  /*
   return startServer('test').on('start', function() {
     // process has started
   }).on('stderr', function(data) {
@@ -231,8 +249,10 @@ gulp.task('test', function() {
     data = data.toString().trim();
 
     if ( data === 'EmojinaryFriend API' ) {
-      resetTestingDB().then(function() {
+      return resetTestingDB().then(function() {
+    */
         return runTests();
+      /*
       });
     } else {
       console.log(chalk.cyan(data));
@@ -246,6 +266,7 @@ gulp.task('test', function() {
     //console.log('Rerunning tests...');
     // server has restarted
   });
+  */
 });
 
 /* Running server */

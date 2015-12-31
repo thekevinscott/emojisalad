@@ -13,6 +13,7 @@ const EMOJI = '😀';
 const game_number = require('../../../../config/numbers').getDefault();
 
 describe('Inviting', function() {
+  /*
   describe('Invalid Phone Numbers', function() {
     let players = getPlayers(2);
     let inviter = players[0];
@@ -66,6 +67,7 @@ describe('Inviting', function() {
       });
     });
   });
+  */
 
   describe('Valid numbers', function() {
     let players = getPlayers(2);
@@ -80,9 +82,9 @@ describe('Inviting', function() {
 
       return check(
         // lose the intro of the number for testing
-        { player: inviter, msg: 'invite '+player.number.substring(2) },
+        { player: inviter, msg: 'invite '+player.number },
         [
-          { key: 'intro_5', options: [player.number.substring(2)], to: inviter },
+          { key: 'intro_5', options: [player.number], to: inviter },
           { key: 'invite', options: [inviter.nickname], to: player }
         ]
       ).then(function(obj) {

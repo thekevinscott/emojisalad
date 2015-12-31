@@ -9,7 +9,7 @@ var keys = {
   'waiting-for-submission': 'help-submitter-waiting-for-submission',
   'submitted': 'help-submitter-submitted',
   'bench': 'help-player-bench',
-  'guessing': 'help-player-guessing',
+  'guessing': getGame('help-player-guessing'),
   'waiting-for-round': getGame('help-player-waiting-for-round'),
   'ready-for-game': getGame('help-player-ready-for-game')
 };

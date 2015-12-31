@@ -11,19 +11,25 @@ let Phone = {
       if ( ! passed_number ) {
         throw new Error(8);
       } else {
-        let getAsync = Promise.promisify(client.phoneNumbers(passed_number).get);
 
-        return getAsync().then(function(number) {
-          return number.phoneNumber;
-        }).catch(function(err) {
-          // 20404 means phone number was invalid,
-          // so only show the error if it is 
-          // not that
-          if ( err && err.code !== 20404 ) {
-            console.error('Twilio Error', err);
-          }
-          throw new Error(1);
-        });
+        if ( process.env.ENVIRONMENT !== 'test' ) {
+          let getAsync = Promise.promisify(client.phoneNumbers(passed_number).get);
+
+          return getAsync().then(function(number) {
+            return number.phoneNumber;
+          }).catch(function(err) {
+            // 20404 means phone number was invalid,
+            // so only show the error if it is 
+            // not that
+            if ( err && err.code !== 20404 ) {
+              console.error('Twilio Error', err);
+            }
+            // Error 1 means phone number was invalid
+            throw new Error(1);
+          });
+        } else {
+          return passed_number;
+        }
       }
     }));
   })

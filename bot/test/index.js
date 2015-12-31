@@ -12,5 +12,6 @@ console.debug = function() {
   }
 };
 
+
 require('./integration/suite');
 require(__dirname + '/unit-tests/models/game');

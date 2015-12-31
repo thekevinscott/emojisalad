@@ -90,13 +90,12 @@ let Game = {
       return 'text';
     }
   },
-  saveSubmission: function(player, message, game_number) {
-    return this.get({ player: player, game_number: game_number }).then(function(game) {
-      return Round.saveSubmission(game, player, message).then(function() {
-        return game;
-      });
-    });
-  },
+  saveSubmission: Promise.coroutine(function* (player, message, game_number) {
+    let game = yield this.get({ player: player, game_number: game_number });
+    yield Round.saveSubmission(game, player, message);
+    game.round.submission = message;
+    return game;
+  }),
   newRound: function(game) {
     console.debug('new round');
     return Round.create(game).then(function(round) {
