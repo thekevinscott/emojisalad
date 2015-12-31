@@ -1,8 +1,9 @@
 'use strict';
 //const Promise = require('bluebird');
-const req = require('./req');
+//const req = require('./req');
 const sequence = require('./sequence');
 const _ = require('lodash');
+const processMessage = require('lib/processMessage');
 
 function setup(arr) {
   if ( !_.isArray(arr) ) {
@@ -22,11 +23,12 @@ function setup(arr) {
       throw "No msg provided";
     }
     return function() {
-      return req({
-        player: player,
-        message: msg,
-        to: to
-      }, true);
+      const message = {
+        body: msg,
+        to: to || player.to,
+        from: player.number
+      };
+      return processMessage(message);
     };
   }));
 }

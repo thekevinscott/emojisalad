@@ -7,7 +7,12 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const Promise = require('bluebird');
-module.exports = Promise.coroutine(function* (params) {
+module.exports = Promise.coroutine(function* (message) {
+  const params = {
+    from: message.from,
+    to: message.to,
+    body: message.body,
+  };
   console.debug('\n================twilio=================\n');
   console.debug(params.from, params.body, params.to);
 
@@ -53,6 +58,10 @@ module.exports = Promise.coroutine(function* (params) {
       }
       return router(player, body, params.to);
     });
+  }).then(function(response) {
+    return Message.parse(response);
+  //}).then(function(response) {
+    //return response;
   }).catch(function(err) {
     console.error('twilio error for ', params);
     console.error(err.stack);

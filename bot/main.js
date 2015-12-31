@@ -1,6 +1,5 @@
 'use strict';
 const Promise = require('bluebird');
-const processMessage = require('lib/processMessage');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const store = require('store');
@@ -11,18 +10,14 @@ const request = Promise.promisify(require('request'));
 
 const runTime = 30;
 
+const getMessages = require('lib/getMessages');
+const processMessage = require('lib/processMessage');
+const sendMessages = require('lib/sendMessages');
+
 let timer;
 
 let handle = Promise.coroutine(function* (message) {
-  let params = {
-    from: message.from,
-    to: message.to,
-    body: message.body,
-  };
-  //console.debug('params', params);
-  let response = yield processMessage(params);
-  let messages = yield Message.parse(response);
-  return messages;
+  return yield processMessage(message);
 });
 
 let main = Promise.coroutine(function* (req, res) {
@@ -39,27 +34,21 @@ let main = Promise.coroutine(function* (req, res) {
 
   console.debug('lastRecord', lastRecordedTimestamp);
 
-  let messages = yield getMessages(lastRecordedTimestamp);
+  const messages = yield getMessages(lastRecordedTimestamp);
   console.debug('messages', messages);
 
   if ( messages.length ) {
-    // make a note of the last messages timestamp
-    let lastMessageTimestamp = messages[messages.length-1].timestamp;
-    console.debug('last message timestamp', lastMessageTimestamp);
-    yield store('timestamp', lastMessageTimestamp);
+    setTimestamp(messages);
 
-    console.debug('messages from store', messages);
+    console.debug('messages from mongo', messages);
 
-    yield Promise.all(messages.map(handle)).then(function(processed_messages) {
-      processed_messages = _.flatten(processed_messages)
-      console.debug('this should be an array of messages', processed_messages);
-      return sendMessages(processed_messages);
-    }).then(function(msg) {
-      if ( process.env.ENVIRONMENT !== 'test' ) {
-        timer = setTimeout(main, runTime*1000);
-      }
-      return msg;
-    });
+    let processed_messages = Promise.all(messages.map(processMessage));
+    processed_messages = _.flatten(processed_messages)
+    console.debug('this should be an array of messages', processed_messages);
+    yield sendMessages(processed_messages);
+    if ( process.env.ENVIRONMENT !== 'test' ) {
+      timer = setTimeout(main, runTime*1000);
+    }
   }
 
   if ( res ) {
@@ -67,79 +56,6 @@ let main = Promise.coroutine(function* (req, res) {
   }
 });
 
-const concatenate = function(responses) {
-  let tos = {};
-  for ( var i=0; i<responses.length; i++ ) {
-    let response = responses[i];
-    console.debug('response', response);
-    let to = response.to;
-    if ( !tos[to] ) {
-      tos[to] = [];
-    }
-    tos[to].push(response);
-  }
-  console.debug('tos', tos);
-  let newResponses = Object.keys(tos).map(function(to) {
-    return tos[to].reduce(function(output, response) {
-      if (! output) {
-        output = {
-          to: response.to,
-          from: response.from,
-          message: [response.message]
-        };
-      } else {
-        output.message.push(response.message);
-      }
-      return output;
-    }, null);
-  }).map(function(response) {
-    response.message = response.message.join('\n\n');
-    return response;
-  });
 
-  return newResponses;
-};
-
-let sendMessages = Promise.coroutine(function* (messages) {
-  messages = concatenate(messages);
-  console.debug('sending messages', messages);
-
-  if ( process.env.ENVIRONMENT !== 'test' ) {
-    yield request({
-      url: queues.sms.send,
-      method: 'POST',
-      form: {
-        messages: messages.map(function(message) {
-          return {
-            to: message.to,
-            from: message.from,
-            body: message.message 
-          }
-        })
-      }
-    });
-  } else {
-    throw "WTF SHOULD NOT HAPPEN";
-  }
-});
-
-let getMessages = Promise.coroutine(function* (timestamp) {
-  const response = yield request({
-    url: queues.sms.received,
-    method: 'GET',
-    qs: {
-      date: timestamp
-    }
-  });
-
-  let body = response.body;
-
-  try {
-    body = JSON.parse(body);
-  } catch(err) {} // if err, already parsed
-
-  return body;
-});
 
 module.exports = main;
-module.exports.handle = handle;

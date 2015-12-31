@@ -1,11 +1,14 @@
 'use strict';
-var Promise = require('bluebird');
-var setup = require('./setup');
-var Message = require('models/Message');
+const Promise = require('bluebird');
+const setup = require('./setup');
+const Message = require('models/Message');
+const Twilio = require('models/Twilio');
+const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
+
 
 // checks that a certain action's
 // return matches an expected array
-var check = function(action, expected) {
+var check = Promise.coroutine(function* (action, expected) {
   var fns = [setup(action)];
   var messages = {};
   // retreive messages
@@ -26,47 +29,43 @@ var check = function(action, expected) {
   });
   fns = fns.concat(expected_fns);
 
-  return Promise.all(fns).then(function(responses) {
-    // our initial action
-    var action_output = responses.shift()[0].Response.Sms;
-    responses.map(function(message) {
-      messages[message.key] = message;
-    });
+  const processed = yield Promise.all(fns);
+  const action_output = processed.shift();
 
-    var actions = [];
-    if ( action_output && action_output.length ) {
-      for ( let i=0;i<action_output.length;i++ ) {
-        var action = {
-          message : action_output[i]._
-        };
-        if ( action_output[i].$ ) {
-          action.recipient = action_output[i].$.to;
-        }
-        actions.push(action);
-      }
-    }
-
-    var expecteds = [];
-    if ( expected.length ) {
-      for ( let i=0;i<expected.length;i++ ) {
-        var expected_obj = {
-          message : messages[expected[i].key].message
-        };
-        if ( expected[i].to ) {
-          expected_obj.recipient = expected[i].to.number;
-        }
-        expecteds.push(expected_obj);
-      }
-    }
-
-    // we return arrays of expectations so that tests can accurately report 
-    // line numbers for errors.
-    return {
-      output: actions,
-      expected: expecteds
+  const actions = action_output.map(function(a) {
+    let action = {
+      message : a.message
     };
+    if ( a.to ) {
+      action.recipient = a.to;
+    }
+    return action;
   });
 
-};
+  //var responses = processed[0];
+  processed.map(function(message) {
+    messages[message.key] = message;
+  });
+  var expecteds = [];
+  if ( expected.length ) {
+    for ( let i=0;i<expected.length;i++ ) {
+      var expected_obj = {
+        message : messages[expected[i].key].message
+      };
+      if ( expected[i].to ) {
+        expected_obj.recipient = expected[i].to.number;
+      }
+      expecteds.push(expected_obj);
+    }
+  }
+
+  // we return arrays of expectations so that tests can accurately report 
+  // line numbers for errors.
+  return {
+    output: actions,
+    expected: expecteds
+  };
+
+});
 
 module.exports = check;
