@@ -13,6 +13,7 @@ const runTime = 30;
 const getMessages = require('lib/getMessages');
 const processMessage = require('lib/processMessage');
 const sendMessages = require('lib/sendMessages');
+const setTimestamp = require('lib/setTimestamp');
 
 let timer;
 
