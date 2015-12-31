@@ -51,8 +51,9 @@ let main = Promise.coroutine(function* (req, res) {
     console.debug('messages from store', messages);
 
     yield Promise.all(messages.map(handle)).then(function(processed_messages) {
+      processed_messages = _.flatten(processed_messages)
       console.debug('this should be an array of messages', processed_messages);
-      return sendMessages(_.flatten(processed_messages));
+      return sendMessages(processed_messages);
     }).then(function(msg) {
       if ( process.env.ENVIRONMENT !== 'test' ) {
         timer = setTimeout(main, runTime*1000);
