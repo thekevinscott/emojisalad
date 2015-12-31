@@ -22,12 +22,6 @@ app.get('/test', function(req, res) {
   res.json({ success: 1 });
 });
 
-app.post('/platform/:platform', function(req, res) {
-  return require('./platforms/twilio')(req, res);
-});
-
-require('./cron');
-
 app.listen(app.get('port'), function() {
   console.log('EmojinaryFriend API');
 });

@@ -5,6 +5,7 @@ const Message = require('models/message');
 const Twilio = require('models/twilio');
 const store = require('store');
 const queues = require('config/services').queues;
+const lodash = require('lodash');
 
 const request = Promise.promisify(require('request'));
 
@@ -51,7 +52,7 @@ let main = Promise.coroutine(function* (req, res) {
 
     yield Promise.all(messages.map(handle)).then(function(processed_messages) {
       console.debug('this should be an array of messages', processed_messages);
-      return sendMessages(processed_messages);
+      return sendMessages(_.flatten(processed_messages, true));
     }).then(function(msg) {
       if ( process.env.ENVIRONMENT !== 'test' ) {
         timer = setTimeout(main, runTime*1000);
