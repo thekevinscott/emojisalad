@@ -55,24 +55,24 @@ describe('Clues', function() {
     });
   });
 
-  it('should not allow the submitter to ask for a clue', function() {
-    var players = getPlayers(3);
+  //it('should not allow the submitter to ask for a clue', function() {
+    //var players = getPlayers(3);
 
-    return playGame(players).then(function() {
-      return check(
-        { player: players[0], msg: clue },
-        [
-          { key: 'says', options: [players[0].nickname, players[0].avatar, clue], to: players[1] },
-          { key: 'says', options: [players[0].nickname, players[0].avatar, clue], to: players[2] },
-          { key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[0] },
-          { key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[1] },
-          { key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[2] }
-        ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
-    });
-  });
+    //return playGame(players).then(function() {
+      //return check(
+        //{ player: players[0], msg: clue },
+        //[
+          //{ key: 'says', options: [players[0].nickname, players[0].avatar, clue], to: players[1] },
+          //{ key: 'says', options: [players[0].nickname, players[0].avatar, clue], to: players[2] },
+          //{ key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[0] },
+          //{ key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[1] },
+          //{ key: 'no-clue-for-submitter', options: [players[0].nickname], to: players[2] }
+        //]
+      //).then(function(obj) {
+        //obj.output.should.deep.equal(obj.expected);
+      //});
+    //});
+  //});
 
   /*
   it('should not allow more than one clue', function() {

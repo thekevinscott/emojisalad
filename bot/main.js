@@ -47,6 +47,8 @@ let main = Promise.coroutine(function* (req, res) {
     console.debug('last message timestamp', lastMessageTimestamp);
     yield store('timestamp', lastMessageTimestamp);
 
+    console.debug('messages from store', messages);
+
     yield Promise.all(messages.map(handle)).then(function(processed_messages) {
       return sendMessages(processed_messages);
     }).then(function(msg) {
