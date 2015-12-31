@@ -1,6 +1,6 @@
 'use strict';
 const Promise = require('bluebird');
-const twilio2 = require('./platforms/twilio2');
+const processMessage = require('lib/processMessage');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const store = require('store');
@@ -20,7 +20,7 @@ let handle = Promise.coroutine(function* (message) {
     body: message.body,
   };
   //console.debug('params', params);
-  let response = yield twilio2(params);
+  let response = yield processMessage(params);
   let messages = yield Message.parse(response);
   return messages;
 });

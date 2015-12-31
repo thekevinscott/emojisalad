@@ -1,10 +1,7 @@
 'use strict';
-// set require path
-require('app-module-path').addPath(__dirname);
 
 const pmx = require('pmx');
-const express = require('express');
-const app = express();
+const app = require('express')();
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -13,14 +10,6 @@ app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
-
-app.get('/test', function(req, res) {
-  console.log('test works');
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  res.json({ success: 1 });
-});
 
 app.listen(app.get('port'), function() {
   console.log('EmojinaryFriend API');

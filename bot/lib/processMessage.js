@@ -6,7 +6,6 @@ const Player = require('models/player');
 const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
-const track = require('tracking');
 const Promise = require('bluebird');
 module.exports = Promise.coroutine(function* (params) {
   console.debug('\n================twilio=================\n');
@@ -52,11 +51,6 @@ module.exports = Promise.coroutine(function* (params) {
         console.error('to', params.body.to);
         throw "STOP";
       }
-      //try {
-        //track(player.state, player, params.body);
-      //} catch(e) {
-        //console.error('error tracking player', player, params);
-      //}
       return router(player, body, params.to);
     });
   }).catch(function(err) {

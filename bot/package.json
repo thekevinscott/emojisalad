@@ -1,7 +1,7 @@
 {
-  "name": "emojinaryfriend-API",
-  "version": "1.0.0",
-  "description": "API for EmojinaryFriend",
+  "name": "Bot",
+  "version": "3.0.0",
+  "description": "Bot for EmojinaryFriend",
   "main": "index.js",
   "scripts": {
     "test": "mocha --watch"
