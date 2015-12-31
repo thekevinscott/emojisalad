@@ -1,5 +1,6 @@
 'use strict';
 const Promise = require('bluebird');
+const request = Promise.promisify(require('request'));
 
 const getMessages = Promise.coroutine(function* (timestamp) {
   const response = yield request({

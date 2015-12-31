@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const concatenateMessages = require('lib/concatenateMessages');
+const request = Promise.promisify(require('request'));
 
 const sendMessages = Promise.coroutine(function* (messages) {
   console.debug('sending messages', messages);
