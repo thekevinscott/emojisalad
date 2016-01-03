@@ -1,4 +1,5 @@
-const config = require('config/twilio').production;
+'use strict';
+const config = require('config/twilio');
 const Promise = require('bluebird');
 const LookupsClient = require('twilio').LookupsClient;
 const client = new LookupsClient(config.accountSid, config.authToken);

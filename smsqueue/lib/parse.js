@@ -1,6 +1,5 @@
 /*
- * An incoming text from Twilio will contain the following:
- *
+ * An incoming text from Twilio contains the following:
  *
  * ToCountry: 'US',
  * ToState: 'CT',
@@ -22,12 +21,11 @@
  * From: '+18604608183',
  * ApiVersion: '2010-04-01'
  */
-module.exports = twilio;
 
-function twilio(params) {
+module.exports = function parse(params) {
   if ( !params.from && ! params.From) {
     console.error('Potentially malicious error, invalid params', params);
-    throw new Error();
+    throw new Error('Incorrect parameters provided');
   } else {
     return {
       body: params.body || params.Body,

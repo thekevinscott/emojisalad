@@ -1,9 +1,10 @@
-const config = require('config/twilio').production;
+'use strict';
+const config = require('config/twilio');
 const Promise = require('bluebird');
 const twilio = require('twilio');
 const client = twilio(config.accountSid, config.authToken);
 const sendMessage = Promise.promisify(client.sendMessage);
-const phone = require('phone');
+const phone = require('lib/phone');
 
 const sms = Promise.coroutine(function* (params) {
   const twiml = new twilio.TwimlResponse();
