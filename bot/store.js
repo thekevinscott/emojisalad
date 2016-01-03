@@ -2,7 +2,7 @@
 const Promise = require('bluebird');
 const db = require('db');
 const squel = require('squel').useFlavour('mysql');
-const mongodb = Promise.promisifyAll(require('MongoDB'));
+const mongodb = Promise.promisifyAll(require('mongodb'));
 const using = Promise.using;
 
 const url = require('config/db').mongo;
