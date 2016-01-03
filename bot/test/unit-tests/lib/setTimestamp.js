@@ -15,7 +15,7 @@ describe('Set Timestamp', function() {
     const setTimestamp = proxyquire('lib/setTimestamp', {
       store: spy
     });
-    setTimestamp([]);
+    setTimestamp('timestamp', []);
     spy.called.should.equal(false);
   });
 
@@ -27,7 +27,7 @@ describe('Set Timestamp', function() {
         return done();
       })
     });
-    return setTimestamp([{
+    return setTimestamp('timestamp', [{
       timestamp: ts
     }]);
   });
@@ -40,7 +40,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp([
+    return setTimestamp('timestamp', [
       {
         timestamp: '2014-01-01 10:00:00'
       },
@@ -58,7 +58,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp([
+    return setTimestamp('timestamp', [
       {
         timestamp: '2014-01-01 10:00:00'
       },
@@ -79,7 +79,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp([
+    return setTimestamp('timestamp', [
       {
         timestamp: ts
       },
@@ -97,7 +97,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp([
+    return setTimestamp('timestamp', [
       {
         timestamp: ts
       },

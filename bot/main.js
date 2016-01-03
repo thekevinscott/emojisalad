@@ -23,11 +23,11 @@ let main = Promise.coroutine(function* (req, res) {
     console.debug('main');
     clear();
 
-    const lastRecordedTimestamp = yield store('timestamp');
+    const lastRecordedSMSTimestamp = yield store('sms-timestamp');
 
-    console.debug('lastRecord', lastRecordedTimestamp);
+    console.debug('lastRecord', lastRecordedSMSTimestamp);
 
-    const messages = yield getMessages(lastRecordedTimestamp);
+    const messages = yield getMessages(lastRecordedSMSTimestamp);
     //console.debug('got messages', messages);
 
     if ( messages.length ) {
@@ -42,7 +42,7 @@ let main = Promise.coroutine(function* (req, res) {
       // resend out potentially invalid messages, which could happen if we don't
       // accurately record the timestamp.
       console.debug('set Timestamp for messages');
-      yield setTimestamp(messages);
+      yield setTimestamp('sms-timestamp', messages);
 
 
       yield Promise.all(processed_messages.map(function(messages_to_send) {
