@@ -39,8 +39,9 @@ let Router = function(player, message, game_number) {
       Player.logLastActivity(player, game_number);
       //console.debug('player', player.state, player.number, game_number);
       console.debug('route: '+route.path);
-      return route.fn(player, message, game_number);
-      //break;
+      const result = route.fn(player, message, game_number);
+      console.debug('result', result);
+      return result;
     }
   }
   throw new Error('state not found: ' + state + ", player: " + player.id);
