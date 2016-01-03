@@ -5,7 +5,7 @@ const squel = require('squel').useFlavour('mysql');
 const mongodb = Promise.promisifyAll(require('MongoDB'));
 const using = Promise.using;
 
-const url = 'mongodb://localhost:27017/bot';
+const url = require('config/db').mongo;
 
 function store(key, val) {
   return using(
