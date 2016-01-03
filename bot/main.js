@@ -1,4 +1,5 @@
 'use strict';
+const pmx = require('pmx');
 const Promise = require('bluebird');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
@@ -54,6 +55,7 @@ let main = Promise.coroutine(function* (req, res) {
     }
   } catch(err) {
     console.error(err);
+    pmx.notify(err);
     clear();
     throw err;
   }
