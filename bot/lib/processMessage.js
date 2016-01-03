@@ -30,12 +30,14 @@ module.exports = Promise.coroutine(function* (message) {
       from: message.from,
       to: message.to
     });
+    console.debug('player', player);
 
     if ( !player ) {
       // does a user exist?
       const user = yield User.get({
         from: message.from
       });
+      console.debug('user', user);
 
       if ( user ) {
         return {
@@ -61,8 +63,10 @@ module.exports = Promise.coroutine(function* (message) {
     ].join(' | '));
 
     let response = yield router(player, params.body, params.to);
+    console.debug('response', response);
     return yield Message.parse(response);
   } catch(err) {
+    console.error(err);
     pmx.notify(err);
   }
 });
