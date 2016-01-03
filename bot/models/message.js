@@ -34,10 +34,10 @@ let Message = {
       return messages.map(function(obj) {
         if ( options[obj.key] ) {
           if ( _.isArray(options[obj.key]) ) {
-            obj.message = sprintf.apply(null, [obj.message].concat(options[obj.key]));
+            obj.body = sprintf.apply(null, [obj.body].concat(options[obj.key]));
           } else {
             //let old = { game: { round: {submitter: {nickname: 'foobar'} } } };
-            obj.message = sprintf(obj.message, options[obj.key]);
+            obj.body = sprintf(obj.body, options[obj.key]);
           }
         }
         return obj;
@@ -100,7 +100,7 @@ let Message = {
         // was the 'from' field, is now the number
         // we send to, aka the 'to' field.
         return _.assign({
-          message: messages[response.key],
+          body: messages[response.key],
           to: from,
           from: to
         }, response);
