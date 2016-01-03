@@ -39,7 +39,7 @@ function getConnectionString(config) {
 function pullProductionDB() {
 
   process.env.ENVIRONMENT = 'production';
-  let config = require('../config/db').production;
+  var config = require('../config/db').production;
   //var config = require('db').config;
   var tmp = 'tmp/';
   //var destination = tmp+'production.sql.gz';
