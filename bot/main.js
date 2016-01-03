@@ -32,7 +32,7 @@ let main = Promise.coroutine(function* (req, res) {
     if ( messages.length ) {
       console.debug('set Timestamp messages', messages);
 
-      const processed_messages = Promise.all(messages.map(processMessage));
+      const processed_messages = yield Promise.all(messages.map(processMessage));
       console.debug('this should be an array of messages', processed_messages);
 
       // set timestamp once we've retrieved the messages and processed them,
@@ -42,7 +42,7 @@ let main = Promise.coroutine(function* (req, res) {
       // of the messages go out but not all of them, we don't want to 
       // resend out potentially invalid messages, which could happen if we don't
       // accurately record the timestamp.
-      setTimestamp(messages);
+      yield setTimestamp(messages);
 
       yield sendMessages(processed_messages);
       //if ( process.env.ENVIRONMENT !== 'test' ) {
