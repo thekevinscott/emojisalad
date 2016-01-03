@@ -17,4 +17,4 @@ emojinaryfriend-db.sublime-workspace
 *.sublime-project
 *.sublime-workspace
 .eslintrc
-config/db.js
+*/config/db.js
