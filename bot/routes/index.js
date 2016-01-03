@@ -40,7 +40,7 @@ let Router = function(player, message, game_number) {
       //console.debug('player', player.state, player.number, game_number);
       console.debug('route: '+route.path);
       const result = route.fn(player, message, game_number);
-      console.debug('result', result);
+      //console.debug('result', result);
       return result;
     }
   }

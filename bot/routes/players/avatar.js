@@ -21,9 +21,12 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       key: 'error-13'
     }];
   } else if ( rule('keep').test(input) ) {
+    console.debug('keep is matched');
     return startGame(player, input, game_number);
   } else {
+    console.debug('keep is not matched', input);
     let result = Emoji.checkInput(input);
+    console.debug('keep result', result);
     if ( result === 'emoji' ) {
       let number_of_emoji = Emoji.getNumOfEmoji(input);
       if ( number_of_emoji === 1 ) {

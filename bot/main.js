@@ -28,11 +28,11 @@ let main = Promise.coroutine(function* (req, res) {
     console.debug('lastRecord', lastRecordedTimestamp);
 
     const messages = yield getMessages(lastRecordedTimestamp);
-    console.debug('got messages', messages);
+    //console.debug('got messages', messages);
 
     if ( messages.length ) {
       const processed_messages = yield Promise.all(messages.map(processMessage));
-      console.debug('this should be an array of an array of messages', processed_messages);
+      //console.debug('this should be an array of an array of messages', processed_messages);
 
       // set timestamp once we've retrieved the messages and processed them,
       // but before we've sent them.
