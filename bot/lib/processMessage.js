@@ -7,53 +7,49 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const Promise = require('bluebird');
-module.exports = Promise.coroutine(function* (message) {
+module.exports = Promise.coroutine(function* (params) {
   console.debug('\n================twilio=================\n');
-  if ( ! message.from ) {
+  console.debug(params);
+  if ( ! params.from ) {
     throw new Error("No from provided");
   }
-  if ( ! message.to ) {
+  if ( ! params.to ) {
     throw new Error("No to provided");
   }
-  if ( ! message.body ) {
+  if ( ! params.body ) {
     throw new Error("No body provided");
   }
-  const params = {
-    from: message.from,
-    to: message.to,
-    body: message.body,
-  };
-  console.debug(params.from, params.body, params.to);
 
   try {
     let player = yield Player.get({
-      from: message.from,
-      to: message.to
+      from: params.from,
+      to: params.to
     });
     console.debug('player', player);
 
     if ( !player ) {
       // does a user exist?
       const user = yield User.get({
-        from: message.from
+        from: params.from
       });
       console.debug('user', user);
 
       if ( user ) {
-        return {
+        player = {
           state: 'uncreated',
           user_id: user.id,
-          to: to,
+          to: params.to,
           //number: user.from,
           user: user
         };
       } else {
-        return {
-          number: from,
+        player = {
+          from: params.from,
           state: 'uncreated',
         };
       }
     }
+
     console.debug([
       'player.id: ' + player.id,
       'player.nickname: ' + player.nickname,
