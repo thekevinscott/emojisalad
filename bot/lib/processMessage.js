@@ -58,6 +58,8 @@ module.exports = Promise.coroutine(function* (params) {
 
   console.debug('get ready to call router');
   let response = yield router(player, params.body, params.to);
-  console.debug('response', response);
-  return yield Message.parse(response);
+  //console.debug('response', response);
+  const parsed_response = yield Message.parse(response);
+  console.debug('parsed response', parsed_response);
+  return parsed_response;
 });

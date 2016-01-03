@@ -32,15 +32,25 @@ let Message = {
       //  ]
       // }
       return messages.map(function(obj) {
+        if ( obj.message ) {
+          // this is coming from an old database
+          obj.body = obj.message;
+          delete obj.message;
+        }
         if ( options[obj.key] ) {
           if ( _.isArray(options[obj.key]) ) {
-            obj.body = sprintf.apply(null, [obj.message].concat(options[obj.key]));
+            obj.body = sprintf.apply(null, [obj.body].concat(options[obj.key]));
           } else {
             //let old = { game: { round: {submitter: {nickname: 'foobar'} } } };
-            obj.body = sprintf(obj.message, options[obj.key]);
+            obj.body = sprintf(obj.body, options[obj.key]);
           }
         }
-        return obj;
+        return {
+          id: obj.id,
+          key: obj.key,
+          //name: obj.name
+          body: obj.body
+        };
       });
 
     } else {
@@ -58,6 +68,7 @@ let Message = {
       });
 
       let rows = yield Message.get(responses.map(function(response) {
+        console.log('message response', response);
         if ( ! response.key ) {
           throw new Error("Every response must have a key: " + JSON.stringify(response));
         }
@@ -65,18 +76,12 @@ let Message = {
       }), options);
 
       rows.map(function(row) {
-        messages[row.key] = row.message;
+        messages[row.key] = row.body;
       });
 
       return responses.map(function(response) {
         let to;
         let from;
-        //if ( ! response.player || ! response.player.number ) {
-          //console.error('##### deprecate passing number directly', response);
-          //throw "stop it";
-        //} else {
-          //to = response.player.from;
-        //}
 
         if ( response.player.from ) {
           from = response.player.from;

@@ -28,7 +28,10 @@ function setup(arr) {
         to: to || player.to,
         from: player.number
       };
-      return processMessage(message);
+      return processMessage(message).then(function(resp) {
+        console.log('resp!', resp);
+        return resp;
+      });
     };
   }));
 }

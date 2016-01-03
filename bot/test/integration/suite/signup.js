@@ -85,6 +85,7 @@ describe('Signup', function() {
           { key: 'intro_3', options: [ player.nickname, avatar ], to: player }
         ]
       ).then(function(obj) {
+        console.log(obj.expected);
         obj.output.should.deep.equal(obj.expected);
       });
     });

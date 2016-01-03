@@ -22,7 +22,7 @@ var check = Promise.coroutine(function* (action, expected) {
   }).map(function(message) {
     let options = {};
     options[message.key] = message.options;
-    return Message.get([message.key], options, 1).then(function(msg) {
+    return Message.get([message.key], options).then(function(msg) {
       return msg[0];
     });
     //return Message.get([message.key], message.options);
@@ -30,9 +30,11 @@ var check = Promise.coroutine(function* (action, expected) {
   fns = fns.concat(expected_fns);
 
   const processed = yield Promise.all(fns);
+  console.log('processed', processed);
   const action_output = processed.shift();
 
   const actions = action_output.map(function(a) {
+    console.log('a', a);
     let action = {
       body : a.body
     };
@@ -50,7 +52,7 @@ var check = Promise.coroutine(function* (action, expected) {
   if ( expected.length ) {
     for ( let i=0;i<expected.length;i++ ) {
       var expected_obj = {
-        body : messages[expected[i].key].message
+        body : messages[expected[i].key].body
       };
       if ( expected[i].to ) {
         expected_obj.recipient = expected[i].to.number;
