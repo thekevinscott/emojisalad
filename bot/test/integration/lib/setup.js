@@ -30,7 +30,6 @@ function setup(arr) {
         from: player.number
       };
       return processMessage(message).then(function(resp) {
-        console.log('resp!', resp);
         return resp;
       });
     };

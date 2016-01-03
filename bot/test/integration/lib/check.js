@@ -30,11 +30,9 @@ var check = Promise.coroutine(function* (action, expected) {
   fns = fns.concat(expected_fns);
 
   const processed = yield Promise.all(fns);
-  console.log('processed', processed);
   const action_output = processed.shift();
 
   const actions = action_output.map(function(a) {
-    console.log('a', a);
     let action = {
       body : a.body
     };

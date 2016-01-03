@@ -85,7 +85,7 @@ describe('Inviting', function() {
         { player: inviter, msg: 'invite '+player.number },
         [
           { key: 'intro_5', options: [player.number], to: inviter },
-          { key: 'invite', options: [inviter.nickname], to: player }
+          { key: 'invite', options: [inviter.nickname, player.number], to: player }
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
@@ -104,7 +104,7 @@ describe('Inviting', function() {
         { player: inviter, msg: 'invite '+player.number },
         [
           { key: 'intro_5', options: [player.number], to: inviter },
-          { key: 'invite', options: [inviter.nickname], to: player }
+          { key: 'invite', options: [inviter.nickname, player.number], to: player }
         ]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);

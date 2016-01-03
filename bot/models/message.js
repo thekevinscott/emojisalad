@@ -68,7 +68,6 @@ let Message = {
       });
 
       let rows = yield Message.get(responses.map(function(response) {
-        console.log('message response', response);
         if ( ! response.key ) {
           throw new Error("Every response must have a key: " + JSON.stringify(response));
         }

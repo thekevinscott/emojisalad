@@ -37,7 +37,10 @@ module.exports = Promise.coroutine(function* (inviter, input) {
           },
           {
             key: 'invite',
-            options: [players.inviting_player.nickname],
+            options: [
+              players.inviting_player.nickname,
+              players.inviting_player.number,
+            ],
             player: players.invited_player
           },
         ];
