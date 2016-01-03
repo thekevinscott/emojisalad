@@ -9,7 +9,7 @@ module.exports = Promise.coroutine(function* (player_params, input, to) {
     return require('../games/new-game')(player_params, input, to);
   } else {
     let user = yield User.create({ from: player_params.number });
-    let player = yield Player.create({ from: player_params.number, to: to, user: user });
+    let player = yield Player.create({ from: player_params.from, to: to, user: user });
     return [{
       key: 'intro',
       player: player
