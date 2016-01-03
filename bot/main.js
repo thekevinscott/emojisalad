@@ -44,6 +44,7 @@ let main = Promise.coroutine(function* (req, res) {
       console.debug('set Timestamp for messages');
       yield setTimestamp(messages);
 
+
       yield Promise.all(processed_messages.map(function(messages_to_send) {
         return sendMessages(messages_to_send);
       }));
