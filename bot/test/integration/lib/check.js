@@ -34,7 +34,7 @@ var check = Promise.coroutine(function* (action, expected) {
 
   const actions = action_output.map(function(a) {
     let action = {
-      message : a.message
+      body : a.body
     };
     if ( a.to ) {
       action.recipient = a.to;
@@ -50,7 +50,7 @@ var check = Promise.coroutine(function* (action, expected) {
   if ( expected.length ) {
     for ( let i=0;i<expected.length;i++ ) {
       var expected_obj = {
-        message : messages[expected[i].key].message
+        body : messages[expected[i].key].message
       };
       if ( expected[i].to ) {
         expected_obj.recipient = expected[i].to.number;
