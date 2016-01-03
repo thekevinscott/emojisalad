@@ -32,7 +32,7 @@ let main = Promise.coroutine(function* (req, res) {
 
     if ( messages.length ) {
       const processed_messages = yield Promise.all(messages.map(processMessage));
-      console.debug('this should be an array of messages', processed_messages);
+      console.debug('this should be an array of an array of messages', processed_messages);
 
       // set timestamp once we've retrieved the messages and processed them,
       // but before we've sent them.
@@ -44,10 +44,11 @@ let main = Promise.coroutine(function* (req, res) {
       console.debug('set Timestamp for messages');
       yield setTimestamp(messages);
 
-      yield sendMessages(processed_messages);
-      //if ( process.env.ENVIRONMENT !== 'test' ) {
-        timer = setTimeout(main, runTime*1000);
-      //}
+      yield Promise.all(processed_messages.map(function(messages_to_send) {
+        return sendMessages(messages_to_send);
+      }));
+
+      timer = setTimeout(main, runTime*1000);
     }
 
     if ( res ) {
