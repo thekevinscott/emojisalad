@@ -60,9 +60,9 @@ const startGame = Promise.coroutine(function* (player, input, game_number) {
   if ( inviter ) {
     // if you've been invited, that means a
     // game already exists.
-    player.user = yield User.update({ id: player.user.id }, {
-      avatar: input
-    });
+    //player.user = yield User.update({ id: player.user.id }, {
+      //avatar: input
+    //});
     player.inviter = inviter;
 
     return yield kickoffGame(player, input, game_number);
