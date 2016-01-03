@@ -4,6 +4,7 @@
 const sequence = require('./sequence');
 const _ = require('lodash');
 const processMessage = require('lib/processMessage');
+const game_numbers = require('../../../../config/numbers');
 
 function setup(arr) {
   if ( !_.isArray(arr) ) {
@@ -13,7 +14,7 @@ function setup(arr) {
   return sequence(arr.map(function(a, i) {
     const player = a.player;
     const msg = a.msg;
-    const to = a.to;
+    const to = a.to || game_numbers[0];
     if ( ! player ) {
       console.error(a, i);
       throw "No player provided";
