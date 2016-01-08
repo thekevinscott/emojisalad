@@ -8,13 +8,17 @@ const getTimestamp = Promise.coroutine(function* (runTime) {
     throw new Error('You must provide a runtime');
   }
   const lastRecordedSMSTimestamp = yield store('sms-timestamp');
-  const d = new Date(lastRecordedSMSTimestamp);
-  if (d.getTime() < (new Date()).getTime() - (runTime*1000)) {
-    let date = (new Date());
-    date.setSeconds(date.getSeconds() - runTime);
-    return date;
+  const d = new Date(lastRecordedSMSTimestamp).getTime();
+  const runtimeDate = getRuntimeDate(runTime);
+  if (d < runtimeDate ) {
+    return runtimeDate;
   }
   return lastRecordedSMSTimestamp;
 });
+
+function getRuntimeDate(runTime) {
+  const d = new Date();
+  return d.getTime() - (runTime*1000);
+}
 
 module.exports = getTimestamp;

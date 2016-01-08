@@ -10,15 +10,15 @@ describe.only('Get Timestamp', function() {
     getTimestamp.should.be.ok;
   });
 
-  it('gets the correct timestamp', function(done) {
-    const ts = 'foo';
+  it('gets the stored timestamp', function(done) {
+    const ts = new Date();
     const getTimestamp = proxyquire('lib/getTimestamp', {
       store: Promise.coroutine(function* (key) {
-        return ts;
+        return ts.getTime();
       })
     });
     getTimestamp(20).then(function(result) {
-      result.should.equal(ts);
+      result.should.equal(ts.getTime());
       done();
     });
   });
@@ -33,7 +33,7 @@ describe.only('Get Timestamp', function() {
     let expectedDate = (new Date());
     expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
     getTimestamp(runtime).then(function(result) {
-      result.should.equalDate(expectedDate);
+      result.should.equal(expectedDate.getTime());
       done();
     });
   });
@@ -43,11 +43,11 @@ describe.only('Get Timestamp', function() {
     expectedDate.setSeconds(expectedDate.getSeconds() - 10);
     const getTimestamp = proxyquire('lib/getTimestamp', {
       store: Promise.coroutine(function* (key) {
-        return expectedDate;
+        return expectedDate.getTime();
       })
     });
     getTimestamp(600).then(function(result) {
-      result.should.equalDate(expectedDate);
+      result.should.equal(expectedDate.getTime());
       done();
     });
   });
