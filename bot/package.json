@@ -21,6 +21,7 @@
     "emoji-exists": "^0.0.2",
     "express": "^4.13.3",
     "gulp-nodemon": "^2.0.3",
+    "kerberos": "0.0.17",
     "levenshtein": "^1.0.5",
     "lodash": "^3.10.1",
     "mixpanel": "^0.3.1",
