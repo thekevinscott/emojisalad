@@ -19,9 +19,7 @@ const getTimestamp = require('lib/getTimestamp');
 
 let timer;
 
-  console.log('main 1');
 let main = Promise.coroutine(function* (req, res) {
-  console.log('main 2');
   try {
     console.debug('main');
     clear();
@@ -47,8 +45,7 @@ let main = Promise.coroutine(function* (req, res) {
       // resend out potentially invalid messages, which could happen if we don't
       // accurately record the timestamp.
       console.debug('set Timestamp for messages');
-      yield setTimestamp('sms-timestamp', messages);
-
+      yield setTimestamp(messages);
 
       yield Promise.all(processed_messages.map(function(messages_to_send) {
         return sendMessages(messages_to_send);

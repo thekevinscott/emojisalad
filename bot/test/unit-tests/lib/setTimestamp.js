@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const Promise = require('bluebird');
 
-describe('Set Timestamp', function() {
+describe.only('Set Timestamp', function() {
   it('loads correctly', function() {
     const setTimestamp = require('lib/setTimestamp');
     setTimestamp.should.be.ok;
@@ -15,7 +15,7 @@ describe('Set Timestamp', function() {
     const setTimestamp = proxyquire('lib/setTimestamp', {
       store: spy
     });
-    setTimestamp('timestamp', []);
+    setTimestamp([]);
     spy.called.should.equal(false);
   });
 
@@ -27,7 +27,7 @@ describe('Set Timestamp', function() {
         return done();
       })
     });
-    return setTimestamp('timestamp', [{
+    return setTimestamp([{
       timestamp: ts
     }]);
   });
@@ -40,7 +40,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp('timestamp', [
+    return setTimestamp([
       {
         timestamp: '2014-01-01 10:00:00'
       },
@@ -58,7 +58,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp('timestamp', [
+    return setTimestamp([
       {
         timestamp: '2014-01-01 10:00:00'
       },
@@ -79,7 +79,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp('timestamp', [
+    return setTimestamp([
       {
         timestamp: ts
       },
@@ -97,7 +97,7 @@ describe('Set Timestamp', function() {
         done();
       })
     });
-    return setTimestamp('timestamp', [
+    return setTimestamp([
       {
         timestamp: ts
       },

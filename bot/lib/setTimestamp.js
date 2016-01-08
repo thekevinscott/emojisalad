@@ -3,10 +3,8 @@
 const store = require('store');
 const Promise = require('bluebird');
 
-const setTimestamp = Promise.coroutine(function* (key, messages) {
-  if ( ! key ) {
-    throw new Error("No key provided");
-  }
+const setTimestamp = Promise.coroutine(function* (messages) {
+  const key = 'timestamp';
   if ( messages.length ) {
     // make a note of the last messages timestamp
     let lastMessageTimestamp = messages.reduce(function(initial, message) {
