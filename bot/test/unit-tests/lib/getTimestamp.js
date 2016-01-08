@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const Promise = require('bluebird');
 
-describe.only('Get Timestamp', function() {
+describe('Get Timestamp', function() {
   it('loads correctly', function() {
     const getTimestamp = require('lib/getTimestamp');
     getTimestamp.should.be.ok;
@@ -23,6 +23,21 @@ describe.only('Get Timestamp', function() {
     });
   });
 
+  it('should return a timestamp at specified runtime if no timestamp is stored', function(done) {
+    const getTimestamp = proxyquire('lib/getTimestamp', {
+      store: Promise.coroutine(function* (key) {
+        return null;
+      })
+    });
+    const runtime = 30;
+    getTimestamp(runtime).then(function(result) {
+      let expectedDate = (new Date());
+      expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
+      closeEnough(result, expectedDate.getTime());
+      done();
+    });
+  });
+
   it('should not return a timestamp earlier than a specified runtime', function(done) {
     const getTimestamp = proxyquire('lib/getTimestamp', {
       store: Promise.coroutine(function* (key) {
@@ -30,10 +45,10 @@ describe.only('Get Timestamp', function() {
       })
     });
     const runtime = 30;
-    let expectedDate = (new Date());
-    expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
     getTimestamp(runtime).then(function(result) {
-      result.should.equal(expectedDate.getTime());
+      let expectedDate = (new Date());
+      expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
+      closeEnough(result, expectedDate.getTime());
       done();
     });
   });
@@ -47,8 +62,13 @@ describe.only('Get Timestamp', function() {
       })
     });
     getTimestamp(600).then(function(result) {
-      result.should.equal(expectedDate.getTime());
+      closeEnough(result, expectedDate.getTime());
       done();
     });
   });
 });
+
+function closeEnough(a, b) {
+  const allowedOffset = 2;
+  Math.abs(a - b).should.be.below(allowedOffset);
+}

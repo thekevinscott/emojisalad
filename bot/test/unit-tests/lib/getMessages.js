@@ -30,7 +30,7 @@ describe('Get Messages', function() {
 
   it('should parse the response', function() {
 
-    var resp = { foo: 'bar' };
+    let resp = { foo: 'bar' };
     let getMessages = proxyquire('lib/getMessages', {
       request: function(error, callback) {
         callback(null, {
@@ -46,7 +46,7 @@ describe('Get Messages', function() {
 
   it('should gracefully handle already parsed response', function() {
 
-    var resp = { foo: 'bar' };
+    let resp = { foo: 'bar' };
     let getMessages = proxyquire('lib/getMessages', {
       request: function(error, callback) {
         callback(null, {

@@ -8,9 +8,11 @@ const getTimestamp = Promise.coroutine(function* (runTime) {
     throw new Error('You must provide a runtime');
   }
   const lastRecordedSMSTimestamp = yield store('sms-timestamp');
+  console.debug('gotten sms timestamp', lastRecordedSMSTimestamp);
   const d = new Date(lastRecordedSMSTimestamp).getTime();
   const runtimeDate = getRuntimeDate(runTime);
-  if (d < runtimeDate ) {
+  if (! lastRecordedSMSTimestamp || d < runtimeDate ) {
+    console.debug('too old, return sooner timestamp');
     return runtimeDate;
   }
   return lastRecordedSMSTimestamp;

@@ -19,12 +19,17 @@ const getTimestamp = require('lib/getTimestamp');
 
 let timer;
 
+  console.log('main 1');
 let main = Promise.coroutine(function* (req, res) {
+  console.log('main 2');
   try {
     console.debug('main');
     clear();
 
     const lastRecordedSMSTimestamp = yield getTimestamp(runTime);
+    if ( ! lastRecordedSMSTimestamp ) {
+      throw new Error('No Timestamp found');
+    }
     console.debug('lastRecord', lastRecordedSMSTimestamp);
 
     const messages = yield getMessages(lastRecordedSMSTimestamp);
