@@ -9,7 +9,7 @@ const lodash = require('lodash');
 
 const request = Promise.promisify(require('request'));
 
-const runTime = 30;
+const runTime = 5;
 
 const getMessages = require('lib/getMessages');
 const processMessage = require('lib/processMessage');
