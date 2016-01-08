@@ -14,11 +14,11 @@ describe('Get Timestamp', function() {
     const ts = new Date();
     const getTimestamp = proxyquire('lib/getTimestamp', {
       store: Promise.coroutine(function* (key) {
-        return ts.getTime();
+        return ts.getTime() / 1000;
       })
     });
     getTimestamp(20).then(function(result) {
-      result.should.equal(ts.getTime());
+      result.should.equal(ts.getTime() / 1000);
       done();
     });
   });
@@ -33,7 +33,7 @@ describe('Get Timestamp', function() {
     getTimestamp(runtime).then(function(result) {
       let expectedDate = (new Date());
       expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
-      closeEnough(result, expectedDate.getTime());
+      closeEnough(result, expectedDate.getTime() / 1000);
       done();
     });
   });
@@ -48,7 +48,7 @@ describe('Get Timestamp', function() {
     getTimestamp(runtime).then(function(result) {
       let expectedDate = (new Date());
       expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
-      closeEnough(result, expectedDate.getTime());
+      closeEnough(result, expectedDate.getTime() / 1000);
       done();
     });
   });
@@ -58,11 +58,11 @@ describe('Get Timestamp', function() {
     expectedDate.setSeconds(expectedDate.getSeconds() - 10);
     const getTimestamp = proxyquire('lib/getTimestamp', {
       store: Promise.coroutine(function* (key) {
-        return expectedDate.getTime();
+        return expectedDate.getTime() / 1000;
       })
     });
     getTimestamp(600).then(function(result) {
-      closeEnough(result, expectedDate.getTime());
+      closeEnough(result, expectedDate.getTime() / 1000);
       done();
     });
   });

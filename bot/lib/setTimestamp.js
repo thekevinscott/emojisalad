@@ -25,7 +25,7 @@ function getDate(str) {
   if ( str.length > 20 && str.split('.').length === 2 ) {
     timestamp.setMilliseconds(str.split('.').pop());
   }
-  return timestamp.getTime();
+  return timestamp.getTime() / 1000;
 }
 
 module.exports = setTimestamp;
