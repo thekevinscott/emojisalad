@@ -28,7 +28,7 @@ let main = Promise.coroutine(function* (req, res) {
     if ( ! lastRecordedSMSTimestamp ) {
       throw new Error('No Timestamp found');
     }
-    console.debug('lastRecord', new Date(lastRecordedSMSTimestamp));
+    console.debug('lastRecord', new Date(lastRecordedSMSTimestamp), 'current time', new Date());
 
     const messages = yield getMessages(lastRecordedSMSTimestamp);
     //console.debug('got messages', messages);
