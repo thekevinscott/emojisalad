@@ -1,5 +1,7 @@
 'use strict';
-require('chai').should();
+let chai = require('chai');
+chai.should();
+chai.use(require('chai-datetime'));
 let Promise = require('bluebird');
 //Promise.longStackTraces();
 

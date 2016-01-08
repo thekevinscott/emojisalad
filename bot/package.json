@@ -42,6 +42,7 @@
   "devDependencies": {
     "casperjs": "^1.1.0-beta3",
     "chai": "^3.2.0",
+    "chai-datetime": "^1.4.0",
     "fill-keys": "^1.0.2",
     "grunt": "^0.4.5",
     "gulp": "^3.9.0",

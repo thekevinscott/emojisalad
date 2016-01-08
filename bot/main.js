@@ -15,6 +15,7 @@ const getMessages = require('lib/getMessages');
 const processMessage = require('lib/processMessage');
 const sendMessages = require('lib/sendMessages');
 const setTimestamp = require('lib/setTimestamp');
+const getTimestamp = require('lib/getTimestamp');
 
 let timer;
 
@@ -23,8 +24,7 @@ let main = Promise.coroutine(function* (req, res) {
     console.debug('main');
     clear();
 
-    const lastRecordedSMSTimestamp = yield store('sms-timestamp');
-
+    const lastRecordedSMSTimestamp = yield getTimestamp(runTime);
     console.debug('lastRecord', lastRecordedSMSTimestamp);
 
     const messages = yield getMessages(lastRecordedSMSTimestamp);
