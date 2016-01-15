@@ -13,11 +13,20 @@ module.exports = {
       defaultsTo: false
     },
 
+    from: 'STRING',
+    nickname: 'STRING',
+    avatar: 'STRING',
+
+    blacklist: {
+      type: 'BOOLEAN',
+      defaultsTo: false
+    },
+
     games: {
       collection: 'game',
       via: 'users'
     }
 
-  }
+  },
 };
 

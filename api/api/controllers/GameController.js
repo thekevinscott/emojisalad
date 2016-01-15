@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing games
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+'use strict';
 
 module.exports = {
   create: function( req, res ) {
@@ -46,7 +47,7 @@ module.exports = {
     });
   },
   find: function( req, res ) {
-    var archived = req.param('archived') || false;
+    let archived = req.param('archived') || false;
     return Game.find({ archived: archived })
     .exec(function (err, games) {
       if (err) {
@@ -63,8 +64,8 @@ module.exports = {
       if (err) {
         return res.json(err, 400);
       } else {
-        var game = games[0];
-        var user = {
+        let game = games[0];
+        let user = {
           id: req.param('user_id')
         };
         game.users.add(user);
@@ -80,7 +81,7 @@ module.exports = {
       if (err) {
         return res.json(err, 400);
       } else {
-        var game = games[0];
+        let game = games[0];
         game.users.remove(req.param('user_id'));
         return game.save(function() {
           res.json(game);
@@ -95,7 +96,7 @@ module.exports = {
       if (err) {
         return res.json(err, 400);
       } else {
-        var game = games[0];
+        let game = games[0];
         return Round.find({ game: games[0].id })
         .exec(function (err, rounds) {
           if (err) {
@@ -113,7 +114,7 @@ module.exports = {
       if (err) {
         return res.json(err, 400);
       } else {
-        var game = games[0];
+        let game = games[0];
         return Round.create({ game: game })
         .exec(function(err, round) {
           if (err) {
