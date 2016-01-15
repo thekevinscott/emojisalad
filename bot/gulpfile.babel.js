@@ -1,18 +1,20 @@
 'use strict';
 // set require path
 require('app-module-path').addPath(__dirname);
-var gulp = require('gulp');
-var util = require('gulp-util');
-var Promise = require('bluebird');
-var childExec = require('child_process').exec;
-var argv = require('yargs').argv;
-var mocha = require('gulp-mocha');
-var nodemon = require('gulp-nodemon');
-var chalk = require('chalk');
-var squel = require('squel');
+let gulp = require('gulp');
+let util = require('gulp-util');
+let Promise = require('bluebird');
+let childExec = require('child_process').exec;
+let argv = require('yargs').argv;
+let mocha = require('gulp-mocha');
+let nodemon = require('gulp-nodemon');
+let chalk = require('chalk');
+let squel = require('squel');
+
+require("babel-polyfill");
 
 function exec(command) {
-  var deferred = Promise.pending();
+  let deferred = Promise.pending();
   childExec(command, function(error, stdout, stderr) {
     if ( error ) {
       deferred.reject(error);
@@ -39,14 +41,14 @@ function getConnectionString(config) {
 function pullProductionDB() {
 
   process.env.ENVIRONMENT = 'production';
-  var config = require('../config/db').production;
-  //var config = require('db').config;
-  var tmp = 'tmp/';
-  //var destination = tmp+'production.sql.gz';
-  var file = 'db_backup.sql';
-  var zippedFile = 'db_backup.sql.gz';
+  let config = require('../config/db').production;
+  //let config = require('db').config;
+  let tmp = 'tmp/';
+  //let destination = tmp+'production.sql.gz';
+  let file = 'db_backup.sql';
+  let zippedFile = 'db_backup.sql.gz';
 
-  var dumpSchemas = [
+  let dumpSchemas = [
     'mysqldump',
     '--no-data',
     '--add-drop-table',
@@ -58,7 +60,7 @@ function pullProductionDB() {
 
   // these tables have data we want
   // and need
-  var tablesHavingData = [
+  let tablesHavingData = [
     'admins',
     'avatars',
     //'game_numbers',
@@ -67,7 +69,7 @@ function pullProductionDB() {
     'round_states',
     'player_states'
   ];
-  var dumpData = [
+  let dumpData = [
     'mysqldump',
     '--opt',
     getConnectionString(config),
@@ -90,18 +92,18 @@ function pullProductionDB() {
 }
 
 gulp.task('sync', function() {
-  var tmp = 'tmp/';
-  var keys = Object.keys(argv);
+  let tmp = 'tmp/';
+  let keys = Object.keys(argv);
   // environment is 1
-  var importKey = keys[1];
+  let importKey = keys[1];
   if ( importKey === 'production' ) {
     throw "WHOA WHOA WHOA NO KILLING PRODUCTION";
   } else {
     process.env.ENVIRONMENT = importKey;
   }
-  var config = require('../config/db')[importKey];
+  let config = require('../config/db')[importKey];
   pullProductionDB().then(function(file) {
-    var importDB = [
+    let importDB = [
       'mysql',
       getConnectionString(config),
       '<'+ file
@@ -124,8 +126,8 @@ gulp.task('sync-testing-db', function(cb) {
 
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
-  var tmp = 'tmp/';
-  var testDB = 'test/fixtures/test-db.sql';
+  let tmp = 'tmp/';
+  let testDB = 'test/fixtures/test-db.sql';
   return pullProductionDB().then(function(file) {
     return exec(['rm -f',testDB].join(' ')).then(function() {
       return exec(['mv',file,testDB].join(' '));
@@ -142,18 +144,18 @@ gulp.task('sync-testing-db', function(cb) {
 function resetTestingDB() {
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
-  var sql_file = 'test/fixtures/test-db.sql';
-  var config = require('../config/db').test;
-  var importDB = [
+  let sql_file = 'test/fixtures/test-db.sql';
+  let config = require('../config/db').test;
+  let importDB = [
     'mysql',
     getConnectionString(config),
     '<'+ sql_file 
   ];
-  var db = require('db');
+  let db = require('db');
 
   return exec(importDB.join(' ')).then(function() {
     // set up phrases
-    var query = squel
+    let query = squel
                 .insert()
                 .into('phrases')
                 .setFieldsRows([
@@ -165,7 +167,7 @@ function resetTestingDB() {
     return db.query(query.toString());
   }).then(function() {
     // set up game numbers
-    var query = squel
+    let query = squel
                 .insert()
                 .into('game_numbers')
                 .setFieldsRows([
@@ -176,7 +178,7 @@ function resetTestingDB() {
 
   }).then(function() {
     // set up clues
-    var query = squel
+    let query = squel
                 .insert()
                 .into('clues')
                 .setFieldsRows([
@@ -189,35 +191,10 @@ function resetTestingDB() {
     return db.query(query.toString());
   });
 }
-function startServer(server) {
-  console.log('start server');
-  if ( server === 'test' ) {
-    process.env.ENVIRONMENT = 'test';
-    process.env.PORT = '5005';
-  } else {
-    process.env.ENVIRONMENT = 'development';
-    process.env.PORT = '5000';
-  }
-
-  return nodemon({
-    script: 'index.js',
-    //verbose: true,
-    verbose: false,
-    quiet: true,
-    "events": {
-      //"restart": "osascript -e 'display notification \"app restarted\" with title \"nodemon\"'"
-    },
-    env: {
-      DEBUG: util.env.debug ? util.env.debug : false
-      //ENVIRONMENT : 'test',
-      //PORT : '5005'
-    },
-    stdout: false
-  });
-}
-function runTests() {
+gulp.task('test', function() {
+  process.env.ENVIRONMENT = 'test';
+  process.env.PORT = '5005';
   return resetTestingDB().then(function() {
-    //var deferred = Promise.pending();
     process.env.DEBUG = util.env.debug || false;
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
@@ -231,49 +208,6 @@ function runTests() {
     })
     .once('end', function() {
       process.exit();
-      //deferred.resolve();
     });
   });
-  //return deferred.promise;
-}
-gulp.task('test', function() {
-  process.env.ENVIRONMENT = 'test';
-  process.env.PORT = '5005';
-  /*
-  return startServer('test').on('start', function() {
-    // process has started
-  }).on('stderr', function(data) {
-    data = data.toString().trim();
-    console.error(chalk.red(data));
-  }).on('stdout', function(data) {
-    data = data.toString().trim();
-
-    if ( data === 'EmojinaryFriend API' ) {
-      return resetTestingDB().then(function() {
-    */
-        return runTests();
-      /*
-      });
-    } else {
-      console.log(chalk.cyan(data));
-      //process.stdout.write(data);
-    }
-  }).on('readable', function() {
-    // stdout stream is readable
-  }).on('change', function() {
-    console.log('changed server');
-  }).on('restart', function() {
-    //console.log('Rerunning tests...');
-    // server has restarted
-  });
-  */
-});
-
-/* Running server */
-gulp.task('default', function() {
-  gulp.run(['start-server','ngrok']);
-});
-gulp.task('start-server', function() {
-  process.env.PORT = '5000';
-  exec('supervisor index.js');
 });
