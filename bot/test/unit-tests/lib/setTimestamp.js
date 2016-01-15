@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const Promise = require('bluebird');
 
-describe.only('Set Timestamp', function() {
+describe('Set Timestamp', function() {
   it('loads correctly', function() {
     const setTimestamp = require('lib/setTimestamp');
     setTimestamp.should.be.ok;

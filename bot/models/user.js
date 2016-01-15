@@ -3,8 +3,32 @@ const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
 
+const req = Promise.promisify(require('request'));
+const request = function(options) {
+  return req(options).then(function(response) {
+    let body = response.body;
+    try {
+      body = JSON.parse(body);
+    } catch(err) {}
+
+    if ( body ) {
+      return body;
+    } else {
+      throw new Error('No response from API');
+    }
+  });
+}
+
 const User = {
-  create: Promise.coroutine(function* (params) {
+  create: function (params) {
+    return request({
+      url: 'http://localhost:1337/users',
+      method: 'POST',
+      form: params
+    });
+
+
+    /*
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
@@ -32,9 +56,16 @@ const User = {
       console.error(query.toString());
       throw "There was an error inserting user";
     }
+    */
 
-  }),
+  },
   update: Promise.coroutine(function* (user, params) {
+    return request({
+      url: 'http://localhost:1337/users/'+user.id,
+      method: 'PUT',
+      form: params
+    });
+    /*
     let whitelist = [
       'nickname',
       'blacklist',
@@ -54,6 +85,7 @@ const User = {
 
     yield db.query(query.toString());
     return user;
+    */
   }),
   getPlayersNum: Promise.coroutine(function* (params) {
     let query = squel
@@ -78,35 +110,18 @@ const User = {
       return null;
     }
   }),
-  get: Promise.coroutine(function* (params) {
-    let query = squel
-                .select()
-                .field('u.*')
-                .from('users', 'u');
-
-    if ( params.id ) {
-      query = query.where('u.id=?',params.id);
-    }
-    
-    if ( params.from ) {
-      query = query.where('u.`from`=?',params.from);
-    }
-    
-    if ( params.player_id ) {
-      query = query
-              .left_join('players', 'p', 'u.id=p.user_id')
-              .where('p.id=?',params.player_id);
-    }
-
-    let rows = yield db.query(query.toString());
-    if ( rows.length ) {
-      let user = rows[0];
-      // TODO: Set this intelligently.
-      return user;
-    } else {
-      return null;
-    }
-  }),
+  // TODO: Rename this getOne
+  get: function (params) {
+    return request({
+      url: 'http://localhost:1337/users',
+      method: 'GET',
+      qs: params
+    }).then(function(response) {
+      if ( response ) {
+        return response[0];
+      } 
+    });
+  },
   getRandomAvatar: Promise.coroutine(function* () {
     let query = squel
                 .select()

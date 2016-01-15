@@ -9,23 +9,19 @@ const sendMessages = Promise.coroutine(function* (messages) {
   messages = concatenate(messages);
   console.debug('sending messages', messages);
 
-  //if ( process.env.ENVIRONMENT !== 'test' ) {
-    yield request({
-      url: queues.sms.send,
-      method: 'POST',
-      form: {
-        messages: messages.map(function(message) {
-          return {
-            to: message.to,
-            from: message.from,
-            body: message.body 
-          }
-        })
-      }
-    });
-  //} else {
-    //throw "WTF SHOULD NOT HAPPEN";
-  //}
+  yield request({
+    url: queues.sms.send,
+    method: 'POST',
+    form: {
+      messages: messages.map(function(message) {
+        return {
+          to: message.to,
+          from: message.from,
+          body: message.body 
+        }
+      })
+    }
+  });
 });
 
 module.exports = sendMessages;

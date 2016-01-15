@@ -112,6 +112,7 @@ let Player = {
     }
 
     let user = yield User.get(user_params);
+    //console.log('gotten user', user);
 
     if ( ! user ) {
       return null;
@@ -124,14 +125,16 @@ let Player = {
                   .field('p.state_id')
                   .field('n.number','to')
                   .field('s.state', 'state')
-                  .field('u.id', 'user_id')
-                  .field('u.blacklist')
-                  .field('u.nickname')
+                  //.field('u.id', 'user_id')
+                  //.field('u.blacklist')
+                  //.field('u.nickname')
                   .from('players', 'p')
                   .left_join('game_numbers','n','n.id=p.`to`')
                   .left_join('player_states', 's', 's.id = p.state_id')
-                  .left_join('users', 'u', 'u.id = p.user_id')
-                  .where('u.id=?', user.id);
+                  //.left_join('users', 'u', 'u.id = p.user_id')
+                  //.where('u.id=?', user.id);
+                  .where('p.user_id=?', user.id);
+
 
       if ( params.id ) {
         query = query.where('p.`id`=?', params.id);
@@ -152,6 +155,8 @@ let Player = {
         player.from = user.from;
         player.user_id = user.id;
         player.avatar = user.avatar;
+        player.nickname = user.nickname;
+        player.blacklist = user.blacklist;
         player.user = user;
 
         return player;
@@ -167,13 +172,13 @@ let Player = {
                 .where('p.id=?', player.id);
 
     if ( params.state ) {
-        let state = squel
-                     .select()
-                     .field('id')
-                     .from('player_states')
-                     .where('state=?', params.state);
+      let state = squel
+                   .select()
+                   .field('id')
+                   .from('player_states')
+                   .where('state=?', params.state);
 
-        query.set('state_id', state, { dontQuote: true });
+      query.set('state_id', state, { dontQuote: true });
     }
 
     yield db.query(query.toString());

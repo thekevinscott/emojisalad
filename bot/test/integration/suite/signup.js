@@ -7,7 +7,7 @@ const Player = require('models/player');
 const rule = require('config/rule');
 const EMOJI = '🐳';
 
-describe('Signup', function() {
+describe.only('Signup', function() {
 
   describe('Test a brand new player', function() {
     it('should introduce itself when contacting for the first time', function() {

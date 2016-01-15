@@ -1,7 +1,7 @@
 'use strict';
-var Promise = require('bluebird');
-var Player = require('models/player');
-var User = require('models/user');
+const Promise = require('bluebird');
+const Player = require('models/player');
+const User = require('models/user');
 //var Message = require('../../models/message');
 
 module.exports = Promise.coroutine(function* (player_params, input, to) {

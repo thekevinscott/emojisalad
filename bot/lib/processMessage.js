@@ -7,7 +7,7 @@ const Message = require('models/message');
 const Twilio = require('models/twilio');
 const Promise = require('bluebird');
 module.exports = Promise.coroutine(function* (params) {
-  console.debug('\n================twilio=================\n');
+  console.debug('\n==========process message===========\n');
   console.debug(params);
   if ( ! params.from ) {
     throw new Error("No from provided");
