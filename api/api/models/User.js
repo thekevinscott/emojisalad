@@ -1,32 +1,47 @@
 /**
 * User.js
 *
-* @description :: TODO: You might write a short summary of how this model works and what it represents here.
-* @docs        :: http://sailsjs.org/#!documentation/models
+* @description :: Definition of the User model which owns multiple players (associated with particular games)
 */
 
 module.exports = {
 
   attributes: {
     archived: {
-      type: 'BOOLEAN',
+      type: Sequelize.BOOLEAN,
       defaultsTo: false
     },
 
-    from: 'STRING',
-    nickname: 'STRING',
-    avatar: 'STRING',
+    from: Sequelize.STRING,
+    nickname: Sequelize.STRING,
+    avatar: Sequelize.STRING,
 
     blacklist: {
-      type: 'BOOLEAN',
+      type: Sequelize.BOOLEAN,
       defaultsTo: false
     },
 
-    games: {
-      collection: 'game',
-      via: 'users'
+    maximum_games: {
+      type: Sequelize.INTEGER,
+      defaultsTo: 2
     }
 
   },
-};
 
+  associations: function () {
+    User.hasMany(Player);
+  },
+  options: {
+    freezeTableName: false,
+    classMethods: {},
+    instanceMethods: {},
+    hooks: {
+      beforeCreate: function(user, options) {
+        return Emoji.findOne().then(function(result) {
+          user.avatar = result.emoji;
+        });
+      }
+    },
+    tableName: 'users'
+  },
+};

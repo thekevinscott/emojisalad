@@ -13,7 +13,7 @@ let Invite = {
     let number = numbers[0];
 
     // does a user already exist for this number?
-    let user = yield User.get({ from: number });
+    let user = yield User.getOne({ from: number });
     let initial_state = 'invited-to-new-game';
     console.debug('invite create 2');
     if ( user && user.blacklist ) {
@@ -61,7 +61,7 @@ let Invite = {
                 .set('invited_player_id', invited_player.id)
                 .set('inviter_player_id', inviter.id);
     
-                console.debug(query.toString());
+    console.debug(query.toString());
     let rows = yield db.query(query);
 
     if ( rows && rows.insertId ) {
@@ -80,7 +80,7 @@ let Invite = {
                 .select()
                 .from('invites', 'i')
                 .where('i.invited_player_id=?', inviter.id);
-                console.debug(query.toString());
+    console.debug(query.toString());
     let rows = yield db.query(query.toString());
     if ( rows && rows.length ) {
       return rows[0];

@@ -10,6 +10,9 @@ const services = {
         return sms_endpoint + 'received'
       }
     }
+  },
+  api: {
+    url: 'http://localhost:1338/'
   }
 }
 

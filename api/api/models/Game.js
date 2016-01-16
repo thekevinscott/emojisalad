@@ -8,20 +8,20 @@
 module.exports = {
 
   attributes: {
-    archived: {
-      type: 'BOOLEAN',
-      defaultsTo: false
-    },
+    //archived: {
+      //type: 'BOOLEAN',
+      //defaultsTo: false
+    //},
 
-    users: {
-      collection: 'user',
-      via: 'games'
-    },
+    //users: {
+      //collection: 'user',
+      //via: 'games'
+    //},
 
-    rounds: {
-      collection: 'round',
-      via: 'game'
-    }
+    //rounds: {
+      //collection: 'round',
+      //via: 'game'
+    //}
 
   }
 };

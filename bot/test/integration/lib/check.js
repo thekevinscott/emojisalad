@@ -8,11 +8,11 @@ const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // exam
 
 // checks that a certain action's
 // return matches an expected array
-var check = Promise.coroutine(function* (action, expected) {
-  var fns = [setup(action)];
-  var messages = {};
+let check = Promise.coroutine(function* (action, expected) {
+  let fns = [setup(action)];
+  let messages = {};
   // retreive messages
-  var expected_fns = expected.map(function(message) {
+  let expected_fns = expected.map(function(message) {
     if ( ! messages[message.key] ) {
       messages[message.key] = true;
       return message;
@@ -42,14 +42,14 @@ var check = Promise.coroutine(function* (action, expected) {
     return action;
   });
 
-  //var responses = processed[0];
+  //let responses = processed[0];
   processed.map(function(message) {
     messages[message.key] = message;
   });
-  var expecteds = [];
+  let expecteds = [];
   if ( expected.length ) {
     for ( let i=0;i<expected.length;i++ ) {
-      var expected_obj = {
+      let expected_obj = {
         body : messages[expected[i].key].body
       };
       if ( expected[i].to ) {

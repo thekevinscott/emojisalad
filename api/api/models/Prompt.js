@@ -7,11 +7,11 @@
 
 module.exports = {
   attributes: {
-    prompt:'STRING',
-    archived: {
-      type: 'BOOLEAN',
-      defaultsTo: false
-    }
+    //prompt:'STRING',
+    //archived: {
+      //type: 'BOOLEAN',
+      //defaultsTo: false
+    //}
   },
 
 };

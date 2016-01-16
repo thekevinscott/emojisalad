@@ -4,10 +4,37 @@ const db = require('db');
 const Promise = require('bluebird');
 const User = require('models/user');
 const _ = require('lodash');
-let Game;
+const api = require('config/services').api.url;
+//let Game;
+const req = Promise.promisify(require('request'));
+const request = function(options) {
+  return req(options).then(function(response) {
+    let body = response.body;
+    try {
+      body = JSON.parse(body);
+    } catch(err) {}
+
+    if ( body ) {
+      return body;
+    } else {
+      throw new Error('No response from API');
+    }
+  });
+}
 
 let Player = {
   // create a new player
+  create: function (params) {
+    return request({
+      url: `${api}players`,
+      method: 'POST',
+      form: {
+        to: params.to,
+        user_id: params.user.id
+      }
+    });
+  },
+  /*
   create: Promise.coroutine(function* (params) {
     let number_query;
     if ( params.to ) {
@@ -93,6 +120,18 @@ let Player = {
       throw "Error creating player";
     }
   }),
+    */
+  getOne: function(params) {
+    return request({
+      url: `${api}players`,
+      method: 'GET',
+      qs: params
+    }).then(function(response) {
+      if ( response ) {
+        return response[0];
+      } 
+    });
+  },
 
   get: Promise.coroutine(function* (params) {
     if ( !params.id && ( (!params.from && !params.number) || !params.to )) {
@@ -111,7 +150,7 @@ let Player = {
       user_params.player_id = params.id;
     }
 
-    let user = yield User.get(user_params);
+    let user = yield User.getOne(user_params);
     //console.log('gotten user', user);
 
     if ( ! user ) {
@@ -144,10 +183,12 @@ let Player = {
       }
 
       let players = yield db.query(query.toString());
+      //console.debug(query.toString());
 
       if ( ! players.length ) {
         return null;
       } else {
+        //console.debug('*** player exists', players);
 
         let player = players[0];
 
@@ -184,6 +225,7 @@ let Player = {
     yield db.query(query.toString());
     return player;
   }),
+  /*
   logLastActivity: function(player, game_number) {
     if ( ! Game ) {
       Game = require('./game');
@@ -218,6 +260,7 @@ let Player = {
 
     return Promise.all(promises);
   }
+  */
 };
 
 module.exports = Player;

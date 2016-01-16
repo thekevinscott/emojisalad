@@ -7,7 +7,7 @@ const Player = require('models/player');
 const rule = require('config/rule');
 const EMOJI = '🐳';
 
-describe.only('Signup', function() {
+describe('Signup', function() {
 
   describe('Test a brand new player', function() {
     it('should introduce itself when contacting for the first time', function() {
@@ -41,7 +41,7 @@ describe.only('Signup', function() {
         });
       }
 
-      it('should start the onboarding with a "yes" response', function() {
+      it.only('should start the onboarding with a "yes" response', function() {
         return sayYes('yes').then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
         });

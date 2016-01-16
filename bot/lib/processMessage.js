@@ -19,18 +19,16 @@ module.exports = Promise.coroutine(function* (params) {
     throw new Error("No body provided");
   }
 
-  let player = yield Player.get({
+  let player = yield Player.getOne({
     from: params.from,
     to: params.to
   });
-  console.debug('player', player);
 
   if ( !player ) {
     // does a user exist?
-    const user = yield User.get({
+    const user = yield User.getOne({
       from: params.from
     });
-    console.debug('user', user);
 
     if ( user ) {
       player = {

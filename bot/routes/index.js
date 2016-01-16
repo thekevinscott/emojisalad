@@ -36,7 +36,7 @@ let Router = function(player, message, game_number) {
   for ( let i=0,l=routes.length; i<l; i++ ) {
     let route = routes[i];
     if ( route.regex.test(state) ) {
-      Player.logLastActivity(player, game_number);
+      //Player.logLastActivity(player, game_number);
       //console.debug('player', player.state, player.number, game_number);
       console.debug('route: '+route.path);
       const result = route.fn(player, message, game_number);

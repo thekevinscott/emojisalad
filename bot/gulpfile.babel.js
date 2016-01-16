@@ -81,12 +81,16 @@ function pullProductionDB() {
   return exec('mkdir -p '+tmp).then(function() {
     return exec('rm -f '+tmp+file);
   }).then(function() {
+    console.log('dumping schemas');
     return exec(dumpSchemas.join(' '));
   }).then(function() {
+    console.log('dumping data');
     return exec(dumpData.join(' '));
   }).then(function() {
+    console.log('gunzipping');
     return exec('gunzip '+tmp+zippedFile);
   }).then(function() {
+    console.log(tmp+file);
     return tmp+file;
   });
 }
@@ -103,15 +107,18 @@ gulp.task('sync', function() {
   }
   let config = require('../config/db')[importKey];
   pullProductionDB().then(function(file) {
+    console.log('got file', file);
     let importDB = [
       'mysql',
       getConnectionString(config),
       '<'+ file
     ];
+    console.log('import into db', importKey);
     return exec(importDB.join(' '));
   }).catch(function(e) {
     console.log('e', e);
   }).done(function() {
+    console.log('done, remove tmp file');
     exec('rm -rf '+tmp).then(function() {
       process.exit(0);
     });
@@ -142,6 +149,8 @@ gulp.task('sync-testing-db', function(cb) {
 });
 
 function resetTestingDB() {
+  const db = require('db');
+  // import the Bot DB
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
   let sql_file = 'test/fixtures/test-db.sql';
@@ -151,7 +160,6 @@ function resetTestingDB() {
     getConnectionString(config),
     '<'+ sql_file 
   ];
-  let db = require('db');
 
   return exec(importDB.join(' ')).then(function() {
     // set up phrases
@@ -164,7 +172,7 @@ function resetTestingDB() {
                   { id: 3, phrase: 'TIME AFTER TIME', admin_id: 16 },
                   { id: 4, phrase: 'BUFFALO WILD WINGS', admin_id: 16 },
                 ]);
-    return db.query(query.toString());
+    return db.test.query(query.toString());
   }).then(function() {
     // set up game numbers
     let query = squel
@@ -174,8 +182,7 @@ function resetTestingDB() {
                   { id: 1, number: '+15559999999' },
                   { id: 2, number: '+15551111111' },
                 ]);
-    return db.query(query.toString());
-
+    return db.test.query(query.toString());
   }).then(function() {
     // set up clues
     let query = squel
@@ -188,7 +195,16 @@ function resetTestingDB() {
                   { id: 4, phrase_id: 2, clue: 'MOVIE' },
                   { id: 5, phrase_id: 2, clue: 'CLARICE' },
                 ]);
-    return db.query(query.toString());
+    return db.test.query(query.toString());
+  }).then(function() {
+    // delete from api
+    const promises = ['users','players'].map(function(key) {
+      let query = squel
+                  .delete()
+                  .from(key);
+      return db.api.query(query.toString());
+    });
+    return Promise.all(promises);
   });
 }
 gulp.task('test', function() {
@@ -203,11 +219,14 @@ gulp.task('test', function() {
       bail: true
     }))
     .on('error', function(data) {
-      console.log(data.message);
+      console.error(data.message);
       process.exit(1);
     })
     .once('end', function() {
       process.exit();
     });
+  }).catch(function(err) {
+    console.error(err);
+    process.exit(1);
   });
 });
