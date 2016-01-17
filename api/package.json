@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "bluebird": "^3.1.1",
     "ejs": "~0.8.4",
     "grunt": "0.4.2",
     "grunt-contrib-clean": "~0.5.0",
@@ -36,5 +37,10 @@
     "url": "git://github.com/thekevinscott/api.git"
   },
   "author": "thekevinscott",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "should": "^8.1.1",
+    "supertest": "^1.1.0"
+  }
 }

@@ -6,6 +6,8 @@
 */
 'use strict';
 
+const Promise = require('bluebird');
+
 module.exports = {
 
   attributes: {
@@ -18,9 +20,9 @@ module.exports = {
       type: Sequelize.INTEGER,
       references: {
         model: 'states',
-        key: 'id'
+        key: 'id',
       },
-      allowNull: false
+      //allowNull: false
     },
 
     user_id: {
@@ -31,13 +33,13 @@ module.exports = {
       }
     },
 
-    //to: {
-      //type: Sequelize.INTEGER,
-      //references: {
-        //model: 'game_numbers',
-        //key: 'id'
-      //}
-    //},
+    game_number_id: {
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'game_numbers',
+        key: 'id'
+      }
+    },
     
     //game_id: {
       //type: Sequelize.INTEGER,
@@ -52,12 +54,12 @@ module.exports = {
     Player.belongsTo(State);
     //Player.belongsTo(Game);
     Player.belongsTo(User);
-    //Player.belongsTo(GameNumber, {
-      //foreignKey: {
-        //name: 'to',
-        //allowNull: false
-      //}
-    //});
+    Player.belongsTo(GameNumber, {
+      foreignKey: {
+        name: 'game_number_id',
+        allowNull: false
+      }
+    });
   },
   options: {
     freezeTableName: false,
@@ -65,8 +67,11 @@ module.exports = {
     },
     instanceMethods: {},
     hooks: {
+      beforeCreate: function(player) {
+      }
     },
-    tableName: 'players'
+    tableName: 'players',
+    underscored: true
   },
 
 };

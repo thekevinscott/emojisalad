@@ -5,9 +5,76 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 'use strict';
+const Promise = require('bluebird');
 
 module.exports = {
   create: function(req, res) {
+    let state = 'waiting-for-confirmation';
+    const to = req.param('to');
+    const user_id = req.param('user_id');
+    if ( req.param('state') ) {
+      state = req.param('state');
+    }
+
+    if ( ! to ) {
+      return res.status(400).json({ error: `Invalid number provided` });
+    } else if ( ! user_id ) {
+      return res.status(400).json({ error: `Invalid user id provided` });
+    }
+
+    const promises = [{
+      model: State,
+      where_clause: { state: state }
+    }, {
+      model: GameNumber,
+      where_clause: { number: to }
+    }, {
+      model: User,
+      where_clause: { id: user_id }
+    }].map(function(association) {
+      return association.model.findOne({ where: association.where_clause}).then(function(result) {
+        if ( result ) {
+          return result;
+        }
+      });
+    });
+
+    return Promise.all(promises).then(function(results) {
+      let state_id = results[0];
+      let game_number_id = results[1];
+      let user = results[2];
+
+      if ( ! state_id ) {
+        return res.status(400).json({ error: `Invalid state provided: ${state}` });
+      } else if ( ! game_number_id ) {
+        return res.status(400).json({ error: `Invalid number provided: ${to}` });
+      } else if ( ! user ) {
+        return res.status(400).json({ error: `Invalid user id provided: ${user_id}` });
+      }
+
+      return Player.create({
+        game_number_id: game_number_id.id,
+        state_id: state_id.id,
+        user_id: user_id
+      }).then(function(results) {
+        let player = results.dataValues;
+
+        player.state = state;
+        player.to = to;
+        return res.json({
+          to: to,
+          state: state,
+          id: player.id,
+          from: user.from,
+          avatar: user.avatar,
+          user_id: user.id
+
+        });
+      });
+    }).catch(function(err) {
+      return res.status(400).json(err);
+    });
+    /*
     let state = 'waiting-for-confirmation';
     if ( req.param('state') ) {
       console.log('req', req.param('state'));
@@ -54,27 +121,54 @@ module.exports = {
     }).catch(function(err) {
       return res.status(400).json(err);
     });
+    */
   },
 
   find: function( req, res ) {
-    const archived = req.param('archived') || false;
-    const whitelisted = ['id', 'to'];
+    const to = req.param('to');
+    const from = req.param('from');
 
-    let params = { archived: archived };
-    whitelisted.map((key) => {
-      if ( req.param(key) ) {
-        params[key] = req.param(key);
-      }
-    });
-    return Player.findAll().then(function(players) {
-    //return User.find({ from: req.param('from') }).populate('player', params).then(function(user) {
-      //return Player.find(params);
-    //}).then(function(players) {
-      return res.json(players);
+    if ( ! to ) {
+      return res.status(400).json({ error: `Invalid number provided` });
+    } else if ( ! from ) {
+      return res.status(400).json({ error: `Invalid number provided` });
+    }
+
+    console.log(to, from);
+    function getUser(from) {
+      return User.findOne({ where: { from: from } }).then(function(result) {
+        return result.dataValues;
+      });
+    }
+
+    function getGameNumber(to) {
+      return GameNumber.findOne({ where: { number: to } }).then(function(result) {
+        return result.dataValues;
+      });
+    }
+
+    return Promise.join(getUser(from), getGameNumber(to), function(user, game_number) {
+      const where = {
+        user_id: user.id,
+        game_number_id: game_number.id,
+        archived: req.param('archived') || null 
+      };
+      return Player.findOne({ where: where, include: [State] }).then(function(result) {
+        const player = result.dataValues;
+        return res.json({
+          id: player.id,
+          state: player.State.dataValues.state,
+          archived: player.archived,
+          user_id: user.id,
+          to: to,
+          from: from,
+          avatar: user.avatar,
+          nickname: user.nickname,
+        });
+      });
     }).catch(function(err) {
       return res.status(400).json(err);
     });
-  },
-	
+  }
 };
 

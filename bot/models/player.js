@@ -127,8 +127,9 @@ let Player = {
       method: 'GET',
       qs: params
     }).then(function(response) {
+      console.log('response', response);
       if ( response ) {
-        return response[0];
+        return response;
       } 
     });
   },

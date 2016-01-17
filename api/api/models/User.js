@@ -42,6 +42,7 @@ module.exports = {
         });
       }
     },
-    tableName: 'users'
+    tableName: 'users',
+    underscored: true
   },
 };

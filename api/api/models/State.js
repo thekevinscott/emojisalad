@@ -18,7 +18,8 @@ module.exports = {
     classMethods: { },
     instanceMethods: {},
     hooks: { },
-    tableName: 'states'
+    tableName: 'states',
+    underscored: true
   },
 };
 

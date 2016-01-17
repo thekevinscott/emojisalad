@@ -9,6 +9,9 @@ const _ = require('lodash');
 
 module.exports = {
   create: function(req, res) {
+    if ( ! req.param('from') ) {
+      return res.status(400).json({ error: `Invalid number provided` });
+    }
     const params = { from: req.param('from') };
 
     return User.create(params).then(function(user) {
