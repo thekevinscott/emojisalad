@@ -1,6 +1,5 @@
 module.exports = {
   models: {
-    connection: 'development'
+    connection: 'test'
   }
 };
-

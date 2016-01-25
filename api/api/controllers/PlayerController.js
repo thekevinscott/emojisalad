@@ -11,15 +11,16 @@ module.exports = {
   create: function(req, res) {
     let state = 'waiting-for-confirmation';
     const to = req.param('to');
-    const user_id = req.param('user_id');
+    //const user_id = req.param('user_id');
+    const from = req.param('from');
     if ( req.param('state') ) {
       state = req.param('state');
     }
 
     if ( ! to ) {
-      return res.status(400).json({ error: `Invalid number provided` });
-    } else if ( ! user_id ) {
-      return res.status(400).json({ error: `Invalid user id provided` });
+      return res.status(400).json({ error: `Invalid to number provided` });
+    } else if ( ! from ) {
+      return res.status(400).json({ error: `Invalid from number provided` });
     }
 
     const promises = [{
@@ -30,7 +31,7 @@ module.exports = {
       where_clause: { number: to }
     }, {
       model: User,
-      where_clause: { id: user_id }
+      where_clause: { from: from }
     }].map(function(association) {
       return association.model.findOne({ where: association.where_clause}).then(function(result) {
         if ( result ) {
@@ -40,39 +41,40 @@ module.exports = {
     });
 
     return Promise.all(promises).then(function(results) {
-      let state_id = results[0];
-      let game_number_id = results[1];
+      let state_result = results[0];
+      let game_number = results[1];
       let user = results[2];
 
-      if ( ! state_id ) {
+      if ( ! state_result ) {
         return res.status(400).json({ error: `Invalid state provided: ${state}` });
-      } else if ( ! game_number_id ) {
-        return res.status(400).json({ error: `Invalid number provided: ${to}` });
+      } else if ( ! game_number ) {
+        return res.status(400).json({ error: `Invalid to number provided: ${to}` });
       } else if ( ! user ) {
-        return res.status(400).json({ error: `Invalid user id provided: ${user_id}` });
+        return res.status(400).json({ error: `Invalid from number provided: ${from}` });
       }
 
       return Player.create({
-        game_number_id: game_number_id.id,
-        state_id: state_id.id,
-        user_id: user_id
-      }).then(function(results) {
-        let player = results.dataValues;
+        game_number_id: game_number.get('id'),
+        state_id: state_result.get('id'),
+        user_id: user.get('id')
+      }).then(function(player) {
+        //let player = results.dataValues;
 
-        player.state = state;
-        player.to = to;
+        //player.state = state;
+        //player.to = to;
         return res.json({
           to: to,
-          state: state,
-          id: player.id,
-          from: user.from,
-          avatar: user.avatar,
-          user_id: user.id
-
+          state: state_result.get('state'),
+          id: player.get('id'),
+          from: user.get('from'),
+          avatar: user.get('avatar'),
+          user_id: user.get('id')
         });
       });
     }).catch(function(err) {
-      return res.status(400).json(err);
+      console.log('here we go!');
+      //return res.status(200).json(err);
+      return res.json(err);
     });
     /*
     let state = 'waiting-for-confirmation';
@@ -81,50 +83,32 @@ module.exports = {
       state = req.param('state');
     }
 
-    return Player.create({
-      state_id: Sequelize.literal(`(SELECT id FROM states WHERE state = ${sequelize.escape(state)})`),
-      user_id: req.param('user_id'),
-      //state_id: Sequelize.literal(`(SELECT id FROM states WHERE state = "${sequelize.escape(state)}")`),
-      //state_id: Sequelize.literal(`(SELECT id FROM states WHERE state = "${sequelize.escape(state)}")`)
-    }).then(function(player) {
-      console.log('2');
-      return res.json(player);
-    }).catch(function(err) {
-      console.error(err);
-      return res.status(400).json(err);
-    });
-
-    return GameNumber.findOne({ number: req.param('to') }).then(function(game_number) {
-      console.log(game_number);
-      if ( req.param('state') ) {
-        state = req.param('state');
-      }
-      return State.findOne({ state: state }).then(function(result) {
-        const params = {
-          to: game_number.id,
-          user: req.param('user_id'),
-          state: result.id 
-        };
-        console.log(params);
-
-        return Player.create(params);
-      }).then(function(player) {
-        return User.findOne({ id: player.user }).then(function(user) {
-          player.from = user.from;
-          player.avatar = user.avatar;
-          player.nickname = user.nickname;
-          player.blacklist = user.blacklist;
-          player.user_id = user.id;
-          return res.json(player);
-        });
-      });
-    }).catch(function(err) {
-      return res.status(400).json(err);
     });
     */
   },
-
-  find: function( req, res ) {
+  update: (req, res) => {
+    const player_id = req.param('player_id');
+    return State.findOne({ where: { state: req.param('state') }}).then((state) => {
+      return Player.update({ state_id: state.get('id') }, { where: { id: player_id } });
+    }).then(() => {
+      return Player.findOne({ where: { id: player_id }, include: [ GameNumber, User, State ]});
+    }).then((player) => {
+      return res.json({
+        id: player.id,
+        state: player.State.state,
+        archived: player.archived,
+        user_id: player.User.id,
+        to: player.GameNumber.number,
+        from: player.User.from,
+        avatar: player.User.avatar,
+        nickname: player.User.nickname,
+      });
+    }).catch((err) => {
+      console.error(err);
+      return res.status(400).json({ error: `Unknown error` });
+    });
+  },
+  find: (req, res) => {
     const to = req.param('to');
     const from = req.param('from');
 
@@ -134,31 +118,34 @@ module.exports = {
       return res.status(400).json({ error: `Invalid number provided` });
     }
 
-    console.log(to, from);
     function getUser(from) {
-      return User.findOne({ where: { from: from } }).then(function(result) {
-        return result.dataValues;
-      });
+      console.log('from', from);
+      return User.findOne({ where: { from: from } });
     }
 
     function getGameNumber(to) {
-      return GameNumber.findOne({ where: { number: to } }).then(function(result) {
-        return result.dataValues;
-      });
+      return GameNumber.findOne({ where: { number: to } });
     }
 
     return Promise.join(getUser(from), getGameNumber(to), function(user, game_number) {
+      if ( ! user ) {
+        console.log('aint no user');
+        return res.json({ error: `No user found` });
+      }
+      if ( ! game_number ) {
+        return res.status(400).json({ error: `No game number found` });
+      }
+
       const where = {
-        user_id: user.id,
-        game_number_id: game_number.id,
+        user_id: user.get('id'),
+        game_number_id: game_number.get('id'),
         archived: req.param('archived') || null 
       };
-      return Player.findOne({ where: where, include: [State] }).then(function(result) {
-        const player = result.dataValues;
+      return Player.findOne({ where: where, include: [State, GameNumber, User] }).then(function(player) {
         return res.json({
-          id: player.id,
+          id: player.get('id'),
           state: player.State.dataValues.state,
-          archived: player.archived,
+          archived: player.get('archived'),
           user_id: user.id,
           to: to,
           from: from,
@@ -167,6 +154,7 @@ module.exports = {
         });
       });
     }).catch(function(err) {
+      console.error(err);
       return res.status(400).json(err);
     });
   }

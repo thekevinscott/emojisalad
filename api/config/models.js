@@ -8,25 +8,30 @@
  * For more info on Sails models, see:
  * http://sailsjs.org/#!/documentation/concepts/ORM
  */
+'use strict';
 
 module.exports.models = {
 
   /***************************************************************************
-  *                                                                          *
-  * Your app's default connection. i.e. the name of one of your app's        *
-  * connections (see `config/connections.js`)                                *
-  *                                                                          *
-  ***************************************************************************/
-   connection: 'mysql',
+   *                                                                          *
+   * Your app's default connection. i.e. the name of one of your app's        *
+   * connections (see `config/connections.js`)                                *
+   *                                                                          *
+   ***************************************************************************/
 
   /***************************************************************************
-  *                                                                          *
-  * How and whether Sails will attempt to automatically rebuild the          *
-  * tables/collections/etc. in your schema.                                  *
-  *                                                                          *
-  * See http://sailsjs.org/#!/documentation/concepts/ORM/model-settings.html  *
-  *                                                                          *
-  ***************************************************************************/
-   migrate: 'alter'
-
+   *                                                                          *
+   * How and whether Sails will attempt to automatically rebuild the          *
+   * tables/collections/etc. in your schema.                                  *
+   *                                                                          *
+   * See http://sailsjs.org/#!/documentation/concepts/ORM/model-settings.html  *
+   *                                                                          *
+   ***************************************************************************/
+  migrate: 'alter',
+  /**
+   * This method adds records to the database
+   *
+   * To use add a letiable 'seedData' in your model and call the
+   * method in the bootstrap.js file
+   */
 };

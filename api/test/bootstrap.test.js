@@ -1,6 +1,7 @@
 'use strict';
 let Sails = require('sails');
 let sails;
+const Promise = require('bluebird');
 
 
 before(function(done) {
@@ -27,7 +28,23 @@ before(function(done) {
     sails = server;
     if (err) return done(err);
     // here you can load fixtures, etc.
-    done(err, sails);
+    //
+    
+    Promise.all([Player, User].map((model) => {
+      return model.destroy({
+        where: { }
+      });
+    })).then(() => {
+      const numbers = [
+        '+15559999999',
+        '+15551111111'
+      ];
+      return Promise.all(numbers.map((number) => {
+        return GameNumber.findOrCreate({ where: { number: number } });
+      }));
+    }).then(() => {
+      done(err, sails);
+    });
   });
 });
 

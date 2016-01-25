@@ -31,7 +31,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       let number_of_emoji = Emoji.getNumOfEmoji(input);
       if ( number_of_emoji === 1 ) {
         // also check length of emoji
-        player.user = yield User.update({ id: player.user.id }, {
+        player.user = yield User.update({ id: player.user_id }, {
           avatar: input
         });
         player.avatar = input;
@@ -58,6 +58,7 @@ const startGame = Promise.coroutine(function* (player, input, game_number) {
   // A.K.A., it's time to associate you with a game.
   let inviter = yield Invite.getInviter(player);
   if ( inviter ) {
+    console.debug('inviter exists');
     // if you've been invited, that means a
     // game already exists.
     //player.user = yield User.update({ id: player.user.id }, {
@@ -68,6 +69,7 @@ const startGame = Promise.coroutine(function* (player, input, game_number) {
     return yield kickoffGame(player, input, game_number);
 
   } else {
+    console.debug('create game');
     return yield createGame(player, input, game_number);
   }
 });

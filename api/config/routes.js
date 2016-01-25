@@ -4,10 +4,12 @@ module.exports.routes = {
   // users
   'GET /users': 'UserController.find',
   'POST /users': 'UserController.create',
+  'PUT /users/:user_id': 'UserController.update',
 
   // players
   'GET /players': 'PlayerController.find',
   'POST /players': 'PlayerController.create',
+  'PUT /players/:player_id': 'PlayerController.update',
 
   'GET /games/:game_id': 'GameController.findOne',
   //'/users/:user_id/games': 'UserController.games',

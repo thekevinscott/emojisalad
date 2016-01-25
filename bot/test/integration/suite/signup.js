@@ -7,7 +7,7 @@ const Player = require('models/player');
 const rule = require('config/rule');
 const EMOJI = '🐳';
 
-describe('Signup', function() {
+describe.only('Signup', function() {
 
   describe('Test a brand new player', function() {
     it('should introduce itself when contacting for the first time', function() {
@@ -41,7 +41,7 @@ describe('Signup', function() {
         });
       }
 
-      it.only('should start the onboarding with a "yes" response', function() {
+      it('should start the onboarding with a "yes" response', function() {
         return sayYes('yes').then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
         });
@@ -74,19 +74,13 @@ describe('Signup', function() {
     return setup([
       { player: player, msg: 'hello' },
       { player: player, msg: rule('yes').example() },
-    ]).then(function() {
-      return Player.get(player).then(function(p) {
-        return p.avatar;
-      });
-    }).then(function(avatar) {
+    ]).then(() => {
       return check(
         { player: player, msg: player.nickname },
         [
-          { key: 'intro_3', options: [ player.nickname, avatar ], to: player }
-        ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+          { key: 'intro_3', options: [ player.nickname, '*' ], to: player }
+        ],
+        true);
     });
   });
 
@@ -96,37 +90,27 @@ describe('Signup', function() {
       { player: player, msg: 'hello' },
       { player: player, msg: rule('yes').example() },
       { player: player, msg: player.nickname }
-    ]).then(function() {
-      return Player.get(player).then(function(p) {
-        return p.avatar;
-      });
-    }).then(function(avatar) {
+    ]).then(() => {
       return check(
         { player: player, msg: rule('keep').example() },
         [
-          { key: 'intro_4', options: [ player.nickname, avatar ], to: player }
-        ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+          { key: 'intro_4', options: [ player.nickname, '*' ], to: player }
+        ], true);
     });
   });
 
-  it('should allow the player to change the emoji', function() {
+  it('should allow the player to change the emoji', () => {
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello' },
       { player: player, msg: 'y' },
       { player: player, msg: player.nickname }
-    ]).then(function() {
+    ]).then(() => {
       return check(
         { player: player, msg: EMOJI },
         [
           { key: 'intro_4', options: [ player.nickname, EMOJI ], to: player }
-        ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+        ], true);
     });
   });
 

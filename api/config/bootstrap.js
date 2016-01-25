@@ -8,10 +8,39 @@
  * For more information on bootstrapping your app, check out:
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.bootstrap.html
  */
+'use strict';
+const Promise = require('bluebird');
+
+function createAll(model, arr, key) {
+  return Promise.all(arr.map((el) => {
+    let where = {};
+    where[key] = el;
+    return model.findOrCreate({ where: where});
+  }));
+}
 
 module.exports.bootstrap = function(cb) {
+  const emojis = [ '⚽️', '⚾️', '⛄️', '⚡️', '☂' ];
+  const states = [
+    'waiting-for-confirmation',
+    'waiting-for-nickname',
+    'waiting-for-invites',
+    'ready-for-game',
+    'waiting-for-round',
+    'waiting-for-submission',
+    'guessing',
+    'playing',
+    'uncreated',
+    'submitted',
+    'bench',
+    'passed',
+    'lost',
+    'invited-to-new-game',
+    'waiting-for-avatar',
+  ]
 
-  // It's very important to trigger this callback method when you are finished
-  // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
-  cb();
+  createAll(Emoji, emojis, 'emoji').then(() => {
+    return createAll(State, states, 'state');
+  }).then(() => { cb(); });
+
 };

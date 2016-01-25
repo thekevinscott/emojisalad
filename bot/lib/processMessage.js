@@ -6,6 +6,8 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const Promise = require('bluebird');
+const req = Promise.promisify(require('request'));
+
 module.exports = Promise.coroutine(function* (params) {
   console.debug('\n==========process message===========\n');
   console.debug(params);

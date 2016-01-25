@@ -8,7 +8,10 @@
 module.exports = {
 
   attributes: {
-    emoji: Sequelize.STRING
+    emoji: {
+      type: Sequelize.STRING,
+      unique: true
+    }
   },
   associations: function () {},
   options: {
@@ -17,6 +20,6 @@ module.exports = {
     instanceMethods: {},
     hooks: {},
     tableName: 'emojis'
-  },
+  }
 };
 

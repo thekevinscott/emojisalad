@@ -6,7 +6,9 @@ const api = require('config/services').api.url;
 
 const req = Promise.promisify(require('request'));
 const request = function(options) {
+  //console.log('options', options);
   return req(options).then(function(response) {
+    //console.log('re', response);
     let body = response.body;
     try {
       body = JSON.parse(body);
@@ -15,17 +17,25 @@ const request = function(options) {
     if ( body ) {
       return body;
     } else {
-      throw new Error('No response from API');
+      throw new Error('No response from API in user');
     }
   });
 }
 
 const User = {
-  create: function (params) {
+  create: (params) => {
     return request({
       url: `${api}users`,
       method: 'POST',
       form: params
+    }).then((response) => {
+      if ( response.id ) {
+        return response;
+      } else {
+        return null;
+        //console.error('user error', response);
+        //throw response;
+      }
     });
   },
   update: function (user, params) {
@@ -65,10 +75,12 @@ const User = {
       url: `${api}users`,
       method: 'GET',
       qs: params
-    }).then(function(response) {
-      if ( response ) {
+    }).then((response) => {
+      if ( response.length > 0 ) {
         return response[0];
-      } 
+      } else {
+        return null;
+      }
     });
   },
 };

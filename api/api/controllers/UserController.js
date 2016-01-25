@@ -36,11 +36,31 @@ module.exports = {
         params[key] = req.param(key);
       }
     });
-    return User.findAll(params).then(function(users) {
-      return res.json(users);
+    return User.find(params).then(function(users) {
+      return res.json(users || []);
     }).catch(function(err) {
       console.error(err);
       return res.status(400).json(err);
+    });
+  },
+  update: (req, res) => {
+    const user_id = req.param('user_id');
+    let params = {};
+
+    if ( req.param('nickname') ) {
+      params.nickname = req.param('nickname');
+    }
+    if ( req.param('avatar') ) {
+      params.avatar = req.param('avatar');
+    }
+
+    return User.update(params, {where: { id: user_id }} ).then(() => {
+      return User.findOne({ where: { id: user_id } });
+    }).then((user) => {
+      return res.json(user);
+    }).catch((err) => {
+      console.error(err);
+      return res.status(400).json({ error: `Unknown error` });
     });
   },
 };

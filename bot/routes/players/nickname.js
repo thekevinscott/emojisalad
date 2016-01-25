@@ -18,7 +18,7 @@ module.exports = Promise.coroutine(function* (player, input, game_number) {
       key: 'error-13'
     }];
   } else {
-    player.user = yield User.update({ id: player.user.id }, {
+    player.user = yield User.update({ id: player.user_id }, {
       nickname: input,
     });
     player.nickname = input;

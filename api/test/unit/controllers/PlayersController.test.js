@@ -19,7 +19,7 @@ describe('PlayersController', function() {
           .post('/players')
           .send({ })
           .expect(400, {
-            error: `Invalid number provided`
+            error: `Invalid to number provided`
           });
       });
 
@@ -27,7 +27,7 @@ describe('PlayersController', function() {
         const state = 'foobar';
         return request(sails.hooks.http.app)
           .post('/players')
-          .send({ state: state, to: '123' })
+          .send({ state: state, to: '123', from: 123 })
           .expect(400, {
             error: `Invalid state provided: ${state}`
           })
@@ -37,28 +37,19 @@ describe('PlayersController', function() {
         const to = 'blah blah';
         return request(sails.hooks.http.app)
           .post('/players')
-          .send({ to: to })
+          .send({ to: to, from: 'foobar' })
           .expect(400, {
-            error: `Invalid number provided: ${to}`
+            error: `Invalid to number provided: ${to}`
           })
       });
 
-      it('should throw an error when trying to create a player without a valid user id', function () {
+      it('should throw an error when trying to create a player without a valid from', function () {
+        const from = 'foofoo';
         return request(sails.hooks.http.app)
           .post('/players')
-          .send({ to: game_number })
+          .send({ to: game_number, from: from })
           .expect(400, {
-            error: `Invalid user id provided`
-          })
-      });
-
-      it('should throw an error when trying to create a player without a valid user id', function () {
-        const user_id = 'foobar';
-        return request(sails.hooks.http.app)
-          .post('/players')
-          .send({ to: game_number, user_id: user_id })
-          .expect(400, {
-            error: `Invalid user id provided: ${user_id}`
+            error: `Invalid from number provided: ${from}`
           })
       });
     });
@@ -75,7 +66,7 @@ describe('PlayersController', function() {
       it('should return a valid player object on create', function() {
         return request(sails.hooks.http.app)
           .post('/players')
-          .send({ to: game_number, user_id: user_id })
+          .send({ to: game_number, from: from })
           .expect(200)
           .expect(function(res) {
             res.body.should.have.property('id');
@@ -90,7 +81,7 @@ describe('PlayersController', function() {
         const default_state = 'waiting-for-confirmation';
         return request(sails.hooks.http.app)
           .post('/players')
-          .send({ to: game_number, user_id: user_id })
+          .send({ to: game_number, from: from })
           .expect(200)
           .expect(function(res) {
             res.body.should.have.property('state', default_state);
@@ -101,7 +92,7 @@ describe('PlayersController', function() {
 
   });
 
-  describe.only('find()', function() {
+  describe('find()', function() {
     const from = ''+Math.random();
     let player;
     let to;
@@ -109,14 +100,18 @@ describe('PlayersController', function() {
       to = game_number;
 
       return User.create({ from: from }).then(function(user) {
-        const user_id = user.dataValues.id;
-        return State.findOne().then(function(state) {
-          return Player.create({
-            game_number_id: game_number_id,
-            state_id: state.dataValues.id,
-            user_id: user_id
+        const user_id = user.get('id');
+        if ( user ) {
+          return State.findOne({ where: { state: default_state } }).then(function(state) {
+            if ( state ) {
+              return Player.create({
+                game_number_id: game_number_id,
+                state_id: state.get('id'),
+                user_id: user.get('id')
+              });
+            }
           });
-        });
+        }
       }).then(function(result) {
         player = {
           to: to,
@@ -133,6 +128,70 @@ describe('PlayersController', function() {
         .expect(function(res) {
           res.body.should.have.property('id');
           res.body.should.have.property('state', default_state);
+          res.body.should.have.property('from', from);
+          res.body.should.have.property('to', to);
+          res.body.should.have.property('avatar');
+          res.body.should.have.property('nickname');
+        })
+    });
+  });
+
+  describe('update()', function() {
+    const from = ''+Math.random();
+    let player;
+    let to;
+    before(function() {
+      to = game_number;
+
+      return User.create({ from: from }).then(function(user) {
+        const user_id = user.get('id');
+        if ( user ) {
+          return State.findOne({ where: { state: default_state } }).then(function(state) {
+            if ( state ) {
+              return Player.create({
+                game_number_id: game_number_id,
+                state_id: state.get('id'),
+                user_id: user.get('id')
+              });
+            }
+          });
+        }
+      }).then(function(result) {
+        player = {
+          id: result.get('id'),
+          to: to,
+          from: from
+        };
+      });
+    });
+
+    it('should update a player successfully', function(done) {
+      const expected_state = 'ready-for-game';
+      request(sails.hooks.http.app)
+        .put(`/players/${player.id}`)
+        .send({ state: expected_state })
+        .expect(200)
+        .end(function(err, res) {
+          return Player.findOne({ where: { id: player.id }, include: [State]}).then((found_player) => {
+            try {
+              found_player.State.state.should.equal(expected_state);
+            } catch(error) {
+              err = error;
+            }
+            done(err);
+          });
+        });
+    });
+
+    it('should return an accurate player object', function() {
+      const expected_state = 'ready-for-game';
+      return request(sails.hooks.http.app)
+        .put(`/players/${player.id}`)
+        .send({ state: expected_state })
+        .expect(200)
+        .expect(function(res) {
+          res.body.should.have.property('id');
+          res.body.should.have.property('state', expected_state);
           res.body.should.have.property('from', from);
           res.body.should.have.property('to', to);
           res.body.should.have.property('avatar');

@@ -154,25 +154,25 @@ function resetTestingDB() {
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
   let sql_file = 'test/fixtures/test-db.sql';
-  let config = require('../config/db').test;
+  let config = require('../config/db');
   let importDB = [
     'mysql',
-    getConnectionString(config),
+    getConnectionString(config.test),
     '<'+ sql_file 
   ];
 
   return exec(importDB.join(' ')).then(function() {
     // set up phrases
-    let query = squel
-                .insert()
-                .into('phrases')
-                .setFieldsRows([
-                  { id: 1, phrase: 'JURASSIC PARK', admin_id: 16 },
-                  { id: 2, phrase: 'SILENCE OF THE LAMBS', admin_id: 16 },
-                  { id: 3, phrase: 'TIME AFTER TIME', admin_id: 16 },
-                  { id: 4, phrase: 'BUFFALO WILD WINGS', admin_id: 16 },
-                ]);
-    return db.test.query(query.toString());
+    //let query = squel
+                //.insert()
+                //.into('phrases')
+                //.setFieldsRows([
+                  //{ id: 1, phrase: 'JURASSIC PARK', admin_id: 16 },
+                  //{ id: 2, phrase: 'SILENCE OF THE LAMBS', admin_id: 16 },
+                  //{ id: 3, phrase: 'TIME AFTER TIME', admin_id: 16 },
+                  //{ id: 4, phrase: 'BUFFALO WILD WINGS', admin_id: 16 },
+                //]);
+    //return db.api.query(query.toString());
   }).then(function() {
     // set up game numbers
     let query = squel
@@ -182,29 +182,29 @@ function resetTestingDB() {
                   { id: 1, number: '+15559999999' },
                   { id: 2, number: '+15551111111' },
                 ]);
-    return db.test.query(query.toString());
+    return db.api.query(query.toString());
   }).then(function() {
     // set up clues
-    let query = squel
-                .insert()
-                .into('clues')
-                .setFieldsRows([
-                  { id: 1, phrase_id: 1, clue: 'MOVIE' },
-                  { id: 2, phrase_id: 1, clue: 'CLEVER GIRL' },
-                  { id: 3, phrase_id: 1, clue: 'DINOSAURS' },
-                  { id: 4, phrase_id: 2, clue: 'MOVIE' },
-                  { id: 5, phrase_id: 2, clue: 'CLARICE' },
-                ]);
-    return db.test.query(query.toString());
+    //let query = squel
+                //.insert()
+                //.into('clues')
+                //.setFieldsRows([
+                  //{ id: 1, phrase_id: 1, clue: 'MOVIE' },
+                  //{ id: 2, phrase_id: 1, clue: 'CLEVER GIRL' },
+                  //{ id: 3, phrase_id: 1, clue: 'DINOSAURS' },
+                  //{ id: 4, phrase_id: 2, clue: 'MOVIE' },
+                  //{ id: 5, phrase_id: 2, clue: 'CLARICE' },
+                //]);
+    //return db.api.query(query.toString());
   }).then(function() {
-    // delete from api
-    const promises = ['users','players'].map(function(key) {
+    const promises = ['players', 'users'].map(function(key) {
       let query = squel
                   .delete()
                   .from(key);
       return db.api.query(query.toString());
     });
     return Promise.all(promises);
+  }).then(function() {
   });
 }
 gulp.task('test', function() {

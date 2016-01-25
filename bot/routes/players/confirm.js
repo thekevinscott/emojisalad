@@ -22,7 +22,7 @@ module.exports = Promise.coroutine(function* (player, input) {
       player: player
     }];
   } else if ( rule('no').test(input) ) {
-    return yield User.update({ id: player.user.id }, {
+    return yield User.update({ id: player.user_id }, {
       blacklist: 1
     });
   } else {

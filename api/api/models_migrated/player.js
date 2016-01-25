@@ -4,43 +4,10 @@ const db = require('db');
 const Promise = require('bluebird');
 const User = require('models/user');
 const _ = require('lodash');
-const api = require('config/services').api.url;
-//let Game;
-const req = Promise.promisify(require('request'));
-const request = function(options) {
-  return req(options).then(function(response) {
-    let body = response.body;
-    try {
-      body = JSON.parse(body);
-    } catch(err) {}
-
-    if ( body ) {
-      return body;
-    } else {
-      throw new Error('No response from API in player');
-    }
-  });
-}
+let Game;
 
 let Player = {
   // create a new player
-  create: (params) => {
-    return request({
-      url: `${api}players`,
-      method: 'POST',
-      form: {
-        to: params.to,
-        from: params.from
-      }
-    }).then((response) => {
-      if ( response.id ) {
-        return response;
-      } else {
-        throw response;
-      }
-    });
-  },
-  /*
   create: Promise.coroutine(function* (params) {
     let number_query;
     if ( params.to ) {
@@ -126,23 +93,6 @@ let Player = {
       throw "Error creating player";
     }
   }),
-    */
-  getOne: function(params) {
-    return request({
-      url: `${api}players`,
-      method: 'GET',
-      qs: params
-    }).then(function(response) {
-      if ( response && response.id ) {
-        return response;
-      } else {
-        return null;
-        //console.error('bad player getOne response', response);
-        //throw response;
-        //return null;
-      }
-    });
-  },
 
   get: Promise.coroutine(function* (params) {
     if ( !params.id && ( (!params.from && !params.number) || !params.to )) {
@@ -161,8 +111,7 @@ let Player = {
       user_params.player_id = params.id;
     }
 
-    let user = yield User.getOne(user_params);
-    //console.log('gotten user', user);
+    let user = yield User.get(user_params);
 
     if ( ! user ) {
       return null;
@@ -175,16 +124,14 @@ let Player = {
                   .field('p.state_id')
                   .field('n.number','to')
                   .field('s.state', 'state')
-                  //.field('u.id', 'user_id')
-                  //.field('u.blacklist')
-                  //.field('u.nickname')
+                  .field('u.id', 'user_id')
+                  .field('u.blacklist')
+                  .field('u.nickname')
                   .from('players', 'p')
                   .left_join('game_numbers','n','n.id=p.`to`')
                   .left_join('player_states', 's', 's.id = p.state_id')
-                  //.left_join('users', 'u', 'u.id = p.user_id')
-                  //.where('u.id=?', user.id);
-                  .where('p.user_id=?', user.id);
-
+                  .left_join('users', 'u', 'u.id = p.user_id')
+                  .where('u.id=?', user.id);
 
       if ( params.id ) {
         query = query.where('p.`id`=?', params.id);
@@ -194,12 +141,10 @@ let Player = {
       }
 
       let players = yield db.query(query.toString());
-      //console.debug(query.toString());
 
       if ( ! players.length ) {
         return null;
       } else {
-        //console.debug('*** player exists', players);
 
         let player = players[0];
 
@@ -207,8 +152,6 @@ let Player = {
         player.from = user.from;
         player.user_id = user.id;
         player.avatar = user.avatar;
-        player.nickname = user.nickname;
-        player.blacklist = user.blacklist;
         player.user = user;
 
         return player;
@@ -216,23 +159,8 @@ let Player = {
     }
   }),
 
-  update: (player, params) => {
-    return request({
-      url: `${api}players/${player.id}`,
-      method: 'PUT',
-      form: {
-        state: params.state
-      }
-    }).then((response) => {
-      if ( response.id ) {
-        return response;
-      } else {
-        throw response;
-      }
-    });
-  },
+  update: Promise.coroutine(function* (player, params) {
 
-    /*
     let query = squel
                 .update()
                 .table('players', 'p')
@@ -251,8 +179,6 @@ let Player = {
     yield db.query(query.toString());
     return player;
   }),
-  */
-  /*
   logLastActivity: function(player, game_number) {
     if ( ! Game ) {
       Game = require('./game');
@@ -287,7 +213,6 @@ let Player = {
 
     return Promise.all(promises);
   }
-  */
 };
 
 module.exports = Player;

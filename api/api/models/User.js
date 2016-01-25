@@ -38,7 +38,11 @@ module.exports = {
     hooks: {
       beforeCreate: function(user, options) {
         return Emoji.findOne().then(function(result) {
-          user.avatar = result.emoji;
+          if ( result && result.emoji ) {
+            user.avatar = result.emoji;
+          } else {
+            throw result;
+          }
         });
       }
     },

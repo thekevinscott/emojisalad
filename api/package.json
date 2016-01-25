@@ -5,7 +5,8 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
-    "bluebird": "^3.1.1",
+    "app-module-path": "^1.0.5",
+    "bluebird": "^3.1.2",
     "ejs": "~0.8.4",
     "grunt": "0.4.2",
     "grunt-contrib-clean": "~0.5.0",
@@ -25,7 +26,8 @@
     "sails": "~0.11.3",
     "sails-disk": "~0.10.0",
     "sails-hook-sequelize": "^1.0.1",
-    "sails-mysql": "^0.11.2"
+    "sails-mysql": "^0.11.2",
+    "squel": "^4.2.3"
   },
   "scripts": {
     "debug": "node debug app.js",

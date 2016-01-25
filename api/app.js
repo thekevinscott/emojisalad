@@ -22,6 +22,7 @@
 // no matter where we actually lift from.
 process.chdir(__dirname);
 
+require('app-module-path').addPath(__dirname);
 // Ensure a "sails" can be located:
 (function() {
   var sails;

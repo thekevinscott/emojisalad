@@ -6,48 +6,55 @@ const squel = require('squel');
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
-let pool;
+let pools = {};
 
 if ( ! process.env.ENVIRONMENT ) {
   process.env.ENVIRONMENT = 'development';
   //throw "You must specify a DB environment";
 }
 
-let config = require('../config/db')[process.env.ENVIRONMENT];
+let config = require('../config/db');
 
-if ( ! pool ) {
-  pool  = mysql.createPool({
-    host     : config.host,
-    user     : config.user,
-    password : config.password,
-    charset  : config.charset,
-    database : config.database,
-    connectionLimit: 10,
-  });
-}
+module.exports = getPool(process.env.ENVIRONMENT);
+module.exports.api = getPool('api');
+module.exports.test = getPool('test');
 
-function getConnection() {
-  return pool.getConnectionAsync();
-}
+function getPool(key) {
+  if ( ! pools[key] ) {
+    const config_params = config[key];
 
-let db = {
-  query: function(sql) {
-    return getConnection().then(function(conn) {
-      let args = [];
-      if ( typeof(sql) === 'string' ) {
-        args.push(sql);
-      } else {
-        const param = sql.toParam();
-        args.push(param.text);
-        args.push(param.values);
-      }
+    pools[key] = mysql.createPool({
+      host     : config_params.host,
+      user     : config_params.user,
+      password : config_params.password,
+      charset  : config_params.charset,
+      database : config_params.database,
+      connectionLimit: 10,
+    });
+  }
 
-      return conn.queryAsync.apply(conn,args).then(function(rows) {
-        return rows[0];
-      }).catch(function(err) {
-        if ( err ) {
-          switch(err.errno) {
-            // dup entry
+  function getConnection() {
+    return pools[key].getConnectionAsync();
+  }
+
+  return {
+    query: function(sql) {
+      return getConnection().then(function(conn) {
+        let args = [];
+        if ( typeof(sql) === 'string' ) {
+          args.push(sql);
+        } else {
+          const param = sql.toParam();
+          args.push(param.text);
+          args.push(param.values);
+        }
+
+        return conn.queryAsync.apply(conn,args).then(function(rows) {
+          return rows[0];
+        }).catch(function(err) {
+          if ( err ) {
+            switch(err.errno) {
+              // dup entry
             case 1062:
               return null;
             default: 
@@ -60,14 +67,13 @@ let db = {
                 };
               }
               break;
+            }
           }
-        }
-        throw err;
-      }).finally(function() {
-        conn.release();
+          throw err;
+        }).finally(function() {
+          conn.release();
+        });
       });
-    });
-  }
-};
-
-module.exports = db;
+    }
+  };
+}
