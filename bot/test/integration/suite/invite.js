@@ -77,7 +77,7 @@ describe('Inviting', function() {
     });
 
     this.timeout(10000);
-    it('should be able to invite someone', function() {
+    it.only('should be able to invite someone', () => {
       let player = getPlayers(1)[0];
 
       return check(
@@ -86,10 +86,7 @@ describe('Inviting', function() {
         [
           { key: 'intro_5', options: [player.number], to: inviter },
           { key: 'invite', options: [inviter.nickname, player.number], to: player }
-        ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+        ], true);
     });
 
     it('should be able to invite a formatted number', function() {

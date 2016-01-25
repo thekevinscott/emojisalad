@@ -30,7 +30,13 @@ before(function(done) {
     // here you can load fixtures, etc.
     //
     
-    Promise.all([Player, User].map((model) => {
+    const tables_to_delete = [
+      Player,
+      User,
+      Invite
+    ];
+
+    Promise.all(tables_to_delete.map((model) => {
       return model.destroy({
         where: { }
       });

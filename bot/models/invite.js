@@ -5,8 +5,42 @@ const Promise = require('bluebird');
 const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
+const api = require('config/services').api.url;
 
+const req = Promise.promisify(require('request'));
+const request = function(options) {
+  return req(options).then(function(response) {
+    //console.log('re', response);
+    let body = response.body;
+    try {
+      body = JSON.parse(body);
+    } catch(err) {}
+
+    if ( body ) {
+      return body;
+    } else {
+      throw new Error('No response from API in player');
+    }
+  });
+}
 let Invite = {
+  create: (inviter, value) => {
+    return request({
+      url: `${api}invites`,
+      method: 'POST',
+      form: {
+        inviter: inviter.from,
+        invited: value
+      }
+    }).then((response) => {
+      if ( response.id ) {
+        return response;
+      } else {
+        throw response;
+      }
+    });
+  },
+  /*
   create: Promise.coroutine(function* (inviter, value) {
     console.debug('invite create 1');
     let numbers = yield Phone.parse([value]);
@@ -75,6 +109,7 @@ let Invite = {
       throw "There was an error inserting invite";
     }
   }),
+  */
   getInvite: Promise.coroutine(function* (inviter) {
     let query = squel
                 .select()

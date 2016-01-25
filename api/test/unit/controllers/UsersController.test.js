@@ -46,7 +46,7 @@ describe('UsersController', function() {
 
   });
 
-  describe.only('update()', () => {
+  describe('update()', () => {
     const from = ''+Math.random();
     let user;
     before(function() {

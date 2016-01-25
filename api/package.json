@@ -27,11 +27,13 @@
     "sails-disk": "~0.10.0",
     "sails-hook-sequelize": "^1.0.1",
     "sails-mysql": "^0.11.2",
+    "sails-swagger": "git+https://github.com/tjwebb/sails-swagger.git",
     "squel": "^4.2.3"
   },
   "scripts": {
     "debug": "node debug app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "mocha test/bootstrap.test.js test/unit/**/"
   },
   "main": "app.js",
   "repository": {

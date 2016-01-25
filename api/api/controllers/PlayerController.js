@@ -130,7 +130,7 @@ module.exports = {
     return Promise.join(getUser(from), getGameNumber(to), function(user, game_number) {
       if ( ! user ) {
         console.log('aint no user');
-        return res.json({ error: `No user found` });
+        return res.status(400).json({ error: `No user found` });
       }
       if ( ! game_number ) {
         return res.status(400).json({ error: `No game number found` });

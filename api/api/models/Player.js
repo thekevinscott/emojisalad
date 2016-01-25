@@ -51,8 +51,14 @@ module.exports = {
 
   },
   associations: function () {
+    //Player.hasMany(Invite, {
+      //foreignKey: {
+        //name: 'inviter_player_id',
+        //allowNull: false
+      //}
+    //});
+    Player.hasMany(Invite);
     Player.belongsTo(State);
-    //Player.belongsTo(Game);
     Player.belongsTo(User);
     Player.belongsTo(GameNumber, {
       foreignKey: {
@@ -63,15 +69,14 @@ module.exports = {
   },
   options: {
     freezeTableName: false,
-    classMethods: {
-    },
+    classMethods: { },
     instanceMethods: {},
     hooks: {
-      beforeCreate: function(player) {
-      }
+      beforeCreate: function(player) { }
     },
     tableName: 'players',
-    underscored: true
+    underscored: true,
+    //constraints: false
   },
 
 };

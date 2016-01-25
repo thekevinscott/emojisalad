@@ -11,6 +11,11 @@ module.exports.routes = {
   'POST /players': 'PlayerController.create',
   'PUT /players/:player_id': 'PlayerController.update',
 
+  // invites
+  'GET /invites': 'InviteController.find',
+  'POST /invites': 'InviteController.create',
+  'PUT /invites/:id': 'InviteController.use',
+
   'GET /games/:game_id': 'GameController.findOne',
   //'/users/:user_id/games': 'UserController.games',
   'POST /games/:game_id/users': 'GameController.add',

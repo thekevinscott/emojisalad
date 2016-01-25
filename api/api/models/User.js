@@ -47,6 +47,7 @@ module.exports = {
       }
     },
     tableName: 'users',
-    underscored: true
+    underscored: true,
+    //constraints: false
   },
 };

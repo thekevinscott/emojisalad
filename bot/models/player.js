@@ -9,6 +9,7 @@ const api = require('config/services').api.url;
 const req = Promise.promisify(require('request'));
 const request = function(options) {
   return req(options).then(function(response) {
+    //console.log('re', response);
     let body = response.body;
     try {
       body = JSON.parse(body);
