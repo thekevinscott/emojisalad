@@ -7,9 +7,9 @@ module.exports = function(app) {
     const router = express.Router({ mergeParams: true });
     require(`./${key}`).map((route) => {
       router.route(route.path)[route.method]((req, res) => {
-        const data = ( route.method === 'get' ) ? req.query : req.body;
+        //const data = ( route.method === 'get' ) ? req.query : req.body;
         try {
-          route.fn(data, req.params).then((results) => {
+          route.fn(req).then((results) => {
             res.status(200).json(results);
           }).catch((err) => {
             console.error(err);

@@ -8,7 +8,7 @@ let game_number;
 const from = ''+Math.random();
 const nickname = ''+Math.random();
 
-describe.only('Delete', function() {
+describe('Delete', function() {
   before(function() {
     game_number = '+15559999999';
     return Promise.all([

@@ -9,93 +9,102 @@ let Game;
 let Player = {
   // create a new player
   create: (params) => {
-    let number_query;
-    if ( params.to ) {
-      number_query = squel
-                     .select()
-                     .field('id')
-                     .from('game_numbers','n')
-                     .where('n.number=?', params.to);
-    } else {
-      // no game number has been specified;
-      // for instance, if an invite has
-      // been created.
-      //
-      // In this case, we auto generate a game
-      // number for this player
-      let get_to_query = squel
-                         .select({ autoEscapeFieldNames: true })
-                         .field('p.`to`')
-                         //.field('`to`')
-                         .from('players','p')
-                         .where('p.user_id=?',params.user.id);
-
-      number_query = squel
-                     .select()
-                     .field('id')
-                     .field('number')
-                     .from('game_numbers','n')
-                     .where('n.id NOT IN ?', get_to_query)
-                     .order('id')
-                     .limit(1);
+    if ( ! params.from && ! params.user_id ) {
+      throw "You must provide a from or user_id field";
     }
 
-    return db.query(number_query.toString()).then((numbers_rows) => {
-
-      if ( !numbers_rows.length ) {
-        console.error(number_query.toString());
-        throw "No game number found";
+    return User.find(params).then((users) => {
+      if ( ! users.length ) {
+        throw 'You must provide a valid from or user_id field';
       }
+      const user = users.shift();
 
-      let to = numbers_rows[0];
-
-      console.log('2', to, params);
-      let query = squel
-                  .insert({ autoQuoteFieldNames: true })
-                  .into('players')
-                  .setFields({
-                    to: to.id,
-                    created: squel.fval('NOW(3)'),
-                    user_id: params.user.id
-                  });
-
-      let state;
-      if ( params.initial_state ) {
-        state = params.initial_state;
-        delete params.initial_state;
+      let number_query;
+      if ( params.to ) {
+        number_query = squel
+                       .select()
+                       .field('id')
+                       .field('number')
+                       .from('game_numbers','n')
+                       .where('n.number=?', params.to);
       } else {
-        state = 'waiting-for-confirmation';
+        // no game number has been specified;
+        // for instance, if an invite has
+        // been created.
+        //
+        // In this case, we auto generate a game
+        // number for this player
+        let get_to_query = squel
+                           .select({ autoEscapeFieldNames: true })
+                           .field('p.`to`')
+                           //.field('`to`')
+                           .from('players','p')
+                           .where('p.user_id=?',user.id);
+
+        number_query = squel
+                       .select()
+                       .field('id')
+                       .field('number')
+                       .from('game_numbers','n')
+                       .where('n.id NOT IN ?', get_to_query)
+                       .order('id')
+                       .limit(1);
       }
 
-      query.setFields({ 'state_id': squel
-                                   .select()
-                                   .field('id')
-                                   .from('player_states')
-                                   .where('state=?',state)});
+      return db.query(number_query.toString()).then((numbers_rows) => {
+
+        if ( !numbers_rows.length ) {
+          console.error(number_query.toString());
+          throw "No game number found";
+        }
+
+        const to = numbers_rows[0];
+
+        let query = squel
+                    .insert({ autoQuoteFieldNames: true })
+                    .into('players')
+                    .setFields({
+                      to: to.id,
+                      created: squel.fval('NOW(3)'),
+                      user_id: user.id
+                    });
+
+        //let state;
+        //if ( params.initial_state ) {
+          //state = params.initial_state;
+          //delete params.initial_state;
+        //} else {
+          //state = 'waiting-for-confirmation';
+        //}
+
+        //query.setFields({ 'state_id': squel
+                                     //.select()
+                                     //.field('id')
+                                     //.from('player_states')
+                                     //.where('state=?',state)});
 
 
-      return db.query(query.toString());
-    }).then((rows) => {
-      if ( rows.insertId ) {
-        let player = _.assign({
-          id: rows.insertId,
-          to: to.number,
+        return db.query(query.toString()).then((rows) => {
+          if ( rows.insertId ) {
+            return {
+              id: rows.insertId,
+              to: to.number,
+              from: user.from,
+              nickname: user.nickname,
+              user_id: user.id,
+              avatar: user.avatar
+            };
 
-          // convenience, so number is
-          // an alias for 'from'
-          number: params.user.from,
-          from: params.user.from,
-
-          nickname: params.user.nickname,
-          state: state
-        }, params);
-
-        return player;
-      } else {
-        console.error(query.toString());
-        throw "Error creating player";
-      }
+            return player;
+          } else {
+            console.error(query.toString());
+            throw "Error creating player";
+          }
+        });
+      });
     });
+
+
   },
 
   find: (params = {}) => {

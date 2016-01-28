@@ -48,6 +48,8 @@ describe('Create', function() {
         res.body.from.should.equal(from);
         res.body.id.should.be.above(0);
         res.body.should.have.property('avatar');
+        res.body.should.have.property('nickname');
+        res.body.should.have.property('maximum_games');
       });
     });
   });

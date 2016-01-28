@@ -6,7 +6,7 @@ module.exports = [
   {
     path: '/',
     method: 'get',
-    fn: index
+    fn: find 
   },
   {
     path: '/',
@@ -27,13 +27,18 @@ module.exports = [
 //playersRouter.route('/:player_id').delete(remove);
 //playersRouter.route('/:player_id').put(update);
 
-function index(req) {
-  let params = {};
-  return Player.findAll(params);
-}
 function find(req) {
-  return Player.get({ id: req.param('player_id')});
+  return Player.findAll(req.query);
 }
-function create(params) {
-  return Player.create(params);
+function findOne(req) {
+  const player_id = req.params.player_id;
+  if ( ! player_id ) {
+    throw "No player ID provided, how is that possible?";
+  } else if ( !parseInt(player_id) ) {
+    throw "Invalid player ID provided";
+  }
+  return Player.findOne(player_id);
+}
+function create(req) {
+  return Player.create(req.body);
 }

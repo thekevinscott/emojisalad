@@ -3,6 +3,8 @@ const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
 
+const default_maximum_games = 4;
+
 const User = {
   create: function(params) {
     if ( ! params.from ) {
@@ -23,7 +25,8 @@ const User = {
                     last_activity: squel.fval('NOW(3)'),
                     from: params.from,
                     avatar: avatar,
-                    nickname: nickname
+                    nickname: nickname,
+                    maximum_games: default_maximum_games
                   });
       return db.query(query).then((result) => {
 
@@ -32,7 +35,8 @@ const User = {
             id: result.insertId,
             from: params.from,
             avatar: avatar,
-            nickname: nickname
+            nickname: nickname,
+            maximum_games: default_maximum_games
           };
           return user;
         } else {
