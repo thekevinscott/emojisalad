@@ -73,7 +73,7 @@ let check = Promise.coroutine(function* (action, expected, inline_check) {
         const r = levenshtein(expected, action.body) / action.body.length;
         r.should.be.below(0.05);
       } catch(err) {
-        console.error(err);
+        //console.error(err);
         // this will fail but we'll get a nice
         // error message out of it
         action.body.should.equal(expected);

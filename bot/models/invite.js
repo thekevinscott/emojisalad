@@ -29,7 +29,7 @@ let Invite = {
       url: `${api}invites`,
       method: 'POST',
       form: {
-        inviter: inviter.from,
+        inviter_id: inviter.id,
         invited: value
       }
     }).then((response) => {

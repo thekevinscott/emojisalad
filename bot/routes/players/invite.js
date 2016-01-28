@@ -12,7 +12,8 @@ module.exports = Promise.coroutine(function* (inviter, input) {
     input = input.split('invite').pop().trim();
     try {
       let players = yield Invite.create(inviter, input);
-      console.log('players', players);
+      //console.log('players', players);
+      console.log('players', players.invited_player);
       // let the inviting player know we messaged
       // their buddy, and let the buddy
       // know they've been invited

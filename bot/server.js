@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 
 app.listen(app.get('port'), function() {
-  console.log('EmojinaryFriend API');
+  console.log('EmojinaryFriend Bot');
 });
 
 app.use(pmx.expressErrorHandler());
