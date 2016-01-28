@@ -25,6 +25,7 @@ describe('Find', function() {
       res.body[0].should.have.property('id');
       res.body[0].should.have.property('from');
       res.body[0].should.have.property('avatar');
+      res.body[0].should.have.property('created');
     });
   });
 
@@ -35,6 +36,7 @@ describe('Find', function() {
       res.body[0].should.have.property('id');
       res.body[0].should.have.property('from', from);
       res.body[0].should.have.property('avatar');
+      res.body[0].should.have.property('created');
     });
   });
 
@@ -46,6 +48,7 @@ describe('Find', function() {
       res.body[0].should.have.property('from');
       res.body[0].should.have.property('nickname', nickname);
       res.body[0].should.have.property('avatar');
+      res.body[0].should.have.property('created');
     });
   });
 
@@ -72,6 +75,7 @@ describe('Find', function() {
           res.body.from.should.equal(user.from);
           res.body.nickname.should.equal(user.nickname);
           res.body.avatar.should.equal(user.avatar);
+          res.body.should.have.property('created');
         });
       });
     });

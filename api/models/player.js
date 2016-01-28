@@ -13,11 +13,16 @@ let Player = {
       throw "You must provide a from or user_id field";
     }
 
-    return User.find(params).then((users) => {
-      if ( ! users.length ) {
+    let user_params = {};
+    if ( params.user_id ) {
+      user_params = { id: params.user_id };
+    } else {
+      user_params = { from: params.from };
+    }
+    return User.findOne(user_params).then((user) => {
+      if ( ! user || !user.id ) {
         throw 'You must provide a valid from or user_id field';
       }
-      const user = users.shift();
 
       let number_query;
       if ( params.to ) {
@@ -106,22 +111,56 @@ let Player = {
 
 
   },
+  findOne: (params) => {
+    if (parseInt(params)) {
+      params = { id: params };
+    }
+    return Player.find(params).then((players) => {
+      if ( players && players.length) {
+        return players[0];
+      } else {
+        return {};
+      }
+    });
+  },
 
   find: (params = {}) => {
     let query = squel
                 .select({ autoEscapeFieldNames: true })
                 .field('p.id')
                 .field('p.created')
-                .field('p.state_id')
+                .field('n.number','to')
+                //.field('p.state_id')
                 .field('u.id', 'user_id')
-                .field('u.blacklist')
+                //.field('u.blacklist')
                 .field('u.nickname')
+                .field('u.from')
+                .field('u.avatar')
                 .from('players', 'p')
+                .left_join('game_numbers','n','n.id=p.`to`')
                 .left_join('users', 'u', 'u.id=p.user_id')
+
+    if ( params.id ) {
+      query = query.where('p.id=?',params.id);
+    }
+
+    if ( params.nickname ) {
+      query = query.where('u.nickname LIKE ?',params.nickname+'%');
+    }
+    
+    if ( params.from ) {
+      query = query.where('u.`from` LIKE ?',params.from+'%');
+    }
+
+    if ( params.user_id ) {
+      query = query.where('u.`id` = ?',params.user_id);
+    }
+
     return db.query(query);
   },
   
 
+  /*
   get: Promise.coroutine(function* (params) {
     if ( !params.id && ( (!params.from && !params.number) || !params.to )) {
       console.error('params', params);
@@ -186,6 +225,7 @@ let Player = {
       }
     }
   }),
+  */
 
   update: Promise.coroutine(function* (player, params) {
 

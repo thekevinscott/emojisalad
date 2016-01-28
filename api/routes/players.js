@@ -16,7 +16,7 @@ module.exports = [
   {
     path: '/:player_id',
     method: 'get',
-    fn: find 
+    fn: findOne
   },
 
 ];
@@ -28,7 +28,7 @@ module.exports = [
 //playersRouter.route('/:player_id').put(update);
 
 function find(req) {
-  return Player.findAll(req.query);
+  return Player.find(req.query);
 }
 function findOne(req) {
   const player_id = req.params.player_id;

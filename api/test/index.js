@@ -1,6 +1,7 @@
 'use strict';
 let chai = require('chai');
 chai.should();
+chai.use(require('chai-datetime'));
 let expect = chai.expect;
 chai.use(require('chai-datetime'));
 let Promise = require('bluebird');
