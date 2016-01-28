@@ -17,6 +17,4 @@ app.listen(app.get('port'), function() {
 
 app.use(pmx.expressErrorHandler());
 
-const main = require('main');
-app.get('/ping', main);
-main();
+require('./routes')(app);

@@ -4,37 +4,45 @@ const db = require('db');
 const Promise = require('bluebird');
 
 const User = {
-  create: Promise.coroutine(function* (params) {
+  create: function(params) {
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
-    let avatar = yield this.getRandomAvatar();
-    let query = squel
-                .insert({ autoQuoteFieldNames: true })
-                .into('users')
-                .setFields({
-                  created: squel.fval('NOW(3)'),
-                  last_activity: squel.fval('NOW(3)'),
-                  from: params.from,
-                  avatar: avatar
-                });
 
-    console.debug(query.toString());
-    let rows = yield db.query(query);
-
-    if ( rows && rows.insertId ) {
-      let user = {
-        id: rows.insertId,
-        from: params.from
-      };
-      return user;
-    } else {
-      console.error(query.toString());
-      throw "There was an error inserting user";
+    let nickname = '';
+    if ( params.nickname ) {
+      nickname = params.nickname;
     }
 
-  }),
-  update: Promise.coroutine(function* (user, params) {
+    return this.getRandomAvatar().then((avatar) => {
+      let query = squel
+                  .insert({ autoQuoteFieldNames: true })
+                  .into('users')
+                  .setFields({
+                    created: squel.fval('NOW(3)'),
+                    last_activity: squel.fval('NOW(3)'),
+                    from: params.from,
+                    avatar: avatar,
+                    nickname: nickname
+                  });
+      return db.query(query).then((result) => {
+
+        if ( result && result.insertId ) {
+          let user = {
+            id: result.insertId,
+            from: params.from,
+            avatar: avatar,
+            nickname: nickname
+          };
+          return user;
+        } else {
+          console.error(query.toString());
+          throw "There was an error inserting user";
+        }
+      });
+    });
+  },
+  update: (user, params) => {
     let whitelist = [
       'nickname',
       'blacklist',
@@ -46,15 +54,26 @@ const User = {
                 .table('users', 'u')
                 .where('u.id=?', user.id);
 
-    whitelist.map(function(key) {
+    let valid_query = false;
+    whitelist.map((key) => {
       if ( params[key] ) {
+        valid_query = true;
         query.set(key, params[key]);
       }
     });
 
-    yield db.query(query.toString());
-    return user;
-  }),
+    if ( ! valid_query ) {
+      throw "You must provide a valid key to update";
+    }
+
+    return db.query(query).then((rows) => {
+      if ( rows && rows.changedRows ) {
+        return User.findOne(user.id);
+      } else {
+        return null;
+      }
+    });
+  },
   getPlayersNum: Promise.coroutine(function* (params) {
     let query = squel
                 .select()
@@ -78,7 +97,7 @@ const User = {
       return null;
     }
   }),
-  findOne: Promise.coroutine(function* (params) {
+  find: (params = {}) => {
     let query = squel
                 .select()
                 .field('u.*')
@@ -87,27 +106,39 @@ const User = {
     if ( params.id ) {
       query = query.where('u.id=?',params.id);
     }
-    
-    if ( params.from ) {
-      query = query.where('u.`from`=?',params.from);
+
+    if ( params.nickname ) {
+      query = query.where('u.nickname LIKE ?',params.nickname+'%');
     }
     
+    if ( params.from ) {
+      query = query.where('u.`from` LIKE ?',params.from+'%');
+    }
+
     if ( params.player_id ) {
       query = query
               .left_join('players', 'p', 'u.id=p.user_id')
               .where('p.id=?',params.player_id);
     }
+              
+    const archived = params.archived || 0;
+    query.where('u.archived=?', archived);
 
-    let rows = yield db.query(query.toString());
-    if ( rows.length ) {
-      let user = rows[0];
-      // TODO: Set this intelligently.
-      return user;
-    } else {
-      return null;
+    return db.query(query);
+  },
+  findOne: (params) => {
+    if (parseInt(params)) {
+      params = { id: params };
     }
-  }),
-  getRandomAvatar: Promise.coroutine(function* () {
+    return User.find(params).then((users) => {
+      if ( users && users.length) {
+        return users[0];
+      } else {
+        return {};
+      }
+    });
+  },
+  getRandomAvatar: () => {
     let query = squel
                 .select()
                 .field('avatar')
@@ -115,11 +146,27 @@ const User = {
                 .order('rand()')
                 .limit(1);
 
-    console.debug(query.toString());
-    let rows = yield db.query(query);
-    console.debug('avatar', rows);
-    return rows[0].avatar;
-  })
+    //console.debug(query.toString());
+
+    return db.query(query).then((rows) => {
+      return rows[0].avatar;
+    });
+  },
+  remove: (user_id) => {
+    let query = squel
+                .update()
+                .set('archived', 1)
+                .table('users', 'u')
+                .where('u.id=?', user_id);
+
+    return db.query(query).then((rows) => {
+      if ( rows && rows.affectedRows ) {
+        return {};
+      } else {
+        throw "User was not deleted: " + user_id;
+      }
+    });
+  }
 };
 
 module.exports = User;

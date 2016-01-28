@@ -182,7 +182,7 @@ function resetTestingDB() {
                   { id: 1, number: '+15559999999' },
                   { id: 2, number: '+15551111111' },
                 ]);
-    return db.api.query(query.toString());
+    return db.test.query(query.toString());
   }).then(function() {
     // set up clues
     //let query = squel
@@ -197,11 +197,11 @@ function resetTestingDB() {
                 //]);
     //return db.api.query(query.toString());
   }).then(function() {
-    const promises = ['players', 'users'].map(function(key) {
+    const promises = ['players', 'users', 'games', 'rounds'].map(function(key) {
       let query = squel
                   .delete()
                   .from(key);
-      return db.api.query(query.toString());
+      return db.test.query(query.toString());
     });
     return Promise.all(promises);
   }).then(function() {

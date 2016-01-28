@@ -15,8 +15,9 @@ console.debug = function() {
   }
 };
 
+// start up the server
+require('../server');
 
-require(__dirname + '/unit-tests/store');
-require(__dirname + '/unit-tests/lib');
 //require(__dirname + '/unit-tests/models/game');
-require('./integration/suite');
+require('./routes/players');
+require('./routes/users');

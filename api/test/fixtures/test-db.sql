@@ -435,12 +435,13 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `blacklist` tinyint(1) NOT NULL DEFAULT '0',
-  `from` varchar(15) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  `from` varchar(255) CHARACTER SET latin1 NOT NULL DEFAULT '',
   `nickname` varchar(255) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `maximum_games` int(11) unsigned NOT NULL DEFAULT '4',
   `last_activity` timestamp(6) NULL DEFAULT NULL,
   `created` timestamp(6) NULL DEFAULT NULL,
+  `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `from` (`from`),
   KEY `from_index` (`from`)
@@ -456,7 +457,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-16 14:36:32
+-- Dump completed on 2016-01-27 19:46:16
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -635,4 +636,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-16 14:36:35
+-- Dump completed on 2016-01-27 19:46:18

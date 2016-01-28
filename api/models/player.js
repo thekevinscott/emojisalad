@@ -8,7 +8,7 @@ let Game;
 
 let Player = {
   // create a new player
-  create: Promise.coroutine(function* (params) {
+  create: (params) => {
     let number_query;
     if ( params.to ) {
       number_query = squel
@@ -40,59 +40,78 @@ let Player = {
                      .limit(1);
     }
 
-    let numbers_rows = yield db.query(number_query.toString());
+    return db.query(number_query.toString()).then((numbers_rows) => {
 
-    if ( !numbers_rows.length ) {
-      console.error(number_query.toString());
-      throw "No game number found";
-    }
+      if ( !numbers_rows.length ) {
+        console.error(number_query.toString());
+        throw "No game number found";
+      }
 
-    let to = numbers_rows[0];
+      let to = numbers_rows[0];
 
+      console.log('2', to, params);
+      let query = squel
+                  .insert({ autoQuoteFieldNames: true })
+                  .into('players')
+                  .setFields({
+                    to: to.id,
+                    created: squel.fval('NOW(3)'),
+                    user_id: params.user.id
+                  });
+
+      let state;
+      if ( params.initial_state ) {
+        state = params.initial_state;
+        delete params.initial_state;
+      } else {
+        state = 'waiting-for-confirmation';
+      }
+
+      query.setFields({ 'state_id': squel
+                                   .select()
+                                   .field('id')
+                                   .from('player_states')
+                                   .where('state=?',state)});
+
+
+      return db.query(query.toString());
+    }).then((rows) => {
+      if ( rows.insertId ) {
+        let player = _.assign({
+          id: rows.insertId,
+          to: to.number,
+
+          // convenience, so number is
+          // an alias for 'from'
+          number: params.user.from,
+          from: params.user.from,
+
+          nickname: params.user.nickname,
+          state: state
+        }, params);
+
+        return player;
+      } else {
+        console.error(query.toString());
+        throw "Error creating player";
+      }
+    });
+  },
+
+  find: (params = {}) => {
     let query = squel
-                .insert({ autoQuoteFieldNames: true })
-                .into('players')
-                .setFields({
-                  to: to.id,
-                  created: squel.fval('NOW(3)'),
-                  user_id: params.user.id
-                });
-
-    let state;
-    if ( params.initial_state ) {
-      state = params.initial_state;
-      delete params.initial_state;
-    } else {
-      state = 'waiting-for-confirmation';
-    }
-
-    query.setFields({ 'state_id': squel
-                                 .select()
-                                 .field('id')
-                                 .from('player_states')
-                                 .where('state=?',state)});
-
-    let rows = yield db.query(query.toString());
-    if ( rows.insertId ) {
-      let player = _.assign({
-        id: rows.insertId,
-        to: to.number,
-
-        // convenience, so number is
-        // an alias for 'from'
-        number: params.user.from,
-        from: params.user.from,
-
-        nickname: params.user.nickname,
-        state: state
-      }, params);
-
-      return player;
-    } else {
-      console.error(query.toString());
-      throw "Error creating player";
-    }
-  }),
+                .select({ autoEscapeFieldNames: true })
+                .field('p.id')
+                .field('p.created')
+                .field('p.state_id')
+                .field('u.id', 'user_id')
+                .field('u.blacklist')
+                .field('u.nickname')
+                .from('players', 'p')
+                .left_join('users', 'u', 'u.id=p.user_id')
+    return db.query(query);
+  },
+  
 
   get: Promise.coroutine(function* (params) {
     if ( !params.id && ( (!params.from && !params.number) || !params.to )) {
