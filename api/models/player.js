@@ -9,8 +9,15 @@ let Game;
 let Player = {
   // create a new player
   create: (params) => {
+    if ( ! Game ) {
+      Game = require('./game');
+    }
     if ( ! params.from && ! params.user_id ) {
       throw "You must provide a from or user_id field";
+    }
+
+    if ( ! params.game_id) {
+      throw "You must provide a game_id field";
     }
 
     let user_params = {};
@@ -22,8 +29,10 @@ let Player = {
     return User.findOne(user_params).then((user) => {
       if ( ! user || !user.id ) {
         throw 'You must provide a valid from or user_id field';
+      } else {
+        return user;
       }
-
+    }).then((user) => {
       let number_query;
       if ( params.to ) {
         number_query = squel
@@ -61,46 +70,58 @@ let Player = {
         if ( !numbers_rows.length ) {
           console.error(number_query.toString());
           throw "No game number found";
+        } else {
+          return {
+            to : numbers_rows[0].id,
+            user_id: user.id
+          };
         }
+      });
+    }).then((player_params) => {
+      return Game.findOne(params.game_id).then((game) => {
+        if ( ! game || !game.id ) {
+          throw 'You must provide a valid game_id';
+        } else {
+          player_params.game_id = game.id;
+          return player_params;
+        }
+      });
+    }).then((player_params) => {
+      let query = squel
+                  .insert({ autoQuoteFieldNames: true })
+                  .into('players')
+                  .setFields({
+                    to: player_params.to,
+                    created: squel.fval('NOW(3)'),
+                    user_id: player_params.user_id,
+                    game_id: player_params.game_id,
+                  });
 
-        const to = numbers_rows[0];
+      //let state;
+      //if ( params.initial_state ) {
+        //state = params.initial_state;
+        //delete params.initial_state;
+      //} else {
+        //state = 'waiting-for-confirmation';
+      //}
 
-        let query = squel
-                    .insert({ autoQuoteFieldNames: true })
-                    .into('players')
-                    .setFields({
-                      to: to.id,
-                      created: squel.fval('NOW(3)'),
-                      user_id: user.id
-                    });
-
-        //let state;
-        //if ( params.initial_state ) {
-          //state = params.initial_state;
-          //delete params.initial_state;
-        //} else {
-          //state = 'waiting-for-confirmation';
-        //}
-
-        //query.setFields({ 'state_id': squel
-                                     //.select()
-                                     //.field('id')
-                                     //.from('player_states')
-                                     //.where('state=?',state)});
+      //query.setFields({ 'state_id': squel
+                                   //.select()
+                                   //.field('id')
+                                   //.from('player_states')
+                                   //.where('state=?',state)});
 
 
-        return db.query(query.toString()).then((rows) => {
-          if ( rows.insertId ) {
-            return Player.findOne(rows.insertId);
-          } else {
-            console.error(query.toString());
-            throw "Error creating player";
-          }
-        });
+      return db.query(query.toString()).then((rows) => {
+        //console.error('throw an error if trying to create the same to', rows);
+        if ( rows && rows.insertId ) {
+          return Player.findOne(rows.insertId);
+        } else {
+          //console.error(query.toString());
+          throw "Error creating player";
+        }
       });
     });
-
-
   },
   findOne: (params) => {
     if (parseInt(params)) {
@@ -129,6 +150,7 @@ let Player = {
                 .field('n.number','to')
                 //.field('p.state_id')
                 .field('u.id', 'user_id')
+                .field('g.id', 'game_id')
                 //.field('u.blacklist')
                 .field('u.nickname')
                 .field('u.from')
@@ -138,6 +160,7 @@ let Player = {
                 .from('players', 'p')
                 .where('p.archived=?', archived)
                 .left_join('game_numbers','n','n.id=p.`to`')
+                .left_join('games','g','g.id=p.game_id')
                 .left_join('users', 'u', 'u.id=p.user_id')
 
     if ( params.id ) {
@@ -154,6 +177,14 @@ let Player = {
 
     if ( params.user_id ) {
       query = query.where('u.`id` = ?',params.user_id);
+    }
+
+    if ( params.user_ids ) {
+      query = query.where('u.`id` IN ?',params.user_ids);
+    }
+
+    if ( params.game_ids ) {
+      query = query.where('g.`id` IN ?',params.game_ids);
     }
 
     return db.query(query);

@@ -7,7 +7,7 @@ const Player = require('models/player');
 const rule = require('config/rule');
 const EMOJI = '🐳';
 
-describe('Signup', function() {
+describe.only('Signup', function() {
 
   describe('Test a brand new player', function() {
     it('should introduce itself when contacting for the first time', function() {
@@ -41,7 +41,7 @@ describe('Signup', function() {
         });
       }
 
-      it.only('should start the onboarding with a "yes" response', function() {
+      it('should start the onboarding with a "yes" response', function() {
         return sayYes('yes').then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
         });
@@ -190,21 +190,6 @@ describe('Signup', function() {
     });
   });
 
-  it('should chide a player who tries to invite players before entering a nickname', function() {
-    let player = getPlayers(1)[0];
-    return setup([
-      { player: player, msg: 'hello' },
-      { player: player, msg: rule('yes').example() },
-    ]).then(function() {
-      return check(
-        { player: player, msg: 'invite foo' },
-        [{ key: 'wait-to-invite', to: player }]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
-    });
-  });
-
   it('should chide a player who tries to invite players before entering an avatar', function() {
     let player = getPlayers(1)[0];
     return setup([
@@ -214,7 +199,7 @@ describe('Signup', function() {
     ]).then(function() {
       return check(
         { player: player, msg: 'invite foo' },
-        [{ key: 'wait-to-invite', to: player }]
+        [{ key: 'error-14', to: player }]
       ).then(function(obj) {
         obj.output.should.deep.equal(obj.expected);
       });

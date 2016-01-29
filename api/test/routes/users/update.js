@@ -34,7 +34,45 @@ describe('Update', function() {
     });
   });
 
-  it('should update a user', function() {
+  it('should update a user\'s confirmed_avatar ', function() {
+    return User.findOne({ from: from }).then((user) => {
+      const params = {
+        url: `/users/${user.id}`, 
+        data: { confirmed_avatar: 1 }
+      };
+      return put(params).then((res) => {
+        res.statusCode.should.equal(200);
+        res.body.id.should.equal(user.id);
+        res.body.confirmed_avatar.should.equal(1);
+      });
+    }).then(() => {
+      return User.findOne({ from: from });
+    }).then((user) => {
+      user.confirmed_avatar.should.equal(1);
+    });
+  });
+
+  it('should update a user\'s confirmed ', function() {
+    return User.findOne({ from: from }).then((user) => {
+      const params = {
+        url: `/users/${user.id}`, 
+        data: { confirmed: 1 }
+      };
+      return put(params).then((res) => {
+        res.statusCode.should.equal(200);
+        res.body.id.should.equal(user.id);
+        res.body.from.should.equal(from);
+        res.body.confirmed.should.equal(1);
+        res.body.should.have.property('avatar');
+      });
+    }).then(() => {
+      return User.findOne({ from: from });
+    }).then((user) => {
+      user.confirmed.should.equal(1);
+    });
+  });
+
+  it('should update a user nickname', function() {
     const nickname = ''+Math.random();
     return User.findOne({ from: from }).then((user) => {
       const params = {

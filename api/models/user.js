@@ -2,7 +2,9 @@
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
+const Emoji = require('models/emoji');
 
+let Player;
 const default_maximum_games = 4;
 
 const User = {
@@ -16,35 +18,39 @@ const User = {
       nickname = params.nickname;
     }
 
-    //return this.getRandomAvatar().then((avatar) => {
-    let query = squel
-                .insert({ autoQuoteFieldNames: true })
-                .into('users')
-                .setFields({
-                  created: squel.fval('NOW(3)'),
-                  last_activity: squel.fval('NOW(3)'),
-                  from: params.from,
-                  //avatar: avatar,
-                  nickname: nickname,
-                  maximum_games: default_maximum_games
-                });
-    return db.query(query).then((result) => {
+    return Emoji.getRandom().then((avatar) => {
+      let query = squel
+                  .insert({ autoQuoteFieldNames: true })
+                  .into('users')
+                  .setFields({
+                    created: squel.fval('NOW(3)'),
+                    last_activity: squel.fval('NOW(3)'),
+                    from: params.from,
+                    //avatar: avatar,
+                    nickname: nickname,
+                    maximum_games: default_maximum_games
+                  });
+      return db.query(query).then((result) => {
 
-      if ( result && result.insertId ) {
-        return User.findOne(result.insertId);
-      } else {
-        console.error(query.toString());
-        throw "There was an error inserting user";
-      }
+        if ( result && result.insertId ) {
+          return User.findOne(result.insertId).then((user) => {
+            return user;
+          });
+        } else {
+          console.error(query.toString());
+          throw "There was an error inserting user";
+        }
+      });
     });
-    //});
   },
   update: (user, params) => {
     let whitelist = [
       'nickname',
       'blacklist',
       'maximum_games',
-      'avatar'
+      'avatar',
+      'confirmed',
+      'confirmed_avatar'
     ];
     let query = squel
                 .update()
@@ -95,6 +101,9 @@ const User = {
     }
   }),
   find: (params = {}) => {
+    if ( ! Player ) {
+      Player = require('models/player');
+    }
     let query = squel
                 .select()
                 .field('u.*')
@@ -121,7 +130,32 @@ const User = {
     const archived = params.archived || 0;
     query.where('u.archived=?', archived);
 
-    return db.query(query);
+    return db.query(query).then((users) => {
+      if ( users.length ) {
+        return Player.find({ user_ids: users.map(user => user.id ) }).then((players) => {
+          const players_by_id = players.reduce((obj, player) => {
+            const user_id = player.user_id;
+            delete player.user_id;
+            if ( ! obj[user_id] ) {
+              obj[user_id] = [];
+            }
+
+            obj[user_id].push({
+              id: player.id,
+              to: player.to
+            });
+            return obj;
+          }, {});
+
+          return users.map((user) => {
+            user.players = players_by_id[user.id] || [];
+            return user;
+          });
+        });
+      } else {
+        return [];
+      }
+    });
   },
   findOne: (params) => {
     if (parseInt(params)) {
@@ -133,20 +167,6 @@ const User = {
       } else {
         return {};
       }
-    });
-  },
-  getRandomAvatar: () => {
-    let query = squel
-                .select()
-                .field('avatar')
-                .from('avatars')
-                .order('rand()')
-                .limit(1);
-
-    //console.debug(query.toString());
-
-    return db.query(query).then((rows) => {
-      return rows[0].avatar;
     });
   },
   remove: (user_id) => {

@@ -69,6 +69,21 @@ describe('Create', function() {
         user.should.have.property('confirmed', 0);
       });
     });
+
+    it('should default to 0 for confirmed_avatar', function() {
+      const from = ''+Math.random();
+      return post({
+        url: '/users',
+        data: {
+          from: from
+        }
+      }).then((res) => {
+        return User.findOne(res.body.id);
+      }).then((user) => {
+        // confirmed should default to 0
+        user.should.have.property('confirmed_avatar', 0);
+      });
+    });
   });
 });
 

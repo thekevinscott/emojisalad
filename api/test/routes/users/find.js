@@ -54,7 +54,33 @@ describe('Find', function() {
       res.body[0].should.have.property('avatar');
       res.body[0].should.have.property('created');
       res.body[0].should.have.property('confirmed');
+      res.body[0].should.have.property('players');
+      res.body[0].should.have.property('confirmed_avatar');
       res.body[0].should.have.property('blacklist');
+    });
+  });
+
+  it('should return associated players with each user', function() {
+    const nickname = 'foobar';
+    return createUser(nickname).then((user) => {
+      return createUser(nickname);
+    }).then(() => {
+      return get({ url: '/users', data: { nickname: nickname }});
+    }).then((res) => {
+      res.statusCode.should.equal(200);
+      res.body[0].should.have.property('players');
+      res.body[1].should.have.property('players');
+      res.body[0].players.length.should.equal(1);
+      res.body[1].players.length.should.equal(1);
+      const first_player = res.body[0].players[0];
+      const second_player = res.body[1].players[0];
+      first_player.should.have.property('to');
+      second_player.should.have.property('to');
+      first_player.to.should.be.a('string');
+      second_player.to.should.be.a('string');
+      // tos should be actual numbers
+      first_player.to.substring(0,1).should.equal('+');
+      second_player.to.substring(0,1).should.equal('+');
     });
   });
 
@@ -81,10 +107,36 @@ describe('Find', function() {
           res.body.from.should.equal(user.from);
           res.body.nickname.should.equal(user.nickname);
           res.body.should.have.property('blacklist');
+          res.body.should.have.property('confirmed');
+          res.body.should.have.property('confirmed_avatar');
           res.body.should.have.property('avatar');
           res.body.should.have.property('created');
+          res.body.should.have.property('players');
+        });
+      });
+    });
+
+    it('should return all the players associated with a user', function() {
+      return createUser(Math.random()).then((user) => {
+        return get({ url: `/users/${user.id}` }).then((res) => {
+          res.statusCode.should.equal(200);
+          res.body.id.should.equal(user.id);
+          res.body.players.length.should.be.above(0);
         });
       });
     });
   });
 });
+
+function createUser(nickname) {
+  return post({ url: '/users', data: { from: Math.random(), to: game_number, nickname: nickname+Math.random() }}).then((res) => {
+    const user = res.body;
+    return post({
+      url: '/games',
+      data: [{ id: user.id }]
+    }).then(() => {
+      return user;
+    });
+  });
+}
+

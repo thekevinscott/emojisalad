@@ -49,21 +49,6 @@ CREATE TABLE `attributes` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `avatars`
---
-
-DROP TABLE IF EXISTS `avatars`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `avatars` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `avatar` varchar(255) DEFAULT NULL,
-  `created` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `categories`
 --
 
@@ -91,6 +76,21 @@ CREATE TABLE `clues` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `emojis`
+--
+
+DROP TABLE IF EXISTS `emojis`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `emojis` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `emoji` varchar(255) DEFAULT NULL,
+  `created` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -349,10 +349,12 @@ CREATE TABLE `players` (
   `user_id` int(11) unsigned NOT NULL,
   `state_id` int(11) DEFAULT NULL,
   `to` int(11) unsigned NOT NULL,
+  `game_id` int(11) unsigned NOT NULL,
   `last_activity` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   `created` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_number` (`user_id`,`to`)
 ) ENGINE=MyISAM AUTO_INCREMENT=527 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -443,6 +445,7 @@ CREATE TABLE `users` (
   `created` timestamp(6) NULL DEFAULT NULL,
   `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `confirmed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `confirmed_avatar` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `from` (`from`),
   KEY `from_index` (`from`)
@@ -458,7 +461,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-28 20:26:31
+-- Dump completed on 2016-01-29 17:38:37
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -504,28 +507,28 @@ INSERT INTO `admins` VALUES (16,'schloo123','$6$YTtpkndBlh/HSQ==$Ka6XF4N5j/6GTGj
 UNLOCK TABLES;
 
 --
--- Table structure for table `avatars`
+-- Table structure for table `emojis`
 --
 
-DROP TABLE IF EXISTS `avatars`;
+DROP TABLE IF EXISTS `emojis`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `avatars` (
+CREATE TABLE `emojis` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `avatar` varchar(255) DEFAULT NULL,
+  `emoji` varchar(255) DEFAULT NULL,
   `created` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `avatars`
+-- Dumping data for table `emojis`
 --
 
-LOCK TABLES `avatars` WRITE;
-/*!40000 ALTER TABLE `avatars` DISABLE KEYS */;
-INSERT INTO `avatars` VALUES (1,'⚽️','2015-12-17 17:00:14'),(2,'?','2015-12-17 17:01:03'),(3,'?','2015-12-17 17:01:14'),(4,'?','2015-12-17 17:01:13'),(5,'?','2015-12-17 17:01:12'),(6,'?','2015-12-17 17:01:10'),(7,'⚾️','2015-12-17 17:01:09'),(8,'?','2015-12-17 17:01:05'),(9,'?','2015-12-17 17:01:17'),(10,'?','2015-12-17 17:01:19'),(11,'?','2015-12-17 17:01:22'),(12,'?','2015-12-17 17:01:24'),(13,'?','2015-12-17 17:01:27'),(14,'?','2015-12-17 17:01:30'),(15,'?','2015-12-17 17:01:32'),(16,'?','2015-12-17 17:01:35'),(17,'?','2015-12-17 17:01:37'),(18,'?','2015-12-17 17:01:39'),(19,'⛄️','2015-12-17 17:01:45'),(20,'⚡️','2015-12-17 17:01:48'),(21,'?','2015-12-17 17:01:50'),(22,'?','2015-12-17 17:01:52'),(23,'?','2015-12-17 17:01:54'),(24,'?','2015-12-17 17:01:56'),(25,'?','2015-12-17 17:01:58'),(26,'?','2015-12-17 17:02:00'),(27,'?','2015-12-17 17:02:03'),(28,'☂','2015-12-17 17:02:07'),(29,'?','2015-12-17 17:02:09');
-/*!40000 ALTER TABLE `avatars` ENABLE KEYS */;
+LOCK TABLES `emojis` WRITE;
+/*!40000 ALTER TABLE `emojis` DISABLE KEYS */;
+INSERT INTO `emojis` VALUES (1,'⚽️','2015-12-17 17:00:14'),(2,'?','2015-12-17 17:01:03'),(3,'?','2015-12-17 17:01:14'),(4,'?','2015-12-17 17:01:13'),(5,'?','2015-12-17 17:01:12'),(6,'?','2015-12-17 17:01:10'),(7,'⚾️','2015-12-17 17:01:09'),(8,'?','2015-12-17 17:01:05'),(9,'?','2015-12-17 17:01:17'),(10,'?','2015-12-17 17:01:19'),(11,'?','2015-12-17 17:01:22'),(12,'?','2015-12-17 17:01:24'),(13,'?','2015-12-17 17:01:27'),(14,'?','2015-12-17 17:01:30'),(15,'?','2015-12-17 17:01:32'),(16,'?','2015-12-17 17:01:35'),(17,'?','2015-12-17 17:01:37'),(18,'?','2015-12-17 17:01:39'),(19,'⛄️','2015-12-17 17:01:45'),(20,'⚡️','2015-12-17 17:01:48'),(21,'?','2015-12-17 17:01:50'),(22,'?','2015-12-17 17:01:52'),(23,'?','2015-12-17 17:01:54'),(24,'?','2015-12-17 17:01:56'),(25,'?','2015-12-17 17:01:58'),(26,'?','2015-12-17 17:02:00'),(27,'?','2015-12-17 17:02:03'),(28,'☂','2015-12-17 17:02:07'),(29,'?','2015-12-17 17:02:09');
+/*!40000 ALTER TABLE `emojis` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -637,4 +640,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-28 20:26:34
+-- Dump completed on 2016-01-29 17:38:47

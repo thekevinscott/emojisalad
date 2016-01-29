@@ -3,31 +3,38 @@ const squel = require('squel').useFlavour('mysql');
 const Promise = require('bluebird');
 const _ = require('lodash');
 const emojiExists = require('emoji-exists');
-const EmojiData = require('emoji-data');
-
 const db = require('db');
-const Player = require('./player');
-const Round = require('./round');
+const api = require('config/services').api.url;
 
-// number of guesses a player gets per round
-const default_guesses = 2;
-const default_clues_allowed = 1;
+const req = Promise.promisify(require('request'));
+const request = function(options) {
+  //console.log('options', options);
+  return req(options).then(function(response) {
+    //console.log('re', response);
+    let body = response.body;
+    try {
+      body = JSON.parse(body);
+    } catch(err) {}
+
+    if ( body ) {
+      return body;
+    } else {
+      throw new Error('No response from API in emoji');
+    }
+  });
+}
 
 let Emoji = {
   checkInput: function(str) {
-    if ( str === '' ) {
-      return 'text';
-    } else if ( emojiExists(str) ) {
-      return 'emoji';
-    } else if ( EmojiData.scan(str).length > 0 ) {
-      return 'mixed-emoji';
-    } else {
-      return 'text';
-    }
+    return request({
+      url: `${api}emoji/check`,
+      method: 'POST',
+      form: { emoji: str } 
+    }).then((response) => {
+      //console.log('re', response);
+      return response;
+    });
   },
-  getNumOfEmoji: function(str) {
-    return EmojiData.scan(str).length;
-  }
 };
 
 module.exports = Emoji;

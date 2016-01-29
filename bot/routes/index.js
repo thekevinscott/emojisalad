@@ -34,23 +34,19 @@ let Router = function(from, message, to) {
     if ( player ) {
       // this means we are in a game
     } else {
+      // this means we are either brand new,
+      // or being onboarded
       return User.getOne({
         from: from
       }).then((user) => {
         // if user exists, we are being onboarded
         if ( user ) {
-          if ( ! user.confirmed ) {
-            return require('./users/confirm')(user, message, to);
-          }
-          player = {
-            state: 'uncreated',
-            user_id: user.id,
-            to: to,
-            //number: user.from,
-            user: user
-          };
+          // append the number the user has messaged to the user object.
+          // Any valid game number will maintain the same conversation
+          user.to = to;
+          return require('./onboarding')(user, message);
         } else {
-          return require('./users/create')(from, message, to);
+          return require('./create-user')(from, message, to);
         }
       });
     }

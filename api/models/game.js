@@ -7,7 +7,8 @@ const EmojiData = require('emoji-data');
 
 const db = require('db');
 const Player = require('./player');
-const Round = require('./round');
+const User = require('./user');
+//const Round = require('./round');
 
 // number of guesses a player gets per round
 const default_guesses = 2;
@@ -44,7 +45,7 @@ let Game = {
       Round.getLast(game),
       this.getBattingOrder(game),
       function(round, order) {
-        var next;
+        let next;
         if ( round ) {
           for ( let i=0,l=order.length; i<l; i++ ) {
             if ( order[i].player_id === round.submitter_id ) {
@@ -102,7 +103,7 @@ let Game = {
       console.debug('round submitter', round.submitter.id, round.submitter.nickname);
       return Promise.all(game.players.map(function(game_player) {
         console.debug('player', game_player.id, game_player.nickname);
-        var state;
+        let state;
         if ( game_player.id === round.submitter.id ) {
           state = 'waiting-for-submission';
         } else {
@@ -242,7 +243,7 @@ let Game = {
 
     let games = yield db.query(query.toString());
     if ( !games.length && debug ) {
-      console.log('no games found', query.toString());
+      console.debug('no games found', query.toString());
     }
     //console.debug('games', games);
     return games;
@@ -298,6 +299,7 @@ let Game = {
                 });
     return db.query(query);
   },
+  /*
   add: function(game, players) {
     return Promise.all(players.map(function(player) {
 
@@ -318,14 +320,16 @@ let Game = {
       }).then(function() {
         //if ( game.state && game.state !== 'waiting-for-players' ) {
           // game is in progress
-          this.addToBattingOrder(game, player).then(function() {
-          }).catch(function(err) {
-            console.error('error adding player ot batting order',  player, err);
-          });
+        this.addToBattingOrder(game, player).then(function() {
+        }).catch(function(err) {
+          console.error('error adding player ot batting order',  player, err);
+        });
         //}
       }.bind(this));
     }.bind(this)));
   },
+  */
+  /*
   create: function() {
     let state_id = squel
                   .select()
@@ -371,6 +375,130 @@ let Game = {
       });
     });
   },
+  */
+  add: (game, users) => {
+    return Promise.all(users.map((user) => {
+      let player_params = {
+        game_id: game.id,
+        user_id: user.id,
+      };
+      if ( user.to ) {
+        player_params.to = user.to;
+      }
+      return Player.create(player_params);
+    })).then((players) => {
+      return {
+        id: game.id,
+        players: players
+      };
+      /*
+      return db.query(query.toString()).then(function(rows) {
+        return {
+          id: rows.insertId
+        };
+      }).then(function() {
+        //if ( game.state && game.state !== 'waiting-for-players' ) {
+          // game is in progress
+        this.addToBattingOrder(game, player).then(function() {
+        }).catch(function(err) {
+          console.error('error adding player ot batting order',  player, err);
+        });
+        //}
+      }.bind(this));
+      */
+    });
+  },
+  findOne: (params) => {
+    if (parseInt(params)) {
+      params = { id: params };
+    }
+    return Game.find(params).then((games) => {
+      if ( games && games.length) {
+        return games[0];
+      } else {
+        return {};
+      }
+    });
+  },
+  find: (params = {}) => {
+    let query = squel
+                .select()
+                .from('games', 'g');
+
+    if ( params.id ) {
+      query = query.where('g.id=?',params.id);
+    }
+
+    return db.query(query).then((games) => {
+      if ( games && games.length ) {
+        return Player.find({ game_ids: games.map(game => game.id) }).then((players) => {
+          return players.reduce((obj, player) => {
+            const game_id = player.game_id;
+            delete player.game_id;
+            if ( ! obj[game_id] ) {
+              obj[game_id] = [];
+            }
+            obj[game_id].push(player);
+            return obj;
+          }, {});
+        }).then((players) => {
+          return games.map((game) => {
+            game.players = players[game.id] || [];
+            game.rounds = [];
+            return game;
+          });
+        });
+      } else {
+        return [];
+      }
+    });
+  },
+  create: (users) => {
+    function getValidUsers(users) {
+      return users.filter(user => parseInt(user.id));
+    }
+    if ( !_.isArray(users) ) {
+      throw "You must provide an array of users";
+    } else if ( getValidUsers(users).length !== users.length ) {
+      // check to see if every user has a valid ID
+      console.error('invalid parsed ids');
+      throw "You must provide a valid user";
+    } else {
+      // check that every user is valid
+      return Promise.all(users.map((user) => {
+        return User.findOne(user.id);
+      })).then((rows) => {
+        if ( getValidUsers(rows).length !== users.length ) {
+          console.error('invalid queried ids');
+          throw "You must provide a valid user";
+        }
+      }).then(() => {
+        let query = squel
+                    .insert()
+                    .into('games', 'g')
+                    .setFields({
+                      //clues_allowed: default_clues_allowed,
+                      created: squel.fval('NOW(3)'),
+                      last_activity: squel.fval('NOW(3)')
+                    });
+
+        return db.query(query);
+      }).then(function(result) {
+        if ( ! result || ! result.insertId ) {
+          //console.error(query.toString());
+          throw "There was an error inserting game";
+        } else {
+          return {
+            id: result.insertId
+          };
+        }
+      }).then((game) => {
+        return Game.add(game, users);
+      });
+    }
+
+  },
+    /*
   updateScore: function(game, player, type) {
     let updates = [];
     if ( type === 'win-round' ) {
@@ -418,6 +546,8 @@ let Game = {
       return this.get({ id: game.id });
     }.bind(this));
   },
+  */
+ /*
   updateDefaultScores: function(game, scores) {
     return Promise.all(Object.keys(scores).map(function(key) {
       let query = squel
@@ -430,6 +560,7 @@ let Game = {
       return db.query(query.toString());
     }));
   }
+  */
 };
 
 module.exports = Game;

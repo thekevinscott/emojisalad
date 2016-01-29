@@ -3,7 +3,12 @@ const express = require('express');
 const _ = require('lodash');
 
 module.exports = function(app) {
-  ['users','players'].map((key) => {
+  [
+    'games',
+    'users',
+    'emoji',
+    'players',
+  ].map((key) => {
     const router = express.Router({ mergeParams: true });
     require(`./${key}`).map((route) => {
       router.route(route.path)[route.method]((req, res) => {
@@ -12,7 +17,7 @@ module.exports = function(app) {
           route.fn(req).then((results) => {
             res.status(200).json(results);
           }).catch((err) => {
-            console.error(err);
+            //console.error(err);
             res.status(400).json({ error: err });
           });
         } catch(err) {

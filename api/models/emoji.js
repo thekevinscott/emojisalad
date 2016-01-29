@@ -7,27 +7,45 @@ const EmojiData = require('emoji-data');
 
 const db = require('db');
 const Player = require('./player');
-const Round = require('./round');
+//const Round = require('./round');
 
 // number of guesses a player gets per round
 const default_guesses = 2;
 const default_clues_allowed = 1;
 
 let Emoji = {
-  checkInput: function(str) {
-    if ( str === '' ) {
-      return 'text';
-    } else if ( emojiExists(str) ) {
-      return 'emoji';
-    } else if ( EmojiData.scan(str).length > 0 ) {
-      return 'mixed-emoji';
-    } else {
-      return 'text';
-    }
+  check: function(str) {
+    return new Promise((resolve) => {
+      if ( str === '' ) {
+        resolve({ type: 'text' });
+      } else {
+        const does_emoji_exist = emojiExists(str);
+        if ( does_emoji_exist ) {
+          const number = Emoji.getNumOfEmoji(str);
+          resolve({ type: 'emoji', number: number });
+        } else if ( EmojiData.scan(str).length > 0 ) {
+          resolve({ type: 'mixed' });
+        } else {
+          resolve({ type: 'text' });
+        }
+      }
+    });
   },
   getNumOfEmoji: function(str) {
     return EmojiData.scan(str).length;
-  }
+  },
+  getRandom: () => {
+    let query = squel
+                .select()
+                .field('emoji')
+                .from('emojis')
+                .order('rand()')
+                .limit(1);
+
+    return db.query(query).then((rows) => {
+      return rows[0];
+    });
+  },
 };
 
 module.exports = Emoji;
