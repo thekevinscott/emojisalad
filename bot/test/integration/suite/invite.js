@@ -77,7 +77,7 @@ describe('Inviting', function() {
     });
 
     this.timeout(10000);
-    it.only('should be able to invite someone', () => {
+    it('should be able to invite someone', () => {
       let player = getPlayers(1)[0];
 
       return check(

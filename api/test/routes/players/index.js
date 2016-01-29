@@ -4,6 +4,6 @@ let game_number;
 describe('Players', function() {
   require('./create');
   require('./find');
-  //require('./update');
-  //require('./delete');
+  require('./update');
+  require('./delete');
 });

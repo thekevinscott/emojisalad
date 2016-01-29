@@ -91,16 +91,7 @@ let Player = {
 
         return db.query(query.toString()).then((rows) => {
           if ( rows.insertId ) {
-            return {
-              id: rows.insertId,
-              to: to.number,
-              from: user.from,
-              nickname: user.nickname,
-              user_id: user.id,
-              avatar: user.avatar
-            };
-
-            return player;
+            return Player.findOne(rows.insertId);
           } else {
             console.error(query.toString());
             throw "Error creating player";
@@ -125,18 +116,27 @@ let Player = {
   },
 
   find: (params = {}) => {
+    let archived = 0;
+    if ( params.archived !== undefined ) {
+      archived = params.archived;
+    }
+
     let query = squel
                 .select({ autoEscapeFieldNames: true })
                 .field('p.id')
                 .field('p.created')
+                .field('p.archived')
                 .field('n.number','to')
                 //.field('p.state_id')
                 .field('u.id', 'user_id')
                 //.field('u.blacklist')
                 .field('u.nickname')
                 .field('u.from')
+                .field('u.blacklist')
                 .field('u.avatar')
+                .field('u.archived', 'user_archived')
                 .from('players', 'p')
+                .where('p.archived=?', archived)
                 .left_join('game_numbers','n','n.id=p.`to`')
                 .left_join('users', 'u', 'u.id=p.user_id')
 
@@ -227,26 +227,46 @@ let Player = {
   }),
   */
 
-  update: Promise.coroutine(function* (player, params) {
+  update: (player, params) => {
+    //let whitelist = [
+      //'to'
+    //];
 
     let query = squel
                 .update()
                 .table('players', 'p')
                 .where('p.id=?', player.id);
 
-    if ( params.state ) {
-      let state = squel
-                   .select()
-                   .field('id')
-                   .from('player_states')
-                   .where('state=?', params.state);
+    let valid_query = false;
+    //whitelist.map((key) => {
+      //if ( params[key] ) {
+        //valid_query = true;
+        //query.set(key, params[key]);
+      //}
+    //});
 
-      query.set('state_id', state, { dontQuote: true });
+    if ( params.to ) {
+      valid_query = true;
+      let game_number = squel
+                        .select()
+                        .field('id')
+                        .from('game_numbers','n')
+                        .where('number = ?', params.to);
+      query.set('`to`', game_number);
     }
 
-    yield db.query(query.toString());
-    return player;
-  }),
+    if ( ! valid_query ) {
+      throw "You must provide a valid key to update";
+    }
+
+    return db.query(query).then((rows) => {
+      if ( rows && rows.changedRows ) {
+        return Player.findOne(player.id);
+      } else {
+        return null;
+      }
+    });
+  },
   logLastActivity: function(player, game_number) {
     if ( ! Game ) {
       Game = require('./game');
@@ -280,6 +300,21 @@ let Player = {
     }
 
     return Promise.all(promises);
+  },
+  remove: (player_id) => {
+    let query = squel
+                .update()
+                .set('archived', 1)
+                .table('players', 'p')
+                .where('p.id=?', player_id);
+
+    return db.query(query).then((rows) => {
+      if ( rows && rows.affectedRows ) {
+        return {};
+      } else {
+        throw "Player was not deleted: " + player_id;
+      }
+    });
   }
 };
 

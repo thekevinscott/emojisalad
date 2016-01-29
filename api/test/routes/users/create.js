@@ -26,7 +26,7 @@ describe('Create', function() {
         return post({
           url: '/users',
           data: {
-            from: Math.random()
+            from: ''+Math.random()
           }
         }).then((res) => {
           res.statusCode.should.equal(200);
@@ -38,7 +38,7 @@ describe('Create', function() {
     });
 
     it('should respond to create with the user payload', function() {
-      const from = Math.random();
+      const from = ''+Math.random();
       return post({
         url: '/users',
         data: {
@@ -50,6 +50,23 @@ describe('Create', function() {
         res.body.should.have.property('avatar');
         res.body.should.have.property('nickname');
         res.body.should.have.property('maximum_games');
+        res.body.should.have.property('confirmed');
+        res.body.should.have.property('blacklist');
+      });
+    });
+
+    it('should default to 0 for confirmed', function() {
+      const from = ''+Math.random();
+      return post({
+        url: '/users',
+        data: {
+          from: from
+        }
+      }).then((res) => {
+        return User.findOne(res.body.id);
+      }).then((user) => {
+        // confirmed should default to 0
+        user.should.have.property('confirmed', 0);
       });
     });
   });

@@ -31,14 +31,7 @@ const User = {
       return db.query(query).then((result) => {
 
         if ( result && result.insertId ) {
-          let user = {
-            id: result.insertId,
-            from: params.from,
-            avatar: avatar,
-            nickname: nickname,
-            maximum_games: default_maximum_games
-          };
-          return user;
+          return User.findOne(result.insertId);
         } else {
           console.error(query.toString());
           throw "There was an error inserting user";

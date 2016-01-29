@@ -22,6 +22,18 @@ describe('Update', function() {
     });
   });
 
+  it('should return an error for a nonexistent key', function() {
+    return User.findOne({ from: from }).then((user) => {
+      const params = {
+        url: `/users/${user.id}`, 
+        data: { foo: 'bar' }
+      };
+      return put(params).then((res) => {
+        res.statusCode.should.equal(400);
+      });
+    });
+  });
+
   it('should update a user', function() {
     const nickname = ''+Math.random();
     return User.findOne({ from: from }).then((user) => {

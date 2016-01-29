@@ -16,8 +16,8 @@ if ( ! process.env.ENVIRONMENT ) {
 let config = require('../config/db');
 
 module.exports = getPool(process.env.ENVIRONMENT);
-module.exports.api = getPool('api');
-module.exports.test = getPool('test');
+//module.exports.api = getPool('api');
+//module.exports.test = getPool('test');
 
 function getPool(key) {
   if ( ! pools[key] ) {

@@ -41,7 +41,7 @@ describe('Signup', function() {
         });
       }
 
-      it('should start the onboarding with a "yes" response', function() {
+      it.only('should start the onboarding with a "yes" response', function() {
         return sayYes('yes').then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
         });

@@ -182,7 +182,7 @@ function resetTestingDB() {
                   { id: 1, number: '+15559999999' },
                   { id: 2, number: '+15551111111' },
                 ]);
-    return db.api.query(query.toString());
+    return db.query(query.toString());
   }).then(function() {
     // set up clues
     //let query = squel
@@ -201,7 +201,7 @@ function resetTestingDB() {
       let query = squel
                   .delete()
                   .from(key);
-      return db.api.query(query.toString());
+      return db.query(query.toString());
     });
     return Promise.all(promises);
   }).then(function() {
@@ -210,23 +210,23 @@ function resetTestingDB() {
 gulp.task('test', function() {
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
-  return resetTestingDB().then(function() {
-    process.env.DEBUG = util.env.debug || false;
-    return gulp.src(['test/index.js'], { read: false })
-    .pipe(mocha({
-      timeout: 10000,
-      slow: 500,
-      bail: true
-    }))
-    .on('error', function(data) {
-      console.error(data.message);
-      process.exit(1);
-    })
-    .once('end', function() {
-      process.exit();
-    });
-  }).catch(function(err) {
-    console.error(err);
+  //return resetTestingDB().then(function() {
+  process.env.DEBUG = util.env.debug || false;
+  return gulp.src(['test/index.js'], { read: false })
+  .pipe(mocha({
+    timeout: 10000,
+    slow: 500,
+    bail: true
+  }))
+  .on('error', function(data) {
+    console.error(data.message);
     process.exit(1);
+  })
+  .once('end', function() {
+    process.exit();
   });
+  //}).catch(function(err) {
+    //console.error(err);
+    //process.exit(1);
+  //});
 });

@@ -26,6 +26,8 @@ describe('Find', function() {
       res.body[0].should.have.property('from');
       res.body[0].should.have.property('avatar');
       res.body[0].should.have.property('created');
+      res.body[0].should.have.property('confirmed');
+      res.body[0].should.have.property('blacklist');
     });
   });
 
@@ -37,6 +39,8 @@ describe('Find', function() {
       res.body[0].should.have.property('from', from);
       res.body[0].should.have.property('avatar');
       res.body[0].should.have.property('created');
+      res.body[0].should.have.property('confirmed');
+      res.body[0].should.have.property('blacklist');
     });
   });
 
@@ -49,6 +53,8 @@ describe('Find', function() {
       res.body[0].should.have.property('nickname', nickname);
       res.body[0].should.have.property('avatar');
       res.body[0].should.have.property('created');
+      res.body[0].should.have.property('confirmed');
+      res.body[0].should.have.property('blacklist');
     });
   });
 
@@ -75,6 +81,7 @@ describe('Find', function() {
           res.body.from.should.equal(user.from);
           res.body.nickname.should.equal(user.nickname);
           res.body.avatar.should.equal(user.avatar);
+          res.body.should.have.property('blacklist');
           res.body.should.have.property('created');
         });
       });

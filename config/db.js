@@ -23,9 +23,9 @@ if ( local.test ) {
 if ( local.development ) {
   db.development = local.development;
 }
-if ( local.api ) {
-  db.api = local.api;
-}
+//if ( local.api ) {
+  //db.api = local.api;
+//}
 
 db.production = db.digitalOcean;
 

@@ -349,9 +349,9 @@ CREATE TABLE `players` (
   `user_id` int(11) unsigned NOT NULL,
   `state_id` int(11) DEFAULT NULL,
   `to` int(11) unsigned NOT NULL,
-  `blacklist` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `last_activity` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
   `created` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000',
+  `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=527 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -442,6 +442,7 @@ CREATE TABLE `users` (
   `last_activity` timestamp(6) NULL DEFAULT NULL,
   `created` timestamp(6) NULL DEFAULT NULL,
   `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `confirmed` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `from` (`from`),
   KEY `from_index` (`from`)
@@ -457,7 +458,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-27 19:46:16
+-- Dump completed on 2016-01-28 20:26:31
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -636,4 +637,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-27 19:46:18
+-- Dump completed on 2016-01-28 20:26:34

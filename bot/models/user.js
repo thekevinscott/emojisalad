@@ -33,8 +33,6 @@ const User = {
         return response;
       } else {
         return null;
-        //console.error('user error', response);
-        //throw response;
       }
     });
   },
@@ -46,6 +44,7 @@ const User = {
     });
   },
   getPlayersNum: Promise.coroutine(function* (params) {
+    return 0;
     console.log('**** THIS SHOULD BE MOVED TO GET GAMES');
     throw '1';
     let query = squel

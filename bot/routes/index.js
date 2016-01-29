@@ -3,6 +3,7 @@
 
 let Promise = require('bluebird');
 let Player = require('models/player');
+let User = require('models/user');
 let routes = [];
 function addRoute(path, fn_path) {
   routes.push({
@@ -11,40 +12,49 @@ function addRoute(path, fn_path) {
     path: fn_path
   });
 }
-addRoute('uncreated', './players/create');
-addRoute('waiting-for-confirmation', './players/confirm');
-addRoute('waiting-for-nickname', './players/nickname');
-addRoute('waiting-for-avatar', './players/avatar');
-addRoute('waiting-for-invites', './players/invite');
-addRoute('do-not-contact', './players/blackhole');
-addRoute('waiting-for-submission', './games/submission');
-addRoute('ready-for-game', './players/say');
-addRoute('submitted', './players/submitted');
-addRoute('guessing', './games/guess');
-addRoute('bench', './players/say');
-addRoute('waiting-for-round', './players/say');
-addRoute('passed', './players/say');
-addRoute('lost', './players/say');
-addRoute('invited-to-new-game', './players/invited-to-new-game');
+//addRoute('waiting-for-nickname', './players/nickname');
+//addRoute('waiting-for-avatar', './players/avatar');
+//addRoute('waiting-for-invites', './players/invite');
+//addRoute('do-not-contact', './players/blackhole');
+//addRoute('waiting-for-submission', './games/submission');
+//addRoute('ready-for-game', './players/say');
+//addRoute('submitted', './players/submitted');
+//addRoute('guessing', './games/guess');
+//addRoute('bench', './players/say');
+//addRoute('waiting-for-round', './players/say');
+//addRoute('passed', './players/say');
+//addRoute('lost', './players/say');
+//addRoute('invited-to-new-game', './players/invited-to-new-game');
 
-let Router = function(player, message, game_number) {
-  let state = player.state;
-  if ( player.blacklist ) {
-    console.debug('route: blackhole');
-    return Promise.method(require('./players/blackhole'))(player, message, game_number);
-  }
-  for ( let i=0,l=routes.length; i<l; i++ ) {
-    let route = routes[i];
-    if ( route.regex.test(state) ) {
-      //Player.logLastActivity(player, game_number);
-      //console.debug('player', player.state, player.number, game_number);
-      console.debug('route: '+route.path);
-      const result = route.fn(player, message, game_number);
-      //console.debug('result', result);
-      return result;
+let Router = function(from, message, to) {
+  return Player.getOne({
+    from: from,
+    to: to
+  }).then((player) => {
+    if ( player ) {
+      // this means we are in a game
+    } else {
+      return User.getOne({
+        from: from
+      }).then((user) => {
+        // if user exists, we are being onboarded
+        if ( user ) {
+          if ( ! user.confirmed ) {
+            return require('./users/confirm')(user, message, to);
+          }
+          player = {
+            state: 'uncreated',
+            user_id: user.id,
+            to: to,
+            //number: user.from,
+            user: user
+          };
+        } else {
+          return require('./users/create')(from, message, to);
+        }
+      });
     }
-  }
-  throw new Error('state not found: ' + state + ", player: " + player.id);
+  });
 };
 
 module.exports = Router;

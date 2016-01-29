@@ -30,6 +30,9 @@ describe('Find', function() {
       res.body[0].should.have.property('created');
       res.body[0].should.have.property('nickname');
       res.body[0].should.have.property('user_id');
+      res.body[0].should.have.property('archived');
+      res.body[0].should.have.property('blacklist');
+      res.body[0].should.have.property('user_archived');
     });
   });
 
@@ -78,6 +81,9 @@ describe('Find', function() {
           res.body.avatar.should.equal(player.avatar);
           new Date(res.body.created).should.equalDate(player.created);
           res.body.user_id.should.equal(player.user_id);
+          res.body.should.have.property('archived');
+          res.body.should.have.property('blacklist');
+          res.body.should.have.property('user_archived');
         });
       });
     });

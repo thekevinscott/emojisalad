@@ -107,6 +107,7 @@ describe('Create', function() {
         res.body.should.have.property('from', from);
         res.body.should.have.property('nickname');
         res.body.should.have.property('avatar');
+        res.body.should.have.property('blacklist');
         res.body.should.have.property('user_id', user_id);
       });
     });
