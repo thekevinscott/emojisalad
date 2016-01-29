@@ -78,9 +78,9 @@ describe('Find', function() {
           res.body.from.should.equal(player.from);
           res.body.to.should.equal(player.to);
           res.body.nickname.should.equal(player.nickname);
-          res.body.avatar.should.equal(player.avatar);
           new Date(res.body.created).should.equalDate(player.created);
           res.body.user_id.should.equal(player.user_id);
+          res.body.should.have.property('avatar');
           res.body.should.have.property('archived');
           res.body.should.have.property('blacklist');
           res.body.should.have.property('user_archived');

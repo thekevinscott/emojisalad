@@ -16,28 +16,28 @@ const User = {
       nickname = params.nickname;
     }
 
-    return this.getRandomAvatar().then((avatar) => {
-      let query = squel
-                  .insert({ autoQuoteFieldNames: true })
-                  .into('users')
-                  .setFields({
-                    created: squel.fval('NOW(3)'),
-                    last_activity: squel.fval('NOW(3)'),
-                    from: params.from,
-                    avatar: avatar,
-                    nickname: nickname,
-                    maximum_games: default_maximum_games
-                  });
-      return db.query(query).then((result) => {
+    //return this.getRandomAvatar().then((avatar) => {
+    let query = squel
+                .insert({ autoQuoteFieldNames: true })
+                .into('users')
+                .setFields({
+                  created: squel.fval('NOW(3)'),
+                  last_activity: squel.fval('NOW(3)'),
+                  from: params.from,
+                  //avatar: avatar,
+                  nickname: nickname,
+                  maximum_games: default_maximum_games
+                });
+    return db.query(query).then((result) => {
 
-        if ( result && result.insertId ) {
-          return User.findOne(result.insertId);
-        } else {
-          console.error(query.toString());
-          throw "There was an error inserting user";
-        }
-      });
+      if ( result && result.insertId ) {
+        return User.findOne(result.insertId);
+      } else {
+        console.error(query.toString());
+        throw "There was an error inserting user";
+      }
     });
+    //});
   },
   update: (user, params) => {
     let whitelist = [

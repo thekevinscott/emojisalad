@@ -80,8 +80,8 @@ describe('Find', function() {
           res.body.id.should.equal(user.id);
           res.body.from.should.equal(user.from);
           res.body.nickname.should.equal(user.nickname);
-          res.body.avatar.should.equal(user.avatar);
           res.body.should.have.property('blacklist');
+          res.body.should.have.property('avatar');
           res.body.should.have.property('created');
         });
       });

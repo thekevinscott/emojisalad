@@ -45,8 +45,8 @@ describe('Update', function() {
         res.statusCode.should.equal(200);
         res.body.id.should.equal(user.id);
         res.body.from.should.equal(user.from);
-        res.body.avatar.should.equal(user.avatar);
         res.body.nickname.should.equal(nickname);
+        res.body.should.have.property('avatar');
       });
     }).then(() => {
       return User.findOne({ from: from });
