@@ -17,7 +17,7 @@ console.debug = function() {
 };
 
 // start up the server
-require('../server');
+require('server');
 
 //require(__dirname + '/unit-tests/models/game');
 require('./routes/users');

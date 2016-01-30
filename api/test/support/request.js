@@ -1,4 +1,5 @@
-const request = require('supertest')(`http://localhost:${process.env.PORT}`);
+const port = process.env.PORT || 1338;
+const request = require('supertest')(`http://localhost:${port}`);
                                      
 const _ = require('lodash');
 

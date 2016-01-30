@@ -461,7 +461,7 @@ let Game = {
       throw "You must provide an array of users";
     } else if ( getValidUsers(users).length !== users.length ) {
       // check to see if every user has a valid ID
-      console.error('invalid parsed ids');
+      //console.error('invalid parsed ids');
       throw "You must provide a valid user";
     } else {
       // check that every user is valid
@@ -469,7 +469,7 @@ let Game = {
         return User.findOne(user.id);
       })).then((rows) => {
         if ( getValidUsers(rows).length !== users.length ) {
-          console.error('invalid queried ids');
+          //console.error('invalid queried ids');
           throw "You must provide a valid user";
         }
       }).then(() => {

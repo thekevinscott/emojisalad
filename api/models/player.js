@@ -187,7 +187,6 @@ let Player = {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 
-    console.log(query.toString());
     return db.query(query);
   },
   
