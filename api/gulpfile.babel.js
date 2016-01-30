@@ -67,7 +67,7 @@ gulp.task('update-fixtures', (cb) => {
   ];
   return shared.pullDB(production, tmp, tables).then((file) => {
     return shared.exec(['rm -f',sql_file].join(' ')).then(() => {
-      return shared.exec(['mv',file,database_fixture].join(' '));
+      return shared.exec(['mv',file,sql_file].join(' '));
     });
   }).done(() => {
     console.log('done, remove tmp file', tmp);
