@@ -31,7 +31,7 @@ function getConnectionString(config) {
   return [
     '-u',
     config.user,
-    '-p\'' + config.password+'\'',
+    '-p"' + config.password+'"',
     '-h',
     config.host,
     config.database,
@@ -39,12 +39,9 @@ function getConnectionString(config) {
 }
 
 function pullProductionDB() {
-
   process.env.ENVIRONMENT = 'production';
   let config = require('../config/db').production;
-  //let config = require('db').config;
   let tmp = 'tmp/';
-  //let destination = tmp+'production.sql.gz';
   let file = 'db_backup.sql';
   let zippedFile = 'db_backup.sql.gz';
 
@@ -207,6 +204,7 @@ function resetTestingDB() {
   }).then(function() {
   });
 }
+
 gulp.task('test', function() {
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';

@@ -14,8 +14,11 @@ describe('Find', function() {
     game_number = '+15559999999';
     return post({ url: '/users', data: { from: from, nickname: nickname }}).then((res) => {
       user_id = res.body.id;
-      const player_params = { user_id: user_id, to: game_number };
-      return post({ url: '/players', data: player_params});
+      const payload = [{ id: user_id }];
+      return post({
+        url: '/games',
+        data: payload
+      })
     });
   });
 

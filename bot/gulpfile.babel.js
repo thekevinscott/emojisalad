@@ -196,37 +196,37 @@ function resetTestingDB() {
                   //{ id: 5, phrase_id: 2, clue: 'CLARICE' },
                 //]);
     //return db.api.query(query.toString());
-  }).then(function() {
-    const promises = ['players', 'users'].map(function(key) {
+  //}).then(function() {
+    const promises = ['games', 'players', 'users'].map(function(key) {
       let query = squel
                   .delete()
                   .from(key);
       return db.query(query.toString());
     });
     return Promise.all(promises);
-  }).then(function() {
+  //}).then(function() {
   });
 }
 gulp.task('test', function() {
   process.env.ENVIRONMENT = 'test';
   process.env.PORT = '5005';
-  //return resetTestingDB().then(function() {
-  process.env.DEBUG = util.env.debug || false;
-  return gulp.src(['test/index.js'], { read: false })
-  .pipe(mocha({
-    timeout: 10000,
-    slow: 500,
-    bail: true
-  }))
-  .on('error', function(data) {
-    console.error(data.message);
+  return resetTestingDB().then(function() {
+    process.env.DEBUG = util.env.debug || false;
+    return gulp.src(['test/index.js'], { read: false })
+    .pipe(mocha({
+      timeout: 10000,
+      slow: 500,
+      bail: true
+    }))
+    .on('error', function(data) {
+      console.error(data.message);
+      process.exit(1);
+    })
+    .once('end', function() {
+      process.exit();
+    });
+  }).catch(function(err) {
+    console.error(err);
     process.exit(1);
-  })
-  .once('end', function() {
-    process.exit();
   });
-  //}).catch(function(err) {
-    //console.error(err);
-    //process.exit(1);
-  //});
 });

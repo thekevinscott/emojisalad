@@ -37,9 +37,11 @@ module.exports = [
 //playersRouter.route('/:player_id').put(update);
 
 function find(req) {
+  console.log('player find', req.query);
   return Player.find(req.query);
 }
 function findOne(req) {
+  console.log('player find one');
   const player_id = req.params.player_id;
   if ( ! player_id ) {
     throw "No player ID provided, how is that possible?";

@@ -1,43 +1,27 @@
 'use strict';
 const mysql = require('mysql');
 const Promise = require('bluebird');
-const squel = require('squel');
 
 Promise.promisifyAll(mysql);
 Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
-let pools = {};
 
-if ( ! process.env.ENVIRONMENT ) {
-  process.env.ENVIRONMENT = 'development';
-  //throw "You must specify a DB environment";
-}
+function getPool(config) {
 
-let config = require('../config/db');
-
-module.exports = getPool(process.env.ENVIRONMENT);
-//module.exports.api = getPool('api');
-//module.exports.test = getPool('test');
-
-function getPool(key) {
-  if ( ! pools[key] ) {
-    const config_params = config[key];
-
-    pools[key] = mysql.createPool({
-      host     : config_params.host,
-      user     : config_params.user,
-      password : config_params.password,
-      charset  : config_params.charset,
-      database : config_params.database,
-      connectionLimit: 10,
-    });
-  }
+  mysql.createPool({
+    host     : config.host,
+    user     : config.user,
+    password : config.password,
+    charset  : config.charset,
+    database : config.database,
+    connectionLimit: 10,
+  });
 
   function getConnection() {
     return pools[key].getConnectionAsync();
   }
 
-  return {
+  const db = {
     query: function(sql) {
       return getConnection().then(function(conn) {
         let args = [];
@@ -77,3 +61,17 @@ function getPool(key) {
     }
   };
 }
+
+let pools = new Map();
+
+function getDB(config) {
+  if (!pools.get(config)) {
+    console.log('pool does not exist for ',config.host);
+    pools.set(config, getPool(config));
+  } else {
+    console.log('pool already exists for ',config.host);
+  }
+  return pools.get(config);
+}
+
+module.exports = getDB;

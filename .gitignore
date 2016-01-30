@@ -19,3 +19,4 @@ emojinaryfriend-db.sublime-workspace
 .eslintrc
 */config/db.js
 .deployed
+config/database

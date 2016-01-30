@@ -27,11 +27,14 @@ function addRoute(path, fn_path) {
 //addRoute('invited-to-new-game', './players/invited-to-new-game');
 
 let Router = function(from, message, to) {
+  //console.log('***** 1');
   return Player.getOne({
     from: from,
     to: to
   }).then((player) => {
+    //console.log('***** 2', player);
     if ( player ) {
+      //console.log('***** 3');
       // this means we are in a game
     } else {
       // this means we are either brand new,

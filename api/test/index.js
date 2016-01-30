@@ -22,4 +22,5 @@ require('../server');
 //require(__dirname + '/unit-tests/models/game');
 require('./routes/users');
 require('./routes/games');
+require('./routes/players');
 require('./routes/emoji');
