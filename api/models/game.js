@@ -423,10 +423,20 @@ let Game = {
   find: (params = {}) => {
     let query = squel
                 .select()
+                .field('g.id')
+                .field('g.created')
+                
                 .from('games', 'g');
 
     if ( params.id ) {
       query = query.where('g.id=?',params.id);
+    }
+
+    if ( params.player_id ) {
+      query = query
+              .field('p.id','player_id')
+              .left_join('players', 'p', 'p.game_id=g.id')
+              .where('p.id=?',params.player_id);
     }
 
     return db.query(query).then((games) => {
@@ -457,6 +467,7 @@ let Game = {
     function getValidUsers(users) {
       return users.filter(user => parseInt(user.id));
     }
+    //console.log('1', users);
     if ( !_.isArray(users) ) {
       throw "You must provide an array of users";
     } else if ( getValidUsers(users).length !== users.length ) {
@@ -468,6 +479,7 @@ let Game = {
       return Promise.all(users.map((user) => {
         return User.findOne(user.id);
       })).then((rows) => {
+        //console.log('rows', rows);
         if ( getValidUsers(rows).length !== users.length ) {
           //console.error('invalid queried ids');
           throw "You must provide a valid user";
@@ -482,6 +494,7 @@ let Game = {
                       last_activity: squel.fval('NOW(3)')
                     });
 
+                    //console.log(query.toString());
         return db.query(query);
       }).then(function(result) {
         if ( ! result || ! result.insertId ) {

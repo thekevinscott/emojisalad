@@ -106,12 +106,13 @@ DROP TABLE IF EXISTS `invites`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invites` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `invited_player_id` int(11) DEFAULT NULL,
-  `inviter_player_id` int(11) DEFAULT NULL,
+  `game_id` int(11) unsigned NOT NULL,
+  `invited_user_id` int(11) DEFAULT NULL,
+  `inviter_user_id` int(11) DEFAULT NULL,
   `used` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `unique-invites` (`invited_player_id`,`inviter_player_id`)
+  KEY `unique-invites` (`invited_user_id`,`inviter_user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -226,7 +227,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-30 16:49:41
+-- Dump completed on 2016-01-30 18:08:35
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinary
@@ -278,4 +279,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-30 16:49:43
+-- Dump completed on 2016-01-30 18:08:36

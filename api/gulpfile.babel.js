@@ -91,19 +91,18 @@ gulp.task('test', function(cb) {
       slow: 500,
       bail: true
     }))
-    .on('error', function(data) {
-      cb(err);
+    .on('error', (data) => {
       console.error(data.message);
       process.exit(1);
     })
-    .once('end', function() {
-      cb();
+    .once('end', () => {
       process.exit();
     });
-  }).catch(function(err) {
-    cb(err);
+  }).catch((err) => {
     console.error(err);
     process.exit(1);
+  }).done(() => {
+    cb();
   });
 });
 

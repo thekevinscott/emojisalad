@@ -27,7 +27,7 @@ module.exports = [
     //method: 'delete',
     //fn: remove 
   //},
-];
+].concat(require('./invites'));
 
 function create(req) {
   return Game.create(req.body);

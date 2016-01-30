@@ -24,3 +24,4 @@ require('./routes/users');
 require('./routes/games');
 require('./routes/players');
 require('./routes/emoji');
+require('./routes/invites');

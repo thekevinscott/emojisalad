@@ -8,6 +8,7 @@ const games = require('routes/games');
 const game_number = '+15559999999';
 describe('Find', function() {
   const from = Math.random();
+  let player_id;
   before(function() {
     return User.create({ from: from }).then((user) => {
       const payload = [{ id: user.id }];
@@ -15,6 +16,8 @@ describe('Find', function() {
         url: '/games',
         data: payload
       })
+    }).then((res) => {
+      player_id = res.body.players[0].id;
     });
   });
 
@@ -153,6 +156,22 @@ describe('Find', function() {
       res.body[0].players[0].should.have.property('id');
       res.body[0].players[0].should.have.property('avatar');
       res.body[0].players[0].should.have.property('user_id');
+    });
+  });
+
+  it('should return a game based off of a player id', function() {
+
+    return Game.find({ player_id: player_id }).then((games) => {
+      let game = games[0];
+      return get({ url: `/games/`, data: { player_id: player_id }}).then((res) => {
+        res.statusCode.should.equal(200);
+        let body = res.body[0];
+        //console.log(body, game);
+        body.id.should.equal(game.id);
+        body.players[0].id.should.equal(game.players[0].id);
+        //body.rounds[0].should.equal(game.rounds[0]);
+        new Date(body.created).should.equalDate(game.created);
+      });
     });
   });
 

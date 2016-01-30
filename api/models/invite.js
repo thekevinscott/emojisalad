@@ -6,7 +6,85 @@ const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
 
-let Invite = {
+const Invite = {
+  create: (params) => {
+    console.debug('invite create 1', params);
+    return User.findOne(params.inviter_id).then((user) => {
+      if ( user && user.id ) {
+        return User.findOne({ from: params.invited });
+      } else {
+        throw "You must provide a valid inviter_id";
+      }
+    }).then(() => {
+      return Promise.all(params.invites.map((invite) => {
+        return User.create({ from: invite });
+      }));
+      //console.debug('invite create 2');
+      //if ( user && user.blacklist ) {
+        //console.debug('invite create 3');
+        //throw new Error(3);
+      //} else if ( ! user ) {
+        //console.debug('invite create 4');
+        //return User.create({ from: params.invited });
+        //initial_state = 'waiting-for-confirmation';
+      //}
+    }).then((invited_user) => {
+
+      //console.debug('invite create 5');
+      //let invite_exists = squel
+                          //.select()
+                          //.from('invites','i')
+                          //.left_join('players', 'p', 'p.id=i.invited_player_id')
+                          //.left_join('users', 'u', 'u.id=p.user_id')
+                          //.where('u.from=?', number)
+                          //.where('i.used=0')
+                          //.where('inviter_player_id=?',inviter.id);
+
+      //console.debug('invite create 6');
+      //return db.query(invite_exists);
+    //}).then((invites) => {
+      //if ( invites.length ) {
+        //throw new Error(2);
+      //}
+      //console.debug('invite create 7');
+
+      //return User.getPlayersNum(user);
+    //}).then((players) => {
+      //if ( players >= user.maximum_games) {
+        //throw new Error(12);
+      //}
+
+      //console.debug('invite create 8');
+      //return Player.create({ from: number, user: user, initial_state: initial_state });
+    //}).then((invited_player) => {
+      return Game.findOne({ player_id: params.inviter_id }).then((game) => {
+      
+        console.debug('invite create 9');
+        let query = squel
+                    .insert()
+                    .into('invites')
+                    .set('game_id', game.id)
+                    .set('invited_id', invited_user.id)
+                    .set('inviter_id', params.inviter_id);
+        
+        console.debug(query.toString());
+        return db.query(query);
+      });
+    }).then((rows) => {
+
+      if ( rows && rows.insertId ) {
+        return {
+          id: rows.insertId,
+          invited_player: invited_player,
+          inviting_player: inviter
+        };
+      } else {
+        console.error(query.toString());
+        throw "There was an error inserting invite";
+      }
+    });
+  },
+  /*
   create: Promise.coroutine(function* (inviter, value) {
     console.debug('invite create 1');
     let numbers = yield Phone.parse([value]);
@@ -75,6 +153,7 @@ let Invite = {
       throw "There was an error inserting invite";
     }
   }),
+  */
   getInvite: Promise.coroutine(function* (inviter) {
     let query = squel
                 .select()
