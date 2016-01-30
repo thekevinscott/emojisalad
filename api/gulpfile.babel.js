@@ -82,7 +82,7 @@ gulp.task('update-fixtures', (cb) => {
  * Seed the test suite from the saved SQL file,
  * and some seed commands in here, then run the test suite
  */
-gulp.task('test', function() {
+gulp.task('test', function(cb) {
   return seed().then(() => {
     process.env.DEBUG = util.env.debug || false;
     return gulp.src(['test/index.js'], { read: false })
@@ -92,13 +92,16 @@ gulp.task('test', function() {
       bail: true
     }))
     .on('error', function(data) {
+      cb(err);
       console.error(data.message);
       process.exit(1);
     })
     .once('end', function() {
+      cb();
       process.exit();
     });
   }).catch(function(err) {
+    cb(err);
     console.error(err);
     process.exit(1);
   });
