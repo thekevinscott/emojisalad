@@ -1,3 +1,10 @@
+/****
+ *
+ * Gulp file for the Bot
+ *
+ *
+ */
+
 'use strict';
 // set require path
 

@@ -18,5 +18,3 @@ console.debug = function() {
 
 require(__dirname + '/unit-tests/store');
 require(__dirname + '/unit-tests/lib');
-//require(__dirname + '/unit-tests/models/game');
-require('./integration/suite');
