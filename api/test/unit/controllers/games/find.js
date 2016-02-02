@@ -10,7 +10,7 @@ describe('Find', function() {
   let player_id;
   before(function() {
     return User.create({ from: from }).then((user) => {
-      const payload = [{ id: user.id }];
+      const payload = { users: [{ id: user.id }] };
       return post({
         url: '/games',
         data: payload

@@ -13,7 +13,7 @@ describe('Find', function() {
     game_number = '+15551111111';
     return post({ url: '/users', data: { from: from, nickname: nickname }}).then((res) => {
       user_id = res.body.id;
-      const payload = [{ id: user_id }];
+      const payload = { users: [{ id: user_id }] };
       return post({
         url: '/games',
         data: payload

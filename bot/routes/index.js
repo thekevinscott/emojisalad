@@ -4,37 +4,14 @@
 let Promise = require('bluebird');
 let Player = require('models/player');
 let User = require('models/user');
-let routes = [];
-function addRoute(path, fn_path) {
-  routes.push({
-    regex: new RegExp(path),
-    fn: Promise.method(require(fn_path)),
-    path: fn_path
-  });
-}
-//addRoute('waiting-for-nickname', './players/nickname');
-//addRoute('waiting-for-avatar', './players/avatar');
-//addRoute('waiting-for-invites', './players/invite');
-//addRoute('do-not-contact', './players/blackhole');
-//addRoute('waiting-for-submission', './games/submission');
-//addRoute('ready-for-game', './players/say');
-//addRoute('submitted', './players/submitted');
-//addRoute('guessing', './games/guess');
-//addRoute('bench', './players/say');
-//addRoute('waiting-for-round', './players/say');
-//addRoute('passed', './players/say');
-//addRoute('lost', './players/say');
-//addRoute('invited-to-new-game', './players/invited-to-new-game');
 
 let Router = function(from, message, to) {
-  //console.log('***** 1');
   return Player.getOne({
     from: from,
     to: to
   }).then((player) => {
-    //console.log('***** 2', player);
+    console.log('**** player', player);
     if ( player ) {
-      //console.log('***** 3');
       // this means we are in a game
     } else {
       // this means we are either brand new,

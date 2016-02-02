@@ -36,9 +36,11 @@ module.exports = (user, input) => {
             avatar: input
           }).then((user) => {
             user.to = to;
+            console.log('create game');
             return Game.create([user]);
             //return startGame(user, input, user.to);
           }).then(() => {
+            console.log('did it');
             return [{
               player: user,
               key: 'intro_4',

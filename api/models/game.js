@@ -393,8 +393,9 @@ let Game = {
     function getValidUsers(users) {
       return users.filter(user => parseInt(user.id));
     }
-    //console.log('1', users);
+    //console.log('create game with users', users);
     if ( !_.isArray(users) ) {
+      console.log('no dice, kids 1');
       throw "You must provide an array of users";
     } else if ( getValidUsers(users).length !== users.length ) {
       // check to see if every user has a valid ID

@@ -20,7 +20,7 @@ describe('Create', function() {
     it('should reject if not given a valid user object', function() {
       return post({
         url: '/games',
-        data: [ {foo: 'bar'} ]
+        data: { users: [ {foo: 'bar'} ] }
       }).then((res) => {
         res.statusCode.should.equal(400);
         res.error.text.should.contain('You must provide a valid user');
@@ -30,7 +30,7 @@ describe('Create', function() {
     it('should reject an invalid user id', function() {
       return post({
         url: '/games',
-        data: [{ id: 'bar' }]
+        data: { users: [{ id: 'bar' }] }
       }).then((res) => {
         res.statusCode.should.equal(400);
         res.error.text.should.contain('You must provide a valid user');
@@ -40,7 +40,7 @@ describe('Create', function() {
     it('should reject a non-existent user id', function() {
       return post({
         url: '/games',
-        data: [{ id: 123456789 }]
+        data: { users: [{ id: 123456789 }] }
       }).then((res) => {
         res.statusCode.should.equal(400);
         res.error.text.should.contain('You must provide a valid user');
@@ -53,7 +53,7 @@ describe('Create', function() {
       const from = Math.random();
 
       return User.create({ from: from }).then((user) => {
-        const payload = [{ id: user.id }];
+        const payload = { users: [{ id: user.id }] };
 
         return Game.find().then((games) => {
           const len = games.length;
@@ -74,7 +74,7 @@ describe('Create', function() {
       const from = Math.random();
 
       return User.create({ from: from }).then((user) => {
-        const payload = [{ id: user.id }];
+        const payload = { users: [{ id: user.id }] };
 
         return Player.find().then((players) => {
           const len = players.length;
@@ -94,7 +94,7 @@ describe('Create', function() {
     it('should create a new player with a default to if none is provided', function() {
       const from = Math.random();
       return User.create({ from: from }).then((user) => {
-        const payload = [{ id: user.id }];
+        const payload = { users: [{ id: user.id }] };
 
         return Player.find().then((players) => {
           const len = players.length;
@@ -119,7 +119,7 @@ describe('Create', function() {
     it('should create a new player with a provided to if one is provided', function() {
       const from = Math.random();
       return User.create({ from: from }).then((user) => {
-        const payload = [{ id: user.id, to: game_number }];
+        const payload = { users: [{ id: user.id, to: game_number }] };
 
         return Player.find().then((players) => {
           const len = players.length;
@@ -145,7 +145,7 @@ describe('Create', function() {
       const from = Math.random();
 
       return User.create({ from: from }).then((user) => {
-        const payload = [{ id: user.id, to: game_number }];
+        const payload = { users: [{ id: user.id, to: game_number }] };
 
         return post({
           url: '/games',

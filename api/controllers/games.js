@@ -37,7 +37,13 @@ module.exports = [
 ]);
 
 function create(req) {
-  return Game.create(req.body);
+  const users = req.body.users;
+  //console.log('users', req.body);
+  if ( ! users || !_.isArray(users) ) {
+    console.log('no dice, kids 3');
+    throw "You must provide an array of users";
+  }
+  return Game.create(users);
 }
 function find(req) {
   return Game.find(req.query);
@@ -59,7 +65,9 @@ function add(req) {
     throw "Invalid game ID provided";
   }
   const users = req.body.users;
+  //console.log('users', req.body);
   if ( ! users || !_.isArray(users) ) {
+    console.log('no dice, kids 2');
     throw "You must provide an array of users";
   }
   return Game.add(game_id, users);

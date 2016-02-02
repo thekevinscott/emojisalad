@@ -80,6 +80,7 @@ describe('Inviting', function() {
     it.only('should be able to invite someone', () => {
       let player = getPlayers(1)[0];
 
+      console.log('send out an invite');
       return check(
         // lose the intro of the number for testing
         { player: inviter, msg: 'invite '+player.number },

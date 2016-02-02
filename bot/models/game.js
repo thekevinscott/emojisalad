@@ -347,11 +347,13 @@ let Game = {
     }.bind(this)));
   },
   create: (params) => {
+    console.log('params', params);
     return request({
       url: `${api}games`,
       method: 'POST',
-      form: params
+      form: { users: params }
     }).then((response) => {
+      console.log('response', response);
       if ( response.id ) {
         return response;
       } else {

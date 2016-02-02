@@ -132,7 +132,7 @@ function createUser(nickname) {
     const user = res.body;
     return post({
       url: '/games',
-      data: [{ id: user.id }]
+      data: { users: [{ id: user.id }] }
     }).then(() => {
       return user;
     });
