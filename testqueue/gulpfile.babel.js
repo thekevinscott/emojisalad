@@ -22,7 +22,7 @@ const sql_file = 'fixtures.sql';
  */
 function seed() {
   process.env.ENVIRONMENT = 'test';
-  const test = require('./config/database/test');
+  const test = require('./config/db');
   const db = require('./db');
 
   return shared.importDB(test, sql_file).then(() => {
@@ -55,7 +55,7 @@ gulp.task('server', () => {
       'DEBUG': 'true',
       'PORT': '5999',
     }
-  })
+  });
 });
 
 gulp.task('default', () => {

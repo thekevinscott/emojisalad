@@ -114,8 +114,20 @@ gulp.task('seed', (cb) => {
   });
 });
 
+gulp.task('server', () => {
+  nodemon({
+    script: 'index.js',
+    env: {
+      'ENVIRONMENT': 'development',
+      'DEBUG': 'true',
+      'PORT': '1338',
+    }
+  })
+});
+
 gulp.task('default', () => {
   console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');
   console.log('* test - Reimports the local database file, seeds with data, and runs the test suite');
   console.log('* seed - Reimports the local database file and seeds with data');
+  console.log('* server - Spins up the server with default arguments');
 });

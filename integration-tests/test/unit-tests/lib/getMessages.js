@@ -59,8 +59,4 @@ describe('Get Messages', function() {
       r.should.deep.equal(resp);
     });
   });
-
-  it('should test the multiple queues stuff', () => {
-    throw '1';
-  });
 });
