@@ -1,0 +1,26 @@
+{
+  "name": "smsqueue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "app-module-path": "^1.0.5",
+    "babel-register": "^6.3.13",
+    "bluebird": "^3.1.1",
+    "lodash": "^3.10.1",
+    "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
+    "yargs": "^3.32.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-nodemon": "^2.0.6",
+    "ngrok": "^0.2.2",
+    "squel": "^4.2.3",
+    "yargs": "^3.32.0"
+  }
+}
