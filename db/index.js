@@ -7,8 +7,7 @@ Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
 
 function getPool(config) {
-
-  mysql.createPool({
+  let pool = mysql.createPool({
     host     : config.host,
     user     : config.user,
     password : config.password,
@@ -18,10 +17,10 @@ function getPool(config) {
   });
 
   function getConnection() {
-    return pools[key].getConnectionAsync();
+    return pool.getConnectionAsync();
   }
 
-  const db = {
+  return {
     query: function(sql) {
       return getConnection().then(function(conn) {
         let args = [];
@@ -66,12 +65,13 @@ let pools = new Map();
 
 function getDB(config) {
   if (!pools.get(config)) {
-    console.log('pool does not exist for ',config.host);
+    console.log('pool does not exist for ',config.database);
     pools.set(config, getPool(config));
   } else {
-    console.log('pool already exists for ',config.host);
+    console.log('pool already exists for ',config.database);
   }
-  return pools.get(config);
+  let pool = pools.get(config);
+  return pool;
 }
 
 module.exports = getDB;

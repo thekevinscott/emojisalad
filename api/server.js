@@ -17,4 +17,4 @@ app.listen(app.get('port'), function() {
 
 app.use(pmx.expressErrorHandler());
 
-require('./routes')(app);
+require('./controllers')(app);

@@ -3,7 +3,6 @@ const post = require('test/support/request').post;
 const get = require('test/support/request').get;
 
 const Player = require('models/player');
-const players = require('routes/players');
 let game_number;
 let user_id;
 const from = ''+Math.random();
@@ -11,7 +10,7 @@ const nickname = ''+Math.random();
 
 describe('Find', function() {
   before(function() {
-    game_number = '+15559999999';
+    game_number = '+15551111111';
     return post({ url: '/users', data: { from: from, nickname: nickname }}).then((res) => {
       user_id = res.body.id;
       const payload = [{ id: user_id }];

@@ -299,113 +299,33 @@ let Game = {
                 });
     return db.query(query);
   },
-  /*
-  add: function(game, players) {
-    return Promise.all(players.map(function(player) {
-
-      let row = {
-        game_id: game.id,
-        player_id: player.id,
-      };
-
-      let query = squel
-                  .insert()
-                  .into('game_players')
-                  .setFields(row);
-
-      return db.query(query.toString()).then(function(rows) {
-        return {
-          id: rows.insertId
-        };
-      }).then(function() {
-        //if ( game.state && game.state !== 'waiting-for-players' ) {
-          // game is in progress
-        this.addToBattingOrder(game, player).then(function() {
-        }).catch(function(err) {
-          console.error('error adding player ot batting order',  player, err);
-        });
-        //}
-      }.bind(this));
-    }.bind(this)));
-  },
-  */
-  /*
-  create: function() {
-    let state_id = squel
-                  .select()
-                  .field('id')
-                  .from('game_states')
-                  .where('state=?','pending');
-
-    let query = squel
-                .insert()
-                .into('games', 'g')
-                .setFields({
-                  state_id: state_id,
-                  guesses: default_guesses,
-                  clues_allowed: default_clues_allowed,
-                  created: squel.fval('NOW(3)'),
-                  last_activity: squel.fval('NOW(3)')
-                });
-    let default_scores = {
-      'pass': -1,
-      'win-submitter-1': 3,
-      'win-guesser-1': 2,
-      'win-submitter-2': 2,
-      'win-guesser-2': 1
-    };
-
-    return db.query(query.toString()).then(function(rows) {
-      let game_score_query = squel
-                             .insert({
-                               autoQuoteFieldNames: true
-                             })
-                             .into('game_scores', 's')
-                             .setFieldsRows(Object.keys(default_scores).map(function(key) {
-                               return {
-                                 game_id: rows.insertId,
-                                 score: default_scores[key],
-                                 key: key
-                               };
-                             }));
-      return db.query(game_score_query.toString()).then(function() {
-        return {
-          id: rows.insertId
-        };
-      });
-    });
-  },
-  */
   add: (game, users) => {
-    return Promise.all(users.map((user) => {
-      let player_params = {
-        game_id: game.id,
-        user_id: user.id,
-      };
-      if ( user.to ) {
-        player_params.to = user.to;
+    return new Promise((resolve) => {
+      resolve();
+    }).then(() => {
+      if ( !game.id ) {
+        return Game.findOne(game);
+      } else {
+        return Game.findOne(game.id);
       }
-      return Player.create(player_params);
-    })).then((players) => {
-      return {
-        id: game.id,
-        players: players
-      };
-      /*
-      return db.query(query.toString()).then(function(rows) {
-        return {
-          id: rows.insertId
+    }).then((game) => {
+      //console.log('add user to game', game.id, users);
+      return Promise.all(users.map((user) => {
+        let player_params = {
+          game_id: game.id,
+          user_id: user.id,
         };
-      }).then(function() {
-        //if ( game.state && game.state !== 'waiting-for-players' ) {
-          // game is in progress
-        this.addToBattingOrder(game, player).then(function() {
-        }).catch(function(err) {
-          console.error('error adding player ot batting order',  player, err);
+        if ( user.to ) {
+          player_params.to = user.to;
+        }
+        return Player.create(player_params).catch((err) => {
+          //console.log('player error', err);
+          return null;
         });
-        //}
-      }.bind(this));
-      */
+      })).then((players) => {
+        game.players = game.players.concat(players.filter(player => player));
+        return game;
+      });
     });
   },
   findOne: (params) => {
@@ -437,8 +357,14 @@ let Game = {
               .field('p.id','player_id')
               .left_join('players', 'p', 'p.game_id=g.id')
               .where('p.id=?',params.player_id);
+    } else if ( params.player_ids ) {
+      query = query
+              .field('p.id','player_id')
+              .left_join('players', 'p', 'p.game_id=g.id')
+              .where('p.id IN ?',params.player_ids);
     }
 
+    //console.log(query.toString());
     return db.query(query).then((games) => {
       if ( games && games.length ) {
         return Player.find({ game_ids: games.map(game => game.id) }).then((players) => {
@@ -477,12 +403,22 @@ let Game = {
     } else {
       // check that every user is valid
       return Promise.all(users.map((user) => {
-        return User.findOne(user.id);
+        return User.findOne(user.id).then((result) => {
+          result.to = user.to;
+          return result;
+        });
       })).then((rows) => {
-        //console.log('rows', rows);
         if ( getValidUsers(rows).length !== users.length ) {
           //console.error('invalid queried ids');
           throw "You must provide a valid user";
+        } else {
+          return rows.map((user) => {
+            return user.players.map((player) => {
+              if ( player.to === user.to ) {
+                throw "A player already exists for this game number";
+              }
+            });
+          });
         }
       }).then(() => {
         let query = squel
@@ -509,71 +445,7 @@ let Game = {
         return Game.add(game, users);
       });
     }
-
   },
-    /*
-  updateScore: function(game, player, type) {
-    let updates = [];
-    if ( type === 'win-round' ) {
-      let score_index = 1;
-      game.players.map(function(game_player) {
-        if ( player.id === game_player.id ) {
-          score_index += game_player.guesses;
-        }
-      });
-
-      updates.push({
-        player_id: player.id,
-        score: squel.select()
-               .field('score').from('game_scores')
-               .where('game_id=?',game.id)
-               .where('`key`=?','win-guesser-'+score_index)
-      });
-      updates.push({
-        player_id: game.round.submitter.id,
-        score: squel.select()
-               .field('score').from('game_scores')
-               .where('game_id=?',game.id)
-               .where('`key`=?','win-submitter-'+score_index)
-      });
-    } else if ( type === 'pass' ) {
-      updates.push({
-        player_id: player.id,
-        score: squel.select()
-               .field('score').from('game_scores')
-               .where('game_id=?',game.id)
-               .where('`key`=?','pass')
-      });
-    }
-
-    return Promise.all(updates.map(function(data) {
-      let query = squel
-                  .update()
-                  .table('game_players')
-                  .set('score = score + ('+data.score+')')
-                  .where('player_id=?',data.player_id)
-                  .where('game_id=?',game.id);
-
-      return db.query(query);
-    })).then(function() {
-      return this.get({ id: game.id });
-    }.bind(this));
-  },
-  */
- /*
-  updateDefaultScores: function(game, scores) {
-    return Promise.all(Object.keys(scores).map(function(key) {
-      let query = squel
-                  .update()
-                  .table('game_scores')
-                  .set('score='+scores[key])
-                  .where('game_id=?',game.id)
-                  .where('`key`=?',key);
-
-      return db.query(query.toString());
-    }));
-  }
-  */
 };
 
 module.exports = Game;

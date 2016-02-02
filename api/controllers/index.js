@@ -8,9 +8,11 @@ module.exports = function(app) {
     'users',
     'emoji',
     'players',
+    'invites',
   ].map((key) => {
     const router = express.Router({ mergeParams: true });
     require(`./${key}`).map((route) => {
+      //console.log('route', key, route.path);
       router.route(route.path)[route.method]((req, res) => {
         //const data = ( route.method === 'get' ) ? req.query : req.body;
         try {

@@ -3,7 +3,6 @@ const post = require('test/support/request').post;
 const put = require('test/support/request').put;
 
 const Player = require('models/player');
-const players = require('routes/players');
 let game_number;
 const from = ''+Math.random();
 const nickname = ''+Math.random();

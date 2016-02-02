@@ -5,155 +5,184 @@ const Promise = require('bluebird');
 const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
+const Game = require('./game');
+const _ = require('lodash');
 
 const Invite = {
+  /**
+   * Create will return an array of invites corresponding
+   * to the invites passed in.
+   *
+   * The return signature will have an id for the invite,
+   * a game, the inviter PLAYER object, and the invited USER object
+   */
   create: (params) => {
     console.debug('invite create 1', params);
-    return User.findOne(params.inviter_id).then((user) => {
-      if ( user && user.id ) {
-        return User.findOne({ from: params.invited });
+    return Player.findOne(params.inviter_id).then((player) => {
+      console.debug('create 2', player);
+      if ( player && player.id ) {
+        return player;
       } else {
         throw "You must provide a valid inviter_id";
       }
-    }).then(() => {
+    }).then((inviter_player) => {
+      console.debug('create 3', params.invites);
       return Promise.all(params.invites.map((invite) => {
-        return User.create({ from: invite });
-      }));
-      //console.debug('invite create 2');
-      //if ( user && user.blacklist ) {
-        //console.debug('invite create 3');
-        //throw new Error(3);
-      //} else if ( ! user ) {
-        //console.debug('invite create 4');
-        //return User.create({ from: params.invited });
-        //initial_state = 'waiting-for-confirmation';
-      //}
-    }).then((invited_user) => {
+        return User.findOne({ from: invite }).then((user) => {
+          if ( user && user.id ) {
+            return user;
+          } else {
+            return User.create({ from: invite });
+          }
+        });
+      })).then((invited_users) => {
 
-      //console.debug('invite create 5');
-      //let invite_exists = squel
-                          //.select()
-                          //.from('invites','i')
-                          //.left_join('players', 'p', 'p.id=i.invited_player_id')
-                          //.left_join('users', 'u', 'u.id=p.user_id')
-                          //.where('u.from=?', number)
-                          //.where('i.used=0')
-                          //.where('inviter_player_id=?',inviter.id);
+        //return User.getPlayersNum(user);
+      //}).then((players) => {
+        //if ( players >= user.maximum_games) {
+          //throw new Error(12);
+        //}
 
-      //console.debug('invite create 6');
-      //return db.query(invite_exists);
-    //}).then((invites) => {
-      //if ( invites.length ) {
-        //throw new Error(2);
-      //}
-      //console.debug('invite create 7');
+        return Game.findOne({ player_id: params.inviter_id }).then((game) => {
+          return Promise.all(invited_users.map((invited_user) => {
+            if ( invited_user.blacklist ) {
+              return {
+                error: `User has asked not to be contacted`,
+                code: 1202
+              };
+            } else if ( invited_user.id === inviter_player.user_id ) {
+              // loose equality, because one could be a string or an integer
+              return {
+                error: `You can't invite yourself`,
+                code: 1203
+              };
+            } else {
+              return Invite.findOne({ used: 0, game_id: game.id, invited: invited_user.id }).then((invite) => {
+                if ( invite && invite.id ) {
+                  return {
+                    error: `Invite already exists for ${invited_user.from}`,
+                    code: 1200
+                  };
+                } else if ( invited_user.number_of_players >= invited_user.maximum_games ) {
+                  return {
+                    error: `User is playing the maximum number of games`,
+                    code: 1204
+                  };
+                } else if ( game.players.filter(player => player.user_id === invited_user.id).length ) {
+                  return {
+                    error: `User ${invited_user.from} already playing game`,
+                    code: 1203
+                  };
+                } else {
+                  console.debug('invite create 9');
+                  let query = squel
+                              .insert()
+                              .into('invites')
+                              .set('game_id', game.id)
+                              .set('invited_id', invited_user.id)
+                              .set('inviter_id', params.inviter_id);
 
-      //return User.getPlayersNum(user);
-    //}).then((players) => {
-      //if ( players >= user.maximum_games) {
-        //throw new Error(12);
-      //}
-
-      //console.debug('invite create 8');
-      //return Player.create({ from: number, user: user, initial_state: initial_state });
-    //}).then((invited_player) => {
-      return Game.findOne({ player_id: params.inviter_id }).then((game) => {
-      
-        console.debug('invite create 9');
-        let query = squel
-                    .insert()
-                    .into('invites')
-                    .set('game_id', game.id)
-                    .set('invited_id', invited_user.id)
-                    .set('inviter_id', params.inviter_id);
-        
-        console.debug(query.toString());
-        return db.query(query);
+                  console.debug(query.toString());
+                  return db.query(query).then((row) => {
+                    return {
+                      id: row.insertId,
+                      game: game,
+                      invited_user: invited_user,
+                      inviter_player: inviter_player
+                    }
+                  });
+                }
+              });
+            }
+          }));
+        });
+      }).then((rows) => {
+        if ( rows && rows.length ) {
+          return rows;
+        } else {
+          throw "There was an error inserting invite";
+        }
       });
-    }).then((rows) => {
-
-      if ( rows && rows.insertId ) {
-        return {
-          id: rows.insertId,
-          invited_player: invited_player,
-          inviting_player: inviter
-        };
+    }).catch((err) => {
+      console.error(err);
+      throw err;
+    });
+  },
+  findOne: (params = {}) => {
+    if (parseInt(params)) {
+      params = { id: params };
+    }
+    return Invite.find(params).then((invites) => {
+      if ( invites && invites.length) {
+        return invites[0];
       } else {
-        console.error(query.toString());
-        throw "There was an error inserting invite";
+        return {};
       }
     });
   },
-  /*
-  create: Promise.coroutine(function* (inviter, value) {
-    console.debug('invite create 1');
-    let numbers = yield Phone.parse([value]);
-    let number = numbers[0];
-
-    // does a user already exist for this number?
-    let user = yield User.getOne({ from: number });
-    let initial_state = 'invited-to-new-game';
-    console.debug('invite create 2');
-    if ( user && user.blacklist ) {
-      console.debug('invite create 3');
-      throw new Error(3);
-    } else if ( ! user ) {
-      console.debug('invite create 4');
-      user = yield User.create({ from: number });
-      initial_state = 'waiting-for-confirmation';
-    }
-
-    console.debug('invite create 5');
-    // see if an invite exists
-    let invite_exists = squel
-                        .select()
-                        .from('invites','i')
-                        .left_join('players', 'p', 'p.id=i.invited_player_id')
-                        .left_join('users', 'u', 'u.id=p.user_id')
-                        .where('u.from=?', number)
-                        .where('i.used=0')
-                        .where('inviter_player_id=?',inviter.id);
-
-    console.debug('invite create 6');
-    let invites = yield db.query(invite_exists);
-    if ( invites.length ) {
-      throw new Error(2);
-    }
-    console.debug('invite create 7');
-
-    // user already exists; 
-    // are they playing less than the max
-    // number of games?
-    let players = yield User.getPlayersNum(user);
-    if ( players >= user.maximum_games) {
-      throw new Error(12);
-    }
-
-    console.debug('invite create 8');
-    let invited_player = yield Player.create({ from: number, user: user, initial_state: initial_state });
-
-    console.debug('invite create 9');
+  find: (params = {}) => {
     let query = squel
-                .insert()
-                .into('invites')
-                .set('invited_player_id', invited_player.id)
-                .set('inviter_player_id', inviter.id);
-    
-    console.debug(query.toString());
-    let rows = yield db.query(query);
+                .select()
+                .field('i.*')
+                .from('invites', 'i')
+                .left_join('games', 'g', 'g.id=i.game_id');
 
-    if ( rows && rows.insertId ) {
-      return {
-        id: rows.insertId,
-        invited_player: invited_player,
-        inviting_player: inviter
-      };
-    } else {
-      console.error(query.toString());
-      throw "There was an error inserting invite";
+    if ( params.id ) {
+      query = query.where('i.id=?',params.id);
     }
-  }),
-  */
+
+    if ( params.game_id ) {
+      query = query.where('i.game_id = ?',params.game_id);
+    }
+
+    if ( params.inviter_id ) {
+      query = query.where('i.inviter_id = ?',params.inviter_id);
+    }
+
+    if ( params.invited ) {
+      query = query.where('i.invited_id = ?',params.invited);
+    }
+
+    if ( params.invited_from ) {
+      query = query
+              .left_join('users', 'u', 'u.id=i.invited_id')
+              .where('u.from=?', params.invited_from);
+    }
+
+    if ( params.used !== undefined ) {
+      query = query.where('i.used = ?',params.used);
+    }
+
+    return db.query(query).then((invites) => {
+      if ( invites && invites.length ) {
+        //console.log('invite', invites);
+        return Promise.join(
+          Game.find({ player_ids: invites.map(invite => invite.inviter_id) }),
+          Player.find({ ids: invites.map(invite => invite.inviter_id) }),
+          User.find({ ids: invites.map(invite => invite.invited_id) }),
+          (games_arr, inviters, inviteds) => {
+        //return Game.find({ player_ids: invites.map(invite => invite.inviter_id) }).then((games) => {
+            const games = _.indexBy(games_arr, 'id');
+            const players = _.indexBy(inviters, 'id');
+            const users = _.indexBy(inviteds, 'id');
+
+            return invites.map((invite) => {
+              return {
+                id: invite.id,
+                game: games[invite.game_id],
+                invited_user: users[invite.invited_id],
+                inviter_player: players[invite.inviter_id],
+                used: invite.used
+              };
+            });
+          }
+        );
+      } else {
+        return [];
+      }
+    });
+  },
+ /*
   getInvite: Promise.coroutine(function* (inviter) {
     let query = squel
                 .select()
@@ -180,17 +209,18 @@ const Invite = {
       return null;
     }
   }),
-  use: Promise.coroutine(function* (invite) {
+  */
+  use: (invite_id) => {
     let query = squel
                 .update()
                 .table('invites')
                 .set('used=1')
-                .where('id=?',invite.id);
+                .where('id=?',invite_id);
 
-    yield db.query(query.toString());
-    invite.used = 1;
-    return invite;
-  }),
+    return db.query(query.toString()).then((rows) => {
+      return Invite.findOne(invite_id);
+    });
+  }
 };
 
 module.exports = Invite;

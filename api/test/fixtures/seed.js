@@ -2,8 +2,11 @@ module.exports = [
   {
     table: 'game_numbers',
     rows: [
-      { id: 1, number: '+15559999999' },
-      { id: 2, number: '+15551111111' },
+      { number: '+15551111111' },
+      { number: '+15552222222' },
+      { number: '+15553333333' },
+      { number: '+15554444444' },
+      { number: '+15559999999' },
     ]
   },
   //{

@@ -117,7 +117,7 @@ let Player = {
         if ( rows && rows.insertId ) {
           return Player.findOne(rows.insertId);
         } else {
-          //console.error(query.toString());
+          console.error(query.toString());
           throw "Error creating player";
         }
       });
@@ -165,6 +165,8 @@ let Player = {
 
     if ( params.id ) {
       query = query.where('p.id=?',params.id);
+    } else if ( params.ids ) {
+      query = query.where('p.id IN ?',params.ids);
     }
 
     if ( params.nickname ) {
@@ -187,7 +189,8 @@ let Player = {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 
-    //console.log(query.toString());
+    //console.log('player: ', query.toString());
+
     return db.query(query);
   },
   

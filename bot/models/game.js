@@ -13,6 +13,26 @@ const Round = require('./round');
 const default_guesses = 2;
 const default_clues_allowed = 1;
 
+const api = require('config/services').api.url;
+
+const req = Promise.promisify(require('request'));
+const request = function(options) {
+  //console.log('options', options);
+  return req(options).then(function(response) {
+    //console.log('re', response);
+    let body = response.body;
+    try {
+      body = JSON.parse(body);
+    } catch(err) {}
+
+    if ( body ) {
+      return body;
+    } else {
+      throw new Error('No response from API in user');
+    }
+  });
+}
+
 squel.registerValueHandler(Date, function(date) {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
@@ -44,7 +64,7 @@ let Game = {
       Round.getLast(game),
       this.getBattingOrder(game),
       function(round, order) {
-        var next;
+        let next;
         if ( round ) {
           for ( let i=0,l=order.length; i<l; i++ ) {
             if ( order[i].player_id === round.submitter_id ) {
@@ -102,7 +122,7 @@ let Game = {
       console.debug('round submitter', round.submitter.id, round.submitter.nickname);
       return Promise.all(game.players.map(function(game_player) {
         console.debug('player', game_player.id, game_player.nickname);
-        var state;
+        let state;
         if ( game_player.id === round.submitter.id ) {
           state = 'waiting-for-submission';
         } else {
@@ -318,57 +338,25 @@ let Game = {
       }).then(function() {
         //if ( game.state && game.state !== 'waiting-for-players' ) {
           // game is in progress
-          this.addToBattingOrder(game, player).then(function() {
-          }).catch(function(err) {
-            console.error('error adding player ot batting order',  player, err);
-          });
+        this.addToBattingOrder(game, player).then(function() {
+        }).catch(function(err) {
+          console.error('error adding player ot batting order',  player, err);
+        });
         //}
       }.bind(this));
     }.bind(this)));
   },
-  create: function() {
-    let state_id = squel
-                  .select()
-                  .field('id')
-                  .from('game_states')
-                  .where('state=?','pending');
-
-    let query = squel
-                .insert()
-                .into('games', 'g')
-                .setFields({
-                  state_id: state_id,
-                  guesses: default_guesses,
-                  clues_allowed: default_clues_allowed,
-                  created: squel.fval('NOW(3)'),
-                  last_activity: squel.fval('NOW(3)')
-                });
-    let default_scores = {
-      'pass': -1,
-      'win-submitter-1': 3,
-      'win-guesser-1': 2,
-      'win-submitter-2': 2,
-      'win-guesser-2': 1
-    };
-
-    return db.query(query.toString()).then(function(rows) {
-      let game_score_query = squel
-                             .insert({
-                               autoQuoteFieldNames: true
-                             })
-                             .into('game_scores', 's')
-                             .setFieldsRows(Object.keys(default_scores).map(function(key) {
-                               return {
-                                 game_id: rows.insertId,
-                                 score: default_scores[key],
-                                 key: key
-                               };
-                             }));
-      return db.query(game_score_query.toString()).then(function() {
-        return {
-          id: rows.insertId
-        };
-      });
+  create: (params) => {
+    return request({
+      url: `${api}games`,
+      method: 'POST',
+      form: params
+    }).then((response) => {
+      if ( response.id ) {
+        return response;
+      } else {
+        return null;
+      }
     });
   },
   updateScore: function(game, player, type) {

@@ -20,8 +20,8 @@ console.debug = function() {
 require('server');
 
 //require(__dirname + '/unit-tests/models/game');
-require('./routes/users');
-require('./routes/games');
-require('./routes/players');
-require('./routes/emoji');
-require('./routes/invites');
+require('./unit/controllers/users');
+require('./unit/controllers/games');
+require('./unit/controllers/players');
+require('./unit/controllers/emoji');
+require('./unit/controllers/invites');

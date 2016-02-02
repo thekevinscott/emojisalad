@@ -7,7 +7,6 @@ const Game = require('models/game');
 const Emoji = require('models/emoji');
 const rule = require('config/rule');
 const kickoffGame = require('../shared/kickoffGame');
-//var Message = require('../../models/message');
 
 module.exports = (user, input) => {
   if ( rule('keep').test(input) ) {

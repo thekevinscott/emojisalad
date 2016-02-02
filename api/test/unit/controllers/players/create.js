@@ -2,7 +2,6 @@ const post = require('test/support/request').post;
 
 const User = require('models/user');
 const Player = require('models/player');
-const players = require('routes/players');
 let game_number;
 let to;
 describe('Create', function() {

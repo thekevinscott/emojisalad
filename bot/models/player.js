@@ -47,7 +47,6 @@ let Player = {
       method: 'GET',
       qs: params
     }).then(function(response) {
-      console.log('response', response);
       if ( response && response.length ) {
         return response[0];
       } else {

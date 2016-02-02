@@ -1,5 +1,8 @@
 'use strict';
 const Game = require('models/game');
+const _ = require('lodash');
+
+const invites = require('./invites');
 
 module.exports = [
   {
@@ -17,17 +20,21 @@ module.exports = [
     method: 'get',
     fn: findOne
   },
-  //{
-    //path: '/:game_id',
-    //method: 'put',
-    //fn: update
-  //},
+  {
+    path: '/:game_id/players',
+    method: 'post',
+    fn: add
+  },
   //{
     //path: '/:game_id',
     //method: 'delete',
     //fn: remove 
   //},
-].concat(require('./invites'));
+].concat([
+  invites.create,
+  invites.use,
+  invites.find,
+]);
 
 function create(req) {
   return Game.create(req.body);
@@ -43,6 +50,19 @@ function findOne(req) {
     throw "Invalid game ID provided";
   }
   return Game.findOne(game_id);
+}
+function add(req) {
+  const game_id = req.params.game_id;
+  if ( ! game_id ) {
+    throw "No game ID provided, how is that possible?";
+  } else if ( !parseInt(game_id) ) {
+    throw "Invalid game ID provided";
+  }
+  const users = req.body.users;
+  if ( ! users || !_.isArray(users) ) {
+    throw "You must provide an array of users";
+  }
+  return Game.add(game_id, users);
 }
 //function update(req) {
   //return Player.update({ id: req.params.player_id }, req.body);

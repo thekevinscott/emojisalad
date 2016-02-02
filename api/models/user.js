@@ -8,7 +8,7 @@ let Player;
 const default_maximum_games = 4;
 
 const User = {
-  create: function(params) {
+  create: (params) => {
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
@@ -104,13 +104,24 @@ const User = {
     if ( ! Player ) {
       Player = require('models/player');
     }
+  
+    let number_of_players = squel
+                            .select()
+                            .field('count(id)')
+                            .from('players', 'p')
+                            .where('p.user_id=u.id')
+
     let query = squel
                 .select()
+                .field('(' + number_of_players.toString() + ')', 'number_of_players')
                 .field('u.*')
+                .left_join('players', 'p', 'u.id=p.user_id')
                 .from('users', 'u');
 
     if ( params.id ) {
       query = query.where('u.id=?',params.id);
+    } else if ( params.ids ) {
+      query = query.where('u.id IN ?',params.ids);
     }
 
     if ( params.nickname ) {
@@ -123,30 +134,23 @@ const User = {
 
     if ( params.player_id ) {
       query = query
-              .left_join('players', 'p', 'u.id=p.user_id')
               .where('p.id=?',params.player_id);
     }
               
     const archived = params.archived || 0;
     query.where('u.archived=?', archived);
 
+    //console.log('user: ', query.toString());
     return db.query(query).then((users) => {
       if ( users.length ) {
         return Player.find({ user_ids: users.map(user => user.id ) }).then((players) => {
-          const players_by_id = players.reduce((obj, player) => {
-            const user_id = player.user_id;
-            delete player.user_id;
-            if ( ! obj[user_id] ) {
-              obj[user_id] = [];
-            }
 
-            obj[user_id].push({
+          const players_by_id = arrayToObj(players, 'user_id', (player) => {
+            return {
               id: player.id,
               to: player.to
-            });
-            return obj;
-          }, {});
-
+            };
+          });
           return users.map((user) => {
             user.players = players_by_id[user.id] || [];
             return user;
@@ -185,5 +189,32 @@ const User = {
     });
   }
 };
+
+//function arrayToObj(players) {
+  //return players.reduce((obj, player) => {
+    //const user_id = player.user_id;
+    //delete player.user_id;
+    //if ( ! obj[user_id] ) {
+      //obj[user_id] = [];
+    //}
+
+    //obj[user_id].push({
+      //id: player.id,
+      //to: player.to
+    //});
+    //return obj;
+  //}, {});
+//}
+
+function arrayToObj(arr, key, callback) {
+  return arr.reduce((obj, el) => {
+    if ( ! obj[el[key]] ) {
+      obj[el[key]] = [];
+    }
+
+    obj[el[key]].push(callback(el));
+    return obj;
+  }, {});
+}
 
 module.exports = User;
