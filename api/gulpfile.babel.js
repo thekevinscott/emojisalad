@@ -82,7 +82,7 @@ gulp.task('update-fixtures', (cb) => {
  * Seed the test suite from the saved SQL file,
  * and some seed commands in here, then run the test suite
  */
-gulp.task('test', function(cb) {
+gulp.task('test', (cb) => {
   return seed().then(() => {
     process.env.DEBUG = util.env.debug || false;
     return gulp.src(['test/index.js'], { read: false })
@@ -106,7 +106,16 @@ gulp.task('test', function(cb) {
   });
 });
 
+gulp.task('seed', (cb) => {
+  seed().then(() => {
+    cb();
+  }).done(() => {
+    process.exit();
+  });
+});
+
 gulp.task('default', () => {
   console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');
   console.log('* test - Reimports the local database file, seeds with data, and runs the test suite');
+  console.log('* seed - Reimports the local database file and seeds with data');
 });
