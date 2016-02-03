@@ -2,35 +2,54 @@
 const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
 const queue_services = require('config/services').queues;
+const sendAlert = require('./sendAlert');
 
-const getMessages = (timestamp) => {
-  const queues = process.env.QUEUES.split(',');
-  return Promise.all(queues.map((queue) => {
-    console.log(queues);
-    if ( queue_services[queue] ) {
+const getMessages = (timestamp, protocols, options = {}) => {
+  if ( ! timestamp ) {
+    throw "You must provide a timestamp";
+  } else if ( ! parseFloat(timestamp) ) {
+    throw "You must provide a valid timestamp";
+  }
+  return Promise.all(protocols.map((protocol) => {
+    if ( queue_services[protocol] ) {
       return request({
-        url: queue_services[queue].received,
+        url: queue_services[protocol].received,
         method: 'GET',
         qs: {
           date: timestamp
         }
       }).then((response) => {
+        if ( ! response || ! response.body ) {
+          throw response;
+        }
         let body = response.body;
 
-        try { body = JSON.parse(body);
-        } catch(err) {} // if err, already parsed
-        return body;
+        // if err, already parsed
+        try { body = JSON.parse(body); } catch(err) {}
+
+        return body.map((b) => {
+          b.protocol = protocol;
+          return b;
+        });
+      }).catch((err) => {
+        console.error(err);
+        throw err;
       });
     } else {
-      throw `Queue not defined for ${queue}`;
+      throw `Protocol not defined for ${protocol}`;
     }
   })).then((responses) => {
-    return responses.reduce((obj, response) => {
-      return obj.concat(response);
-    }, []);
+    return [].concat.apply([], responses);
+  }).then((responses) => {
+    if ( options.trip && responses.length >= options.trip ) {
+      sendAlert(responses, 'tripped', 'get');
+      throw "Tripwire tripped on get, too many messages";
+    } else if ( options.alert && responses.length >= options.alert ) {
+      sendAlert(responses, 'alert', 'get');
+      console.debug(`Warning, alert tripped: ${responses.length}`);
+    }
+    return responses;
   });
-
-  return body;
 };
 
 module.exports = getMessages;

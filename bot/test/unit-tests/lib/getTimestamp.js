@@ -5,66 +5,38 @@ const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const Promise = require('bluebird');
 
-describe('Get Timestamp', function() {
-  it('loads correctly', function() {
+describe('Get Timestamp', () => {
+  it('loads correctly', () => {
     const getTimestamp = require('lib/getTimestamp');
     getTimestamp.should.be.ok;
   });
 
-  it('gets the stored timestamp', function(done) {
+  it('gets the stored timestamp', (done) => {
     const ts = new Date();
     const getTimestamp = proxyquire('lib/getTimestamp', {
-      store: Promise.coroutine(function* (key) {
-        return ts.getTime() / 1000 ;
-      })
+      store: (key) => {
+        return new Promise((resolve) => {
+          return resolve(ts.getTime() / 1000);
+        });
+      }
     });
-    getTimestamp(20).then(function(result) {
-      should.equal(closeEnough(result, ts.getTime() / 1000), true);
+    getTimestamp().then(function(result) {
+      result.should.equal(ts.getTime() / 1000);
       done();
     });
   });
 
-  it('should return a timestamp at specified runtime if no timestamp is stored', function(done) {
+  it('should use now if no timestamp is stored', (done) => {
     const getTimestamp = proxyquire('lib/getTimestamp', {
-      store: Promise.coroutine(function* (key) {
-        return null;
-      })
+      store: (key) => {
+        return new Promise((resolve) => {
+          return resolve();
+        });
+      }
     });
-    const runtime = 30;
-    getTimestamp(runtime).then(function(result) {
+
+    getTimestamp().then(function(result) {
       let expectedDate = (new Date());
-      expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
-      should.equal(closeEnough(result, expectedDate.getTime() / 1000), true);
-      done();
-    });
-  });
-
-  it('should not return a timestamp earlier than a specified runtime', function(done) {
-    const getTimestamp = proxyquire('lib/getTimestamp', {
-      store: Promise.coroutine(function* (key) {
-        return new Date('1/1/2016');
-      })
-    });
-    const runtime = 30;
-    getTimestamp(runtime).then(function(result) {
-      let expectedDate = (new Date());
-      expectedDate.setSeconds(expectedDate.getSeconds() - runtime);
-      //console.log(result);
-      //console.log(expectedDate);
-      should.equal(closeEnough(result, expectedDate.getTime() / 1000), true);
-      done();
-    });
-  });
-
-  it('should not return a timestamp earlier than a specified runtime', function(done) {
-    let expectedDate = (new Date());
-    expectedDate.setSeconds(expectedDate.getSeconds() - 10);
-    const getTimestamp = proxyquire('lib/getTimestamp', {
-      store: Promise.coroutine(function* (key) {
-        return expectedDate.getTime() / 1000;
-      })
-    });
-    getTimestamp(600).then(function(result) {
       should.equal(closeEnough(result, expectedDate.getTime() / 1000), true);
       done();
     });

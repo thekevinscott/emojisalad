@@ -18,6 +18,15 @@ const setTimestamp = require('lib/setTimestamp');
 const getTimestamp = require('lib/getTimestamp');
 
 let timer;
+const allowed_protocols = process.env.QUEUES.split(',');
+const tripwire_settings = {
+  // if 10 or more messages are gotten or sent,
+  // send us an email to let us know
+  alert: 10,
+  // if 20 or more messages are gotten or sent,
+  // throw the tripwire and send us an email to know
+  trip: 20
+};
 
 let main = Promise.coroutine(function* (req, res) {
   if ( res ) {
@@ -28,13 +37,13 @@ let main = Promise.coroutine(function* (req, res) {
     console.debug('main');
     clear();
 
-    const lastRecordedSMSTimestamp = yield getTimestamp(runTime);
+    const lastRecordedSMSTimestamp = yield getTimestamp();
     if ( ! lastRecordedSMSTimestamp ) {
       throw new Error('No Timestamp found');
     }
     console.debug('lastRecord', lastRecordedSMSTimestamp, new Date(lastRecordedSMSTimestamp), 'current time', new Date());
 
-    const messages = yield getMessages(lastRecordedSMSTimestamp);
+    const messages = yield getMessages(lastRecordedSMSTimestamp, allowed_protocols, tripwire_settings);
     //console.debug('got messages', messages);
 
     if ( messages.length ) {

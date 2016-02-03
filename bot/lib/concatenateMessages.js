@@ -8,7 +8,7 @@ const concatenate = function(messages) {
   if ( ! messages.length ) {
     throw "No messages provided";
   }
-  for ( var i=0; i<messages.length; i++ ) {
+  for ( let i=0; i < messages.length; i++ ) {
     let message = messages[i];
     if ( ! message.body) {
       throw "No body provided";

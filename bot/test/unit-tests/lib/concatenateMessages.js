@@ -29,7 +29,7 @@ describe('Concatenate Messages', function() {
   });
 
   it('should return an array of messages', function() {
-    var msgs = [{
+    let msgs = [{
       to: 'bar',
       from: 'baz',
       body: 'foo',
@@ -38,7 +38,7 @@ describe('Concatenate Messages', function() {
   });
 
   it('should concatenate two messages to the same person', function() {
-    var msgs = [{
+    let msgs = [{
       to: 'bar',
       from: 'baz',
       body: 'foo',
@@ -57,7 +57,7 @@ describe('Concatenate Messages', function() {
   });
 
   it('should concatenate four messages to two people', function() {
-    var msgs = [{
+    let msgs = [{
       to: 'bar',
       from: 'baz',
       body: 'foo',
@@ -89,7 +89,7 @@ describe('Concatenate Messages', function() {
   });
 
   it('should not concatenate two messages to the same person from different numbers', function() {
-    var msgs = [{
+    const msgs = [{
       to: 'bar',
       from: 'baz',
       body: 'foo',
