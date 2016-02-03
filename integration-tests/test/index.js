@@ -18,4 +18,6 @@ console.debug = function() {
 // Perform a sanity check across the three servers
 // to ensure they're all working and responding
 require('./sanity');
+
+// Run the integration test suite
 //require('./integration/suite');

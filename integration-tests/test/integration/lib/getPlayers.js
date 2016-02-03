@@ -1,7 +1,13 @@
 'use strict';
 const _ = require('lodash');
 const getRandomPhone = require('./getRandomPhone');
-const game_numbers = require('../../../../config/numbers');
+const game_numbers = [
+  '+15551111111',
+  '+15552222222',
+  '+15553333333',
+  '+15554444444',
+  '+15559999999',
+];
 const EMOJI = '🐳';
 
 // if a number is the argument, this is the number of players
@@ -11,7 +17,7 @@ const EMOJI = '🐳';
 // in as the players we wish to create. fill in the missing
 // fields
 
-var listOfNicknames = [
+let listOfNicknames = [
   'Ari',
   'Kevin',
   'SCHLOOOOO',
@@ -19,20 +25,20 @@ var listOfNicknames = [
 ];
 
 function getPlayers(arg) {
-  var players = [];
+  let players = [];
   if ( _.isNumber(arg) ) {
-    for ( var i=0;i<arg;i++ ) {
+    for ( let i=0;i<arg;i++ ) {
       let number = getRandomPhone();
       players.push({
         number: number,
         from: number,
         nickname: listOfNicknames[i]+Math.random(),
-        to: game_numbers.getDefault(),
+        to: game_numbers[0],
         avatar: EMOJI
       });
     }
   } else if ( _.isArray(arg) ) { 
-    var nicknameCount = 0;
+    let nicknameCount = 0;
     players = arg;
     players.map(function(player) {
       if ( ! player.phone ) {

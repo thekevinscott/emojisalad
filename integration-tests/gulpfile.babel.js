@@ -45,25 +45,38 @@ function seed() {
  */
 
 function startServers(debug, servers_debug) {
+  const api_port = 1339;
+  const bot_port = 5001;
+  const test_port = 5999;
+
   const commands = [
     {
       chdir: '../api',
       listen: 'EmojinaryFriend API',
-      port: 1339
+      port: api_port 
     },
     {
       chdir: '../testqueue',
       listen: 'Test Queue',
-      port: 5999
+      port: test_port,
+      args: [
+        '--BOT_PORT',
+        bot_port
+      ]
     },
     {
       chdir: '../bot',
       listen: 'EmojinaryFriend Bot',
       args: [
         '--QUEUES',
-        'test'
+        'test',
+
+        '--TEST_PORT',
+        test_port,
+        '--API_PORT',
+        api_port
       ],
-      port: 5000,
+      port: bot_port
     }
   ];
 

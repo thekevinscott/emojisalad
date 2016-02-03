@@ -56,4 +56,16 @@ describe('Testing Servers', function() {
       done();
     }, done);
   });
+
+  it.only('should get a valid response', (done) => {
+    const setup = require('./integration/lib/setup');
+    const getPlayers = require('./integration/lib/getPlayers');
+    let player = getPlayers(1)[0];
+    return setup([
+      { player: player, msg: 'hello?' },
+    ]).then(function(obj) {
+      console.log('obj', obj);
+      obj.output.should.deep.equal(obj.expected);
+    });
+  });
 });

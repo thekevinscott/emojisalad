@@ -1,5 +1,12 @@
-const sms_endpoint = 'http://localhost:5009/';
-const test_endpoint = 'http://localhost:5999/';
+'use strict';
+
+const ports = {
+  sms: process.env.SMS_PORT || '5009',
+  test: process.env.TEST_PORT || '5999',
+  api: process.env.API_PORT || '1338'
+}
+const sms_endpoint = `http://localhost:${ports.sms}/`;
+const test_endpoint = `http://localhost:${ports.test}/`;
 
 const services = {
   queues: {
@@ -21,7 +28,7 @@ const services = {
     },
   },
   api: {
-    url: 'http://localhost:1338/'
+    url: `http://localhost:${ports.api}/`
   }
 }
 

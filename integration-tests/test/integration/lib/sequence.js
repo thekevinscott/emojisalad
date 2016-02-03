@@ -1,9 +1,9 @@
 'use strict';
-var Promise = require('bluebird');
-var _ = require('lodash');
+const Promise = require('bluebird');
+const _ = require('lodash');
 
-var sequence = function(fns) {
-  return Promise.reduce(fns, function(response, fn) {
+const sequence = (fns) => {
+  return Promise.reduce(fns, (response, fn) => {
     if ( ! _.isFunction(fn) ) {
       console.error('invalid function', fn);
       throw "You must provide a valid function";

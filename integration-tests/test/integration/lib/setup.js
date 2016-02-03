@@ -1,38 +1,55 @@
 'use strict';
-//const Promise = require('bluebird');
+const Promise = require('bluebird');
+const request = require('superagent');
 //const req = require('./req');
-const sequence = require('./sequence');
 const _ = require('lodash');
-const processMessage = require('lib/processMessage');
-const game_numbers = require('../../../../config/numbers');
+const sequence = require('./sequence');
+//const game_numbers = require('../../../../config/numbers');
+const game_numbers = [
+  '+15551111111',
+  '+15552222222',
+  '+15553333333',
+  '+15554444444',
+  '+15559999999',
+];
 
+const port = 5999;
 function setup(arr) {
   if ( !_.isArray(arr) ) {
     arr = [arr];
   }
 
-  return sequence(arr.map(function(a, i) {
+  return sequence(arr.map((a, i) => {
     const player = a.player;
     const msg = a.msg;
     const to = a.to || game_numbers[0];
     if ( ! player ) {
       console.error(a, i);
-      throw "No player provided";
+      reject("No player provided");
     }
     if ( ! msg ) {
       console.error('index', i, 'array', arr);
-      throw "No msg provided";
+      reject("No msg provided");
     }
-    return function() {
+    return new Promise((resolve, reject) => {
       const message = {
         body: msg,
         to: to || player.to,
         from: player.number
       };
-      return processMessage(message).then(function(resp) {
-        return resp;
+
+      request
+      .post(`http://localhost:${port}/receive`)
+            .send(message)
+      .end((err, res) => {
+        console.log('**** end', err, res);
+        if ( err ) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
       });
-    };
+    });
   }));
 }
 
