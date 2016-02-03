@@ -115,12 +115,15 @@ gulp.task('seed', (cb) => {
 });
 
 gulp.task('server', () => {
+  const DEBUG = util.env.DEBUG || 'true';
+  const PORT = util.env.PORT || '1338';
+  const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
   nodemon({
     script: 'index.js',
     env: {
-      'ENVIRONMENT': 'development',
-      'DEBUG': 'true',
-      'PORT': '1338',
+      'ENVIRONMENT': ENVIRONMENT,
+      'DEBUG': DEBUG,
+      'PORT': PORT,
     }
   })
 });

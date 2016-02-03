@@ -111,13 +111,23 @@ gulp.task('test', (cb) => {
 });
 
 gulp.task('server', () => {
+  //process.env.DEBUG = util.env.debug || false;
+  //console.log('DEBUG', util.env.debug);
+  //console.log('here comes server', args);
+  const DEBUG = util.env.DEBUG || 'true';
+  const PORT = util.env.PORT || '5000';
+  const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
+  const QUEUES = util.env.QUEUES || 'sms';
+
+  console.log('bot port', PORT);
+
   nodemon({
     script: 'index.js',
     env: {
-      'ENVIRONMENT': 'development',
-      'DEBUG': 'true',
-      'PORT': '5000',
-      'QUEUES': 'sms'
+      'ENVIRONMENT': ENVIRONMENT,
+      'DEBUG': DEBUG,
+      'PORT': PORT,
+      'QUEUES': QUEUES,
     }
   })
 });

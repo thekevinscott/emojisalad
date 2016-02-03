@@ -7,7 +7,6 @@ require('babel-polyfill');
 const gulp = require('gulp');
 const util = require('gulp-util');
 const Promise = require('bluebird');
-const childExec = require('child_process').exec;
 const argv = require('yargs').argv;
 const mocha = require('gulp-mocha');
 const nodemon = require('gulp-nodemon');
@@ -36,32 +35,69 @@ function seed() {
         'seed'
       ].join(' ')
     ];
-    console.log(seed_command);
+    console.log('seeding', gulpfile);
     return shared.exec(seed_command);
   }));
 }
 
 /**
- * This starts the various server
+ * This starts the various servers
  */
 
-function startServers(debug) {
-  const index_files = [
-    '../api/index.js',
-    '../testqueue/index.js',
-    '../bot/index.js',
+function startServers(debug, servers_debug) {
+  const commands = [
+    {
+      chdir: '../api',
+      listen: 'EmojinaryFriend API',
+      port: 1339
+    },
+    {
+      chdir: '../testqueue',
+      listen: 'Test Queue',
+      port: 5999
+    },
+    {
+      chdir: '../bot',
+      listen: 'EmojinaryFriend Bot',
+      args: [
+        '--QUEUES',
+        'test'
+      ],
+      port: 5000,
+    }
   ];
 
-  const args = [
-    '--debug',
-    debug
-  ];
-  return Promise.all(index_files.map((index_file) => {
-    const start_api = [
-      'supervisor',
-      index_file
-    ].concat(args).join(' ');
-    return shared.exec(start_api);
+  return Promise.all(commands.map((cmd) => {
+    return new Promise((resolve) => {
+      let child;
+      process.chdir(cmd.chdir);
+      const stdout = (data, command, args) => {
+        if ( servers_debug ) {
+          console.log(`${data}`);
+        }
+        if ( data.indexOf(cmd.listen) !== -1 ) {
+          //console.log('started', cmd.chdir);
+          resolve(child);
+        }
+      };
+      const stderr = (data, command, args) => {
+        console.log(`stderr: ${data}`);
+      };
+      const close = (data, command, args) => {
+        console.log(`${command} ${args} close: ${data}`);
+      };
+      const command = 'gulp';
+      const args = [
+        'server',
+        '--DEBUG',
+        debug,
+        '--ENVIRONMENT',
+        'test',
+        '--PORT',
+        cmd.port
+      ].concat(cmd.args || []);
+      child = shared.spawn(command, args, stdout, stderr, close);
+    });
   }));
 }
 
@@ -80,12 +116,28 @@ gulp.task('seed', (cb) => {
 gulp.task('test', (cb) => {
   process.env.DEBUG = util.env.debug || false;
   // Seed the Bot database
-  return seed().then(() => {
-    return shared.exec(seed_api);
-  }).then(() => {
-    return startServers(debug);
-  }).then((res) => {
-    console.log('yay');
+  //return seed().then(() => {
+    //return startServers(process.env.DEBUG);
+  //}).then((res) => {
+  const servers_debug = false;
+  let servers = [];
+  function killServers() {
+    return servers.map((server) => {
+      server.stdin.pause();
+      server.kill();
+    });
+  }
+  startServers(process.env.DEBUG, servers_debug).then((resp) => {
+    console.log('Servers started, starting tests');
+    servers = resp;
+    //console.log('got a child back', servers);
+    process.chdir('../integration-tests');
+    servers.map((server) => {
+      server.stderr.on('data', (data) => {
+        killServers();
+        process.exit(1);
+      });
+    });
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
       timeout: 10000,
@@ -93,17 +145,24 @@ gulp.task('test', (cb) => {
       bail: true
     }))
     .on('error', function(data) {
-      console.error(data.message);
+      console.log('error');
+      //console.error(data.message);
+      killServers();
       process.exit(1);
     })
     .once('end', function() {
+      killServers();
       process.exit();
     });
   }).catch(function(err) {
+    console.log('caught', err);
+    //killServers();
     console.error(err);
     process.exit(1);
   }).done(() => {
-    cb();
+    //console.log('done');
+    //killServers();
+    //cb();
   });
 });
 

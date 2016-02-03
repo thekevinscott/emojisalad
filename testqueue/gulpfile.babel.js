@@ -48,12 +48,16 @@ gulp.task('seed', (cb) => {
 });
 
 gulp.task('server', () => {
+  const DEBUG = util.env.DEBUG || 'true';
+  const PORT = util.env.PORT || '5999';
+  const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
+  console.log('run test queue server');
   nodemon({
     script: 'index.js',
     env: {
-      'ENVIRONMENT': 'test',
-      'DEBUG': 'true',
-      'PORT': '5999',
+      'ENVIRONMENT': ENVIRONMENT,
+      'DEBUG': DEBUG,
+      'PORT': PORT,
     }
   });
 });

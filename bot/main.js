@@ -20,6 +20,10 @@ const getTimestamp = require('lib/getTimestamp');
 let timer;
 
 let main = Promise.coroutine(function* (req, res) {
+  if ( res ) {
+    res.end();
+  }
+
   try {
     console.debug('main');
     clear();
@@ -52,10 +56,6 @@ let main = Promise.coroutine(function* (req, res) {
       }));
 
       timer = setTimeout(main, runTime*1000);
-    }
-
-    if ( res ) {
-      res.end();
     }
   } catch(err) {
     console.error(err);

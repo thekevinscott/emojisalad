@@ -1,10 +1,38 @@
 'use strict';
 const Promise = require('bluebird');
 const childExec = require('child_process').exec;
+const childSpawn = require('child_process').spawn;
+
+function spawn(command, args, stdout, stderr, close) {
+  // Run `gulp` command
+  const child = childSpawn(command, args);
+
+  if ( stdout ) {
+    child.stdout.on('data', (data) => {
+      stdout(data, command, args);
+    });
+  }
+
+  if ( stderr ) {
+    child.stderr.on('data', (data) => {
+      stderr(data, command, args);
+    });
+  }
+
+  if ( close ) {
+    child.on('close', (data) => {
+      close(data, command, args);
+    });
+  }
+
+  return child;
+}
 
 function exec(command) {
   return new Promise((resolve, reject) => {
+    //console.log('starting', command);
     return childExec(command, (error, stdout, stderr) => {
+      console.log('back, for', command);
       if ( error ) {
         reject(error);
       } else if ( stderr && stderr.indexOf('Warning') === -1 ) {
@@ -112,3 +140,4 @@ module.exports.exec = exec;
 module.exports.getConnectionString = getConnectionString;
 module.exports.pullDB = pullDB;
 module.exports.importDB = importDB;
+module.exports.spawn = spawn;

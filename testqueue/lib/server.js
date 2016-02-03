@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
 
 queue({
+  name: 'Test Queue',
   options: {
     port: require('config/app').port,
     db: require('config/db')

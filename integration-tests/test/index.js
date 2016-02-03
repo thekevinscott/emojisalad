@@ -15,8 +15,7 @@ console.debug = function() {
   }
 };
 
-
-require(__dirname + '/unit-tests/store');
-require(__dirname + '/unit-tests/lib');
-//require(__dirname + '/unit-tests/models/game');
-require('./integration/suite');
+// Perform a sanity check across the three servers
+// to ensure they're all working and responding
+require('./sanity');
+//require('./integration/suite');
