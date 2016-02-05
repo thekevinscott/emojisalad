@@ -2,11 +2,20 @@
 
 const store = require('store');
 const Promise = require('bluebird');
+const setTimestamp = require('lib/setTimestamp');
+const keys = require('../config/keys');
 
 const getTimestamp = () => {
-  return store('sms-timestamp').then((lastRecordedSMSTimestamp) => {
-    console.debug('gotten sms timestamp', lastRecordedSMSTimestamp);
-    return lastRecordedSMSTimestamp || (new Date()).getTime() / 1000;
+  console.debug('store keys', keys);
+  return store(keys.TIMESTAMP).then((lastRecordedTimestamp) => {
+    console.debug('gotten timestamp', lastRecordedTimestamp);
+    if ( lastRecordedTimestamp ) {
+      return lastRecordedTimestamp;
+    } else {
+      const now = (new Date()).getTime() / 1000;
+      setTimestamp(now);
+      return now;
+    }
   });
 };
 

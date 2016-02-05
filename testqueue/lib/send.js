@@ -19,5 +19,4 @@ module.exports = Promise.coroutine(function* (params) {
   }
 
   return params;
-
 });

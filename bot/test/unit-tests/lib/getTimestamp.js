@@ -41,6 +41,23 @@ describe('Get Timestamp', () => {
       done();
     });
   });
+
+  it('should store now if no timestamp is stored', (done) => {
+    const fn = sinon.spy();
+    const getTimestamp = proxyquire('lib/getTimestamp', {
+      store: (key) => {
+        return new Promise((resolve) => {
+          return resolve();
+        });
+      },
+      'lib/setTimestamp': fn
+    });
+
+    getTimestamp().then(function(result) {
+      fn.called.should.equal(true);
+      done();
+    });
+  });
 });
 
 function closeEnough(a, b) {

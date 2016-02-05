@@ -12,32 +12,46 @@ const mocha = require('gulp-mocha');
 const nodemon = require('gulp-nodemon');
 const chalk = require('chalk');
 const squel = require('squel');
-
+const superagent = require('superagent');
+const d = require('node-discover')();
 const shared = require('../gulp/shared');
 const sql_file = 'test/fixtures/test-db.sql';
+
+const services = require('./config/services');
+const api_port = services.api.port;
+const bot_port = services.bot.port;
+const test_port = services.testqueue.port;
 
 /**
  * This imports the stored SQL file, then seeds it
  * with required data
  */
 function seed() {
-  const gulp_files = [
-    '../testqueue/gulpfile.babel.js',
-    '../bot/gulpfile.babel.js',
-    '../api/gulpfile.babel.js',
+  const commands = [
+    {
+      chdir: '../api',
+    },
+    {
+      chdir: '../testqueue',
+    },
+    {
+      chdir: '../bot',
+    }
   ];
-  return Promise.all(gulp_files.map((gulpfile) => {
+  return Promise.all(commands.map((command) => {
+    process.chdir(command.chdir);
     const seed_command = [
       [
         'gulp',
-        '--gulpfile',
-        gulpfile,
         'seed'
       ].join(' ')
     ];
-    console.log('seeding', gulpfile);
+    //console.log('seeding', command.chdir);
     return shared.exec(seed_command);
-  }));
+  })).then((res) => {
+    console.log(`Seeding complete for ${commands.map(cmd => cmd.chdir).join(',')}`);
+    return res;
+  });
 }
 
 /**
@@ -45,60 +59,57 @@ function seed() {
  */
 
 function startServers(debug, servers_debug) {
-  const api_port = 1339;
-  const bot_port = 5001;
-  const test_port = 5999;
 
   const commands = [
     {
+      name: 'api',
       chdir: '../api',
-      listen: 'EmojinaryFriend API',
+      //listen: 'EmojinaryFriend API',
       port: api_port 
     },
     {
       chdir: '../testqueue',
-      listen: 'Test Queue',
-      port: test_port,
-      args: [
-        '--BOT_PORT',
-        bot_port
-      ]
+      name: 'testqueue',
+      port: test_port
     },
     {
       chdir: '../bot',
-      listen: 'EmojinaryFriend Bot',
+      name: 'bot',
       args: [
         '--QUEUES',
-        'test',
+        'testqueue',
 
-        '--TEST_PORT',
-        test_port,
         '--API_PORT',
         api_port
       ],
       port: bot_port
     }
   ];
+  const stdout = (data, command, args) => {
+    if ( servers_debug ) {
+      console.log(`${data}`);
+    }
+  };
+  const stderr = (data, command, args) => {
+    console.log(`stderr: ${data}`);
+  };
+  const close = (data, command, args) => {
+    console.log(`${command} ${args} close: ${data}`);
+    console.log('server has closed');
+    process.exit();
+  };
 
   return Promise.all(commands.map((cmd) => {
     return new Promise((resolve) => {
+      d.on('added', (obj) => {
+        if ( obj && obj.advertisement && obj.advertisement.name === cmd.name && obj.advertisement.ready ) {
+          console.log(cmd.name, 'added');
+          resolve();
+        }
+      });
+
       let child;
       process.chdir(cmd.chdir);
-      const stdout = (data, command, args) => {
-        if ( servers_debug ) {
-          console.log(`${data}`);
-        }
-        if ( data.indexOf(cmd.listen) !== -1 ) {
-          //console.log('started', cmd.chdir);
-          resolve(child);
-        }
-      };
-      const stderr = (data, command, args) => {
-        console.log(`stderr: ${data}`);
-      };
-      const close = (data, command, args) => {
-        console.log(`${command} ${args} close: ${data}`);
-      };
       const command = 'gulp';
       const args = [
         'server',
@@ -109,6 +120,7 @@ function startServers(debug, servers_debug) {
         '--PORT',
         cmd.port
       ].concat(cmd.args || []);
+      //console.log(command, args);
       child = shared.spawn(command, args, stdout, stderr, close);
     });
   }));
@@ -129,10 +141,7 @@ gulp.task('seed', (cb) => {
 gulp.task('test', (cb) => {
   process.env.DEBUG = util.env.debug || false;
   // Seed the Bot database
-  //return seed().then(() => {
-    //return startServers(process.env.DEBUG);
-  //}).then((res) => {
-  const servers_debug = false;
+  const servers_debug = true;
   let servers = [];
   function killServers() {
     return servers.map((server) => {
@@ -140,13 +149,25 @@ gulp.task('test', (cb) => {
       server.kill();
     });
   }
-  startServers(process.env.DEBUG, servers_debug).then((resp) => {
+  return seed().then(() => {
+    return startServers(process.env.DEBUG, servers_debug);
+  }).then((resp) => {
+  //startServers(process.env.DEBUG, servers_debug).then((resp) => {
     console.log('Servers started, starting tests');
     servers = resp;
     //console.log('got a child back', servers);
     process.chdir('../integration-tests');
+
+    // we need to initialize the bot store with a timestamp
+    // THIS SHOULD HAPPEN ON BOOT
+    //return request(`http://localhost:${bot_port}/ping`);
+  //}).then(() => {
     servers.map((server) => {
       server.stderr.on('data', (data) => {
+        killServers();
+        process.exit(1);
+      });
+      server.on('close', (data, command, args) => {
         killServers();
         process.exit(1);
       });
@@ -178,6 +199,20 @@ gulp.task('test', (cb) => {
     //cb();
   });
 });
+
+function request(url) {
+  return new Promise((resolve, reject) => {
+    superagent 
+    .get(url)
+    .end(function(err, res){
+      if ( err ) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    });
+  });
+}
 
 gulp.task('default', () => {
   //console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');

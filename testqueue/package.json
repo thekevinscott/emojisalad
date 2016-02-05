@@ -13,7 +13,9 @@
     "babel-register": "^6.3.13",
     "bluebird": "^3.1.1",
     "lodash": "^3.10.1",
+    "node-discovery": "^0.2.1-1",
     "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
+    "squel": "^4.2.3",
     "yargs": "^3.32.0"
   },
   "devDependencies": {

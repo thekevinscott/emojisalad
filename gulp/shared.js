@@ -32,7 +32,7 @@ function exec(command) {
   return new Promise((resolve, reject) => {
     //console.log('starting', command);
     return childExec(command, (error, stdout, stderr) => {
-      console.log('back, for', command);
+      //console.log('back, for', command);
       if ( error ) {
         reject(error);
       } else if ( stderr && stderr.indexOf('Warning') === -1 ) {

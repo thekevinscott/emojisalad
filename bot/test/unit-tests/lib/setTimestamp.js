@@ -106,4 +106,15 @@ describe('Set Timestamp', function() {
       },
     ]);
   });
+
+  it('should set timestamp if given a raw timestamp', (done) => {
+    const ts = (new Date()).getTime() / 1000;
+    const setTimestamp = proxyquire('lib/setTimestamp', {
+      store: Promise.coroutine(function* (key, timestamp) {
+        timestamp.should.equal(ts);
+        done();
+      })
+    });
+    return setTimestamp(ts);
+  });
 });

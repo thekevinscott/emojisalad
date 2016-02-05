@@ -1,43 +1,48 @@
 'use strict';
 const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
-const queue_services = require('config/services').queues;
+//const queue_services = require('config/services').queues;
 const sendAlert = require('./sendAlert');
+const services = require('../services');
 
 const getMessages = (timestamp, protocols, options = {}) => {
+  //console.log('time to get messages');
   if ( ! timestamp ) {
     throw "You must provide a timestamp";
   } else if ( ! parseFloat(timestamp) ) {
     throw "You must provide a valid timestamp";
   }
+  //console.log('prepare to iterate over protocols', protocols);
   return Promise.all(protocols.map((protocol) => {
-    if ( queue_services[protocol] ) {
+    //console.log('get the protocol', protocol);
+    //if ( queue_services[protocol] ) {
+    return services.get(protocol).then((service) => {
+      //console.log('endpoints', service.endpoints);
       return request({
-        url: queue_services[protocol].received,
-        method: 'GET',
+        url: service.endpoints.received.url,
+        method: service.endpoints.received.method,
         qs: {
           date: timestamp
         }
-      }).then((response) => {
-        if ( ! response || ! response.body ) {
-          throw response;
-        }
-        let body = response.body;
-
-        // if err, already parsed
-        try { body = JSON.parse(body); } catch(err) {}
-
-        return body.map((b) => {
-          b.protocol = protocol;
-          return b;
-        });
-      }).catch((err) => {
-        console.error(err);
-        throw err;
       });
-    } else {
-      throw `Protocol not defined for ${protocol}`;
-    }
+    }).then((response) => {
+      //console.log('response', response);
+      if ( ! response || ! response.body ) {
+        throw response;
+      }
+      let body = response.body;
+
+      // if err, already parsed
+      try { body = JSON.parse(body); } catch(err) {}
+
+      return body.map((b) => {
+        b.protocol = protocol;
+        return b;
+      });
+    }).catch((err) => {
+      console.error(err);
+      throw err;
+    });
   })).then((responses) => {
     return [].concat.apply([], responses);
   }).then((responses) => {

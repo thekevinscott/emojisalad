@@ -128,8 +128,8 @@ gulp.task('server', () => {
     'DEBUG': DEBUG,
     'PORT': PORT,
     'QUEUES': QUEUES,
-    'TEST_PORT': TEST_PORT,
-    'API_PORT': API_PORT
+    //'TEST_PORT': TEST_PORT,
+    //'API_PORT': API_PORT
   };
 
   //console.log('GET READY FOR THAT NODE MAN');

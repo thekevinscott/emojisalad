@@ -1,5 +1,10 @@
 const http = require('http');
 
+const services = require('./config/services');
+const api_port = services.api.port;
+const bot_port = services.bot.port;
+const test_port = services.testqueue.port;
+
 function req(options, callback, error) {
   http.get(options, function(res) {
     let body;
@@ -20,8 +25,9 @@ function req(options, callback, error) {
 }
 
 describe('Testing Servers', function() {
-  it('should check testqueue', function(done) {
-    const port = 5999;
+  console.log('******************');
+  it.only('should check testqueue', function(done) {
+    const port = test_port;
     req({
       host: `localhost`,
       port: port,
@@ -33,7 +39,7 @@ describe('Testing Servers', function() {
   });
 
   it('should check api', function(done) {
-    const port = 1339;
+    const port = api_port;
     req({
       host: `localhost`,
       port: port,
@@ -46,7 +52,7 @@ describe('Testing Servers', function() {
   });
 
   it('should check bot', function(done) {
-    const port = 5000;
+    const port = bot_port;
     req({
       host: `localhost`,
       port: port,
@@ -57,12 +63,13 @@ describe('Testing Servers', function() {
     }, done);
   });
 
-  it.only('should get a valid response', (done) => {
+  it('should get a valid response', (done) => {
     const setup = require('./integration/lib/setup');
     const getPlayers = require('./integration/lib/getPlayers');
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello?' },
+      { player: player, msg: 'hello? 2' },
     ]).then(function(obj) {
       console.log('obj', obj);
       obj.output.should.deep.equal(obj.expected);

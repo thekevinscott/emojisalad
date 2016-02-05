@@ -65,10 +65,10 @@ let pools = new Map();
 
 function getDB(config) {
   if (!pools.get(config)) {
-    console.log('pool does not exist for ',config.database);
+    //console.log('pool does not exist for ',config.database);
     pools.set(config, getPool(config));
-  } else {
-    console.log('pool already exists for ',config.database);
+  //} else {
+    //console.log('pool already exists for ',config.database);
   }
   let pool = pools.get(config);
   return pool;

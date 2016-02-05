@@ -10,7 +10,7 @@ const req = Promise.promisify(require('request'));
 
 module.exports = function (params) {
   console.debug('\n==========process message===========\n');
-  console.debug(params);
+  console.debug('params', params);
   if ( ! params.from ) {
     throw new Error("No from provided");
   }
@@ -23,6 +23,7 @@ module.exports = function (params) {
 
   console.debug('get ready to call router');
   return router(params.from, params.body, params.to).then((response) => {
+    console.log('**** HUZZAH BIG BOY');
     return Message.parse(response);
   });
 };

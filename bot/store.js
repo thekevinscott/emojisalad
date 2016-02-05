@@ -7,12 +7,15 @@ const using = Promise.using;
 
 const url = require('config/db').mongo;
 
-function store(key, val) {
+const store = (key, val) => {
   return using(
     getConnectionAsync(),
-    function(connection) {
+    (connection) => {
+      //console.debug('connection has been gotten');
       const coll = connection.collection('attributes');
+      //console.log('coll', coll);
       if ( val !== undefined ) {
+        //console.log('set');
         return coll.updateAsync({ key: key }, {
           key: key,
           val: val
@@ -20,21 +23,25 @@ function store(key, val) {
           upsert: true
         });
       } else {
-        return coll.findOneAsync({ key: key }).then(function(item) {
+        //console.debug('mongo get');
+        return coll.findOneAsync({ key: key }).then((item) => {
+          //console.debug('For key', key, 'found item', item);
           if ( item ) {
             return item.val;
           }
         });
       }
     }
-  ).then(function(data) {
+  ).then((data) => {
     return data;
   });
 }
 
-function getConnectionAsync() {
+const getConnectionAsync = () => {
+  //console.debug('get connection async');
   return mongodb.MongoClient.connectAsync(url)
-  .disposer(function(connection){
+  .disposer((connection) => {
+    //console.debug('close mongo connection');
     connection.close();
   });
 }

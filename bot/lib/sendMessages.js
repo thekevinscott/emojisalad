@@ -3,8 +3,9 @@
 const Promise = require('bluebird');
 const concatenate = require('lib/concatenateMessages');
 const request = Promise.promisify(require('request'));
-const queues = require('config/services').queues;
+//const queues = require('config/services').queues;
 const sendAlert = require('./sendAlert');
+const services = require('../services');
 
 const sendMessages = (messages, options = {}) => {
   messages = concatenate(messages);
@@ -30,18 +31,20 @@ const sendMessages = (messages, options = {}) => {
   }, {});
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
     const messages = messages_by_protocol[protocol];
-    return request({
-      url: queues[protocol].send,
-      method: 'POST',
-      form: {
-        messages: messages.map(function(message) {
-          return {
-            to: message.to,
-            from: message.from,
-            body: message.body 
-          }
-        })
-      }
+    return services.get(protocol).then((service) => {
+      return request({
+        url: service.endpoints.send.url,
+        method: service.endpoints.send.method,
+        form: {
+          messages: messages.map(function(message) {
+            return {
+              to: message.to,
+              from: message.from,
+              body: message.body 
+            }
+          })
+        }
+      });
     });
   }));
 };

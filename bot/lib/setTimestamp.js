@@ -2,23 +2,28 @@
 
 const store = require('store');
 const Promise = require('bluebird');
+const _ = require('lodash');
+const keys = require('../config/keys');
 
-const setTimestamp = Promise.coroutine(function* (messages) {
-  const key = 'timestamp';
-  if ( messages.length ) {
-    // make a note of the last messages timestamp
-    let lastMessageTimestamp = messages.reduce(function(initial, message) {
-      if ( initial ) {
-        if ( getDate(initial.timestamp) > getDate(message.timestamp) ) {
-          return initial;
+const setTimestamp = (messages) => {
+  if ( _.isArray(messages) ) {
+    if ( messages.length ) {
+      // make a note of the last messages timestamp
+      let lastMessageTimestamp = messages.reduce((initial, message) => {
+        if ( initial ) {
+          if ( getDate(initial.timestamp) > getDate(message.timestamp) ) {
+            return initial;
+          }
         }
-      }
-      return message;
-    }).timestamp;
-    console.debug('last message timestamp', lastMessageTimestamp);
-    return yield store(key, lastMessageTimestamp);
+        return message;
+      }).timestamp;
+      console.debug('last message timestamp', lastMessageTimestamp);
+      return store(keys.TIMESTAMP, lastMessageTimestamp);
+    }
+  } else {
+    return store(keys.TIMESTAMP, messages);
   }
-});
+}
 
 function getDate(str) {
   const timestamp = new Date(str);
