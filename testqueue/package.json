@@ -1,7 +1,7 @@
 {
-  "name": "smsqueue",
+  "name": "testqueue",
   "version": "1.0.0",
-  "description": "",
+  "description": "A test queue, for use with Emojibot integration tests",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

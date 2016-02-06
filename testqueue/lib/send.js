@@ -12,6 +12,7 @@ module.exports = Promise.coroutine(function* (params) {
   console.debug('url', url);
 
   try {
+    console.log('send the message: ', params);
     const result = yield request({
       method: 'POST',
       url: url,
