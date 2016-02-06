@@ -94,8 +94,8 @@ function startServers(debug, servers_debug) {
         ].join(','),
 
         '--DEBUG',
-        //'false',
-        debug,
+        'false',
+        //debug,
       ],
       port: bot_port
     }

@@ -20,6 +20,8 @@ let Router = function(from, message, to) {
         from: from
       }).then((users) => {
         console.debug('users back', users);
+        console.debug('hallelujah');
+        console.debug(users.length);
         // if user exists, we are being onboarded
         if ( users.length ) {
           console.debug('proceed to onboarding');
