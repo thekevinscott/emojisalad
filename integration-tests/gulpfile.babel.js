@@ -6,6 +6,7 @@ require('babel-polyfill');
 //require('app-module-path').addPath(__dirname);
 const gulp = require('gulp');
 const util = require('gulp-util');
+const node_util = require('util');
 const Promise = require('bluebird');
 const argv = require('yargs').argv;
 const mocha = require('gulp-mocha');
@@ -105,7 +106,8 @@ function startServers(debug, servers_debug) {
     }
   };
   const stderr = (data, command, args) => {
-    console.log(`stderr: ${data}`);
+    const error = data.toString().split('\\n').join('\n');
+    console.error(chalk.red(`stderr says: ${error}`));
   };
   const close = (data, command, args) => {
     console.log(`${command} ${args} close: ${data}`);

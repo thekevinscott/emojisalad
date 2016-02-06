@@ -50,17 +50,17 @@ describe('Testing Servers', function() {
     }, done);
   });
 
-  it.only('should check bot', function(done) {
+  it('should check bot', function(done) {
     setTimeout(() => {
-    const port = bot_port;
-    req({
-      host: `localhost`,
-      port: port,
-      path: `/ping`
-    }, (body, res) => {
-      res.statusCode.should.equal(200);
-      done();
-    }, done);
+      const port = bot_port;
+      req({
+        host: `localhost`,
+        port: port,
+        path: `/ping`
+      }, (body, res) => {
+        res.statusCode.should.equal(200);
+        done();
+      }, done);
     }, 2000);
   });
 

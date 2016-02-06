@@ -4,6 +4,7 @@ const pmx = require('pmx');
 const app = require('express')();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 5000;
+const Promise = require('bluebird');
 
 const registry = require('microservice-registry');
 

@@ -6,38 +6,22 @@ let Player = require('models/player');
 let User = require('models/user');
 
 let Router = function(from, message, to) {
-  return new Promise((resolve) => {
-    resolve([{
-      key: 'intro',
-      player: {
-        from: from,
-        to: to
-      }
-    },
-    //{
-      //key: 'intro',
-      //player: {
-        //from: '123123123',
-        //to: '989899898' 
-      //}
-    //}
-    ]);
-  });
-
-
-
   return Player.getOne({
     from: from,
     to: to
   }).then((player) => {
-    if ( player ) {
+    console.debug('player?', player);
+    if ( player && player.id ) {
+      console.debug('we  are in a game');
       // this means we are in a game
     } else {
+      console.debug('not in a game');
       // this means we are either brand new,
       // or being onboarded
       return User.getOne({
         from: from
       }).then((user) => {
+        console.debug('user', user);
         // if user exists, we are being onboarded
         if ( user ) {
           // append the number the user has messaged to the user object.

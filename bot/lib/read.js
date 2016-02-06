@@ -96,7 +96,7 @@ const read = () => {
         }
       });
     }).catch((err) => {
-      console.error(err);
+      console.error(err.stack);
       pmx.notify(err);
       if ( timer ) {
         clearTimeout(timer);

@@ -1,16 +1,15 @@
 'use strict';
 
-const getPlayers = require('../lib/getPlayers');
-const setup = require('../lib/setup');
-const check = require('../lib/check');
-const Player = require('models/player');
+const getPlayers = require('lib/getPlayers');
+const setup = require('lib/setup');
+const check = require('lib/check');
 const rule = require('config/rule');
 const EMOJI = '🐳';
 
 describe('Signup', function() {
 
   describe('Test a brand new player', function() {
-    it('should introduce itself when contacting for the first time', function() {
+    it.only('should introduce itself when contacting for the first time', function() {
       let player = getPlayers(1)[0];
       return check(
         { player: player, msg: 'hello?' },
