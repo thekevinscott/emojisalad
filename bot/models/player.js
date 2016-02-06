@@ -14,9 +14,12 @@ let Player = {
       from: params.from
     }); 
   },
-  getOne: function(params) {
+  get: function(params) {
     return api('players', 'get', params);
   }
+  //getOne: function(params) {
+    //return api('players', 'get', params);
+  //}
 };
 
 module.exports = Player;

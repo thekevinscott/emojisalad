@@ -112,14 +112,8 @@ let Player = {
                                    //.where('state=?',state)});
 
 
-      return db.query(query.toString()).then((rows) => {
-        //console.error('throw an error if trying to create the same to', rows);
-        if ( rows && rows.insertId ) {
-          return Player.findOne(rows.insertId);
-        } else {
-          console.error(query.toString());
-          throw "Error creating player";
-        }
+      return db.create(query.toString()).then((result) => {
+        return Player.findOne(result.insertId);
       });
     });
   },

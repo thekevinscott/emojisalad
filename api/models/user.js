@@ -30,16 +30,10 @@ const User = {
                     nickname: nickname,
                     maximum_games: default_maximum_games
                   });
-      return db.query(query).then((result) => {
-
-        if ( result && result.insertId ) {
-          return User.findOne(result.insertId).then((user) => {
-            return user;
-          });
-        } else {
-          console.error(query.toString());
-          throw "There was an error inserting user";
-        }
+      return db.create(query).then((result) => {
+        return User.findOne(result.insertId).then((user) => {
+          return user;
+        });
       });
     });
   },
@@ -140,8 +134,9 @@ const User = {
     const archived = params.archived || 0;
     query.where('u.archived=?', archived);
 
-    //console.log('user: ', query.toString());
+    console.debug('user: ', query.toString());
     return db.query(query).then((users) => {
+      console.debug('users back', users);
       if ( users.length ) {
         return Player.find({ user_ids: users.map(user => user.id ) }).then((players) => {
 

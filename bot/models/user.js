@@ -10,7 +10,7 @@ const User = {
     return api('users', 'create', params);
   },
   update: function (user, params) {
-    return api('users', 'update', params);
+    return api('users', 'update', params, { user_id: user.id });
   },
   getPlayersNum: Promise.coroutine(function* (params) {
     return 0;
@@ -38,19 +38,12 @@ const User = {
       return null;
     }
   }),
-  getOne: function (params) {
-    return request({
-      url: `${api}users`,
-      method: 'GET',
-      qs: params
-    }).then((response) => {
-      if ( response.length > 0 ) {
-        return response[0];
-      } else {
-        return null;
-      }
-    });
+  get: function (params) {
+    return api('users', 'get', params);
   },
+  //getOne: function (params) {
+    //return api('users', 'getOne', params);
+  //},
 };
 
 module.exports = User;

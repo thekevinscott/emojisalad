@@ -19,11 +19,12 @@ module.exports = function(app) {
           route.fn(req).then((results) => {
             res.status(200).json(results);
           }).catch((err) => {
-            //console.error(err);
             res.status(400).json({ error: err });
+            console.error(err.stack);
           });
         } catch(err) {
           res.status(400).json({ error: err });
+          console.error(err.stack);
         }
       });
     });

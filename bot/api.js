@@ -15,7 +15,7 @@ const request = function(options) {
     if ( body ) {
       return body;
     } else {
-      throw new Error('No response from API in emoji');
+      throw new Error(`No response from API: ${JSON.stringify(options)}`);
     }
   });
 }
@@ -23,6 +23,7 @@ const request = function(options) {
 let api_service = registry.get('api');
 
 function getAPI() {
+  const pinging_interval = 50;
   return new Promise((resolve) => {
     if ( registry.get('api') ) {
       resolve(registry.get('api').api);
@@ -32,24 +33,51 @@ function getAPI() {
           clearInterval(interval);
           resolve(registry.get('api').api);
         }
-      }, 100);
+      }, pinging_interval);
     }
   });
 }
 
-function makeRequest(namespace, key, payload) {
+function makeRequest(namespace, key, payload, params = {}) {
   return getAPI().then((api) => {
-    let params = {
-      url: `${api[namespace][key].endpoint}`,
+    let data = {
+      url: processEndpoint(`${api[namespace][key].endpoint}`, params),
       method: `${api[namespace][key].method}`
     };
-    if ( params.method === 'GET' ) {
-      params.qs = payload;
+    if ( data.method === 'GET' ) {
+      data.qs = payload;
     } else {
-      params.form = payload;
+      data.form = payload;
     }
-    return request(params);
+
+    return request(data);
   });
+}
+
+const processEndpoint = (endpoint, params = {}) => {
+  const parts = endpoint.split(/^(.*):\/\/([A-Za-z0-9\-\.]+)(:[0-9]+)?(.*)/);
+  let rest;
+  while ( ! rest && parts.length ) {
+    rest = parts.pop();
+  }
+  const keys = Object.keys(params);
+  const processed_rest = rest.split('/').map((piece) => {
+    const index = keys.indexOf(piece.substring(1));
+    if ( piece.substring(0,1) === ':' && index !== -1 ) {
+      const key = keys[index];
+      return params[key];
+    } else {
+      return piece;
+    }
+  });
+
+  return [
+    parts[1],
+    '://',
+    parts[2],
+    parts[3],
+    processed_rest.join('/')
+  ].join('')
 }
 
 module.exports = makeRequest;

@@ -9,7 +9,7 @@ const EMOJI = '🐳';
 describe('Signup', function() {
 
   describe('Test a brand new player', function() {
-    it.only('should introduce itself when contacting for the first time', function() {
+    it('should introduce itself when contacting for the first time', function() {
       let player = getPlayers(1)[0];
       return check(
         { player: player, msg: 'hello?' },
@@ -40,7 +40,7 @@ describe('Signup', function() {
         });
       }
 
-      it('should start the onboarding with a "yes" response', function() {
+      it.only('should start the onboarding with a "yes" response', function() {
         return sayYes('yes').then(function(obj) {
           obj.output.should.deep.equal(obj.expected);
         });

@@ -42,34 +42,25 @@ const sequential = (fns) => {
 const read = () => {
   if ( processing === false ) {
     processing = true;
-    //console.debug('read');
     clear();
 
-    //console.debug('get the timestamp');
     //const lastRecordedTimestamp = yield 
     return getTimestamp().then((lastRecordedTimestamp) => {
-      //console.debug('got the timestamp');
       if ( ! lastRecordedTimestamp ) {
         throw new Error('No Timestamp found');
       }
-      console.debug('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
+      //console.debug('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
 
       return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
-        //console.debug('messages: there hsould be protocol in here', messages);
-        //console.debug('got messages', messages.length);
 
         if ( messages.length ) {
-          //console.debug('incoming message length', messages.length);
 
           return sequential(messages.map((message) => {
             return function() {
               return processMessage(message);
             }
           })).then((processed_messages) => {
-            //console.debug('processed messages', processed_messages);
-            //console.debug('****** MAKE SURE THESE ARENT ON THE OBJECT');
           //return Promise.all(messages.map(processMessage)).then((processed_messages) => {
-            //console.debug('this should be an array of an array of messages', processed_messages);
 
             // set timestamp once we've retrieved the messages and processed them,
             // but before we've sent them.

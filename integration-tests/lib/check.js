@@ -21,7 +21,8 @@ const levenshtein = require('levenshtein');
 const services = require('config/services');
 const port = services.testqueue.port;
 
-let callback = () => {}
+const noop = () => {};
+let callback = noop;
 const app = require('./server');
 app.post('/', (res) => {
   callback(res);
@@ -83,7 +84,13 @@ const populateExpectedMessages = (expected) => {
 }
 
 const getAssociatedMessages = (initiated_id) => {
-  return new Promise((resolve) => {
+  const timeout_length = 2000;
+  let timer;
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      callback = noop;
+      reject(`No message response within ${timeout_length/1000} seconds`);
+    }, timeout_length);
     callback = (res) => {
       const url = `http://localhost:${port}/sent`;
       return request({
@@ -97,10 +104,10 @@ const getAssociatedMessages = (initiated_id) => {
         try {
           body = JSON.parse(body);
         } catch(err) {}
-        console.log('body', body);
 
         if (body.length > 0) {
-          callback = function() {};
+          clearTimeout(timer);
+          callback = noop;
           resolve(body);
         }
       });

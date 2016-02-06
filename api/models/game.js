@@ -432,7 +432,7 @@ let Game = {
                     });
 
                     //console.log(query.toString());
-        return db.query(query);
+        return db.create(query);
       }).then(function(result) {
         if ( ! result || ! result.insertId ) {
           //console.error(query.toString());
