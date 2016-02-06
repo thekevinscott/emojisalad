@@ -50,7 +50,8 @@ describe('Testing Servers', function() {
     }, done);
   });
 
-  it('should check bot', function(done) {
+  it.only('should check bot', function(done) {
+    setTimeout(() => {
     const port = bot_port;
     req({
       host: `localhost`,
@@ -60,9 +61,10 @@ describe('Testing Servers', function() {
       res.statusCode.should.equal(200);
       done();
     }, done);
+    }, 2000);
   });
 
-  it.only('should get a valid response', () => {
+  it('should get a valid response', () => {
     const check = require('lib/check');
     const getPlayers = require('lib/getPlayers');
     const player = getPlayers(1)[0];

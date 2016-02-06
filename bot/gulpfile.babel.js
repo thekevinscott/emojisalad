@@ -116,11 +116,16 @@ gulp.task('server', () => {
     'sms'
   ].join(',');
 
+  let port = '5000';
+
   if ( util.env.QUEUES ) {
     protocols = util.env.QUEUES;
   }
+  if ( util.env.PORT ) {
+    port = util.env.PORT;
+  }
 
-  return shared.server({ protocols: protocols })();
+  return shared.server({ protocols: protocols, port: port })();
 });
 
 gulp.task('default', () => {
