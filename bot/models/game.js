@@ -13,25 +13,7 @@ const Round = require('./round');
 const default_guesses = 2;
 const default_clues_allowed = 1;
 
-const api = require('config/services').api.url;
-
-const req = Promise.promisify(require('request'));
-const request = function(options) {
-  //console.log('options', options);
-  return req(options).then(function(response) {
-    //console.log('re', response);
-    let body = response.body;
-    try {
-      body = JSON.parse(body);
-    } catch(err) {}
-
-    if ( body ) {
-      return body;
-    } else {
-      throw new Error('No response from API in user');
-    }
-  });
-}
+const api = require('../api');
 
 squel.registerValueHandler(Date, function(date) {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
@@ -347,19 +329,7 @@ let Game = {
     }.bind(this)));
   },
   create: (params) => {
-    console.log('params', params);
-    return request({
-      url: `${api}games`,
-      method: 'POST',
-      form: { users: params }
-    }).then((response) => {
-      console.log('response', response);
-      if ( response.id ) {
-        return response;
-      } else {
-        return null;
-      }
-    });
+    return api('games', 'create', { users: params});
   },
   updateScore: function(game, player, type) {
     let updates = [];

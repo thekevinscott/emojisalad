@@ -47,7 +47,9 @@ gulp.task('seed', (cb) => {
   });
 });
 
-gulp.task('server', shared.server());
+gulp.task('server', (opts) => {
+  return shared.server({ CALLBACK_PORT: util.env.CALLBACK_PORT })();
+});
 
 gulp.task('default', () => {
   console.log('* seed - Reimports the local database file and seeds with data');

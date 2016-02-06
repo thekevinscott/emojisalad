@@ -10,7 +10,7 @@ const req = Promise.promisify(require('request'));
 
 module.exports = function (params) {
   console.debug('\n==========process message===========\n');
-  console.debug('params', params);
+  //console.debug('params', params);
   if ( ! params.from ) {
     throw new Error("No from provided");
   }
@@ -21,9 +21,8 @@ module.exports = function (params) {
     throw new Error("No body provided");
   }
 
-  console.debug('get ready to call router');
-  return router(params.from, params.body, params.to).then((response) => {
-    console.log('**** HUZZAH BIG BOY');
-    return Message.parse(response);
+  // responses comes back as an array of messages
+  return router(params.from, params.body, params.to).then((responses) => {
+    return Message.parse(responses, params.protocol);
   });
 };

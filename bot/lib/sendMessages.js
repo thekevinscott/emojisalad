@@ -5,11 +5,10 @@ const concatenate = require('lib/concatenateMessages');
 const request = Promise.promisify(require('request'));
 //const queues = require('config/services').queues;
 const sendAlert = require('./sendAlert');
-const services = require('microservice-registry');
+const registry = require('microservice-registry');
 
 const sendMessages = (messages, options = {}) => {
   messages = concatenate(messages);
-  console.debug('sending messages', messages);
 
   if ( options.trip && messages.length >= options.trip ) {
     sendAlert(messages, 'tripped', 'send');
@@ -29,12 +28,14 @@ const sendMessages = (messages, options = {}) => {
     obj[message.protocol].push(message);
     return obj;
   }, {});
+
+  //console.debug('messages_by_protocol', messages_by_protocol);
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
     const messages = messages_by_protocol[protocol];
-    const serv = service.get(protocol);
+    const service = registry.get(protocol);
     return request({
-      url: serv.api.send.endpoint,
-      method: serv.api.send.method,
+      url: service.api.send.endpoint,
+      method: service.api.send.method,
       form: {
         messages: messages.map(function(message) {
           return {

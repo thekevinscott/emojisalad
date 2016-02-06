@@ -13,7 +13,7 @@ const getTimestamp = require('lib/getTimestamp');
 let timer;
 let queued_read_action = false;
 let processing = false;
-const allowed_protocols = process.env.QUEUES.split(',');
+const allowed_protocols = process.env.PROTOCOLS.split(',');
 const tripwire_settings = {
   // if 10 or more messages are gotten or sent,
   // send us an email to let us know
@@ -23,6 +23,13 @@ const tripwire_settings = {
   trip: 20
 };
 
+const sequential = (fns) => {
+  return Promise.reduce(fns, (response, fn) => {
+    return fn().then(function(output) {
+      return response.concat(output);
+    });
+  }, []);
+}
 
 // once called, this function will set itself on a timer.
 // that timer gets reset (if it exists) on every run;
@@ -35,25 +42,34 @@ const tripwire_settings = {
 const read = () => {
   if ( processing === false ) {
     processing = true;
-    console.debug('read');
+    //console.debug('read');
     clear();
 
-    console.debug('get the timestamp');
+    //console.debug('get the timestamp');
     //const lastRecordedTimestamp = yield 
     return getTimestamp().then((lastRecordedTimestamp) => {
-      console.debug('got the timestamp');
+      //console.debug('got the timestamp');
       if ( ! lastRecordedTimestamp ) {
         throw new Error('No Timestamp found');
       }
       console.debug('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
 
       return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
-        console.debug('messages', messages);
-        console.debug('got messages', messages.length);
+        //console.debug('messages: there hsould be protocol in here', messages);
+        //console.debug('got messages', messages.length);
 
         if ( messages.length ) {
-          return Promise.all(messages.map(processMessage)).then((processed_messages) => {
-            console.debug('this should be an array of an array of messages', processed_messages.length);
+          //console.debug('incoming message length', messages.length);
+
+          return sequential(messages.map((message) => {
+            return function() {
+              return processMessage(message);
+            }
+          })).then((processed_messages) => {
+            //console.debug('processed messages', processed_messages);
+            //console.debug('****** MAKE SURE THESE ARENT ON THE OBJECT');
+          //return Promise.all(messages.map(processMessage)).then((processed_messages) => {
+            //console.debug('this should be an array of an array of messages', processed_messages);
 
             // set timestamp once we've retrieved the messages and processed them,
             // but before we've sent them.
@@ -62,12 +78,12 @@ const read = () => {
             // of the messages go out but not all of them, we don't want to 
             // resend out potentially invalid messages, which could happen if we don't
             // accurately record the timestamp.
-            console.debug('set Timestamp for messages');
+            //console.debug('set Timestamp for messages');
             return setTimestamp(messages).then(() => {
-              console.debug('prepare to send messages');
-              return Promise.all(processed_messages.map((messages_to_send) => {
-                return sendMessages(messages_to_send);
-              })).then(() => {
+              //console.debug('prepare to send messages');
+
+              return sendMessages(processed_messages).then(() => {
+                //console.debug('messages are sent');
                 processing = false;
                 if ( queued_read_action ) {
                   read();

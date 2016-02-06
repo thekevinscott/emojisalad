@@ -34,9 +34,9 @@ function exec(command, callbacks) {
     callbacks = {};
   }
   return new Promise((resolve, reject) => {
-    console.log('starting', command);
+    //console.log('starting', command);
     return childExec(command, (error, stdout, stderr) => {
-      console.log('back, for', command);
+      //console.log('back, for', command);
       if ( error ) {
         if ( callbacks.error ) {
           callbacks.error(error);
@@ -155,8 +155,11 @@ function server(options) {
     const PORT = util.env.PORT || '1338';
     const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
 
+    if ( ! options ) {
+      options = {};
+    }
+
     let cmd = 'node';
-    //console.log('watch', util.env.WATCH);
     if (util.env.WATCH) {
       cmd = 'supervisor';
     }
@@ -169,7 +172,6 @@ function server(options) {
       return `${key.toUpperCase()}=${options[key]}`;
     }));
 
-    console.log('args', args);
     return spawn('env', args.concat([
       cmd,
       'index.js',

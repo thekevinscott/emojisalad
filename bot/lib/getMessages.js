@@ -1,9 +1,8 @@
 'use strict';
 const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
-//const queue_services = require('config/services').queues;
 const sendAlert = require('./sendAlert');
-const service = require('microservice-registry');
+const registry = require('microservice-registry');
 
 const getMessages = (timestamp, protocols, options = {}) => {
   //console.log('time to get messages');
@@ -12,19 +11,17 @@ const getMessages = (timestamp, protocols, options = {}) => {
   } else if ( ! parseFloat(timestamp) ) {
     throw "You must provide a valid timestamp";
   }
-  //console.log('prepare to iterate over protocols', protocols);
   return Promise.all(protocols.map((protocol) => {
     //console.log('get the protocol', protocol);
-    //if ( queue_services[protocol] ) {
-    const serv = service.get(protocol)
+    //if ( queue_registrys[protocol] ) {
+    const service = registry.get(protocol)
     return request({
-      url: serv.api.received.endpoint,
-      method: serv.api.received.method,
+      url: service.api.received.endpoint,
+      method: service.api.received.method,
       qs: {
         date: timestamp
       }
     }).then((response) => {
-      //console.log('response', response);
       if ( ! response || ! response.body ) {
         throw response;
       }

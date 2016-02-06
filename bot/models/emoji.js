@@ -4,36 +4,12 @@ const Promise = require('bluebird');
 const _ = require('lodash');
 const emojiExists = require('emoji-exists');
 const db = require('db');
-const api = require('config/services').api.url;
 
-const req = Promise.promisify(require('request'));
-const request = function(options) {
-  //console.log('options', options);
-  return req(options).then(function(response) {
-    //console.log('re', response);
-    let body = response.body;
-    try {
-      body = JSON.parse(body);
-    } catch(err) {}
+const api = require('../api');
 
-    if ( body ) {
-      return body;
-    } else {
-      throw new Error('No response from API in emoji');
-    }
-  });
-}
-
-let Emoji = {
+const Emoji = {
   checkInput: function(str) {
-    return request({
-      url: `${api}emoji/check`,
-      method: 'POST',
-      form: { emoji: str } 
-    }).then((response) => {
-      //console.log('re', response);
-      return response;
-    });
+    return api('emoji', 'checkInput', { emoji: str }); 
   },
 };
 

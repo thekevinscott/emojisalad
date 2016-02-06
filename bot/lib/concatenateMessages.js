@@ -4,7 +4,6 @@ const join_string = '\n\n'
 
 const concatenate = function(messages) {
   let keys = {};
-  console.debug('messages', messages);
   if ( ! messages.length ) {
     throw "No messages provided";
   }
@@ -19,21 +18,20 @@ const concatenate = function(messages) {
     if ( ! message.from) {
       throw "No from provided";
     }
-    console.debug('message', message);
     let key = message.to+message.from;
     if ( !keys[key] ) {
       keys[key] = [];
     }
     keys[key].push(message);
   }
-  console.debug('keys', keys);
   const combined_messages = Object.keys(keys).map(function(key) {
     return keys[key].reduce(function(output, response) {
       if (! output) {
         output = {
           to: response.to,
           from: response.from,
-          body: [response.body]
+          body: [response.body],
+          protocol: response.protocol
         };
       } else {
         output.body.push(response.body);
@@ -41,13 +39,11 @@ const concatenate = function(messages) {
       return output;
     }, null);
   });
-  console.debug('combined messages', combined_messages);
   
   const joined_messages = combined_messages.map(function(response) {
     response.body = response.body.join(join_string);
     return response;
   });
-  console.debug('joined messages', joined_messages);
 
   return joined_messages;
 };

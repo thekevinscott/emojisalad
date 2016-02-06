@@ -15,7 +15,7 @@ let Message = {
       key = [key];
     }
 
-    var query = squel
+    let query = squel
                 .select()
                 .from('messages')
                 .where('`key` IN ?',key);
@@ -57,10 +57,10 @@ let Message = {
       throw "No messages found for key " + key;
     }
   }),
-  parse: Promise.coroutine(function* (responses) {
+  parse: Promise.coroutine(function* (responses, protocol = null) {
     if ( responses && responses.length ) {
-      var messages = {};
-      var options = {};
+      let messages = {};
+      let options = {};
       responses.map(function(response) {
         if ( response.options ) {
           options[response.key] = response.options;
@@ -79,6 +79,7 @@ let Message = {
       });
 
       return responses.map(function(response) {
+        console.log('start of a response', response);
         let to;
         let from;
 
@@ -106,7 +107,8 @@ let Message = {
         return _.assign({
           body: messages[response.key],
           to: from,
-          from: to
+          from: to,
+          protocol: protocol
         }, response);
       });
     } else {

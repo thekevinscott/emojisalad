@@ -5,11 +5,11 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 5000;
 
-const service = require('microservice-registry');
+const registry = require('microservice-registry');
 
 const endpoint = 'http://localhost:' + port + '/';
 
-service.register('bot', {
+registry.register('bot', {
   services: [
     'testqueue',
     'api'
@@ -32,8 +32,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.use(pmx.expressErrorHandler());
 
-service.ready(() => {
-  app.listen(port, () => {
+app.listen(port, () => {
+  registry.ready(() => {
     console.debug('EmojinaryFriend Bot');
 
     // Incoming requests take one of two forms

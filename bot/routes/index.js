@@ -6,11 +6,22 @@ let Player = require('models/player');
 let User = require('models/user');
 
 let Router = function(from, message, to) {
+  return new Promise((resolve) => {
+    resolve([{
+      key: 'intro',
+      player: {
+        from: from,
+        to: to
+      }
+    }]);
+  });
+
+
+
   return Player.getOne({
     from: from,
     to: to
   }).then((player) => {
-    console.log('**** player', player);
     if ( player ) {
       // this means we are in a game
     } else {

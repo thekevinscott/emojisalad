@@ -1,6 +1,6 @@
 const http = require('http');
 
-const services = require('./config/services');
+const services = require('../config/services');
 const api_port = services.api.port;
 const bot_port = services.bot.port;
 const test_port = services.testqueue.port;
@@ -25,8 +25,7 @@ function req(options, callback, error) {
 }
 
 describe('Testing Servers', function() {
-  console.log('******************');
-  it.only('should check testqueue', function(done) {
+  it('should check testqueue', function(done) {
     const port = test_port;
     req({
       host: `localhost`,
@@ -63,9 +62,9 @@ describe('Testing Servers', function() {
     }, done);
   });
 
-  it('should get a valid response', (done) => {
-    const setup = require('./integration/lib/setup');
-    const getPlayers = require('./integration/lib/getPlayers');
+  it.only('should get a valid response', (done) => {
+    const setup = require('lib/setup');
+    const getPlayers = require('lib/getPlayers');
     let player = getPlayers(1)[0];
     return setup([
       { player: player, msg: 'hello?' },

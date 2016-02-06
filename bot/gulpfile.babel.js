@@ -110,14 +110,15 @@ gulp.task('test', (cb) => {
   });
 });
 
-gulp.task('server', (env) => {
-  let queues;
-  if ( env === 'test' ) {
-    let queues = ['testqueue'];
+gulp.task('server', () => {
+  let protocols;
+
+  if ( util.env.ENVIRONMENT === 'test' ) {
+    protocols = ['testqueue'];
   } else {
-    let queues = ['testqueue'];
+    protocols = ['testqueue'];
   }
-  shared.server({ queues: queues });
+  return shared.server({ protocols: protocols.join(',') })();
 });
 
 gulp.task('default', () => {

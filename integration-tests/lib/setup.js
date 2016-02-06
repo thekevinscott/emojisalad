@@ -1,9 +1,10 @@
 'use strict';
 const Promise = require('bluebird');
-const request = require('superagent');
+const request = Promise.promisify(require('request'));
 //const req = require('./req');
 const _ = require('lodash');
 const sequence = require('./sequence');
+const services = require('config/services');
 //const game_numbers = require('../../../../config/numbers');
 const game_numbers = [
   '+15551111111',
@@ -13,7 +14,13 @@ const game_numbers = [
   '+15559999999',
 ];
 
-const port = 5999;
+let callback = () => {}
+const app = require('./server');
+app.post('/', (res) => {
+  callback(res);
+});
+
+const port = services.testqueue.port;
 function setup(arr) {
   if ( !_.isArray(arr) ) {
     arr = [arr];
@@ -38,16 +45,26 @@ function setup(arr) {
         from: player.number
       };
 
-      request
-      .post(`http://localhost:${port}/receive`)
-            .send(message)
-      .end((err, res) => {
-        console.log('**** end', err, res);
-        if ( err ) {
-          reject(err);
-        } else {
-          resolve(res);
-        }
+      const url = `http://localhost:${port}/receive`;
+
+      callback = (res) => {
+        console.log('********** HUZZZZZZZAH', message, res.body);
+        resolve(res);
+      };
+
+      request({
+        url: url,
+        method: 'post',
+        form: message
+      }).then((res) => {
+        console.log('res', res);
+        //if ( err ) {
+          //reject(err);
+        //} else {
+          //resolve(res);
+        //}
+      }).catch((err) => {
+        console.error(err);
       });
     });
   }));

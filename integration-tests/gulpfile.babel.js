@@ -65,22 +65,33 @@ function startServers(debug, servers_debug) {
       name: 'api',
       chdir: '../api',
       //listen: 'EmojinaryFriend API',
-      port: api_port 
+      port: api_port,
+      args: [
+        '--DEBUG',
+        debug,
+      ]
     },
     {
       chdir: '../testqueue',
       name: 'testqueue',
-      port: test_port
+      port: test_port,
+      args: [
+        '--DEBUG',
+        'false',
+        //debug,
+        '--CALLBACK_PORT',
+        '3999'
+      ]
     },
     {
       chdir: '../bot',
       name: 'bot',
       args: [
-        '--QUEUES',
-        'testqueue',
+        //'--QUEUES',
+        //'testqueue',
 
-        '--API_PORT',
-        api_port
+        '--DEBUG',
+        debug,
       ],
       port: bot_port
     }
@@ -101,26 +112,25 @@ function startServers(debug, servers_debug) {
 
   return Promise.all(commands.map((cmd) => {
     return new Promise((resolve) => {
+      let child;
       d.on('added', (obj) => {
-        if ( obj && obj.advertisement && obj.advertisement.name === cmd.name && obj.advertisement.ready ) {
-          console.log(cmd.name, 'added');
-          resolve();
+        if ( obj.advertisement ) {
+          let service = obj.advertisement;
+          if ( service.available ) {
+            resolve(child);
+          }
         }
       });
 
-      let child;
       process.chdir(cmd.chdir);
       const command = 'gulp';
       const args = [
         'server',
-        '--DEBUG',
-        debug,
         '--ENVIRONMENT',
         'test',
         '--PORT',
         cmd.port
       ].concat(cmd.args || []);
-      //console.log(command, args);
       child = shared.spawn(command, args, stdout, stderr, close);
     });
   }));
@@ -151,19 +161,11 @@ gulp.task('test', (cb) => {
   }
   return seed().then(() => {
     return startServers(process.env.DEBUG, servers_debug);
-  }).then((resp) => {
-  //startServers(process.env.DEBUG, servers_debug).then((resp) => {
-    console.log('Servers started, starting tests');
-    servers = resp;
-    //console.log('got a child back', servers);
+  }).then((servers) => {
     process.chdir('../integration-tests');
 
-    // we need to initialize the bot store with a timestamp
-    // THIS SHOULD HAPPEN ON BOOT
-    //return request(`http://localhost:${bot_port}/ping`);
-  //}).then(() => {
     servers.map((server) => {
-      console.log('server', server);
+      //console.log('server', server);
       server.stderr.on('data', (data) => {
         killServers();
         process.exit(1);
@@ -173,19 +175,21 @@ gulp.task('test', (cb) => {
         process.exit(1);
       });
     });
+
+
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
-      timeout: 10000,
+      timeout: 30000,
       slow: 500,
       bail: true
     }))
     .on('error', function(data) {
-      console.log('error');
-      //console.error(data.message);
+      console.error('error', data.message);
       killServers();
       process.exit(1);
     })
     .once('end', function() {
+      console.log('end');
       killServers();
       process.exit();
     });

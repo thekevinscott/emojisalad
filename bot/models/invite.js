@@ -5,39 +5,13 @@ const Promise = require('bluebird');
 const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
-const api = require('config/services').api.url;
 
-const req = Promise.promisify(require('request'));
-const request = function(options) {
-  return req(options).then(function(response) {
-    let body = response.body;
-    try {
-      body = JSON.parse(body);
-    } catch(err) {}
-
-    if ( body ) {
-      return body;
-    } else {
-      throw new Error('No response from API in player');
-    }
-  });
-}
 let Invite = {
   create: (inviter, value) => {
-    return request({
-      url: `${api}invites`,
-      method: 'POST',
-      form: {
-        inviter_id: inviter.id,
-        invited: value
-      }
-    }).then((response) => {
-      if ( response.id ) {
-        return response;
-      } else {
-        throw response;
-      }
-    });
+    return api('invites', 'create', {
+      inviter_id: inviter.id,
+      invited: value
+    }); 
   },
   /*
   create: Promise.coroutine(function* (inviter, value) {
