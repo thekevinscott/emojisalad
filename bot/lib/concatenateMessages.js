@@ -1,6 +1,7 @@
 'use strict';
 
 const join_string = '\n\n'
+const _ = require('lodash');
 
 const concatenate = function(messages) {
   let keys = {};
@@ -27,12 +28,9 @@ const concatenate = function(messages) {
   const combined_messages = Object.keys(keys).map(function(key) {
     return keys[key].reduce(function(output, response) {
       if (! output) {
-        output = {
-          to: response.to,
-          from: response.from,
-          body: [response.body],
-          protocol: response.protocol
-        };
+        output = _.extend({}, response, {
+          body: [response.body]
+        });
       } else {
         output.body.push(response.body);
       }

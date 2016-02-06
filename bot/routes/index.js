@@ -13,7 +13,15 @@ let Router = function(from, message, to) {
         from: from,
         to: to
       }
-    }]);
+    },
+    //{
+      //key: 'intro',
+      //player: {
+        //from: '123123123',
+        //to: '989899898' 
+      //}
+    //}
+    ]);
   });
 
 

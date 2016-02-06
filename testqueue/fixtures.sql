@@ -55,12 +55,13 @@ CREATE TABLE `sent` (
   `body` text,
   `from` varchar(255) DEFAULT NULL,
   `to` varchar(255) DEFAULT NULL,
+  `status` int(3) unsigned NOT NULL DEFAULT '0',
+  `initiated_id` int(11) unsigned DEFAULT NULL,
   `createdAt` timestamp(6) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `from` (`from`(191)),
   KEY `to` (`to`(191))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 
 

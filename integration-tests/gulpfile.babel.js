@@ -87,10 +87,13 @@ function startServers(debug, servers_debug) {
       chdir: '../bot',
       name: 'bot',
       args: [
-        //'--QUEUES',
-        //'testqueue',
+        '--QUEUES',
+        [
+          'testqueue'
+        ].join(','),
 
         '--DEBUG',
+        //'false',
         debug,
       ],
       port: bot_port

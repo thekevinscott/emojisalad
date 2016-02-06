@@ -1,21 +1,71 @@
+/**
+ * Check will check that a given outgoing message
+ * results in a set of expected response messages.
+ *
+ * It will call setup with a single message, and then
+ * spin up a server route to listen for incoming messages.
+ *
+ * Any time it receives a ping back (indicating a message
+ * has been processed and sent out),
+ *
+ */
 'use strict';
 const chai = require('chai');
 const expect = chai.expect;
 const Promise = require('bluebird');
+const request = Promise.promisify(require('request'));
 const setup = require('./setup');
 const Message = require('models/Message');
-const Twilio = require('models/Twilio');
 const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
 const levenshtein = require('levenshtein');
+const services = require('config/services');
+const port = services.testqueue.port;
 
+let callback = () => {}
+const app = require('./server');
+app.post('/', (res) => {
+  callback(res);
+});
+
+const messages = {};
 
 // checks that a certain action's
 // return matches an expected array
-let check = Promise.coroutine(function* (action, expected, inline_check) {
-  let fns = [setup(action)];
-  let messages = {};
-  // retreive messages
-  let expected_fns = expected.map(function(message) {
+const check = Promise.coroutine(function* (action, expected, inline_check) {
+  // this is the id of the initiating message;
+  // we'll use this to get back the associated messages to check against
+  let initiated_id;
+  return setup(action).then((created_messages) => {
+    const created_message = created_messages.shift();
+    initiated_id = created_message.id;
+
+    return Promise.join(
+      populateExpectedMessages(expected),
+      getAssociatedMessages(initiated_id),
+      (processed, action_output) => {
+        const actions = parseActions(action_output);
+
+        processed.map(function(message) {
+          messages[message.key] = message;
+        });
+
+        const expecteds = parseExpecteds(expected, messages);
+
+        if ( inline_check ) {
+          inlineCheck(actions, expecteds);
+        } else {
+          return {
+            output: actions,
+            expected: expecteds
+          };
+        }
+      }
+    );
+  });
+});
+
+const populateExpectedMessages = (expected) => {
+  return Promise.all(expected.map(function(message) {
     if ( ! messages[message.key] ) {
       messages[message.key] = true;
       return message;
@@ -29,13 +79,37 @@ let check = Promise.coroutine(function* (action, expected, inline_check) {
       return msg[0];
     });
     //return Message.get([message.key], message.options);
+  }));
+}
+
+const getAssociatedMessages = (initiated_id) => {
+  return new Promise((resolve) => {
+    callback = (res) => {
+      const url = `http://localhost:${port}/sent`;
+      return request({
+        url: url,
+        method: 'get',
+        qs: {
+          initiated_id: initiated_id
+        }
+      }).then((res) => {
+        let body = res.body;
+        try {
+          body = JSON.parse(body);
+        } catch(err) {}
+        console.log('body', body);
+
+        if (body.length > 0) {
+          callback = function() {};
+          resolve(body);
+        }
+      });
+    };
   });
-  fns = fns.concat(expected_fns);
 
-  const processed = yield Promise.all(fns);
-  const action_output = processed.shift();
-
-  const actions = action_output.map(function(a) {
+}
+const parseActions = (action_output) => {
+  return action_output.map(function(a) {
     let action = {
       body : a.body
     };
@@ -44,11 +118,9 @@ let check = Promise.coroutine(function* (action, expected, inline_check) {
     }
     return action;
   });
+}
 
-  //let responses = processed[0];
-  processed.map(function(message) {
-    messages[message.key] = message;
-  });
+const parseExpecteds = (expected, messages) => {
   let expecteds = [];
   if ( expected.length ) {
     for ( let i=0;i<expected.length;i++ ) {
@@ -61,39 +133,37 @@ let check = Promise.coroutine(function* (action, expected, inline_check) {
       expecteds.push(expected_obj);
     }
   }
+  return expecteds;
+}
 
-  // we return arrays of expectations so that tests can accurately report 
-  // line numbers for errors.
-  if ( inline_check ) {
-    actions.map((action, i) => {
-      const expected = expecteds[i].body.replace(/\*/g,'');
-      // we can't use this because of emojis and regex
-      //const result = action.body.match(new RegExp(expected));
-      try {
-        const r = levenshtein(expected, action.body) / action.body.length;
-        r.should.be.below(0.05);
-      } catch(err) {
-        //console.error(err);
-        // this will fail but we'll get a nice
-        // error message out of it
-        action.body.should.equal(expected);
-      }
-    });
+const inlineCheck = (actions, expecteds) => {
+  actions.map((action, i) => {
+    return checker(action, expecteds[i]);
+  });
 
-    actions.map((action) => {
-      delete action.body;
-      return action;
-    }).should.deep.equal(expecteds.map((expected) => {
-      delete expected.body;
-      return expected;
-    }));
+  actions.map((action) => {
+    delete action.body;
+    return action;
+  }).should.deep.equal(expecteds.map((expected) => {
+    delete expected.body;
+    return expected;
+  }));
+};
 
-  } else {
-    return {
-      output: actions,
-      expected: expecteds
-    };
+
+const checkBody = (action, expected) => {
+  expected = expected.body.replace(/\*/g,'');
+  // we can't use this because of emojis and regex
+  //const result = action.body.match(new RegExp(expected));
+  try {
+    const r = levenshtein(expected, action.body) / action.body.length;
+    r.should.be.below(0.05);
+  } catch(err) {
+    //console.error(err);
+    // this will fail but we'll get a nice
+    // error message out of it
+    action.body.should.equal(expected);
   }
-});
+}
 
 module.exports = check;

@@ -62,15 +62,16 @@ describe('Testing Servers', function() {
     }, done);
   });
 
-  it.only('should get a valid response', (done) => {
-    const setup = require('lib/setup');
+  it.only('should get a valid response', () => {
+    const check = require('lib/check');
     const getPlayers = require('lib/getPlayers');
-    let player = getPlayers(1)[0];
-    return setup([
+    const player = getPlayers(1)[0];
+    return check(
       { player: player, msg: 'hello?' },
-      { player: player, msg: 'hello? 2' },
-    ]).then(function(obj) {
-      console.log('obj', obj);
+      [
+        { key: 'intro', to: player }
+      ]
+    ).then((obj) => {
       obj.output.should.deep.equal(obj.expected);
     });
   });

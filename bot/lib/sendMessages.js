@@ -33,17 +33,20 @@ const sendMessages = (messages, options = {}) => {
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
     const messages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
+    console.debug('the messages to send', messages);
     return request({
       url: service.api.send.endpoint,
       method: service.api.send.method,
       form: {
-        messages: messages.map(function(message) {
-          return {
-            to: message.to,
-            from: message.from,
-            body: message.body 
-          }
-        })
+        messages: messages
+        //messages: messages.map(function(message) {
+          //return {
+            //to: message.to,
+            //from: message.from,
+            //body: message.body,
+            //initiated_id: message.initiated_id
+          //}
+        //})
       }
     });
   }));

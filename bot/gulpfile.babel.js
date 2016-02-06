@@ -111,14 +111,16 @@ gulp.task('test', (cb) => {
 });
 
 gulp.task('server', () => {
-  let protocols;
+  // default protocols
+  let protocols = [
+    'sms'
+  ].join(',');
 
-  if ( util.env.ENVIRONMENT === 'test' ) {
-    protocols = ['testqueue'];
-  } else {
-    protocols = ['testqueue'];
+  if ( util.env.QUEUES ) {
+    protocols = util.env.QUEUES;
   }
-  return shared.server({ protocols: protocols.join(',') })();
+
+  return shared.server({ protocols: protocols })();
 });
 
 gulp.task('default', () => {

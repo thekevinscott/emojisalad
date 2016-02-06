@@ -8,21 +8,21 @@ const Twilio = require('models/twilio');
 const Promise = require('bluebird');
 const req = Promise.promisify(require('request'));
 
-module.exports = function (params) {
+module.exports = function (message) {
   console.debug('\n==========process message===========\n');
-  //console.debug('params', params);
-  if ( ! params.from ) {
+  console.debug('message', message);
+  if ( ! message.from ) {
     throw new Error("No from provided");
   }
-  if ( ! params.to ) {
+  if ( ! message.to ) {
     throw new Error("No to provided");
   }
-  if ( ! params.body ) {
+  if ( ! message.body ) {
     throw new Error("No body provided");
   }
 
   // responses comes back as an array of messages
-  return router(params.from, params.body, params.to).then((responses) => {
-    return Message.parse(responses, params.protocol);
+  return router(message.from, message.body, message.to).then((responses) => {
+    return Message.parse(responses, message);
   });
 };
