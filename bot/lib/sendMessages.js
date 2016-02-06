@@ -1,14 +1,13 @@
 'use strict';
 
 const Promise = require('bluebird');
-const concatenate = require('lib/concatenateMessages');
 const request = Promise.promisify(require('request'));
 //const queues = require('config/services').queues;
 const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
 
 const sendMessages = (messages, options = {}) => {
-  messages = concatenate(messages);
+  console.debug('messages to send', messages);
 
   if ( options.trip && messages.length >= options.trip ) {
     sendAlert(messages, 'tripped', 'send');

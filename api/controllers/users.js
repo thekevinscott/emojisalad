@@ -46,7 +46,9 @@ function create(req) {
   return User.create(req.body);
 }
 function update(req) {
-  return User.update({ id: req.params.user_id }, req.body);
+  return User.update({ id: req.params.user_id }, req.body).then((response) => {
+    return response;
+  });
 }
 function remove(req) {
   const user_id = req.params.user_id;

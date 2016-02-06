@@ -65,6 +65,7 @@ function startServers(debug, servers_debug) {
     {
       name: 'api',
       chdir: '../api',
+      //color: 'green',
       //listen: 'EmojinaryFriend API',
       port: api_port,
       args: [
@@ -87,6 +88,7 @@ function startServers(debug, servers_debug) {
     {
       chdir: '../bot',
       name: 'bot',
+      //color: 'yellow',
       args: [
         '--QUEUES',
         [
@@ -94,8 +96,8 @@ function startServers(debug, servers_debug) {
         ].join(','),
 
         '--DEBUG',
-        'false',
-        //debug,
+        //'false',
+        debug,
       ],
       port: bot_port
     }

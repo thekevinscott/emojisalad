@@ -134,9 +134,7 @@ const User = {
     const archived = params.archived || 0;
     query.where('u.archived=?', archived);
 
-    console.debug('user: ', query.toString());
     return db.query(query).then((users) => {
-      console.debug('users back', users);
       if ( users.length ) {
         return Player.find({ user_ids: users.map(user => user.id ) }).then((players) => {
 
@@ -150,6 +148,8 @@ const User = {
             user.players = players_by_id[user.id] || [];
             return user;
           });
+        }).then((users) => {
+          return users;
         });
       } else {
         return [];

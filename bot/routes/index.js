@@ -16,12 +16,11 @@ let Router = function(from, message, to) {
     } else {
       // this means we are either brand new,
       // or being onboarded
+      console.debug('prepare to get dem users');
       return User.get({
         from: from
       }).then((users) => {
-        console.debug('users back', users);
-        console.debug('hallelujah');
-        console.debug(users.length);
+        //console.debug('users back', users);
         // if user exists, we are being onboarded
         if ( users.length ) {
           console.debug('proceed to onboarding');

@@ -6,6 +6,7 @@ const User = require('models/user');
 const Message = require('models/message');
 const Twilio = require('models/twilio');
 const Promise = require('bluebird');
+const concatenate = require('lib/concatenateMessages');
 const req = Promise.promisify(require('request'));
 
 module.exports = function (message) {
@@ -24,5 +25,7 @@ module.exports = function (message) {
   // responses comes back as an array of messages
   return router(message.from, message.body, message.to).then((responses) => {
     return Message.parse(responses, message);
+  }).then((messages) => {
+    return concatenate(messages);
   });
 };

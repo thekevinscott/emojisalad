@@ -19,6 +19,7 @@ const Message = require('models/Message');
 const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
 const levenshtein = require('levenshtein');
 const services = require('config/services');
+const chalk = require('chalk');
 const port = services.testqueue.port;
 
 const noop = () => {};
@@ -38,7 +39,12 @@ const check = Promise.coroutine(function* (action, expected, inline_check) {
   let initiated_id;
   return setup(action).then((created_messages) => {
     const created_message = created_messages.shift();
+    if ( ! created_message.id ) {
+      console.error('********** created message', JSON.stringify(created_messages), JSON.stringify(action));
+      throw new Error('No message id provided');
+    }
     initiated_id = created_message.id;
+    console.log(chalk.blue('********** created message', initiated_id, JSON.stringify(created_message), JSON.stringify(action)));
 
     return Promise.join(
       populateExpectedMessages(expected),
@@ -83,34 +89,47 @@ const populateExpectedMessages = (expected) => {
   }));
 }
 
+const requestAssociatedMessages = (initiated_id, resolve) => {
+  const url = `http://localhost:${port}/sent`;
+  return request({
+    url: url,
+    method: 'get',
+    qs: {
+      initiated_id: initiated_id
+    }
+  }).then((res) => {
+    let body = res.body;
+    try {
+      body = JSON.parse(body);
+    } catch(err) {}
+
+    if (body.length > 0) {
+      resolve(body);
+    }
+  });
+}
+
 const getAssociatedMessages = (initiated_id) => {
-  const timeout_length = 2000;
+  const timeout_length = 10000;
+  const ping_length = 9000;
   let timer;
+  let ping;
   return new Promise((resolve, reject) => {
+    const res = (body) => {
+      clearTimeout(timer);
+      clearInterval(ping);
+      callback = noop;
+      resolve(body);
+    }
     setTimeout(() => {
       callback = noop;
       reject(`No message response within ${timeout_length/1000} seconds`);
     }, timeout_length);
-    callback = (res) => {
-      const url = `http://localhost:${port}/sent`;
-      return request({
-        url: url,
-        method: 'get',
-        qs: {
-          initiated_id: initiated_id
-        }
-      }).then((res) => {
-        let body = res.body;
-        try {
-          body = JSON.parse(body);
-        } catch(err) {}
-
-        if (body.length > 0) {
-          clearTimeout(timer);
-          callback = noop;
-          resolve(body);
-        }
-      });
+    ping = setInterval(() => {
+      requestAssociatedMessages(initiated_id, res);
+    }, ping_length);
+    callback = () => {
+      requestAssociatedMessages(initiated_id, res);
     };
   });
 

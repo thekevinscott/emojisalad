@@ -55,11 +55,13 @@ const read = () => {
 
         if ( messages.length ) {
 
+          //console.debug('messages', messages);
           return sequential(messages.map((message) => {
             return function() {
               return processMessage(message);
             }
           })).then((processed_messages) => {
+            console.debug('processed messages', processed_messages);
           //return Promise.all(messages.map(processMessage)).then((processed_messages) => {
 
             // set timestamp once we've retrieved the messages and processed them,
@@ -71,7 +73,7 @@ const read = () => {
             // accurately record the timestamp.
             //console.debug('set Timestamp for messages');
             return setTimestamp(messages).then(() => {
-              //console.debug('prepare to send messages');
+              console.debug('prepare to send messages');
 
               return sendMessages(processed_messages).then(() => {
                 //console.debug('messages are sent');

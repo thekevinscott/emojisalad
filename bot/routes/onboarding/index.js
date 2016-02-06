@@ -8,6 +8,7 @@ const _ = require('lodash');
 //var Message = require('../../models/message');
 
 module.exports = (user, input) => {
+  console.debug('onboarding');
   if ( ! user.confirmed ) {
     return require('./confirm')(user, input);
   } else if ( ! user.nickname ) {

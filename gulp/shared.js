@@ -1,6 +1,7 @@
 'use strict';
 const Promise = require('bluebird');
 const childExec = require('child_process').exec;
+const chalk = require('chalk');
 const util = require('gulp-util');
 const childSpawn = require('child_process').spawn;
 
@@ -177,7 +178,8 @@ function server(options) {
       'index.js',
     ]),
     (data) => {
-      console.log(`${data}`);
+      //console.log(chalk.green('heyo'));
+      console.log(chalk.green(`${data}`));
     },
     (err) => {
       console.error(`${err}`);
