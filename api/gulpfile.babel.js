@@ -7,7 +7,6 @@ require('babel-polyfill');
 const gulp = require('gulp');
 const util = require('gulp-util');
 const Promise = require('bluebird');
-const childExec = require('child_process').exec;
 const argv = require('yargs').argv;
 const mocha = require('gulp-mocha');
 const nodemon = require('gulp-nodemon');
@@ -114,19 +113,7 @@ gulp.task('seed', (cb) => {
   });
 });
 
-gulp.task('server', () => {
-  const DEBUG = util.env.DEBUG || 'true';
-  const PORT = util.env.PORT || '1338';
-  const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
-  nodemon({
-    script: 'index.js',
-    env: {
-      'ENVIRONMENT': ENVIRONMENT,
-      'DEBUG': DEBUG,
-      'PORT': PORT,
-    }
-  })
-});
+gulp.task('server', shared.server());
 
 gulp.task('default', () => {
   console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');

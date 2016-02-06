@@ -47,22 +47,7 @@ gulp.task('seed', (cb) => {
   });
 });
 
-gulp.task('server', () => {
-  const DEBUG = util.env.DEBUG || 'true';
-  const PORT = util.env.PORT || '5999';
-  const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
-  const BOT_PORT = util.env.BOT_PORT || '5000';
-  //console.log('run test queue server');
-  nodemon({
-    script: 'index.js',
-    env: {
-      'ENVIRONMENT': ENVIRONMENT,
-      'DEBUG': DEBUG,
-      'PORT': PORT,
-      'BOT_PORT': BOT_PORT,
-    }
-  });
-});
+gulp.task('server', shared.server());
 
 gulp.task('default', () => {
   console.log('* seed - Reimports the local database file and seeds with data');

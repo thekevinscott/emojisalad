@@ -1,6 +1,7 @@
 'use strict';
 const Promise = require('bluebird');
 const childExec = require('child_process').exec;
+const util = require('gulp-util');
 const childSpawn = require('child_process').spawn;
 
 function spawn(command, args, stdout, stderr, close) {
@@ -28,16 +29,28 @@ function spawn(command, args, stdout, stderr, close) {
   return child;
 }
 
-function exec(command) {
+function exec(command, callbacks) {
+  if ( ! callbacks ) {
+    callbacks = {};
+  }
   return new Promise((resolve, reject) => {
-    //console.log('starting', command);
+    console.log('starting', command);
     return childExec(command, (error, stdout, stderr) => {
-      //console.log('back, for', command);
+      console.log('back, for', command);
       if ( error ) {
+        if ( callbacks.error ) {
+          callbacks.error(error);
+        }
         reject(error);
       } else if ( stderr && stderr.indexOf('Warning') === -1 ) {
+        if ( callbacks.stderr ) {
+          callbacks.stderr(stderr);
+        }
         reject(stderr);
       } else {
+        if ( callbacks.stdout ) {
+          callbacks.stdout(stdout);
+        }
         resolve(stdout);
       }
     });
@@ -136,8 +149,43 @@ function importDB(config, file) {
   });
 }
 
+function server(options) {
+  return function() {
+    const DEBUG = util.env.DEBUG || 'true';
+    const PORT = util.env.PORT || '1338';
+    const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
+
+    let cmd = 'node';
+    //console.log('watch', util.env.WATCH);
+    if (util.env.WATCH) {
+      cmd = 'supervisor';
+    }
+
+    const args = [
+      `ENVIRONMENT=${ENVIRONMENT}`,
+      `DEBUG=${DEBUG}`,
+      `PORT=${PORT}`,
+    ].concat(Object.keys(options).map(function(key) {
+      return `${key.toUpperCase()}=${options[key]}`;
+    }));
+
+    console.log('args', args);
+    return spawn('env', args.concat([
+      cmd,
+      'index.js',
+    ]),
+    (data) => {
+      console.log(`${data}`);
+    },
+    (err) => {
+      console.error(`${err}`);
+    });
+  }
+}
+
 module.exports.exec = exec;
 module.exports.getConnectionString = getConnectionString;
 module.exports.pullDB = pullDB;
 module.exports.importDB = importDB;
 module.exports.spawn = spawn;
+module.exports.server = server;

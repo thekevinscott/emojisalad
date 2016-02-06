@@ -163,6 +163,7 @@ gulp.task('test', (cb) => {
     //return request(`http://localhost:${bot_port}/ping`);
   //}).then(() => {
     servers.map((server) => {
+      console.log('server', server);
       server.stderr.on('data', (data) => {
         killServers();
         process.exit(1);

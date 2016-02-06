@@ -110,33 +110,14 @@ gulp.task('test', (cb) => {
   });
 });
 
-gulp.task('server', () => {
-  //process.env.DEBUG = util.env.debug || false;
-  //console.log('DEBUG', util.env.debug);
-  //console.log('here comes server', args);
-  const DEBUG = util.env.DEBUG || 'true';
-  const PORT = util.env.PORT || '5000';
-  const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
-  const QUEUES = util.env.QUEUES || 'sms';
-  const TEST_PORT = util.env.TEST_PORT || '5999';
-  const API_PORT = util.env.API_PORT || '1338';
-
-  //console.log(TEST_PORT, API_PORT, QUEUES, PORT);
-
-  const env = {
-    'ENVIRONMENT': ENVIRONMENT,
-    'DEBUG': DEBUG,
-    'PORT': PORT,
-    'QUEUES': QUEUES,
-    //'TEST_PORT': TEST_PORT,
-    //'API_PORT': API_PORT
-  };
-
-  //console.log('GET READY FOR THAT NODE MAN');
-  nodemon({
-    script: 'index.js',
-    env: env
-  })
+gulp.task('server', (env) => {
+  let queues;
+  if ( env === 'test' ) {
+    let queues = ['testqueue'];
+  } else {
+    let queues = ['testqueue'];
+  }
+  shared.server({ queues: queues });
 });
 
 gulp.task('default', () => {

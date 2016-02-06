@@ -3,15 +3,13 @@
 const pmx = require('pmx');
 const app = require('express')();
 
-const d = require('node-discover')();
-const port = process.env.PORT || 1338;
+const service = require('microservice-registry');
 
-// advertise the service 
-d.advertise({
-  name: 'api',
-  ready: false,
-  port: port
+service.register('api',{
+  services: ['testqueue']
 });
+
+const port = process.env.PORT || 1338;
 
 app.set('port', port);
 
@@ -23,10 +21,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.listen(app.get('port'), () => {
   console.debug(`EmojinaryFriend API: ${process.env.ENVIRONMENT}`);
-  d.advertise({
-    name: 'api',
-    ready: true,
-    port: port
+  console.log('who is ready ?????');
+  service.ready().then(function() {
+    console.log('EVERYBODY READY');
+    console.log(service.get('testqueue'));
   });
 });
 

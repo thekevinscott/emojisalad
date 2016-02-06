@@ -3,7 +3,7 @@ const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
 //const queue_services = require('config/services').queues;
 const sendAlert = require('./sendAlert');
-const services = require('../services');
+const service = require('microservice-registry');
 
 const getMessages = (timestamp, protocols, options = {}) => {
   //console.log('time to get messages');
@@ -16,15 +16,13 @@ const getMessages = (timestamp, protocols, options = {}) => {
   return Promise.all(protocols.map((protocol) => {
     //console.log('get the protocol', protocol);
     //if ( queue_services[protocol] ) {
-    return services.get(protocol).then((service) => {
-      //console.log('endpoints', service.endpoints);
-      return request({
-        url: service.endpoints.received.url,
-        method: service.endpoints.received.method,
-        qs: {
-          date: timestamp
-        }
-      });
+    const serv = service.get(protocol)
+    return request({
+      url: serv.api.received.endpoint,
+      method: serv.api.received.method,
+      qs: {
+        date: timestamp
+      }
     }).then((response) => {
       //console.log('response', response);
       if ( ! response || ! response.body ) {

@@ -5,6 +5,24 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 5000;
 
+const service = require('microservice-registry');
+
+const endpoint = 'http://localhost:' + port + '/';
+
+service.register('bot', {
+  services: [
+    'testqueue',
+    'api'
+  ],
+  api: {
+    ping: {
+      endpoint: endpoint + 'ping',
+      method: 'GET',
+      description: 'An endpoint for calling back the Bot'
+    }
+  }
+});
+
 app.set('port', port);
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
@@ -12,18 +30,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-
 app.use(pmx.expressErrorHandler());
 
-const init = () => {
+service.ready(() => {
   app.listen(port, () => {
     console.debug('EmojinaryFriend Bot');
-    //d.advertise({
-      //name: 'bot',
-      //ready: true,
-      //port: port,
-      //hook: `http://localhost:${port}/ping`
-    //});
 
     // Incoming requests take one of two forms
     // Bot will either reach out to grab messages from the queue,
@@ -33,8 +44,4 @@ const init = () => {
     app.get('/ping', main);
     main();
   });
-}
-
-const services = require('./services').init(port).then(() => {
-  init();
 });
