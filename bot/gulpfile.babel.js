@@ -21,7 +21,7 @@ const nodemon = require('gulp-nodemon');
 const chalk = require('chalk');
 const squel = require('squel');
 
-const shared = require('../gulp/shared');
+const shared = require('../shared/gulp');
 const sql_file = 'test/fixtures/test-db.sql';
 
 /**
@@ -88,7 +88,7 @@ gulp.task('seed', (cb) => {
  */
 gulp.task('test', (cb) => {
   return seed().then(() => {
-    process.env.DEBUG = util.env.debug || false;
+    process.env.LOG_LEVEL = util.env.LOG_LEVEl || 'warning';
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
       timeout: 10000,
@@ -125,7 +125,8 @@ gulp.task('server', () => {
     port = util.env.PORT;
   }
 
-  return shared.server({ protocols: protocols, port: port })();
+  const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
+  return shared.server({ protocols: protocols, port: port, LOG_LEVEL: LOG_LEVEL })();
 });
 
 gulp.task('default', () => {

@@ -31,6 +31,7 @@ module.exports = [
 ];
 
 function find(req) {
+  console.info('I am from the API');
   return User.find(req.query);
 }
 function findOne(req) {

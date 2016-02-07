@@ -49,19 +49,19 @@ const read = () => {
       if ( ! lastRecordedTimestamp ) {
         throw new Error('No Timestamp found');
       }
-      //console.debug('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
+      console.info('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
 
       return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
 
         if ( messages.length ) {
 
-          //console.debug('messages', messages);
+          console.info('messages', messages);
           return sequential(messages.map((message) => {
             return function() {
               return processMessage(message);
             }
           })).then((processed_messages) => {
-            console.debug('processed messages', processed_messages);
+            console.info('processed messages', processed_messages);
           //return Promise.all(messages.map(processMessage)).then((processed_messages) => {
 
             // set timestamp once we've retrieved the messages and processed them,
@@ -71,12 +71,12 @@ const read = () => {
             // of the messages go out but not all of them, we don't want to 
             // resend out potentially invalid messages, which could happen if we don't
             // accurately record the timestamp.
-            //console.debug('set Timestamp for messages');
+            console.info('set Timestamp for messages');
             return setTimestamp(messages).then(() => {
-              console.debug('prepare to send messages');
+              console.info('prepare to send messages');
 
               return sendMessages(processed_messages).then(() => {
-                //console.debug('messages are sent');
+                console.info('messages are sent');
                 processing = false;
                 if ( queued_read_action ) {
                   read();

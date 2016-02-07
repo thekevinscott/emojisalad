@@ -10,7 +10,7 @@ const kickoffGame = require('../shared/kickoffGame');
 
 module.exports = (user, input) => {
   if ( rule('keep').test(input) ) {
-    console.debug('keep is matched');
+    console.info('keep is matched');
     return User.update(user, {
       confirmed_avatar: 1
     }).then(() => {
@@ -24,10 +24,10 @@ module.exports = (user, input) => {
     });
     //return startGame(user, input);
   } else {
-    console.debug('keep is not matched', input);
+    console.info('keep is not matched', input);
     return Emoji.checkInput(input).then((result) => {
     //let result = Emoji.checkInput(input);
-      console.debug('keep result', result);
+      console.info('keep result', result);
       if ( result.type === 'emoji' ) {
         if ( result.number === 1 ) {
           // also check length of emoji

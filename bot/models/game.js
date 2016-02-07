@@ -99,18 +99,18 @@ let Game = {
     return game;
   }),
   newRound: function(game) {
-    console.debug('new round');
+    console.info('new round');
     return Round.create(game).then(function(round) {
-      console.debug('round submitter', round.submitter.id, round.submitter.nickname);
+      console.info('round submitter', round.submitter.id, round.submitter.nickname);
       return Promise.all(game.players.map(function(game_player) {
-        console.debug('player', game_player.id, game_player.nickname);
+        console.info('player', game_player.id, game_player.nickname);
         let state;
         if ( game_player.id === round.submitter.id ) {
           state = 'waiting-for-submission';
         } else {
           state = 'waiting-for-round';
         }
-        console.debug('expected state', state);
+        console.info('expected state', state);
         return Player.update(game_player, {
           state: state,
         });
@@ -188,15 +188,15 @@ let Game = {
 
     return db.query(query);
   },
-  get: Promise.coroutine(function* (params, debug) {
-    let games = yield this.getAll(params, debug);
+  get: Promise.coroutine(function* (params, info) {
+    let games = yield this.getAll(params, info);
     if ( games.length ) {
       let game = games[0];
       game.round = yield Round.getLast(game);
       game.players = yield this.getPlayers(game);
 
       if ( game.round ) {
-        //console.debug('game round exists');
+        //console.info('game round exists');
         game.players.map(function(game_player) {
           if ( game_player.id === game.round.submitter_id ) {
             game.round.submitter = game_player;
@@ -209,13 +209,13 @@ let Game = {
         console.error(game);
         throw "Non pending games should have an associated round";
       }
-      //console.debug('game returned', game);
+      //console.info('game returned', game);
       return game;
     } else {
       return null;
     }
   }),
-  getAll: Promise.coroutine(function* (params, debug) {
+  getAll: Promise.coroutine(function* (params, info) {
     let query = squel
                 .select()
                 .field('g.id')
@@ -239,14 +239,14 @@ let Game = {
       query.where('g.last_activity<?', params.last_activity);
     }
 
-    //console.debug('params', params);
-    console.debug(query.toString());
+    //console.info('params', params);
+    console.info(query.toString());
 
     let games = yield db.query(query.toString());
-    if ( !games.length && debug ) {
+    if ( !games.length && info ) {
       console.log('no games found', query.toString());
     }
-    //console.debug('games', games);
+    //console.info('games', games);
     return games;
   }),
   start: Promise.coroutine(function* (game) {

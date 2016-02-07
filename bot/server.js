@@ -35,7 +35,7 @@ app.use(pmx.expressErrorHandler());
 
 app.listen(port, () => {
   registry.ready(() => {
-    console.debug(`EmojinaryFriend Bot: ${port}`);
+    console.info(`EmojinaryFriend Bot: ${port}`);
 
     // Incoming requests take one of two forms
     // Bot will either reach out to grab messages from the queue,

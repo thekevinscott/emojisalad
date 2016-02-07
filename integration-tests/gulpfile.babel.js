@@ -59,28 +59,25 @@ function seed() {
  * This starts the various servers
  */
 
-function startServers(debug, servers_debug) {
+function startServers(debug, log_level) {
+  const servers_debug = false;
 
   const commands = [
     {
       name: 'api',
       chdir: '../api',
-      //color: 'green',
+      color: 'yellow',
       //listen: 'EmojinaryFriend API',
       port: api_port,
       args: [
-        '--DEBUG',
-        debug,
       ]
     },
     {
       chdir: '../testqueue',
       name: 'testqueue',
+      color: 'green',
       port: test_port,
       args: [
-        '--DEBUG',
-        'false',
-        //debug,
         '--CALLBACK_PORT',
         '3999'
       ]
@@ -88,16 +85,12 @@ function startServers(debug, servers_debug) {
     {
       chdir: '../bot',
       name: 'bot',
-      //color: 'yellow',
+      color: 'blue',
       args: [
         '--QUEUES',
         [
           'testqueue'
         ].join(','),
-
-        '--DEBUG',
-        //'false',
-        debug,
       ],
       port: bot_port
     }
@@ -135,10 +128,13 @@ function startServers(debug, servers_debug) {
         'server',
         '--ENVIRONMENT',
         'test',
+        '--LOG_LEVEL',
+        log_level,
         '--PORT',
         cmd.port
       ].concat(cmd.args || []);
       child = shared.spawn(command, args, stdout, stderr, close);
+      child.options = cmd;
     });
   }));
 }
@@ -158,7 +154,7 @@ gulp.task('seed', (cb) => {
 gulp.task('test', (cb) => {
   process.env.DEBUG = util.env.debug || false;
   // Seed the Bot database
-  const servers_debug = true;
+  const log_level = util.env.LOG_LEVEL || 'warning';
   let servers = [];
   function killServers() {
     return servers.map((server) => {
@@ -167,11 +163,20 @@ gulp.task('test', (cb) => {
     });
   }
   return seed().then(() => {
-    return startServers(process.env.DEBUG, servers_debug);
+    return startServers(process.env.DEBUG, log_level);
   }).then((servers) => {
     process.chdir('../integration-tests');
 
     servers.map((server) => {
+      server.stdout.on('data', (data) => {
+        if ( process.env.DEBUG ) {
+          if ( server.options.color ) {
+            console.log(chalk.bold(server.options.name), chalk[server.options.color](`${data}`));
+          } else {
+            console.log(server.options.name, `${data}`);
+          }
+        }
+      });
       //console.log('server', server);
       server.stderr.on('data', (data) => {
         killServers();

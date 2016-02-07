@@ -11,7 +11,7 @@ const store = (key, val) => {
   return using(
     getConnectionAsync(),
     (connection) => {
-      //console.debug('connection has been gotten');
+      //console.info('connection has been gotten');
       const coll = connection.collection('attributes');
       //console.log('coll', coll);
       if ( val !== undefined ) {
@@ -23,9 +23,9 @@ const store = (key, val) => {
           upsert: true
         });
       } else {
-        //console.debug('mongo get');
+        //console.info('mongo get');
         return coll.findOneAsync({ key: key }).then((item) => {
-          //console.debug('For key', key, 'found item', item);
+          //console.info('For key', key, 'found item', item);
           if ( item ) {
             return item.val;
           }
@@ -38,10 +38,10 @@ const store = (key, val) => {
 }
 
 const getConnectionAsync = () => {
-  //console.debug('get connection async');
+  //console.info('get connection async');
   return mongodb.MongoClient.connectAsync(url)
   .disposer((connection) => {
-    //console.debug('close mongo connection');
+    //console.info('close mongo connection');
     connection.close();
   });
 }

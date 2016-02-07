@@ -17,7 +17,7 @@ const setTimestamp = (messages) => {
         }
         return message;
       }).timestamp;
-      console.debug('last message timestamp', lastMessageTimestamp);
+      console.info('last message timestamp', lastMessageTimestamp);
       return store(keys.TIMESTAMP, lastMessageTimestamp);
     }
   } else {

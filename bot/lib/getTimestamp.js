@@ -6,9 +6,9 @@ const setTimestamp = require('lib/setTimestamp');
 const keys = require('../config/keys');
 
 const getTimestamp = () => {
-  console.debug('store keys', keys);
+  console.info('store keys', keys);
   return store(keys.TIMESTAMP).then((lastRecordedTimestamp) => {
-    console.debug('gotten timestamp', lastRecordedTimestamp);
+    console.info('gotten timestamp', lastRecordedTimestamp);
     if ( lastRecordedTimestamp ) {
       return lastRecordedTimestamp;
     } else {

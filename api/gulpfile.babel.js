@@ -83,7 +83,7 @@ gulp.task('update-fixtures', (cb) => {
  */
 gulp.task('test', (cb) => {
   return seed().then(() => {
-    process.env.DEBUG = util.env.debug || false;
+    process.env.LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
       timeout: 10000,
@@ -113,7 +113,10 @@ gulp.task('seed', (cb) => {
   });
 });
 
-gulp.task('server', shared.server());
+gulp.task('server', () => {
+  const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
+  return shared.server({ LOG_LEVEL: LOG_LEVEL })();
+})
 
 gulp.task('default', () => {
   console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');

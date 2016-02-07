@@ -77,11 +77,11 @@ let Round = {
     }
                         
     let phrases = yield db.query(query.toString());
-    console.debug('the guess', guess, 'phrases', phrases);
+    console.info('the guess', guess, 'phrases', phrases);
 
     const phrase = phrases[0].phrase;
     let result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
-    console.debug('first test', result);
+    console.info('first test', result);
 
     // check levenshtein as well, in case there's typos
     // but we limit it to a phrase of 5 characters or more.
@@ -92,7 +92,7 @@ let Round = {
       if ( distance <= .2 ) {
         result = true;
       }
-      console.debug('second test', result, distance);
+      console.info('second test', result, distance);
     }
 
     if ( ! result ) {
@@ -104,7 +104,7 @@ let Round = {
           let top_result = suggested_results[0].result;
           result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(top_result));
         }
-        console.debug('third test', result, suggested_results);
+        console.info('third test', result, suggested_results);
       } catch (err) {
         console.error('google choked', err);
       }
@@ -229,7 +229,7 @@ let Round = {
     let rounds = yield db.query(query);
     if ( rounds.length ) {
       let round = rounds[0];
-      console.debug('round', round);
+      console.info('round', round);
       return round;
     } else {
       return null;

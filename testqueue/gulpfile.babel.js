@@ -48,7 +48,9 @@ gulp.task('seed', (cb) => {
 });
 
 gulp.task('server', (opts) => {
-  return shared.server({ CALLBACK_PORT: util.env.CALLBACK_PORT })();
+  const PORT = util.env.PORT || '5998';
+  const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
+  return shared.server({ LOG_LEVEL: LOG_LEVEL, PORT: PORT, CALLBACK_PORT: util.env.CALLBACK_PORT })();
 });
 
 gulp.task('default', () => {

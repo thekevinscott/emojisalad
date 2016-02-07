@@ -10,8 +10,8 @@ const concatenate = require('lib/concatenateMessages');
 const req = Promise.promisify(require('request'));
 
 module.exports = function (message) {
-  console.debug('\n==========process message===========\n');
-  console.debug('message', message);
+  console.info('\n==========process message===========\n');
+  console.info('message', message);
   if ( ! message.from ) {
     throw new Error("No from provided");
   }
