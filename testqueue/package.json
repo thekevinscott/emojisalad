@@ -14,6 +14,7 @@
     "bluebird": "^3.1.1",
     "lodash": "^3.10.1",
     "node-discovery": "^0.2.1-1",
+    "pmx": "^0.6.0",
     "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
     "squel": "^4.2.3",
     "yargs": "^3.32.0"

@@ -5,7 +5,7 @@ const proxyquire = require('proxyquire');
 const _ = require('lodash');
 const sinon = require('sinon');
 
-process.env.QUEUES = '';
+process.env.PROTOCOLS = '';
 
 const prom = (data) => {
   return new Promise(function(resolve) {
@@ -41,7 +41,6 @@ describe('read', function() {
       return new Promise((resolve) => {
         processing.should.equal(0);
         processing++;
-        console.log('should wait');
 
         setTimeout(() => {
           processing.should.equal(1);
@@ -83,7 +82,6 @@ describe('read', function() {
           }
           triggered = true;
           processing++;
-          console.log('should wait');
 
           setTimeout(() => {
             resolve([]);
@@ -96,6 +94,48 @@ describe('read', function() {
     read_queued();
     read_queued().finally(() => {
       done();
+    });
+  });
+
+  it('should spin up multiple times if no messages are found', () => {
+    let processing = 0;
+    const read = getRead({
+      'lib/getMessages': () => {
+        return new Promise((resolve) => {
+          processing++;
+          resolve([]);
+        });
+      }
+    });
+
+    return read().then(() => {
+      return read();
+    }).finally(() => {
+      processing.should.equal(2);
+    });
+  });
+
+  it('should filter out any undefined messages back from processed messages', () => {
+    let found_messages;
+    const read = getRead({
+      'lib/getMessages': () => {
+        return prom([1, 2]);
+      },
+      'lib/processMessage': (message) => {
+        if ( message === 1 ) {
+          return prom('foo');
+        } else {
+          return prom();
+        }
+      },
+      'lib/sendMessages': (messages) => {
+        found_messages = messages;
+        return prom();
+      }
+    });
+
+    return read().finally(() => {
+      found_messages.length.should.equal(1);
     });
   });
 });

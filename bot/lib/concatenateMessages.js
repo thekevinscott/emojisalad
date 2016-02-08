@@ -6,18 +6,20 @@ const _ = require('lodash');
 const concatenate = function(messages) {
   let keys = {};
   if ( ! messages.length ) {
-    throw "No messages provided";
+    console.info('no messages provided');
+    throw new Error("No messages provided");
   }
   for ( let i=0; i < messages.length; i++ ) {
     let message = messages[i];
     if ( ! message.body) {
-      throw "No body provided";
+      console.info('no body');
+      throw new Error("No body provided");
     }
     if ( ! message.to) {
-      throw "No To provided";
+      throw new Error("No To provided");
     }
     if ( ! message.from) {
-      throw "No from provided";
+      throw new Error("No from provided");
     }
     let key = message.to+message.from;
     if ( !keys[key] ) {

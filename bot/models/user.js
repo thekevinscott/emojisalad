@@ -10,7 +10,10 @@ const User = {
     return api('users', 'create', params);
   },
   update: function (user, params) {
-    return api('users', 'update', params, { user_id: user.id });
+    return api('users', 'update', params, { user_id: user.id }).then((res) => {
+      //console.info("user in api update!");
+      return res;
+    });
   },
   getPlayersNum: Promise.coroutine(function* (params) {
     return 0;

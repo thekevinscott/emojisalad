@@ -12,7 +12,8 @@ let Router = function(from, message, to) {
     to: to
   }).then((players) => {
     if ( players.length  ) {
-      console.info('we  are in a game');
+      console.log('Make sure to check blacklisted status here');
+      console.info('we are in a game');
       // this means we are in a game
     } else {
       // this means we are either brand new,
@@ -29,7 +30,11 @@ let Router = function(from, message, to) {
           // append the number the user has messaged to the user object.
           // Any valid game number will maintain the same conversation
           user.to = to;
-          return require('./onboarding')(user, message);
+          if ( user.blacklist ) {
+            return;
+          } else {
+            return require('./onboarding')(user, message);
+          }
         } else {
           console.info('create user');
           return require('./create-user')(from, message, to);

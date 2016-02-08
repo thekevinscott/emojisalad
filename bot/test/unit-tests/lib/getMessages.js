@@ -3,7 +3,27 @@
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 const _ = require('lodash');
-const getMessages = require('lib/getMessages');
+const registry = (options = {} ) => {
+  return {
+    get: (protocol) => {
+      return {
+        api: {
+          received: {
+            endpoint: options.received || 'foo',
+            method: 'GET'
+          },
+          send: {
+            endpoint: options.send || 'bar',
+            method: 'POST'
+          }
+        }
+      }
+    }
+  }
+};
+const getMessages = proxyquire('lib/getMessages', {
+  'microservice-registry' : registry()
+});
 
 describe('Get Messages', function() {
   it('loads correctly', () => {
@@ -26,20 +46,19 @@ describe('Get Messages', function() {
     (function() { getMessages('foo') }).should.throw();
   });
 
-  it('should do nothing for an empty queues object', (done) => {
+  it('should do nothing for an empty queues object', () => {
     const fn = sinon.spy();
 
     const getMessages = proxyquire('lib/getMessages', {
       //request: fn,
     });
-    getMessages(Math.random(), []).then((res) => {
+    return getMessages(Math.random(), []).then((res) => {
       res.length.should.equal(0);
       fn.called.should.equal(false);
-      done();
     });
   });
 
-  it('should make a call to request with correct parameters and get back response', (done) => {
+  it('should make a call to request with correct parameters and get back response', () => {
     const received = 'foo'+Math.random();
     const timestamp = Math.random();
     const returned = [{ body: 'foo' }];
@@ -52,6 +71,7 @@ describe('Get Messages', function() {
     };
 
     const getMessages = proxyquire('lib/getMessages', {
+      'microservice-registry': registry({ received: received }),
       request: (options, callback) => {
         options.should.deep.equal({
           url: received,
@@ -64,14 +84,13 @@ describe('Get Messages', function() {
       },
       'config/services': conf
     });
-    getMessages(timestamp, ['foobar']).then((res) => {
+    return getMessages(timestamp, ['foobar']).then((res) => {
       returned[0].protocol = 'foobar';
       res.should.deep.equal(returned);
-      done();
     });
   });
 
-  it('should gracefully handle already parsed response', (done) => {
+  it('should gracefully handle already parsed response', () => {
     const received = 'foo'+Math.random();
     const timestamp = Math.random();
     const returned = [{ body: 'foo' }];
@@ -84,18 +103,18 @@ describe('Get Messages', function() {
     };
 
     const getMessages = proxyquire('lib/getMessages', {
+      'microservice-registry': registry(),
       request: (options, callback) => {
         callback(null, { body: returned });
       },
       'config/services': conf
     });
-    getMessages(timestamp, ['foobar']).then((res) => {
+    return getMessages(timestamp, ['foobar']).then((res) => {
       res.should.deep.equal(returned);
-      done();
     });
   });
 
-  it('should concat multiple queues together', (done) => {
+  it('should concat multiple queues together', () => {
     const received = [
       'foo'+Math.random(),
       'foo'+Math.random()
@@ -117,6 +136,29 @@ describe('Get Messages', function() {
     };
 
     const getMessages = proxyquire('lib/getMessages', {
+      'microservice-registry': {
+        get: (protocol) => {
+          const body = (index) => {
+            return {
+              api: {
+                received: {
+                  endpoint: received[index],
+                  method: 'GET'
+                }
+              }
+            }
+          }
+
+          let index;
+          if (protocol === 'foo' ) {
+            index = 0;
+          } else {
+            index = 1;
+          }
+
+          return body(index);
+        }
+      },
       request: (options, callback) => {
         if ( options.url === received[0] ) {
           callback(null, { body: returned[0] });
@@ -126,11 +168,10 @@ describe('Get Messages', function() {
       },
       'config/services': conf
     });
-    getMessages(timestamp, ['foo','bar']).then((res) => {
+    return getMessages(timestamp, ['foo','bar']).then((res) => {
       res.length.should.equal(2);
       res[0].should.deep.equal(_.assign({}, returned[0][0], { protocol: 'foo' }));
       res[1].should.deep.equal(_.assign({}, returned[1][0], { protocol: 'bar' }));
-      done();
     });
   });
 
@@ -156,6 +197,7 @@ describe('Get Messages', function() {
       };
 
       const getMessages = proxyquire('lib/getMessages', {
+        'microservice-registry': registry(),
         request: (options, callback) => {
           callback(null, { body: returned });
         },
@@ -167,48 +209,39 @@ describe('Get Messages', function() {
     }
 
     describe('Alerts', () => {
-      it('should not send an alert if under the alert number', (done) => {
+      it('should not send an alert if under the alert number', () => {
         const fn = sinon.spy();
-        callGetMessages(options.alert - 1, fn).then((res) => {
+        return callGetMessages(options.alert - 1, fn).then((res) => {
           fn.called.should.equal(false);
-          done();
         });
       });
-      it('should send an alert if equal to the alert number', (done) => {
+      it('should send an alert if equal to the alert number', () => {
         const fn = sinon.spy();
-        callGetMessages(options.alert, fn).then((res) => {
+        return callGetMessages(options.alert, fn).then((res) => {
           fn.called.should.equal(true);
-          done();
         });
       });
-      it('should send an alert if over the alert number', (done) => {
+      it('should send an alert if over the alert number', () => {
         const fn = sinon.spy();
-        callGetMessages(options.alert + 1, fn).then((res) => {
+        return callGetMessages(options.alert + 1, fn).then((res) => {
           fn.called.should.equal(true);
-          done();
         });
       });
     });
 
     describe('Tripped', () => {
-      it('should send an alert and throw if equal to the trip number', (done) => {
+      it('should send an alert and throw if equal to the trip number', () => {
         const fn = sinon.spy();
-        callGetMessages(options.trip, fn).then((res) => {
-        }).catch((err) => {
+        return callGetMessages(options.trip, fn).catch((err) => {
           fn.called.should.equal(true);
           err.should.contain('Tripwire tripped');
-        }).finally(() => {
-          done();
         });
       });
-      it('should send an alert and throw if over the trip number', (done) => {
+      it('should send an alert and throw if over the trip number', () => {
         const fn = sinon.spy();
-        callGetMessages(options.trip + 1, fn).then((res) => {
-        }).catch((err) => {
+        return callGetMessages(options.trip + 1, fn).catch((err) => {
           fn.called.should.equal(true);
           err.should.contain('Tripwire tripped');
-        }).finally(() => {
-          done();
         });
       });
     });

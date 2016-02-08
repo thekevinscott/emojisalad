@@ -13,7 +13,7 @@ const nodemon = require('gulp-nodemon');
 const chalk = require('chalk');
 const squel = require('squel');
 
-const shared = require('../gulp/shared');
+const shared = require('../shared/gulp');
 const sql_file = 'fixtures.sql';
 
 /**

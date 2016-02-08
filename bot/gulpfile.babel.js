@@ -88,7 +88,7 @@ gulp.task('seed', (cb) => {
  */
 gulp.task('test', (cb) => {
   return seed().then(() => {
-    process.env.LOG_LEVEL = util.env.LOG_LEVEl || 'warning';
+    process.env.LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
       timeout: 10000,
@@ -134,5 +134,6 @@ gulp.task('default', () => {
   console.log('* test - Reimports the local database file, seeds with data, and runs the test suite');
   console.log('* seed - Reimports the local database file and seeds with data');
   console.log('* server - Spins up the server with default arguments');
+  console.log('* update-fixtures - Pulls down a version of the production database');
 });
 

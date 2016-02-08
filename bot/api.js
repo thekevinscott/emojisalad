@@ -40,6 +40,11 @@ function getAPI() {
 
 function makeRequest(namespace, key, payload, params = {}) {
   return getAPI().then((api) => {
+    if ( !api[namespace] ) {
+      throw new Error(`No namespace for ${namespace}`);
+    } else if ( !api[namespace][key] ) {
+      throw new Error(`No key for ${namespace} ${key}`);
+    }
     let data = {
       url: processEndpoint(`${api[namespace][key].endpoint}`, params),
       method: `${api[namespace][key].method}`
@@ -50,7 +55,12 @@ function makeRequest(namespace, key, payload, params = {}) {
       data.form = payload;
     }
 
-    return request(data);
+    //console.debug('data', data);
+
+    return request(data).then((res) => {
+      console.info('response back!');
+      return res;
+    });
   });
 }
 

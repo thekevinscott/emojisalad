@@ -40,7 +40,9 @@ const sequential = (fns) => {
 // in this case, we want to queue those pings to run
 // immediately on complete (but only one ping can get queued up)
 const read = () => {
+  console.info('read, processing', processing);
   if ( processing === false ) {
+    console.info('set processing to true');
     processing = true;
     clear();
 
@@ -52,17 +54,24 @@ const read = () => {
       console.info('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
 
       return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
+        console.info('messages length', messages);
 
         if ( messages.length ) {
 
           console.info('messages', messages);
           return sequential(messages.map((message) => {
-            return function() {
+            return () => {
               return processMessage(message);
             }
-          })).then((processed_messages) => {
+          })).filter((message) => {
+            // remove any undefined messages;
+            // we might get these if there's no response,
+            // for instance, if a user marks herself 
+            // as blacklisted.
+            return message;
+          }).then((processed_messages) => {
+          //})).then((processed_messages) => {
             console.info('processed messages', processed_messages);
-          //return Promise.all(messages.map(processMessage)).then((processed_messages) => {
 
             // set timestamp once we've retrieved the messages and processed them,
             // but before we've sent them.
@@ -77,6 +86,7 @@ const read = () => {
 
               return sendMessages(processed_messages).then(() => {
                 console.info('messages are sent');
+                console.info('set processing ot false');
                 processing = false;
                 if ( queued_read_action ) {
                   read();
@@ -86,6 +96,9 @@ const read = () => {
               });
             });
           });
+        } else {
+          console.info('set processing to false, 3');
+          processing = false;
         }
       });
     }).catch((err) => {
@@ -94,6 +107,7 @@ const read = () => {
       if ( timer ) {
         clearTimeout(timer);
       }
+      console.info('set processing to false 2');
       processing = false;
       if ( queued_read_action ) {
         read();

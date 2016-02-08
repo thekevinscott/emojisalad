@@ -19,7 +19,7 @@ module.exports = Promise.coroutine(function* (params) {
   const url = `http://localhost:${process.env.CALLBACK_PORT}`;
 
   try {
-    const result = yield request({
+    const result = request({
       method: 'POST',
       url: url,
       form: params

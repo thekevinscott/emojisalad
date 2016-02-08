@@ -12,7 +12,6 @@ const getMessages = (timestamp, protocols, options = {}) => {
     throw "You must provide a valid timestamp";
   }
   return Promise.all(protocols.map((protocol) => {
-    //console.log('get the protocol', protocol);
     //if ( queue_registrys[protocol] ) {
     const service = registry.get(protocol)
     return request({
@@ -30,10 +29,11 @@ const getMessages = (timestamp, protocols, options = {}) => {
       // if err, already parsed
       try { body = JSON.parse(body); } catch(err) {}
 
-      return body.map((b) => {
+      body = body.map((b) => {
         b.protocol = protocol;
         return b;
       });
+      return body;
     }).catch((err) => {
       console.error(err);
       throw err;

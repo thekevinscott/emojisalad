@@ -19,7 +19,6 @@ const Message = require('models/Message');
 const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
 const levenshtein = require('levenshtein');
 const services = require('config/services');
-const chalk = require('chalk');
 const port = services.testqueue.port;
 
 const noop = () => {};
@@ -33,7 +32,7 @@ const messages = {};
 
 // checks that a certain action's
 // return matches an expected array
-const check = Promise.coroutine(function* (action, expected, inline_check) {
+const check = (action, expected, inline_check) => {
   // this is the id of the initiating message;
   // we'll use this to get back the associated messages to check against
   let initiated_id;
@@ -44,22 +43,26 @@ const check = Promise.coroutine(function* (action, expected, inline_check) {
       throw new Error('No message id provided');
     }
     initiated_id = created_message.id;
-    console.log(chalk.blue('********** created message', initiated_id, JSON.stringify(created_message), JSON.stringify(action)));
+    console.info('********** created message', initiated_id, JSON.stringify(created_message), JSON.stringify(action));
 
     return Promise.join(
       populateExpectedMessages(expected),
-      getAssociatedMessages(initiated_id),
+      getAssociatedMessages(initiated_id, expected),
       (processed, action_output) => {
         const actions = parseActions(action_output);
 
-        processed.map(function(message) {
+        processed.map((message) => {
           messages[message.key] = message;
         });
 
+        //console.log('actions', actions);
+        //console.log('expected', expected);
         const expecteds = parseExpecteds(expected, messages);
+        //console.log('expected afterwards', expected);
 
         if ( inline_check ) {
-          inlineCheck(actions, expecteds);
+          //console.log('expecteds', expecteds);
+          return inlineCheck(actions, expecteds);
         } else {
           return {
             output: actions,
@@ -69,27 +72,27 @@ const check = Promise.coroutine(function* (action, expected, inline_check) {
       }
     );
   });
-});
+};
 
 const populateExpectedMessages = (expected) => {
-  return Promise.all(expected.map(function(message) {
+  return Promise.all(expected.map((message) => {
     if ( ! messages[message.key] ) {
       messages[message.key] = true;
       return message;
     }
-  }).filter(function(el) {
+  }).filter((el) => {
     return el;
-  }).map(function(message) {
+  }).map((message) => {
     let options = {};
     options[message.key] = message.options;
-    return Message.get([message.key], options).then(function(msg) {
+    return Message.get([message.key], options).then((msg) => {
       return msg[0];
     });
     //return Message.get([message.key], message.options);
   }));
 }
 
-const requestAssociatedMessages = (initiated_id, resolve) => {
+const requestAssociatedMessages = (initiated_id, resolve, expected) => {
   const url = `http://localhost:${port}/sent`;
   return request({
     url: url,
@@ -103,15 +106,27 @@ const requestAssociatedMessages = (initiated_id, resolve) => {
       body = JSON.parse(body);
     } catch(err) {}
 
-    if (body.length > 0) {
+    // if we have actual expectations, we only
+    // want to return messages matching our initiator_id.
+    // If we get back an empty array, we assume
+    // our messages have yet to be processed
+    if ( expected.length ) {
+      if (body.length > 0) {
+        resolve(body);
+      }
+    } else {
+      // However, if we do not have any expectations,
+      // we expect to receive no messages. Therefore,
+      // on ping back, we should expect that no messages
+      // are waiting for us.
       resolve(body);
     }
   });
 }
 
-const getAssociatedMessages = (initiated_id) => {
-  const timeout_length = 10000;
-  const ping_length = 9000;
+const getAssociatedMessages = (initiated_id, expected) => {
+  const timeout_length = 3000;
+  const ping_length = 500;
   let timer;
   let ping;
   return new Promise((resolve, reject) => {
@@ -125,17 +140,22 @@ const getAssociatedMessages = (initiated_id) => {
       callback = noop;
       reject(`No message response within ${timeout_length/1000} seconds`);
     }, timeout_length);
-    ping = setInterval(() => {
-      requestAssociatedMessages(initiated_id, res);
-    }, ping_length);
+
+    // only ping the server if we are expecting messages
+    if ( expected.length ) {
+      ping = setInterval(() => {
+        requestAssociatedMessages(initiated_id, res, expected);
+      }, ping_length);
+    }
+
     callback = () => {
-      requestAssociatedMessages(initiated_id, res);
+      requestAssociatedMessages(initiated_id, res, expected);
     };
   });
 
 }
 const parseActions = (action_output) => {
-  return action_output.map(function(a) {
+  return action_output.map((a) => {
     let action = {
       body : a.body
     };
@@ -164,7 +184,7 @@ const parseExpecteds = (expected, messages) => {
 
 const inlineCheck = (actions, expecteds) => {
   actions.map((action, i) => {
-    return checker(action, expecteds[i]);
+    return checkBody(action, expecteds[i]);
   });
 
   actions.map((action) => {
@@ -176,19 +196,26 @@ const inlineCheck = (actions, expecteds) => {
   }));
 };
 
+const escapeRegExp = (str) => {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
 
 const checkBody = (action, expected) => {
-  expected = expected.body.replace(/\*/g,'');
-  // we can't use this because of emojis and regex
-  //const result = action.body.match(new RegExp(expected));
-  try {
-    const r = levenshtein(expected, action.body) / action.body.length;
-    r.should.be.below(0.05);
-  } catch(err) {
-    //console.error(err);
-    // this will fail but we'll get a nice
-    // error message out of it
-    action.body.should.equal(expected);
+  if ( expected && expected.body ) {
+    const expected_body = escapeRegExp(expected.body.replace(/\*/g,'(.*)'));
+    const re = new RegExp(expected_body);
+    try {
+      re.test(action.body);
+    } catch(err) {
+      // this will fail but we'll get a nice
+      // error message out of it
+      action.body.should.equal(expected);
+    }
+  } else {
+    // this indicates that we expect no response. Not sure
+    // the best way to check for this.
+    console.log(action, expected);
+    action.should.be(undefined);
   }
 }
 

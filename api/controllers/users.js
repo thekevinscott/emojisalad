@@ -47,7 +47,9 @@ function create(req) {
   return User.create(req.body);
 }
 function update(req) {
+  //console.info('update user', req.params.user_id, req.body);
   return User.update({ id: req.params.user_id }, req.body).then((response) => {
+    console.info('got a repsonse', response);
     return response;
   });
 }

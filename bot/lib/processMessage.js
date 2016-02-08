@@ -1,4 +1,5 @@
 'use strict';
+const _ = require('lodash');
 const router = require('routes');
 const Phone = require('models/phone');
 const Player = require('models/player');
@@ -24,8 +25,16 @@ module.exports = function (message) {
 
   // responses comes back as an array of messages
   return router(message.from, message.body, message.to).then((responses) => {
-    return Message.parse(responses, message);
+    console.info('responses back', responses);
+    if ( responses && _.isArray(responses) && responses.length ) {
+      return Message.parse(responses, message);
+    //} else {
+      //throw new Error('Invalid messages provided: ' + JSON.stringify(responses, null, 2));
+    }
   }).then((messages) => {
-    return concatenate(messages);
+    if ( messages && messages.length ) {
+      console.info('messages back, now concatenate them', messages);
+      return concatenate(messages);
+    }
   });
 };

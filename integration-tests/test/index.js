@@ -1,4 +1,6 @@
 'use strict';
+const color = 'bgBlack';
+const chalk = require('chalk');
 let chai = require('chai');
 chai.should();
 let expect = chai.expect;
@@ -6,12 +8,17 @@ chai.use(require('chai-datetime'));
 let Promise = require('bluebird');
 //Promise.longStackTraces();
 
-let DEBUG = (process.env.DEBUG !== undefined) ? process.env.DEBUG : false;
-console.debug = function() {
-  if ( DEBUG === true || DEBUG === 'true' ) {
-    let args = Array.prototype.slice.call(arguments);
+const LOG_LEVEL = (process.env.LOG_LEVEL !== undefined) ? process.env.LOG_LEVEL : 'warning';
+console.info = (...args) => {
+  if ( LOG_LEVEL === 'info' ) {
     args.unshift(new Date());
-    console.log.apply(null, args);
+    console.debug.apply(null, args);
+  }
+};
+console.debug = (...args) => {
+  if ( LOG_LEVEL === 'info' || LOG_LEVEL === 'warning' ) {
+    args.unshift(new Date());
+    console.log.apply(null, args.map(chalk[color]));
   }
 };
 
@@ -20,4 +27,4 @@ console.debug = function() {
 //require('./sanity');
 
 // Run the integration test suite
-require('./integration/suite');
+require('./suite');

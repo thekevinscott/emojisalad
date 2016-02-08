@@ -12,11 +12,11 @@ module.exports = [
     method: 'post',
     fn: check 
   },
-  {
-    path: '/check/:emoji',
-    method: 'post',
-    fn: check 
-  },
+  //{
+    //path: '/check/:emoji',
+    //method: 'post',
+    //fn: check 
+  //},
 ];
 
 function find() {
@@ -24,5 +24,6 @@ function find() {
 }
 function check(req) {
   const emoji = req.body.emoji || '';
+  console.info('emoji check', emoji);
   return Emoji.check(emoji);
 }

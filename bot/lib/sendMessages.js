@@ -33,22 +33,24 @@ const sendMessages = (messages, options = {}) => {
     const messages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
     console.info('the messages to send', messages);
-    return request({
+    const options = {
       url: service.api.send.endpoint,
       method: service.api.send.method,
       form: {
         messages: messages
-        //messages: messages.map(function(message) {
-          //return {
-            //to: message.to,
-            //from: message.from,
-            //body: message.body,
-            //initiated_id: message.initiated_id
-          //}
-        //})
       }
+    };
+    //console.info('sending options', options);
+    return request(options).then((response) => {
+      //console.info('the gotten repsonse', response);
+      return response;
+    }).catch((err) => {
+      console.info('error sending response', err);
     });
-  }));
+  })).then((response) => {
+    console.info('messages are sent! within sendMessages');
+    return response;
+  });
 };
 
 module.exports = sendMessages;

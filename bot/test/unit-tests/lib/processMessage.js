@@ -17,7 +17,7 @@ function getProcessMessage(obj) {
   }
   return proxyquire('lib/processMessage', _.assign({}, {
     'routes': function(player, body, to) {
-      return prom(player);
+      return prom([]);
     },
     'models/message': {
       parse: passThru
@@ -34,6 +34,33 @@ function getProcessMessage(obj) {
 describe('Process Message', function() {
   it('loads correctly', function() {
     getProcessMessage().should.be.ok;
+  });
+
+  it('throws error if not provided with valid array', () => {
+    const processMessage = getProcessMessage({
+      'routes': () => {
+        return {};
+      }
+    });
+    
+    (() => {
+      processMessage();
+    }).should.throw;
+  });
+
+  it('does not call concatenate if there are no messages', () => {
+    const spy = sinon.spy();
+    const processMessage = getProcessMessage({
+      'concatenateMessages': spy
+    });
+    
+    return processMessage({
+      from: 'foo',
+      to: 'bar',
+      body: 'foobar'
+    }).finally(() => {
+      spy.called.should.equal(false);
+    });
   });
 
   //it('parses outgoing messages', function() {

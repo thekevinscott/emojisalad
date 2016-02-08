@@ -10,10 +10,13 @@ const _ = require('lodash');
 module.exports = (user, input) => {
   console.info('onboarding');
   if ( ! user.confirmed ) {
+    console.info('go to confirm');
     return require('./confirm')(user, input);
   } else if ( ! user.nickname ) {
+    console.info('go to nickname');
     return require('./nickname')(user, input);
   } else if ( ! user.avatar ) {
+    console.info('go to avatar');
     return require('./avatar')(user, input);
   }
 };

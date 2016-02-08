@@ -15,7 +15,7 @@ const chalk = require('chalk');
 const squel = require('squel');
 const superagent = require('superagent');
 const d = require('node-discover')();
-const shared = require('../gulp/shared');
+const shared = require('../shared/gulp');
 const sql_file = 'test/fixtures/test-db.sql';
 
 const services = require('./config/services');
@@ -47,10 +47,9 @@ function seed() {
         'seed'
       ].join(' ')
     ];
-    //console.log('seeding', command.chdir);
     return shared.exec(seed_command);
   })).then((res) => {
-    console.log(`Seeding complete for ${commands.map(cmd => cmd.chdir).join(',')}`);
+    console.log(`Seeding complete`);
     return res;
   });
 }
@@ -102,7 +101,7 @@ function startServers(debug, log_level) {
   };
   const stderr = (data, command, args) => {
     const error = data.toString().split('\\n').join('\n');
-    console.error(chalk.red(`stderr says: ${error}`));
+    console.error(chalk.red(`stderr: ${error}`));
   };
   const close = (data, command, args) => {
     console.log(`${command} ${args} close: ${data}`);
@@ -177,10 +176,9 @@ gulp.task('test', (cb) => {
           }
         }
       });
-      //console.log('server', server);
       server.stderr.on('data', (data) => {
-        killServers();
-        process.exit(1);
+        //killServers();
+        //process.exit(1);
       });
       server.on('close', (data, command, args) => {
         killServers();
@@ -192,8 +190,8 @@ gulp.task('test', (cb) => {
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
       timeout: 30000,
-      slow: 500,
-      bail: true
+      slow: 1500,
+      //bail: true
     }))
     .on('error', function(data) {
       console.error('error', data.message);

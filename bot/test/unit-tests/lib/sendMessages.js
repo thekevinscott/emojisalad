@@ -11,6 +11,24 @@ const conf = {
     }
   }
 };
+const registry = (options = {} ) => {
+  return {
+    get: (protocol) => {
+      return {
+        api: {
+          received: {
+            endpoint: options.received || 'foo',
+            method: 'GET'
+          },
+          send: {
+            endpoint: options.send || 'bar',
+            method: 'POST'
+          }
+        }
+      }
+    }
+  }
+};
 
 const sendMessages = proxyquire('lib/sendMessages', {
   'lib/concatenateMessages': function(data) {
@@ -25,19 +43,35 @@ describe('Send Message', function() {
     sendMessages.should.be.ok;
   });
 
+  it('should gracefully handle empty messages', function() {
+    const sendMessages = proxyquire('lib/sendMessages', {
+      'microservice-registry': registry(),
+      'lib/concatenateMessages': function(data) {
+        return data;
+      },
+      'config/services': conf,
+      request: fn,
+    });
+    return sendMessages([]).then((res) => {
+      res.should.deep.equal([]);
+    });
+  });
+
   it('should call request with correct payload', function(done) {
     const messages = [
       { protocol: 'foo', body: 'foo', from: 'bar', to: 'baz' },
       { protocol: 'foo', body: 'foo', from: 'bar', to: 'baz', foo:'bar' }
     ];
+
     fn = function(payload) {
       payload.form.messages.should.deep.equal([
-        { body: 'foo', from: 'bar', to: 'baz' },
-        { body: 'foo', from: 'bar', to: 'baz' }
+        { body: 'foo', from: 'bar', to: 'baz', protocol: 'foo' },
+        { body: 'foo', from: 'bar', to: 'baz', protocol: 'foo', foo: 'bar' }
       ]);
       done();
     }
     const sendMessages = proxyquire('lib/sendMessages', {
+      'microservice-registry': registry(),
       'lib/concatenateMessages': function(data) {
         return data;
       },
@@ -108,6 +142,7 @@ describe('Send Message', function() {
         }
       }
       const sendMessages = proxyquire('lib/sendMessages', {
+        'microservice-registry': registry(),
         'lib/concatenateMessages': function(data) {
           return data;
         },
@@ -133,6 +168,7 @@ describe('Send Message', function() {
         callback(null, 'its good');
       }
       const sendMessages = proxyquire('lib/sendMessages', {
+        'microservice-registry': registry(),
         'lib/concatenateMessages': function(data) {
           return data;
         },
