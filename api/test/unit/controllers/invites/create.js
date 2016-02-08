@@ -106,6 +106,29 @@ describe('Create', function() {
         res.body[0].inviter_player.should.have.property('id', inviter.id);
         res.body[0].invited_user.should.have.property('id');
         res.body[0].invited_user.should.have.property('from', invited);
+        res.body[0].invited_user.should.have.property('to', inviter.to);
+        res.body[0].game.should.have.property('id');
+      });
+    });
+
+    it('should create an invite on a new game number for a user already in a single game', function() {
+      // THIS NEEDS TO BE DONE
+      // Create a user who is in a game.
+      // Then create another player, B, who is in a game, and they
+      // invite A to their game.
+      // A should receive a player on a new to number
+      const invited = 'foo'+Math.random();
+      return createInvite(inviter.id, [ invited ]).then((res) => {
+        res.statusCode.should.equal(200);
+        res.body.length.should.be.above(0);
+        res.body[0].should.have.property('id');
+        res.body[0].should.have.property('game');
+        res.body[0].should.have.property('inviter_player');
+        res.body[0].should.have.property('invited_user');
+        res.body[0].inviter_player.should.have.property('id', inviter.id);
+        res.body[0].invited_user.should.have.property('id');
+        res.body[0].invited_user.should.have.property('from', invited);
+        res.body[0].invited_user.should.have.property('to', 'this should a brand new game');
         res.body[0].game.should.have.property('id');
       });
     });

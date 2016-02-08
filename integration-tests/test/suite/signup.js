@@ -6,11 +6,12 @@ const check = require('lib/check');
 const rule = require('config/rule');
 const EMOJI = '🐳';
 
-describe.only('Signup', () => {
+describe('Signup', () => {
 
   describe('Test a brand new player', () => {
     it('should introduce itself when contacting for the first time', () => {
       let player = getPlayers(1)[0];
+      console.log('here we go!');
       return check(
         { player: player, msg: 'hello?' },
         [

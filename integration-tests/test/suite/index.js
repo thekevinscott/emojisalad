@@ -1,11 +1,11 @@
 // tests that a single player can sign up and get onboarded
 require('./signup');
-/*
 
 // tests that a player can invite other players,
 // and those players can get onboarded
 require('./invite');
 
+/*
 // tests that a player can submit an emoji clue
 // for other players to guess to
 require('./submission');

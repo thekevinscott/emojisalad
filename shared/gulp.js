@@ -178,8 +178,9 @@ function server(options) {
       'index.js',
     ]),
     (data) => {
+      let color = 'yellow';
       //console.log(chalk.green('heyo'));
-      console.log(chalk.green(`${data}`));
+      console.log(chalk[color](`${data}`));
     },
     (err) => {
       console.error(`${err}`);

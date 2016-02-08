@@ -1,7 +1,7 @@
 'use strict';
-const setup = require('../lib/setup');
-const startGame = require('./startGame');
-const Round = require('../../../models/Round');
+const setup = require('lib/setup');
+const startGame = require('lib/startGame');
+//const Round = require('../../../models/Round');
 
 // submit any old emoji to start a round
 const EMOJI = '😀';

@@ -1,16 +1,12 @@
 'use strict';
-const getPlayers = require('../lib/getPlayers');
-const setup = require('../lib/setup');
-const check = require('../lib/check');
-//const getGame = require('../lib/getGame');
-const signup = require('../flows/signup');
-const startGame = require('../flows/startGame');
-const Game = require('models/game');
-const Invite = require('models/invite');
-const Player = require('models/player');
+const getPlayers = require('lib/getPlayers');
+const setup = require('lib/setup');
+const check = require('lib/check');
+//const getGame = require('lib/getGame');
+const signup = require('flows/signup');
+const startGame = require('flows/startGame');
 const rule = require('config/rule');
 const EMOJI = '😀';
-const game_number = require('../../../../config/numbers').getDefault();
 
 describe('Inviting', function() {
   /*
@@ -80,7 +76,6 @@ describe('Inviting', function() {
     it.only('should be able to invite someone', () => {
       let player = getPlayers(1)[0];
 
-      console.log('send out an invite');
       return check(
         // lose the intro of the number for testing
         { player: inviter, msg: 'invite '+player.number },
@@ -156,8 +151,8 @@ describe('Inviting', function() {
         { player: player, msg: 'yes' },
         { player: player, msg: player.nickname },
       ]).then(function() {
-        return Player.get({ from: inviter.number, to: game_number }).then(function(gotPlayer) {
-          return Game.get({ player: gotPlayer, game_number: game_number }).then(function(game) {
+        return Player.get({ from: inviter.number}).then(function(gotPlayer) {
+          return Game.get({ player: gotPlayer }).then(function(game) {
             return Game.update(game, { random : 0 });
           });
         });

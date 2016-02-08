@@ -1,5 +1,5 @@
 'use strict';
-const setup = require('../lib/setup');
+const setup = require('lib/setup');
 const rule = require('config/rule');
 
 // invite a particular player and have them sign up

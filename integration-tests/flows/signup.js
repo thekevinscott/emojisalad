@@ -1,6 +1,6 @@
 'use strict';
 //const _ = require('lodash');
-const setup = require('../lib/setup');
+const setup = require('lib/setup');
 const rule = require('config/rule');
 
 // signup a particular player from scratch

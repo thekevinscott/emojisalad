@@ -39,7 +39,9 @@ function getAPI() {
 }
 
 function makeRequest(namespace, key, payload, params = {}) {
+  //console.debug('make request');
   return getAPI().then((api) => {
+    //console.debug('api back', api);
     if ( !api[namespace] ) {
       throw new Error(`No namespace for ${namespace}`);
     } else if ( !api[namespace][key] ) {
@@ -55,7 +57,7 @@ function makeRequest(namespace, key, payload, params = {}) {
       data.form = payload;
     }
 
-    //console.debug('data', data);
+    console.debug('data', data);
 
     return request(data).then((res) => {
       console.info('response back!');

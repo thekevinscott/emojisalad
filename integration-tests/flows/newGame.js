@@ -4,9 +4,9 @@ const setup = require('../lib/setup');
 const sequence = require('../lib/sequence');
 const invite = require('./invite');
 const rule = require('config/rule');
-const Player = require('models/player');
-const Game = require('models/game');
-const Round = require('models/round');
+//const Player = require('models/player');
+//const Game = require('models/game');
+//const Round = require('models/round');
 const setNonRandomGame = require('../lib/setNonRandomGame');
 const _ = require('lodash');
 

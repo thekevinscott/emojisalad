@@ -6,11 +6,16 @@ const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
 
-let Invite = {
-  create: (inviter, value) => {
+const api = require('../api');
+
+const Invite = {
+  create: (inviter, invites) => {
+    //console.debug('create time!');
     return api('invites', 'create', {
       inviter_id: inviter.id,
-      invited: value
+      invites: invites
+    }, {
+      game_id: inviter.game_id
     }); 
   },
   /*

@@ -6,14 +6,20 @@ let Player = require('models/player');
 let User = require('models/user');
 
 let Router = function(from, message, to) {
-  console.info('I am from the Bot');
+  console.info(`===========Router Index: ${message}`);
   return Player.get({
     from: from,
     to: to
   }).then((players) => {
     if ( players.length  ) {
-      console.log('Make sure to check blacklisted status here');
-      console.info('we are in a game');
+      const player = players.shift();
+      console.debug('Make sure to check blacklisted status here');
+      console.debug('we are in a game', player);
+      if ( player.blacklist ) {
+        return;
+      } else {
+        return require('./game')(player, message);
+      }
       // this means we are in a game
     } else {
       // this means we are either brand new,

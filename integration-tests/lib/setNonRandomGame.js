@@ -1,6 +1,6 @@
 'use strict';
-const getGame = require('./getGame');
-const Game = require('models/Game');
+const getGame = require('lib/getGame');
+//const Game = require('models/Game');
 const Promise = require('bluebird');
 
 let setNonRandomGame = Promise.coroutine(function* (player) {

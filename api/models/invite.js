@@ -17,16 +17,16 @@ const Invite = {
    * a game, the inviter PLAYER object, and the invited USER object
    */
   create: (params) => {
-    console.info('invite create 1', params);
+    console.debug('invite create 1', params);
     return Player.findOne(params.inviter_id).then((player) => {
-      console.info('create 2', player);
+      console.debug('create 2', player);
       if ( player && player.id ) {
         return player;
       } else {
         throw "You must provide a valid inviter_id";
       }
     }).then((inviter_player) => {
-      console.info('create 3', params.invites);
+      console.debug('create 3', params.invites);
       return Promise.all(params.invites.map((invite) => {
         return User.findOne({ from: invite }).then((user) => {
           if ( user && user.id ) {
@@ -74,7 +74,7 @@ const Invite = {
                     code: 1203
                   };
                 } else {
-                  console.info('invite create 9');
+                  console.debug('invite create 9');
                   let query = squel
                               .insert()
                               .into('invites')
@@ -82,8 +82,10 @@ const Invite = {
                               .set('invited_id', invited_user.id)
                               .set('inviter_id', params.inviter_id);
 
-                  console.info(query.toString());
+                  console.debug(query.toString());
                   return db.query(query).then((row) => {
+                    invited_user.to = inviter_player.to;
+
                     return {
                       id: row.insertId,
                       game: game,
@@ -188,7 +190,7 @@ const Invite = {
                 .select()
                 .from('invites', 'i')
                 .where('i.invited_player_id=?', inviter.id);
-    console.info(query.toString());
+    console.debug(query.toString());
     let rows = yield db.query(query.toString());
     if ( rows && rows.length ) {
       return rows[0];

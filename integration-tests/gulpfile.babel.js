@@ -114,7 +114,7 @@ function startServers(debug, log_level) {
       let child;
       d.on('added', (obj) => {
         if ( obj.advertisement ) {
-          let service = obj.advertisement;
+          const service = JSON.parse(obj.advertisement);
           if ( service.available ) {
             resolve(child);
           }

@@ -86,7 +86,7 @@ function createRegExp(pattern, flags) {
 }
 
 module.exports = function(key, options) {
-  var regex;
+  let regex;
 
   if ( ! options ) {
     options = {};
@@ -107,7 +107,7 @@ module.exports = function(key, options) {
       if ( !rules[key] ) {
         throw "No rule found for "+key;
       }
-      var examples = rules[key].example;
+      let examples = rules[key].example;
       return examples[Math.floor(Math.random()*examples.length)];
     }
   };
