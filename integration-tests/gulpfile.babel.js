@@ -15,6 +15,7 @@ const chalk = require('chalk');
 const squel = require('squel');
 const superagent = require('superagent');
 const d = require('node-discover')();
+const lzw = require('node-lzw');
 const shared = require('../shared/gulp');
 const sql_file = 'test/fixtures/test-db.sql';
 
@@ -114,7 +115,7 @@ function startServers(debug, log_level) {
       let child;
       d.on('added', (obj) => {
         if ( obj.advertisement ) {
-          const service = JSON.parse(obj.advertisement);
+          const service = JSON.parse(lzw.decode(obj.advertisement));
           if ( service.available ) {
             resolve(child);
           }

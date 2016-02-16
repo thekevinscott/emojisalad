@@ -14,7 +14,7 @@ let Router = function(from, message, to) {
     if ( players.length  ) {
       const player = players.shift();
       console.debug('Make sure to check blacklisted status here');
-      console.debug('we are in a game', player);
+      //console.debug('we are in a game', player);
       if ( player.blacklist ) {
         return;
       } else {
@@ -24,7 +24,7 @@ let Router = function(from, message, to) {
     } else {
       // this means we are either brand new,
       // or being onboarded
-      console.info('prepare to get dem users');
+      console.info(`prepare to get users by from, ${from}`);
       return User.get({
         from: from
       }).then((users) => {

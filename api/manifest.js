@@ -3,10 +3,10 @@
 *
 */
 
-module.exports = (port) => {
+const getManifest = (port) => {
   const base_url = 'http://localhost:' + port + '/';
 
-  return  {
+  const manifest = {
     emoji: {
       get: {
         endpoint: `${base_url}emoji`,
@@ -20,16 +20,20 @@ module.exports = (port) => {
       },
     },
     games: {
-      get: {
-        endpoint: `${base_url}games`,
-        method: 'GET',
-        //description: 'Get a list of games with an optional query string'
+      add: {
+        endpoint: `${base_url}games/:game_id/players`,
+        method: 'POST',
       },
       create: {
         endpoint: `${base_url}games`,
         method: 'POST',
         //description: 'Create a games'
-      }
+      },
+      get: {
+        endpoint: `${base_url}games`,
+        method: 'GET',
+        //description: 'Get a list of games with an optional query string'
+      },
     },
     invites: {
       create: {
@@ -78,4 +82,8 @@ module.exports = (port) => {
       }
     }
   }
-}
+
+  return manifest;
+};
+
+module.exports = getManifest;

@@ -14,6 +14,9 @@ const getMessages = (timestamp, protocols, options = {}) => {
   return Promise.all(protocols.map((protocol) => {
     //if ( queue_registrys[protocol] ) {
     const service = registry.get(protocol)
+    if ( ! service ) {
+      throw new Error(`No service found for protocol ${protocol}`);
+    }
     return request({
       url: service.api.received.endpoint,
       method: service.api.received.method,

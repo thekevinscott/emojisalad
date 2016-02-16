@@ -57,7 +57,7 @@ function makeRequest(namespace, key, payload, params = {}) {
       data.form = payload;
     }
 
-    console.debug('data', data);
+    //console.debug('data', data);
 
     return request(data).then((res) => {
       console.info('response back!');

@@ -300,6 +300,7 @@ let Game = {
                 });
     return db.query(query);
   },
+  /*
   add: function(game, players) {
     return Promise.all(players.map(function(player) {
 
@@ -328,8 +329,14 @@ let Game = {
       }.bind(this));
     }.bind(this)));
   },
+  */
+  add: (game, users) => {
+    return api('games', 'add', { users: users }, {
+      game_id: game.id
+    });
+  },
   create: (params) => {
-    return api('games', 'create', { users: params});
+    return api('games', 'create', { users: params });
   },
   updateScore: function(game, player, type) {
     let updates = [];

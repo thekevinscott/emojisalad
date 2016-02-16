@@ -300,6 +300,7 @@ let Game = {
     return db.query(query);
   },
   add: (game, users) => {
+    //console.debug('huzzah add');
     return new Promise((resolve) => {
       resolve();
     }).then(() => {

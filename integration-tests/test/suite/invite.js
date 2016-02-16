@@ -73,7 +73,7 @@ describe('Inviting', function() {
     });
 
     this.timeout(10000);
-    it.only('should be able to invite someone', () => {
+    it('should be able to invite someone', () => {
       let player = getPlayers(1)[0];
 
       return check(
@@ -85,7 +85,7 @@ describe('Inviting', function() {
         ], true);
     });
 
-    it('should be able to invite a formatted number', function() {
+    it('should be able to invite a formatted number', () => {
 
       let end = Math.floor(1000 + Math.random() * 9000);
       let num = '+1860460'+end;
@@ -97,49 +97,45 @@ describe('Inviting', function() {
         { player: inviter, msg: 'invite '+player.number },
         [
           { key: 'intro_5', options: [player.number], to: inviter },
-          { key: 'invite', options: [inviter.nickname, player.number], to: player }
-        ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+          { key: 'invite', options: [inviter.nickname, player.avatar], to: player }
+        ],
+        true);
     });
 
-    it('should not be able to re-invite someone', function() {
+    it('should not be able to re-invite someone', () => {
       let player = getPlayers(1)[0];
 
       return setup([
         { player: inviter, msg: 'invite '+player.number }
-      ]).then(function() {
+      ]).then(() => {
         return check(
           { player: inviter, msg: 'invite '+player.number },
           [
             { key: 'error-2', options: [player.number], to: inviter },
-          ]
+          ],
+          true
         );
-      }).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
       });
     });
 
-    it('should not be able to invite someone on do-not-call-list', function() {
+    it('should not be able to invite someone on do-not-call-list', () => {
       let player = getPlayers(1)[0];
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
         { player: player, msg: rule('no').example() }
-      ]).then(function() {
+      ]).then(() => {
         return check(
           { player: inviter, msg: 'invite '+player.number },
           [
             { key: 'error-3', options: [player.number], to: inviter },
-          ]
+          ],
+          true
         );
-      }).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
       });
     });
 
-    it('should be able to onboard an invited player', function() {
+    it.only('should be able to onboard an invited player', () => {
       // get a kevin user, to make it easier
       // to parse who is who
       let player = getPlayers(2)[1];
@@ -150,13 +146,7 @@ describe('Inviting', function() {
         { player: inviter, msg: 'invite '+player.number },
         { player: player, msg: 'yes' },
         { player: player, msg: player.nickname },
-      ]).then(function() {
-        return Player.get({ from: inviter.number}).then(function(gotPlayer) {
-          return Game.get({ player: gotPlayer }).then(function(game) {
-            return Game.update(game, { random : 0 });
-          });
-        });
-      }).then(function() {
+      ]).then(() => {
         return check(
           { player: player, msg: player.avatar },
           [
@@ -164,9 +154,9 @@ describe('Inviting', function() {
             { key: 'accepted-inviter', options: [player.nickname, inviter.nickname], to: player },
             { key: 'game-start', options: [inviter.nickname, firstPhrase], to: inviter },
           ]
-        );
-      }).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
+        ).then(function(obj) {
+          obj.output.should.deep.equal(obj.expected);
+        });
       });
     });
   });

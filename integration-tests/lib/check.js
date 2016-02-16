@@ -58,7 +58,6 @@ const check = (action, expected, inline_check) => {
         //console.log('actions', actions);
         //console.log('expected', expected);
         const expecteds = parseExpecteds(expected, messages);
-        //console.log('expected afterwards', expected);
 
         if ( inline_check ) {
           //console.log('expecteds', expecteds);
@@ -168,6 +167,7 @@ const parseActions = (action_output) => {
 
 const parseExpecteds = (expected, messages) => {
   let expecteds = [];
+  // first pass, associated messages with a particular expected message
   if ( expected.length ) {
     for ( let i=0;i<expected.length;i++ ) {
       let expected_obj = {
@@ -179,7 +179,30 @@ const parseExpecteds = (expected, messages) => {
       expecteds.push(expected_obj);
     }
   }
-  return expecteds;
+
+  // second pass, conatenate particular expecteds to a particular player
+  const concatenated_by_recipient = expecteds.reduce((obj, expected) => {
+    const recipient = expected.recipient;
+    if ( !obj[recipient] ) {
+      obj[recipient] = [];
+    }
+    obj[recipient].push(expected.body);
+    return obj;
+  }, {});
+
+  let seen = {};
+  return expecteds.map((e) => {
+    if ( ! seen[e.recipient] ) {
+      seen[e.recipient] = true;
+      return e.recipient;
+    }
+  }).filter(e => e).map((recipient) => {
+    const expected_bodies = concatenated_by_recipient[recipient];
+    return {
+      recipient: recipient,
+      body: expected_bodies.join('\n\n')
+    };
+  });
 }
 
 const inlineCheck = (actions, expecteds) => {

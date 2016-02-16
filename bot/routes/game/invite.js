@@ -8,29 +8,59 @@ const rule = require('config/rule');
 module.exports = (player, message) => {
   const invites = rule('invite').match(message).split(' ');
 
-  //console.log('player', player);
-  //console.log('invited users', invited_users);
+  const invited_string = invites[0];
 
-  //console.debug('get ready to create');
   return Invite.create(player, invites).then((invites) => {
-    console.log('invites', invites);
     let invite = invites[0];
-    let invited_string = invites[0];
-    return [
-      {
-        player: invite.inviter_player,
-        key: 'intro_5',
-        options: [invited_string]
-      },
-      {
-        key: 'invite',
-        options: [
-          invite.inviter_player.nickname,
-          invite.inviter_player.number,
-        ],
-        player: invite.invited_user
-      },
-    ];
+    if ( invite.error ) {
+      switch ( invite.code ) {
+      case 1200:
+          // Invite already exists
+        return [
+          {
+            player: player,
+            key: 'error-2',
+            options: [invited_string]
+          },
+        ];
+        break;
+      case 1202:
+          // Invite already exists
+        return [
+          {
+            player: player,
+            key: 'error-2',
+            options: [invited_string]
+          },
+        ];
+        break;
+      default:
+        return [
+          {
+            player: player,
+            key: 'error-4',
+            options: [invited_string]
+          },
+        ];
+        break;
+      }
+    } else {
+      return [
+        {
+          player: invite.inviter_player,
+          key: 'intro_5',
+          options: [invited_string]
+        },
+        {
+          key: 'invite',
+          options: [
+            invite.inviter_player.nickname,
+            invite.inviter_player.avatar
+          ],
+          player: invite.invited_user
+        },
+      ];
+    }
   });
 
   /*

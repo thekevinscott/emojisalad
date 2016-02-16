@@ -58,6 +58,7 @@ function findOne(req) {
   return Game.findOne(game_id);
 }
 function add(req) {
+  //console.debug('game add!!');
   const game_id = req.params.game_id;
   if ( ! game_id ) {
     throw "No game ID provided, how is that possible?";
