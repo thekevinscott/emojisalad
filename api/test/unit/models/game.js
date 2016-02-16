@@ -27,7 +27,7 @@ describe('Game', function() {
     describe('Valid emoji', function() {
       this.timeout(20000);
       // this is a list of phrases known to give trouble
-      var troublePhrases = [
+      const troublePhrases = [
         '😀',
         '😀😀',
         '😀😀😀',
@@ -53,12 +53,10 @@ describe('Game', function() {
 
       it('should check all emoji', function() {
         EmojiData.all().map(function(emoji) {
-          var unified = EmojiData.unified_to_char(emoji.unified);
-          //console.log('code point: ', unified, unified.codePointAt(0));
+          const unified = EmojiData.unified_to_char(emoji.unified);
           try {
             Game.checkInput(unified).should.equal('emoji');
           } catch(e) {
-            console.log('emoji failed:', unified);
             throw e;
           }
         });

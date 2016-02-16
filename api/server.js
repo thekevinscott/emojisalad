@@ -22,7 +22,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.listen(app.get('port'), () => {
   console.info(`EmojinaryFriend API: ${process.env.ENVIRONMENT}`);
-  console.log('say you ready');
   service.ready();
 });
 

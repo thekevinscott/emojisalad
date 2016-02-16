@@ -9,10 +9,10 @@ module.exports = function(app) {
     'emoji',
     'players',
     'invites',
+    'rounds',
   ].map((key) => {
     const router = express.Router({ mergeParams: true });
     require(`./${key}`).map((route) => {
-      //console.log('route', key, route.path);
       router.route(route.path)[route.method]((req, res) => {
         //const data = ( route.method === 'get' ) ? req.query : req.body;
         try {
@@ -20,11 +20,11 @@ module.exports = function(app) {
             res.status(200).json(results);
           }).catch((err) => {
             res.status(400).json({ error: err });
-            console.error(err.stack);
+            //console.info('error', err.stack);
           });
         } catch(err) {
           res.status(400).json({ error: err });
-          console.error(err.stack);
+          //console.info('error', err.stack);
         }
       });
     });

@@ -8,6 +8,7 @@ const EmojiData = require('emoji-data');
 const db = require('db');
 const Player = require('./player');
 const User = require('./user');
+const Round = require('./round');
 //const Round = require('./round');
 
 // number of guesses a player gets per round
@@ -19,27 +20,27 @@ squel.registerValueHandler(Date, function(date) {
 });
 
 let Game = {
-  update: function(game, data) {
-    let query = squel
-              .update()
-              .table('games')
-              .set('id', game.id)
-              .where('id=?',game.id);
+  //update: function(game, data) {
+    //let query = squel
+              //.update()
+              //.table('games')
+              //.set('id', game.id)
+              //.where('id=?',game.id);
 
-    if ( data.state !== undefined ) {
-      let state_id = squel
-                    .select()
-                    .field('id')
-                    .from('game_states')
-                    .where('state=?',data.state);
-      query.set('state_id', state_id);
-    }
-    if ( data.random !== undefined ) {
-      query.set('random', data.random);
-    }
+    //if ( data.state !== undefined ) {
+      //let state_id = squel
+                    //.select()
+                    //.field('id')
+                    //.from('game_states')
+                    //.where('state=?',data.state);
+      //query.set('state_id', state_id);
+    //}
+    //if ( data.random !== undefined ) {
+      //query.set('random', data.random);
+    //}
 
-    return db.query(query);
-  },
+    //return db.query(query);
+  //},
   getNextSubmitter: function(game) {
     return Promise.join(
       Round.getLast(game),
@@ -195,7 +196,6 @@ let Game = {
       game.players = yield this.getPlayers(game);
 
       if ( game.round ) {
-        //console.info('game round exists');
         game.players.map(function(game_player) {
           if ( game_player.id === game.round.submitter_id ) {
             game.round.submitter = game_player;
@@ -310,7 +310,6 @@ let Game = {
         return Game.findOne(game.id);
       }
     }).then((game) => {
-      //console.log('add user to game', game.id, users);
       return Promise.all(users.map((user) => {
         let player_params = {
           game_id: game.id,
@@ -320,13 +319,22 @@ let Game = {
           player_params.to = user.to;
         }
         return Player.create(player_params).catch((err) => {
-          //console.log('player error', err);
           return null;
         });
       })).then((players) => {
         game.players = game.players.concat(players.filter(player => player));
         return game;
       });
+    }).then((game) => {
+      if ( game.players.length > 1 && game.round === null ) {
+        return Round.create(game).then((round) => {
+          game.round = round;
+          game.round_count = 1;
+          return game;
+        });
+      } else {
+        return game;
+      }
     });
   },
   findOne: (params) => {
@@ -342,11 +350,18 @@ let Game = {
     });
   },
   find: (params = {}) => {
+    let rounds = squel
+                 .select()
+                 .from('rounds')
+                 .order('id', false);
     let query = squel
                 .select()
                 .field('g.id')
                 .field('g.created')
-                
+                .field('r.id', 'round_id')
+                .field('COUNT(r.id)', 'round_count')
+                .left_join(rounds, 'r', 'r.game_id=g.id')
+                .group('g.id')
                 .from('games', 'g');
 
     if ( params.id ) {
@@ -365,26 +380,37 @@ let Game = {
               .where('p.id IN ?',params.player_ids);
     }
 
-    //console.log(query.toString());
+    const getByGameID = (arr) => {
+      return arr.reduce((obj, el) => {
+        const game_id = el.game_id;
+        delete el.game_id;
+        if ( ! obj[game_id] ) {
+          obj[game_id] = [];
+        }
+        obj[game_id].push(el);
+        return obj;
+      }, {});
+    };
+
     return db.query(query).then((games) => {
       if ( games && games.length ) {
-        return Player.find({ game_ids: games.map(game => game.id) }).then((players) => {
-          return players.reduce((obj, player) => {
-            const game_id = player.game_id;
-            delete player.game_id;
-            if ( ! obj[game_id] ) {
-              obj[game_id] = [];
-            }
-            obj[game_id].push(player);
-            return obj;
-          }, {});
-        }).then((players) => {
-          return games.map((game) => {
-            game.players = players[game.id] || [];
-            game.rounds = [];
-            return game;
-          });
-        });
+        const game_ids = games.map(game => game.id);
+        return Promise.join(
+          Player.find({ game_ids: game_ids }).then(getByGameID),
+          Round.find({ game_ids: game_ids, most_recent: true }).then(getByGameID),
+          (players = {}, rounds = {}) => {
+            return games.map((game) => {
+              const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
+              return {
+                id: game.id,
+                created: game.created,
+                players: players[game.id] || [],
+                round_count: game.round_count,
+                round: round
+              };
+            });
+          }
+        );
       } else {
         return [];
       }
@@ -394,9 +420,7 @@ let Game = {
     function getValidUsers(users) {
       return users.filter(user => parseInt(user.id));
     }
-    //console.log('create game with users', users);
     if ( !_.isArray(users) ) {
-      console.log('no dice, kids 1');
       throw "You must provide an array of users";
     } else if ( getValidUsers(users).length !== users.length ) {
       // check to see if every user has a valid ID
@@ -432,7 +456,6 @@ let Game = {
                       last_activity: squel.fval('NOW(3)')
                     });
 
-                    //console.log(query.toString());
         return db.create(query);
       }).then(function(result) {
         if ( ! result || ! result.insertId ) {

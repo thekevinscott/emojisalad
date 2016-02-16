@@ -59,7 +59,6 @@ describe('Find', function() {
   describe('findOne', function() {
     it('should only accept numeric IDs', function() {
       return get({ url: `/players/foo` }).then((res) => {
-        //console.log('res', res);
         res.statusCode.should.equal(400);
       });
     });

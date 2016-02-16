@@ -56,6 +56,7 @@ gulp.task('update-fixtures', (cb) => {
     },
     'game_numbers',
     'games',
+    'game_phrases',
     'guesses',
     'invites',
     'phrases',

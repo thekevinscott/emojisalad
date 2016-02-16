@@ -9,6 +9,15 @@ module.exports = [
       { number: '+15559999999' },
     ]
   },
+  {
+    table: 'phrases',
+    rows: [
+      { phrase: 'JURASSIC PARK' },
+      { phrase: 'SILENCE OF THE LAMBS' },
+      { phrase: 'BUFFALO WILD WINGS' },
+      { phrase: 'TIME AFTER TIME' },
+    ]
+  },
   //{
     //table: 'clues',
     //rows: [
@@ -19,13 +28,4 @@ module.exports = [
       //{ id: 5, phrase_id: 2, clue: 'CLARICE' },
     //]
   //},
-  //{
-    //table: 'phrases',
-    //rows: [
-      //{ id: 1, phrase: 'JURASSIC PARK', admin_id: 16 },
-      //{ id: 2, phrase: 'SILENCE OF THE LAMBS', admin_id: 16 },
-      //{ id: 3, phrase: 'TIME AFTER TIME', admin_id: 16 },
-      //{ id: 4, phrase: 'BUFFALO WILD WINGS', admin_id: 16 },
-    //]
-  //}
 ];

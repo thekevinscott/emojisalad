@@ -157,7 +157,6 @@ const Invite = {
 
     return db.query(query).then((invites) => {
       if ( invites && invites.length ) {
-        //console.log('invite', invites);
         return Promise.join(
           Game.find({ player_ids: invites.map(invite => invite.inviter_id) }),
           Player.find({ ids: invites.map(invite => invite.inviter_id) }),

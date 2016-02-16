@@ -61,6 +61,5 @@ module.exports.use = {
 module.exports.find = {
   path: '/:game_id/invites',
   method: 'get',
-  fn: find 
+  fn: find
 };
-

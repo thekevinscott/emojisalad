@@ -149,9 +149,8 @@ describe('Find', function() {
       res.body[0].should.have.property('id');
       res.body[0].should.have.property('players');
       res.body[0].should.have.property('created');
-      res.body[0].should.have.property('rounds');
+      res.body[0].should.have.property('round');
       res.body[0].players.should.be.an('array');
-      res.body[0].rounds.should.be.an('array');
       res.body[0].players[0].should.have.property('id');
       res.body[0].players[0].should.have.property('avatar');
       res.body[0].players[0].should.have.property('user_id');
@@ -165,7 +164,6 @@ describe('Find', function() {
       return get({ url: `/games/`, data: { player_id: player_id }}).then((res) => {
         res.statusCode.should.equal(200);
         let body = res.body[0];
-        //console.log(body, game);
         body.id.should.equal(game.id);
         body.players[0].id.should.equal(game.players[0].id);
         //body.rounds[0].should.equal(game.rounds[0]);
