@@ -326,15 +326,16 @@ let Game = {
         return game;
       });
     }).then((game) => {
-      if ( game.players.length > 1 && game.round === null ) {
-        return Round.create(game).then((round) => {
-          game.round = round;
-          game.round_count = 1;
-          return game;
-        });
-      } else {
-        return game;
-      }
+      //if ( game.players.length > 1 && game.round === null ) {
+        //return Round.create(game).then((round) => {
+          //game.round = round;
+          //game.round_count = 1;
+          //return game;
+        //});
+      //} else {
+        //return game;
+      //}
+      return game;
     });
   },
   findOne: (params) => {

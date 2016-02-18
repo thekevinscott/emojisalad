@@ -1,4 +1,4 @@
-
+'use strict';
 const get = require('test/support/request').get;
 const post = require('test/support/request').post;
 
@@ -37,6 +37,8 @@ describe('Find', () => {
       });
     }).then(() => {
       return Round.create({ id: games[0] });
+    }).then(() => {
+      return Round.create({ id: games[1] });
     });
   });
 
@@ -56,7 +58,7 @@ describe('Find', () => {
   it('should return rounds for a game', () => {
     return get({ url: `/games/${games[0]}/rounds` }).then((res) => {
       res.statusCode.should.equal(200);
-      res.body.length.should.equal(2);
+      res.body.length.should.equal(1);
       res.body[0].should.have.property('id');
       res.body[0].should.have.property('players');
       res.body[0].should.have.property('submitter');
@@ -72,14 +74,14 @@ describe('Find', () => {
   it('should ignore game_ids if selecting by a game id', () => {
     return get({ url: `/games/${games[0]}/rounds`, data: { game_ids: 'foo' }}).then((res) => {
       res.statusCode.should.equal(200);
-      res.body.length.should.equal(2);
+      res.body.length.should.equal(1);
     });
   });
 
   it('should return rounds for multiple games', function() {
     return get({ url: `/rounds`, data: { game_ids: [ games[0], games[1] ] }}).then((res) => {
       res.statusCode.should.equal(200);
-      res.body.length.should.equal(3);
+      res.body.length.should.equal(2);
       res.body[0].should.have.property('id');
       res.body[0].should.have.property('players');
       res.body[0].should.have.property('submitter');
@@ -89,7 +91,9 @@ describe('Find', () => {
   });
 
   it('should return only the latest round for a game', function() {
-    return get({ url: `/games/${games[0]}/rounds` }).then((res) => {
+    return Round.create({ id: games[0] }).then(() => {
+      return get({ url: `/games/${games[0]}/rounds` });
+    }).then((res) => {
       res.body.length.should.equal(2);
       const last_round = res.body.pop();
       return get({ url: `/games/${games[0]}/rounds`, data: { most_recent: true }}).then((res) => {

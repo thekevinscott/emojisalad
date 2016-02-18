@@ -258,6 +258,7 @@ let Round = {
                       clues_allowed: clues_allowed
                     });
         return db.query(query.toString()).then((result) => {
+          const created = new Date();
           const round_id = result.insertId;
           let players = [];
           if ( game.players ) {
@@ -270,6 +271,8 @@ let Round = {
 
           return {
             id: round_id,
+            game_id: game.id,
+            created: created,
             phrase: phrase.phrase,
             submitter: submitter,
             players: players
