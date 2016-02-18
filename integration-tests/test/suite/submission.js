@@ -4,26 +4,24 @@
  *
  */
 
-const getPlayers = require('../lib/getPlayers');
-const startGame = require('../flows/startGame');
-const check = require('../lib/check');
+const getPlayers = require('lib/getPlayers');
+const startGame = require('flows/startGame');
+const check = require('lib/check');
 const EMOJI = '😀';
 
-describe('Submissions', function() {
-  it('should forward a text submission', function() {
-    let players = getPlayers(3);
+describe.only('Submissions', () => {
+  it('should forward a text submission', () => {
+    const players = getPlayers(3);
 
-    return startGame(players).then(function() {
-      let msg = 'foo';
+    return startGame(players).then(() => {
+      const msg = 'foo';
       return check(
         { player: players[0], msg: msg },
         [
           { to: players[1], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
           { to: players[2], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
         ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+      );
     });
   });
 
@@ -47,10 +45,10 @@ describe('Submissions', function() {
   });
   */
 
-  it('should forward the submission to other players', function() {
+  it('should forward the submission to other players', () => {
     let players = getPlayers(3);
 
-    return startGame(players).then(function() {
+    return startGame(players).then(() => {
       return check(
         { player: players[0], msg: EMOJI },
         [
@@ -60,9 +58,7 @@ describe('Submissions', function() {
           { key: 'guessing-instructions', to: players[1] },
           { key: 'guessing-instructions', to: players[2] }
         ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+      );
     });
   });
 

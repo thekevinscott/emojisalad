@@ -15,11 +15,23 @@ const default_clues_allowed = 1;
 
 const api = require('../api');
 
-squel.registerValueHandler(Date, function(date) {
+squel.registerValueHandler(Date, (date) => {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
 
-let Game = {
+const Game = {
+  add: (game, users) => {
+    return api('games', 'add', { users: users }, {
+      game_id: game.id
+    });
+  },
+  create: (params) => {
+    return api('games', 'create', { users: params });
+  },
+  get: (params = {}) => {
+    return api('games', 'get', params);
+  },
+  /*
   update: function(game, data) {
     let query = squel
               .update()
@@ -300,44 +312,6 @@ let Game = {
                 });
     return db.query(query);
   },
-  /*
-  add: function(game, players) {
-    return Promise.all(players.map(function(player) {
-
-      let row = {
-        game_id: game.id,
-        player_id: player.id,
-      };
-
-      let query = squel
-                  .insert()
-                  .into('game_players')
-                  .setFields(row);
-
-      return db.query(query.toString()).then(function(rows) {
-        return {
-          id: rows.insertId
-        };
-      }).then(function() {
-        //if ( game.state && game.state !== 'waiting-for-players' ) {
-          // game is in progress
-        this.addToBattingOrder(game, player).then(function() {
-        }).catch(function(err) {
-          console.error('error adding player ot batting order',  player, err);
-        });
-        //}
-      }.bind(this));
-    }.bind(this)));
-  },
-  */
-  add: (game, users) => {
-    return api('games', 'add', { users: users }, {
-      game_id: game.id
-    });
-  },
-  create: (params) => {
-    return api('games', 'create', { users: params });
-  },
   updateScore: function(game, player, type) {
     let updates = [];
     if ( type === 'win-round' ) {
@@ -397,6 +371,7 @@ let Game = {
       return db.query(query.toString());
     }));
   }
+  */
 };
 
 module.exports = Game;

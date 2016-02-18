@@ -5,6 +5,7 @@ const db = require('db');
 const rule = require('config/rule');
 const levenshtein = require('levenshtein');
 const autosuggest = require('autosuggest');
+const api = require('../api');
 
 const Player = require('./player');
 let Game;
@@ -235,61 +236,66 @@ let Round = {
       return null;
     }
   }),
-  create: function(game) {
-    if ( ! Game ) {
-      Game = require('./game');
-    }
-
-    return Promise.join(
-      Game.getNextSubmitter(game),
-      this.getPhrase(game),
-      function(submitter, phrase) {
-        let state = 'waiting-for-submission';
-        let state_id = squel
-                       .select()
-                       .field('id')
-                       .from('round_states')
-                       .where('state=?',state);
-
-        let clues_allowed = squel
-                      .select()
-                      .field('clues_allowed')
-                      .from('games')
-                      .where('id=?',game.id);
-
-        let guesses = squel
-                      .select()
-                      .field('guesses')
-                      .from('games')
-                      .where('id=?',game.id);
-
-        let query = squel
-                    .insert()
-                    .into('rounds')
-                    .setFields({
-                      game_id: game.id,
-                      state_id: state_id,
-                      submitter_id: submitter.id,
-                      phrase_id: phrase.id,
-                      guesses: guesses,
-                      clues_allowed: clues_allowed
-                    });
-        return db.query(query.toString()).then(function() {
-          return {
-            phrase: phrase.phrase,
-            submitter: submitter,
-            game: game,
-            state: state,
-            players: game.players.filter(function(player) {
-              if ( player.id !== submitter.id ) {
-                return player;
-              }
-            })
-          };
-        });
-      }
-    );
+  create: (game) => {
+    return api('rounds', 'create', {}, {
+      game_id: game.id
+    });
   },
+  //create: function(game) {
+    //if ( ! Game ) {
+      //Game = require('./game');
+    //}
+
+    //return Promise.join(
+      //Game.getNextSubmitter(game),
+      //this.getPhrase(game),
+      //function(submitter, phrase) {
+        //let state = 'waiting-for-submission';
+        //let state_id = squel
+                       //.select()
+                       //.field('id')
+                       //.from('round_states')
+                       //.where('state=?',state);
+
+        //let clues_allowed = squel
+                      //.select()
+                      //.field('clues_allowed')
+                      //.from('games')
+                      //.where('id=?',game.id);
+
+        //let guesses = squel
+                      //.select()
+                      //.field('guesses')
+                      //.from('games')
+                      //.where('id=?',game.id);
+
+        //let query = squel
+                    //.insert()
+                    //.into('rounds')
+                    //.setFields({
+                      //game_id: game.id,
+                      //state_id: state_id,
+                      //submitter_id: submitter.id,
+                      //phrase_id: phrase.id,
+                      //guesses: guesses,
+                      //clues_allowed: clues_allowed
+                    //});
+        //return db.query(query.toString()).then(function() {
+          //return {
+            //phrase: phrase.phrase,
+            //submitter: submitter,
+            //game: game,
+            //state: state,
+            //players: game.players.filter(function(player) {
+              //if ( player.id !== submitter.id ) {
+                //return player;
+              //}
+            //})
+          //};
+        //});
+      //}
+    //);
+  //},
   saveSubmission: Promise.coroutine(function* (game, player, submission) {
 
     // all other players who are not submitter (not the player)

@@ -64,6 +64,18 @@ const getManifest = (port) => {
         //description: 'Get a list of players with an optional query string'
       }
     },
+    rounds: {
+      create: {
+        endpoint: `${base_url}games/:game_id/rounds`,
+        method: 'POST',
+        //description: 'Create a new round'
+      },
+      get: {
+        endpoint: `${base_url}games/:game_id/rounds`,
+        method: 'GET',
+        //description: 'Get a list of rounds'
+      },
+    },
     users: {
       get: {
         endpoint: `${base_url}users`,

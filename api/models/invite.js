@@ -141,7 +141,9 @@ const Invite = {
       query = query.where('i.inviter_id = ?',params.inviter_id);
     }
 
-    if ( params.invited ) {
+    if ( params.invited_id ) {
+      query = query.where('i.invited_id = ?',params.invited_id);
+    } else if ( params.invited ) {
       query = query.where('i.invited_id = ?',params.invited);
     }
 

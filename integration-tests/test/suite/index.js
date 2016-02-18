@@ -5,11 +5,11 @@ require('./signup');
 // and those players can get onboarded
 require('./invite');
 
-/*
 // tests that a player can submit an emoji clue
 // for other players to guess to
 require('./submission');
 
+/*
 // tests that game mechanics work, such as inviting
 // in the middle of a game, moving on to the next
 // round, playing with three or more players

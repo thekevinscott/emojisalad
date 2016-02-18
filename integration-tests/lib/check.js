@@ -32,7 +32,7 @@ const messages = {};
 
 // checks that a certain action's
 // return matches an expected array
-const check = (action, expected, inline_check) => {
+const check = (action, expected) => {
   // this is the id of the initiating message;
   // we'll use this to get back the associated messages to check against
   let initiated_id;
@@ -55,19 +55,18 @@ const check = (action, expected, inline_check) => {
           messages[message.key] = message;
         });
 
-        //console.log('actions', actions);
-        //console.log('expected', expected);
         const expecteds = parseExpecteds(expected, messages);
 
-        if ( inline_check ) {
-          //console.log('expecteds', expecteds);
-          return inlineCheck(actions, expecteds);
-        } else {
-          return {
-            output: actions,
-            expected: expecteds
-          };
-        }
+        return inlineCheck(actions, expecteds);
+
+        //if ( inline_check ) {
+          //return inlineCheck(actions, expecteds);
+        //} else {
+          //return {
+            //output: actions,
+            //expected: expecteds
+          //};
+        //}
       }
     );
   });
@@ -124,7 +123,7 @@ const requestAssociatedMessages = (initiated_id, resolve, expected) => {
 }
 
 const getAssociatedMessages = (initiated_id, expected) => {
-  const timeout_length = 3000;
+  const timeout_length = 5000;
   const ping_length = 500;
   let timer;
   let ping;
@@ -206,6 +205,12 @@ const parseExpecteds = (expected, messages) => {
 }
 
 const inlineCheck = (actions, expecteds) => {
+  if ( actions.length !== expecteds.length ) {
+    // this will throw an error; but it'll indicate exactly
+    // what's wrong with our expectations
+    actions.should.deep.equal(expecteds);
+  }
+
   actions.map((action, i) => {
     return checkBody(action, expecteds[i]);
   });
@@ -237,6 +242,7 @@ const checkBody = (action, expected) => {
   } else {
     // this indicates that we expect no response. Not sure
     // the best way to check for this.
+    console.log('*** this indicates that we expect no response');
     console.log(action, expected);
     action.should.be(undefined);
   }

@@ -1,11 +1,11 @@
 // a separate router. all routes come in to platforms which then routes them here.
 'use strict';
 
-let Promise = require('bluebird');
-let Player = require('models/player');
-let User = require('models/user');
+const Promise = require('bluebird');
+const Player = require('models/player');
+const User = require('models/user');
 
-let Router = function(from, message, to) {
+const Router = (from, message, to) => {
   console.info(`===========Router Index: ${message}`);
   return Player.get({
     from: from,
@@ -13,8 +13,7 @@ let Router = function(from, message, to) {
   }).then((players) => {
     if ( players.length  ) {
       const player = players.shift();
-      console.debug('Make sure to check blacklisted status here');
-      //console.debug('we are in a game', player);
+      //console.debug('Make sure to check blacklisted status here');
       if ( player.blacklist ) {
         return;
       } else {

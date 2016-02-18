@@ -64,6 +64,7 @@ describe('Find', () => {
       res.body[0].should.have.property('submitter');
       res.body[0].should.have.property('phrase');
       res.body[0].should.have.property('created');
+      res.body[0].should.have.property('submission');
 
       for ( let i=1; i<res.body.length; i++ ) {
         res.body[i].id.should.be.above(res.body[i-1].id);
@@ -87,6 +88,7 @@ describe('Find', () => {
       res.body[0].should.have.property('submitter');
       res.body[0].should.have.property('phrase');
       res.body[0].should.have.property('created');
+      res.body[0].should.have.property('submission');
     });
   });
 
@@ -102,9 +104,11 @@ describe('Find', () => {
         res.body[0].should.have.property('id', last_round.id);
         res.body[0].should.have.property('players');
         res.body[0].players.should.deep.equal(last_round.players);
-        res.body[0].should.have.property('submitter', last_round.submitter);
+        res.body[0].should.have.property('submitter');
+        res.body[0].submitter.should.deep.equal(last_round.submitter);
         res.body[0].should.have.property('phrase', last_round.phrase);
         res.body[0].should.have.property('created', last_round.created);
+        res.body[0].should.have.property('submission');
       });
     });
   });

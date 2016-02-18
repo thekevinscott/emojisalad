@@ -19,57 +19,37 @@ squel.registerValueHandler(Date, function(date) {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
 
-let Game = {
-  //update: function(game, data) {
-    //let query = squel
-              //.update()
-              //.table('games')
-              //.set('id', game.id)
-              //.where('id=?',game.id);
-
-    //if ( data.state !== undefined ) {
-      //let state_id = squel
-                    //.select()
-                    //.field('id')
-                    //.from('game_states')
-                    //.where('state=?',data.state);
-      //query.set('state_id', state_id);
-    //}
-    //if ( data.random !== undefined ) {
-      //query.set('random', data.random);
-    //}
-
-    //return db.query(query);
-  //},
-  getNextSubmitter: function(game) {
+const Game = {
+  getNextSubmitter: (game) => {
     return Promise.join(
-      Round.getLast(game),
-      this.getBattingOrder(game),
-      function(round, order) {
-        let next;
+      Round.find({ game_id: game.id, most_recent: true }),
+      Game.getBattingOrder(game),
+      (round, players) => {
+        let next = players[0];
         if ( round ) {
-          for ( let i=0,l=order.length; i<l; i++ ) {
-            if ( order[i].player_id === round.submitter_id ) {
+          for ( let i=0,l=players.length; i<l; i++ ) {
+            if ( players[i].id === round.submitter_id ) {
               if ( i < l-1 ) {
                 // grab the next one
-                next = order[i + 1];
+                next = players[i + 1];
               } else {
-                next = order[0];
+                next = players[0];
               }
               // else, just use the first player
               break;
             }
           }
-        } else {
-          next = order[0];
+        //} else {
+          //next = players[0];
         }
-        return Player.get({ id: next.player_id });
+        return Player.findOne({ id: next.id });
       }
     );
   },
   checkGuess: function(game, player, guess) {
     return Round.checkGuess(game, player, guess);
   },
+  /*
   getGuessesLeft: function(game) {
     return Promise.all(game.round.players.map(function(game_player) {
       if ( game_player.state === 'passed' || game_player.state === 'lost' ) {
@@ -81,6 +61,7 @@ let Game = {
       return prev + current;
     });
   },
+  */
   checkInput: function(str) {
     if ( str === '' ) {
       return 'text';
@@ -98,6 +79,7 @@ let Game = {
     game.round.submission = message;
     return game;
   }),
+  /*
   newRound: function(game) {
     console.info('new round');
     return Round.create(game).then(function(round) {
@@ -119,6 +101,7 @@ let Game = {
       });
     });
   },
+  */
   getPhrase: function(game) {
     let game_phrases = squel
                        .select()
@@ -152,6 +135,7 @@ let Game = {
       }
     });
   },
+  /*
   getPlayers: function(game) {
 
     let query = squel
@@ -188,6 +172,8 @@ let Game = {
 
     return db.query(query);
   },
+  */
+  /*
   get: Promise.coroutine(function* (params, info) {
     let games = yield this.getAll(params, info);
     if ( games.length ) {
@@ -248,6 +234,7 @@ let Game = {
     //console.info('games', games);
     return games;
   }),
+  */
   start: Promise.coroutine(function* (game) {
     return yield Promise.join(
       Game.newRound(game),
@@ -261,15 +248,23 @@ let Game = {
       }
     );
   }),
-  getBattingOrder: function(game) {
-    let query = squel
-                .select({ autoQuoteFieldNames: true })
-                .field('player_id')
-                .field('order')
-                .from('player_order')
-                .where('game_id=?',game.id);
+  getBattingOrder: (game) => {
+    const query = squel
+                  .select({ autoQuoteFieldNames: true })
+                  .field('id')
+                  .from('players')
+                  .order('created')
+                  .where('game_id=?',game.id);
     return db.query(query);
+    //let query = squel
+                //.select({ autoQuoteFieldNames: true })
+                //.field('player_id')
+                //.field('order')
+                //.from('player_order')
+                //.where('game_id=?',game.id);
+    //return db.query(query);
   },
+  /*
   addToBattingOrder: function(game, player) {
     return this.getBattingOrder(game).then(function(order) {
       let nextOrder;
@@ -281,6 +276,8 @@ let Game = {
       return this.addBatter(game, player, nextOrder);
     }.bind(this));
   },
+  */
+  /*
   generateBattingOrder: function(game) {
     return this.getPlayers(game).then(function(game_players) {
       return Promise.all(_.shuffle(game_players).map(function(game_player, i) {
@@ -299,6 +296,7 @@ let Game = {
                 });
     return db.query(query);
   },
+  */
   add: (game, users) => {
     //console.debug('huzzah add');
     return new Promise((resolve) => {

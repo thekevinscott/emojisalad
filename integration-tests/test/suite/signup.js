@@ -11,12 +11,11 @@ describe('Signup', () => {
   describe('Test a brand new player', () => {
     it('should introduce itself when contacting for the first time', () => {
       let player = getPlayers(1)[0];
-      console.log('here we go!');
       return check(
         { player: player, msg: 'hello?' },
         [
           { key: 'intro', to: player }
-        ], true);
+        ]);
     });
 
     describe('Saying yes', () => {
@@ -33,8 +32,7 @@ describe('Signup', () => {
         return reachOut().then((player) => {
           return check(
             { player: player, msg: message },
-            [{ key: 'intro_2', to: player }],
-            true
+            [{ key: 'intro_2', to: player }]
           );
         });
       }
@@ -68,12 +66,11 @@ describe('Signup', () => {
           { player: player, msg: player.nickname },
           [
             { key: 'intro_3', options: [ player.nickname, '*' ], to: player }
-          ],
-          true);
+          ]);
       });
     });
 
-    it('should allow the player to accept the emoji', function() {
+    it('should allow the player to accept the emoji', () => {
       let player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
@@ -84,7 +81,7 @@ describe('Signup', () => {
           { player: player, msg: rule('keep').example() },
           [
             { key: 'intro_4', options: [ player.nickname, '*' ], to: player }
-          ], true);
+          ]);
       });
     });
 
@@ -100,25 +97,23 @@ describe('Signup', () => {
           { player: player, msg: EMOJI },
           [
             { key: 'intro_4', options: [ player.nickname, EMOJI ], to: player }
-          ], true);
+          ]);
       });
     });
 
-    it('should disallow a player from submitting invalid emoji', function() {
+    it('should disallow a player from submitting invalid emoji', () => {
       let player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: 'y' },
         { player: player, msg: player.nickname },
-      ]).then(function() {
+      ]).then(() => {
         return check(
           { player: player, msg: 'foo' },
           [
             { key: 'error-14', to: player }
           ]
-        ).then(function(obj) {
-          obj.output.should.deep.equal(obj.expected);
-        });
+        );
       });
     });
 
@@ -133,8 +128,7 @@ describe('Signup', () => {
           { player: player, msg: EMOJI+EMOJI },
           [
             { key: 'error-14', to: player }
-          ],
-          true
+          ]
         );
       });
     });
@@ -148,8 +142,7 @@ describe('Signup', () => {
         ]).then(() => {
           return check(
             { player: player, msg: 'any response?' },
-            [ ],
-            true
+            [ ]
           );
         });
       };
@@ -171,8 +164,7 @@ describe('Signup', () => {
             { player: player, msg: 'boo urns' },
             [
               { key: 'onboarding_wtf', to: player }
-            ],
-            true
+            ]
           );
         });
       });
@@ -187,8 +179,7 @@ describe('Signup', () => {
       ]).then(() => {
         return check(
           { player: player, msg: 'invite foo' },
-          [{ key: 'error-14', to: player }],
-          true
+          [{ key: 'error-14', to: player }]
         );
       });
     });

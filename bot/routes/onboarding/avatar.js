@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const Player = require('models/player');
+const Round = require('models/round');
 const Invite = require('models/invite');
 const User = require('models/user');
 const Game = require('models/game');
@@ -31,50 +32,11 @@ module.exports = (user, input) => {
       });
     }
   }).then((user) => {
-    return Invite.get({
-      invited_id: user.id
-    }).then((invites) => {
-      return new Promise((resolve) => {
-        if ( invites.length && invites[0].game ) {
-          resolve(Game.add(invites[0].game, [user]));
-        } else {
-          resolve(Game.create([user]));
-        }
-      }).then((game) => {
-        // now, our "user" now is a "player"; that means they
-        // are assigned to a game and have a particular game number
-        // associated with them.
-        const player = game.players.filter((game_player) => {
-          return game_player.user_id === user.id;
-        }).pop();
-
-        if ( game.players.length === 1 ) {
-          // this is brand new game; invite some people
-          return [{
-            player: player,
-            key: 'intro_4',
-            options: [player.nickname, player.avatar]
-          }];
-        } else if ( game.rounds.length > 0 ) {
-          // this is a game in progress
-          throw "TBD";
-        } else {
-          const invite = invites[0];
-          const inviter = invite.inviter_player;
-          const invited = player; // just a renaming, to make this clearer
-          console.log('THIS IS WHEN WE START TEH GAME; MAYBE POST TO A ROUND?');
-          // start the game
-          return [
-            { key: 'accepted-invited', options: [invited.nickname], player: inviter },
-            { key: 'accepted-inviter', options: [invited.nickname, inviter.nickname], player: invited },
-            { key: 'game-start', options: [inviter.nickname, 'FOO'], player: inviter },
-          ];
-        }
-      });
-    });
+    return require('../game/start')(user, input);
   }).catch((err) => {
-    console.debug('7');
-    console.debug('err', err);
+    if ( err !== 'error-14' ) {
+      console.error('err', err);
+    }
     return [{
       player: user,
       key: 'error-14'

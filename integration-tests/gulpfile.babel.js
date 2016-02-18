@@ -87,6 +87,10 @@ function startServers(debug, log_level) {
       name: 'bot',
       color: 'blue',
       args: [
+        '--TRIPWIRE_TRIP',
+        '9999999',
+        '--TRIPWIRE_ALERT',
+        '9999999',
         '--QUEUES',
         [
           'testqueue'

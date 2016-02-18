@@ -126,7 +126,13 @@ gulp.task('server', () => {
   }
 
   const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
-  return shared.server({ protocols: protocols, port: port, LOG_LEVEL: LOG_LEVEL })();
+  return shared.server({
+    protocols: protocols,
+    port: port,
+    LOG_LEVEL: LOG_LEVEL,
+    TRIPWIRE_TRIP: util.env.TRIPWIRE_TRIP,
+    TRIPWIRE_ALERT: util.env.TRIPWIRE_ALERT 
+  })();
 });
 
 gulp.task('default', () => {

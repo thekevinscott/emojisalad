@@ -51,6 +51,7 @@ describe('Create', () => {
       res.body.should.have.property('players');
       res.body.should.have.property('submitter');
       res.body.should.have.property('phrase');
+      res.body.should.have.property('submission');
       res.body.should.have.property('created');
     });
   });

@@ -7,8 +7,8 @@ const levenshtein = require('levenshtein');
 const autosuggest = require('autosuggest');
 
 const Player = require('./player');
+//const Game = require('./game');
 let Game;
-//let Game = require('./game');
 
 let Round = {
   getCluesLeft: function(game) {
@@ -229,12 +229,13 @@ let Round = {
     });
   },
   create: (game) => {
+    if ( ! Game ) {
+      Game = require('./game');
+    }
     return Promise.join(
-      //Game.getNextSubmitter(game),
+      Game.getNextSubmitter(game),
       Round.getPhrase(game),
-      (phrase) => {
-        let submitter = 1;
-
+      (submitter, phrase) => {
         let clues_allowed = squel
                       .select()
                       .field('clues_allowed')
@@ -274,6 +275,7 @@ let Round = {
             game_id: game.id,
             created: created,
             phrase: phrase.phrase,
+            submission: '',
             submitter: submitter,
             players: players
           };
@@ -332,14 +334,17 @@ let Round = {
         return [];
       }
     }).map((round) => {
-      return {
-        id: round.id,
-        game_id: round.game_id,
-        phrase: round.phrase,
-        submitter: 123,
-        players: [],
-        created: round.created
-      };
+      return Player.findOne({ id: round.submitter_id }).then((submitter) => {
+        return {
+          id: round.id,
+          game_id: round.game_id,
+          phrase: round.phrase,
+          submitter: submitter,
+          submission: round.submission,
+          players: [],
+          created: round.created
+        };
+      });
     });
   },
   saveSubmission: Promise.coroutine(function* (game, player, submission) {
