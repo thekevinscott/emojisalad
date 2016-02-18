@@ -255,8 +255,7 @@ let Round = {
                       game_id: game.id,
                       submitter_id: submitter.id,
                       phrase_id: phrase.id,
-                      guesses: guesses,
-                      clues_allowed: clues_allowed
+                      created: squel.fval('NOW(3)'),
                     });
         return db.query(query.toString()).then((result) => {
           const created = new Date();
@@ -283,6 +282,18 @@ let Round = {
       }
     );
   },
+  findOne: (params) => {
+    if (parseInt(params)) {
+      params = { id: params };
+    }
+    return Round.find(params).then((rounds) => {
+      if ( rounds && rounds.length) {
+        return rounds[0];
+      } else {
+        return {};
+      }
+    });
+  },
   find: (params = {}) => {
     let query = squel
                 .select()
@@ -292,16 +303,21 @@ let Round = {
                 .field('r.winner_id')
                 .field('r.game_id')
                 .field('r.created')
-                .field('r.guesses')
-                .field('r.clues_allowed')
-                .field('n.submission')
+                //.field('r.guesses')
+                //.field('r.clues_allowed')
+                //.field('n.submission')
+                .field('r.submission')
                 .field('p.phrase')
                 .from('rounds', 'r')
                 //.left_join('guesses', 'g', 'g.round_id=r.id')
                 .left_join('phrases', 'p', 'p.id=r.phrase_id')
-                .left_join('submissions', 'n', 'n.round_id=r.id')
+                //.left_join('submissions', 'n', 'n.round_id=r.id')
                 .order('r.created, r.id');
                 //.limit(1);
+    if ( params.id ) {
+      query = query
+              .where('r.id=?',params.id); 
+    }
                         
     if ( params.game_id ) {
       query = query
@@ -309,12 +325,6 @@ let Round = {
     } else if ( params.game_ids ) {
       query = query
               .where('r.game_id IN ?',params.game_ids); 
-    }
-
-    if ( params.most_recent ) {
-      //query = query
-              //.field('MAX(r.id)', 'id')
-              //.group('r.game_id')
     }
 
     return db.query(query).then((rounds) => {
@@ -334,17 +344,25 @@ let Round = {
         return [];
       }
     }).map((round) => {
-      return Player.findOne({ id: round.submitter_id }).then((submitter) => {
-        return {
-          id: round.id,
-          game_id: round.game_id,
-          phrase: round.phrase,
-          submitter: submitter,
-          submission: round.submission,
-          players: [],
-          created: round.created
-        };
-      });
+      return Promise.join(
+        Player.find({ game_id: round.game_id }),
+        (players) => {
+          const submitter = players.filter((player) => {
+            return player.id === round.submitter_id;
+          })[0];
+          return {
+            id: round.id,
+            game_id: round.game_id,
+            phrase: round.phrase,
+            submitter: submitter,
+            submission: round.submission,
+            players: players.filter((player) => {
+              return player.id !== round.submitter_id;
+            }),
+            created: round.created
+          };
+        }
+      );
     });
   },
   saveSubmission: Promise.coroutine(function* (game, player, submission) {
@@ -374,23 +392,42 @@ let Round = {
 
     yield db.query(query);
   }),
-  update: function(round, data) {
-    let query = squel
-                .update()
-                .table('rounds', 'r')
-                .where('r.id=?',round.id);
-    if ( data.state ) {
-      let state_id = squel
-                     .select()
-                     .field('id')
-                     .from('round_states')
-                     .where('state=?',data.state);
-      query.set('state_id', state_id);
-    } else if ( data.clues_allowed ) {
-      query.set('clues_allowed', data.clues_allowed);
-    }
+  update: (params, data = {}) => {
+    return new Promise((resolve) => {
+      if ( params.game_id ) {
+        resolve(Game.findOne({ id: params.game_id }));
+      } else {
+        resolve();
+      }
+    }).then((game) => {
+      return Round.findOne(params).then((round) => {
+        if ( round && round.id ) {
+          if ( ! game || (game && game.id === round.game_id) ) {
+            let query = squel
+                        .update()
+                        .table('rounds', 'r')
+                        .set('last_activity', squel.fval('NOW(3)'))
+                        .where('r.id=?',round.id);
 
-    return db.query(query.toString());
+            if ( data.submission ) {
+              query = query.set('submission', data.submission);
+            }
+
+            //console.debug('**** DID YA CALL SET');
+            return db.query(query).then((result) => {
+              return Round.findOne(round);
+            }).catch((err) => {
+              console.error('err', err);
+            });
+          } else {
+            console.error('**** GAME ID DOES NOT MATCH', game, round);
+            throw new Error("Game ID does not match round ID");
+          }
+        } else {
+          throw new Error("No matching Round ID found");
+        }
+      });
+    });
   }
 };
 

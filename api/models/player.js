@@ -153,6 +153,7 @@ let Player = {
                 .field('u.archived', 'user_archived')
                 .from('players', 'p')
                 .where('p.archived=?', archived)
+                .order('p.id')
                 .left_join('game_numbers','n','n.id=p.`to`')
                 .left_join('games','g','g.id=p.game_id')
                 .left_join('users', 'u', 'u.id=p.user_id')
@@ -179,7 +180,9 @@ let Player = {
       query = query.where('u.`id` IN ?',params.user_ids);
     }
 
-    if ( params.game_ids ) {
+    if ( params.game_id ) {
+      query = query.where('g.`id` = ?',params.game_id);
+    } else if ( params.game_ids ) {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 

@@ -62,7 +62,6 @@ gulp.task('update-fixtures', (cb) => {
     'phrases',
     'players',
     'rounds',
-    'submissions',
     'users'
   ];
   return shared.pullDB(production, tmp, tables).then((file) => {
@@ -87,7 +86,7 @@ gulp.task('test', (cb) => {
     process.env.LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
-      timeout: 10000,
+      timeout: 3000,
       slow: 500,
       bail: true
     }))

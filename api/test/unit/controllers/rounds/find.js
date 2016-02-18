@@ -9,14 +9,14 @@ const Game = require('models/game');
 const game_number = '+15559999999';
 describe('Find', () => {
   let froms = [[
-    Math.random(),
-    Math.random()
+    ''+Math.random(),
+    ''+Math.random()
   ], [
-    Math.random(),
-    Math.random()
+    ''+Math.random(),
+    ''+Math.random()
   ], [
-    Math.random(),
-    Math.random()
+    ''+Math.random(),
+    ''+Math.random()
   ]];
   let games = [];
 
@@ -79,7 +79,7 @@ describe('Find', () => {
     });
   });
 
-  it('should return rounds for multiple games', function() {
+  it('should return rounds for multiple games', () => {
     return get({ url: `/rounds`, data: { game_ids: [ games[0], games[1] ] }}).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.equal(2);
@@ -92,7 +92,7 @@ describe('Find', () => {
     });
   });
 
-  it('should return only the latest round for a game', function() {
+  it('should return only the latest round for a game', () => {
     return Round.create({ id: games[0] }).then(() => {
       return get({ url: `/games/${games[0]}/rounds` });
     }).then((res) => {
@@ -110,6 +110,15 @@ describe('Find', () => {
         res.body[0].should.have.property('created', last_round.created);
         res.body[0].should.have.property('submission');
       });
+    });
+  });
+
+  it('should return all players in a round', () => {
+    return Round.create({ id: games[0] }).then(() => {
+      return get({ url: `/games/${games[0]}/rounds`, data: { most_recent: true }});
+    }).then((res) => {
+      res.body[0].should.have.property('players');
+      res.body[0].players.length.should.equal(1);
     });
   });
 });

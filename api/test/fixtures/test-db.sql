@@ -183,30 +183,13 @@ CREATE TABLE `rounds` (
   `game_id` int(11) DEFAULT NULL,
   `state_id` int(11) DEFAULT NULL,
   `submitter_id` int(11) DEFAULT NULL,
+  `submission` text CHARACTER SET utf8mb4,
   `phrase_id` int(11) DEFAULT NULL,
   `winner_id` int(11) DEFAULT NULL,
-  `guesses` int(11) DEFAULT NULL,
-  `clues_allowed` int(11) DEFAULT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_activity` timestamp(6) NULL DEFAULT NULL,
+  `created` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=231 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `submissions`
---
-
-DROP TABLE IF EXISTS `submissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `submissions` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `round_id` int(11) DEFAULT NULL,
-  `player_id` int(11) DEFAULT NULL,
-  `submission` text,
-  `created` timestamp(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -243,7 +226,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-16 12:36:18
+-- Dump completed on 2016-02-18 11:54:33
 -- MySQL dump 10.13  Distrib 5.6.22, for osx10.10 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinary
@@ -295,4 +278,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-16 12:36:23
+-- Dump completed on 2016-02-18 11:54:33

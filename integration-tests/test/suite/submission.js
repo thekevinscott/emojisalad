@@ -62,11 +62,11 @@ describe.only('Submissions', () => {
     });
   });
 
-  it('should forward a mixed emoji submission to other players', function() {
-    let players = getPlayers(3);
+  it('should forward a mixed emoji submission to other players', () => {
+    const players = getPlayers(3);
 
-    return startGame(players).then(function() {
-      let msg = EMOJI + 'foo' + EMOJI ;
+    return startGame(players).then(() => {
+      const msg = EMOJI + 'foo' + EMOJI ;
       return check(
         { player: players[0], msg: msg },
         [
@@ -76,9 +76,7 @@ describe.only('Submissions', () => {
           { key: 'guessing-instructions', to: players[1] },
           { key: 'guessing-instructions', to: players[2] }
         ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+      );
     });
   });
 

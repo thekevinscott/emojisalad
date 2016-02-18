@@ -37,6 +37,7 @@ module.exports = [
   invites.find,
   rounds.find,
   rounds.create,
+  rounds.update,
 ]);
 
 function create(req) {

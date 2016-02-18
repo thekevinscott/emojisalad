@@ -8,6 +8,11 @@ module.exports = [
     method: 'get',
     fn: find 
   },
+  {
+    path: '/:round_id',
+    method: 'put',
+    fn: update 
+  },
 ];
 
 function create(req) {
@@ -33,6 +38,23 @@ function findByGameID(req) {
 
   return Round.find(query);
 }
+
+function update(req) {
+  const game_id = req.params.game_id;
+  if ( game_id && !parseInt(game_id) ) {
+    throw "Invalid game ID provided";
+  }
+
+  const round_id = req.params.round_id;
+  if ( ! round_id ) {
+    throw "No round ID provided, how is that possible?";
+  } else if ( !parseInt(round_id) ) {
+    throw "Invalid round ID provided";
+  }
+
+  return Round.update({ game_id: game_id, id: round_id }, req.body);
+}
+
 function find(req) {
   return Round.find(req.query);
 }
@@ -47,4 +69,10 @@ module.exports.create = {
   path: '/:game_id/rounds',
   method: 'post',
   fn: create 
+};
+
+module.exports.update = {
+  path: '/:game_id/rounds/:round_id',
+  method: 'put',
+  fn: update
 };

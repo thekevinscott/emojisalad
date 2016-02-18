@@ -75,6 +75,10 @@ const getManifest = (port) => {
         method: 'GET',
         //description: 'Get a list of rounds'
       },
+      update: {
+        endpoint: `${base_url}rounds/:round_id`,
+        method: 'PUT',
+      },
     },
     users: {
       get: {

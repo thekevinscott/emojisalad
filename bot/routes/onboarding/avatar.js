@@ -18,9 +18,8 @@ module.exports = (user, input) => {
         confirmed_avatar: 1
       }));
     } else {
-      return Emoji.checkInput(input, { emoji: input }).then((result) => {
+      return Emoji.checkInput(input).then((result) => {
         if ( result.type === 'emoji' && result.number === 1 ) {
-          // also check length of emoji
           const to = user.to;
           resolve(User.update(user, {
             avatar: input,
