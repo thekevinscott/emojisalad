@@ -72,7 +72,7 @@ let Round = {
       'for',
       'and'
     ];
-    return phrase.replace(/[^\w\s]|_/g, '').split(' ').filter((word) => {
+    return phrase.toLowerCase().replace(/[^\w\s]|_/g, '').split(' ').filter((word) => {
       return ignored_words.indexOf(word.toLowerCase()) === -1 && word;
     }).join(' ');
   },
@@ -80,8 +80,8 @@ let Round = {
     // check distance of phrase
     const levenshtein_distance = levenshtein(phrase, guess);
     //const distance = levenshtein(phrase, guess) / phrase.length;
-    const acceptable_distance = 5;
-    //console.log('distance', distance);
+    const acceptable_distance = 6;
+    //console.log('levenshtein', levenshtein_distance, phrase, guess);
     return levenshtein_distance <= acceptable_distance;
   },
   guess: (round, player, original_guess) => {
@@ -101,6 +101,8 @@ let Round = {
             if ( suggested_results.length ) {
               const top_result = Round.parsePhrase(suggested_results[0].result);
               return Round.checkPhrase(phrase, top_result);
+            } else {
+              return false;
             }
           }).catch((err) => {
             // swallow this silently
@@ -412,6 +414,9 @@ let Round = {
     yield db.query(query);
   }),
   update: (params, data = {}) => {
+    if ( ! params.id ) {
+      throw "You must provide a round id to update by";
+    }
     return new Promise((resolve) => {
       if ( params.game_id ) {
         resolve(Game.findOne({ id: params.game_id }));

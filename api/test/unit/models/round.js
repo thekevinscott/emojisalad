@@ -58,22 +58,14 @@ describe('Round', () => {
         const game = res.body;
         return Round.create({ id: game.id });
       }).then((res) => {
-        return Round.update({ submission: EMOJI });
+        return Round.update(res, { submission: EMOJI, phrase_id: phrase_id });
       }).then((res) => {
         round = res;
       });
     });
 
     const guess = (the_guess, data) => {
-      return new Promise((resolve) => {
-        if ( data ) {
-          resolve(Round.update(round, data));
-        } else {
-          resolve();
-        }
-      }).then(() => {
-        return Round.guess(round, round.players[0], the_guess);
-      }).then((round) => {
+      return Round.guess(round, round.players[0], the_guess).then((round) => {
         round.should.have.property('winner');
         round.should.have.property('guesses');
         round.winner.should.have.property('id', round.players[0].id);
