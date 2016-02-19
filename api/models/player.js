@@ -131,6 +131,7 @@ let Player = {
   },
 
   find: (params = {}) => {
+    //console.log('find player with params', params);
     let archived = 0;
     if ( params.archived !== undefined ) {
       archived = params.archived;
@@ -186,6 +187,7 @@ let Player = {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 
+    //console.log('find player', query.toString());
     return db.query(query);
   },
   

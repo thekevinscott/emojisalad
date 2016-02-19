@@ -38,6 +38,7 @@ module.exports = [
   rounds.find,
   rounds.create,
   rounds.update,
+  rounds.guess,
 ]);
 
 function create(req) {

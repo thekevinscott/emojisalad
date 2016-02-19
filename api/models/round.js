@@ -62,102 +62,80 @@ let Round = {
       //return null;
     //}
   }),
-  checkGuess: Promise.coroutine(function* (game, player, guess) {
-    let query = squel
-                .select()
-                .from('phrases')
-                .where('id=?', game.round.phrase_id);
 
-    function parsePhrase(phrase) {
-      let p = phrase.replace(/[^\w\s]|_/g, '').split(' ').filter(function(word) {
-        return ['the', 'of', 'a', 'an'].indexOf(word.toLowerCase()) === -1 && word;
-      }).join(' ');
-      return p;
-    }
-                        
-    let phrases = yield db.query(query.toString());
-    console.info('the guess', guess, 'phrases', phrases);
+  parsePhrase: (phrase) => {
+    const ignored_words = [
+      'the',
+      'of',
+      'a',
+      'an',
+      'for',
+      'and'
+    ];
+    return phrase.replace(/[^\w\s]|_/g, '').split(' ').filter((word) => {
+      return ignored_words.indexOf(word.toLowerCase()) === -1 && word;
+    }).join(' ');
+  },
+  checkPhrase: (phrase, guess) => {
+    // check distance of phrase
+    const levenshtein_distance = levenshtein(phrase, guess);
+    //const distance = levenshtein(phrase, guess) / phrase.length;
+    const acceptable_distance = 5;
+    //console.log('distance', distance);
+    return levenshtein_distance <= acceptable_distance;
+  },
+  guess: (round, player, original_guess) => {
+    return Round.findOne(round).then((round) => {
+      const phrase = Round.parsePhrase(round.phrase);
+      const guess = Round.parsePhrase(original_guess);
 
-    const phrase = phrases[0].phrase;
-    let result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(guess));
-    console.info('first test', result);
-
-    // check levenshtein as well, in case there's typos
-    // but we limit it to a phrase of 5 characters or more.
-    // cause anything shorter, typos are tough shit.
-    if ( ! result && phrase.length > 5 ) {
-      const distance = levenshtein(phrase, guess) / phrase.length;
-      // accept it if its lower than a certain difference.
-      if ( distance <= .2 ) {
-        result = true;
-      }
-      console.info('second test', result, distance);
-    }
-
-    if ( ! result ) {
-      try {
-        // finally, ping google and see what they say about this phrase
-        // only check the first result though.
-        let suggested_results = yield autosuggest(guess);
-        if ( suggested_results.length ) {
-          let top_result = suggested_results[0].result;
-          result = rule('phrase', {phrase: parsePhrase(phrase)}).test(parsePhrase(top_result));
+      return new Promise((resolve) => {
+        if ( Round.checkPhrase(phrase, guess) ) {
+          resolve(true);
+        } else {
+          // could also check bing here
+          //
+          // finally, ping google and see what they say about this phrase
+          // only check the first result though.
+          resolve(autosuggest(guess).then((suggested_results) => {
+            if ( suggested_results.length ) {
+              const top_result = Round.parsePhrase(suggested_results[0].result);
+              return Round.checkPhrase(phrase, top_result);
+            }
+          }).catch((err) => {
+            // swallow this silently
+            return false;
+          }));
         }
-        console.info('third test', result, suggested_results);
-      } catch (err) {
-        console.error('google choked', err);
-      }
-    }
+      }).then((result) => {
+        let promises = [];
+        // we save the guess
+        const guess_query = squel
+                           .insert()
+                           .into('guesses')
+                           .setFields({
+                             player_id: player.id,
+                             round_id: round.id,
+                             correct: result,
+                             guess: original_guess
+                           });
+        promises.push(db.query(guess_query));
 
-    // we save the guess
-    let guessQuery = squel
-                     .insert()
-                     .into('guesses')
-                     .setFields({
-                       player_id: player.id,
-                       round_id: game.round.id,
-                       correct: (result) ? 1 : 0,
-                       guess: guess
-                     });
+        if ( result ) {
+          const update_rounds_query = squel
+                                      .update()
+                                      .table('rounds')
+                                      .set('winner_id',player.id)
+                                      .where('id=?',round.id);
+          promises.push(db.query(update_rounds_query));
+        }
 
-    yield db.query(guessQuery);
-
-    if ( result ) {
-      let state_id = squel
-                     .select()
-                     .field('id')
-                     .from('round_states')
-                     .where('state=?', 'won');
-
-      let update_rounds_query = squel
-                                .update()
-                                .table('rounds')
-                                .set('winner_id',player.id)
-                                .set('state_id',state_id)
-                                .where('id=?',game.round.id);
-      yield db.query(update_rounds_query.toString());
-      return true;
-    } else {
-      return false;
-    }
-  }),
-  //getGuessesLeft: function(game, player) {
-    //let query = squel
-                //.select()
-                //.field('count(1) as guesses_made')
-                //.field('r.guesses')
-                //.from('rounds', 'r')
-                //.left_join('guesses', 'g', 'g.round_id=r.id')
-                //.where('r.id=?',game.round.id)
-                //.where('g.player_id=?',player.id);
-
-    //return db.query(query).then(function(rows) {
-      //let row = rows.pop();
-      //return parseInt(row.guesses) - parseInt(row.guesses_made);
-    //});
-  //},
-  /*
-  */
+        return Promise.all(promises).then(() => {
+          return Round.findOne(round);
+        });
+      });
+    });
+  },
   getLast: Promise.coroutine(function* (game) {
     let query = squel
                 .select()
@@ -343,26 +321,67 @@ let Round = {
       } else {
         return [];
       }
-    }).map((round) => {
-      return Promise.join(
-        Player.find({ game_id: round.game_id }),
-        (players) => {
-          const submitter = players.filter((player) => {
-            return player.id === round.submitter_id;
-          })[0];
-          return {
-            id: round.id,
-            game_id: round.game_id,
-            phrase: round.phrase,
-            submitter: submitter,
-            submission: round.submission,
-            players: players.filter((player) => {
-              return player.id !== round.submitter_id;
-            }),
-            created: round.created
-          };
-        }
-      );
+    }).then((rounds) => {
+
+      if ( rounds.length ) {
+        const round_ids = rounds.map((round) => {
+          return round.id;
+        });
+
+        const guesses_query = squel
+                              .select()
+                              .field('guess')
+                              .field('player_id')
+                              .field('round_id')
+                              .from('guesses', 'g')
+                              .where('round_id IN ?', round_ids);
+
+        return db.query(guesses_query).then((guesses) => {
+          return guesses.reduce((obj, guess) => {
+            const round_id = guess.round_id;
+            if ( ! obj[round_id] ) {
+              obj[round_id] = [];
+            }
+            obj[round_id].push({
+              guess: guess.guess,
+              player_id: guess.player_id
+            });
+            return obj;
+          }, {});
+        }).then((guesses_by_round_id) => {
+          return Promise.all(
+            rounds.map((round) => {
+              return Promise.join(
+                Player.find({ game_id: round.game_id }),
+                (players) => {
+                  const submitter = players.filter((player) => {
+                    return player.id === round.submitter_id;
+                  })[0];
+
+                  const winner = players.filter((player) => {
+                    return player.id === round.winner_id
+                  })[0];
+                  return {
+                    id: round.id,
+                    game_id: round.game_id,
+                    phrase: round.phrase,
+                    submitter: submitter,
+                    guesses: guesses_by_round_id[round.id],
+                    winner: winner || null,
+                    submission: round.submission,
+                    players: players.filter((player) => {
+                      return player.id !== round.submitter_id;
+                    }),
+                    created: round.created
+                  };
+                }
+              );
+            })
+          );
+        });
+      } else {
+        return [];
+      }
     });
   },
   saveSubmission: Promise.coroutine(function* (game, player, submission) {
@@ -411,6 +430,10 @@ let Round = {
 
             if ( data.submission ) {
               query = query.set('submission', data.submission);
+            }
+
+            if ( data.phrase_id ) {
+              query = query.set('phrase_id', data.phrase_id);
             }
 
             //console.debug('**** DID YA CALL SET');

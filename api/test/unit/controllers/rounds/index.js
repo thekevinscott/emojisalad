@@ -3,4 +3,5 @@ describe('Rounds', function() {
   require('./find');
   require('./create');
   require('./update');
+  require('./guess');
 });

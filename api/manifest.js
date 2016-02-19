@@ -75,8 +75,13 @@ const getManifest = (port) => {
         method: 'GET',
         //description: 'Get a list of rounds'
       },
+      guess: {
+        endpoint: `${base_url}games/:game_id/rounds/:round_id/guess`,
+        method: 'POST',
+        //description: 'Get a list of rounds'
+      },
       update: {
-        endpoint: `${base_url}rounds/:round_id`,
+        endpoint: `${base_url}games/:game_id/rounds/:round_id`,
         method: 'PUT',
       },
     },

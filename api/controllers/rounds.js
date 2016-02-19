@@ -13,6 +13,11 @@ module.exports = [
     method: 'put',
     fn: update 
   },
+  {
+    path: '/:round_id/guess',
+    method: 'post',
+    fn: guess 
+  },
 ];
 
 function create(req) {
@@ -52,11 +57,45 @@ function update(req) {
     throw "Invalid round ID provided";
   }
 
-  return Round.update({ game_id: game_id, id: round_id }, req.body);
+  let params = {
+    submission: req.body.submission,
+  };
+
+  return Round.update({ game_id: game_id, id: round_id }, params);
 }
 
 function find(req) {
   return Round.find(req.query);
+}
+
+function guess(req) {
+  const game_id = req.params.game_id;
+  if ( game_id && !parseInt(game_id) ) {
+    throw "Invalid game ID provided";
+  }
+
+  const round_id = req.params.round_id;
+  if ( ! round_id ) {
+    throw "No round ID provided, how is that possible?";
+  } else if ( !parseInt(round_id) ) {
+    throw "Invalid round ID provided";
+  }
+
+  const guess = req.body.guess;
+
+  if ( ! guess ) {
+    throw "No guess provided";
+  }
+
+  const player_id = req.body.player_id;
+
+  if ( ! player_id ) {
+    throw "No player ID provided";
+  } else if ( !parseInt(player_id) ) {
+    throw "Invalid player ID provided";
+  }
+
+  return Round.guess({ game_id: game_id, id: round_id }, { id: player_id }, guess);
 }
 
 module.exports.find = {
@@ -75,4 +114,10 @@ module.exports.update = {
   path: '/:game_id/rounds/:round_id',
   method: 'put',
   fn: update
+};
+
+module.exports.guess = {
+  path: '/:game_id/rounds/:round_id/guess',
+  method: 'post',
+  fn: guess 
 };
