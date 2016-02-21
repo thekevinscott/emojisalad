@@ -158,16 +158,17 @@ describe('Game', () => {
     it('should add a third player at the third round and proceed to third player', () => {
       const players = getPlayers(3);
 
-      return startGame(players.slice(0, 2), true).then((game_phrase) => {
+      return startGame(players.slice(0, 2), true).then((first_game_phrase) => {
         return setup([
           { player: players[0], msg: EMOJI },
-          { player: players[1], msg: guess + 'JURASSIC PARK' },
+          { player: players[1], msg: guess + first_game_phrase, get_response: true },
           { player: players[1], msg: EMOJI },
           { player: players[0], msg: 'invite '+players[2].number },
           { player: players[2], msg: 'y' },
           { player: players[2], msg: players[2].nickname },
           { player: players[2], msg: players[2].avatar },
-        ]).then(() => {
+        ]).then((messages) => {
+          const game_phrase = getPhrase(messages);
           return check(
             { player: players[0], msg: guess + game_phrase },
             [
@@ -190,18 +191,23 @@ describe('Game', () => {
 
     it('should add a fourth player at the fourth round and proceed to fourth player', () => {
       const players = getPlayers(4);
-      return startGame(players.slice(0, 3), true).then((game_phrase) => {
+      return startGame(players.slice(0, 3), true).then((first_game_phrase) => {
         return setup([
           { player: players[0], msg: EMOJI },
-          { player: players[1], msg: guess + 'JURASSIC PARK' },
+          { player: players[1], msg: guess + first_game_phrase, get_response: true },
           { player: players[1], msg: EMOJI },
-          { player: players[0], msg: guess + 'SILENCE OF THE LAMBS' },
-          { player: players[0], msg: 'invite '+players[3].number },
-          { player: players[2], msg: EMOJI },
-          { player: players[3], msg: 'y' },
-          { player: players[3], msg: players[3].nickname },
-          { player: players[3], msg: players[3].avatar },
-        ]).then(() => {
+        ]).then((messages) => {
+          const game_phrase = getPhrase(messages);
+          return setup([
+            { player: players[0], msg: guess + game_phrase, get_response: true },
+            { player: players[0], msg: 'invite '+players[3].number },
+            { player: players[2], msg: EMOJI },
+            { player: players[3], msg: 'y' },
+            { player: players[3], msg: players[3].nickname },
+            { player: players[3], msg: players[3].avatar },
+          ]);
+        }).then((messages) => {
+          const game_phrase = getPhrase(messages);
           return check(
             { player: players[0], msg: guess + game_phrase },
             [

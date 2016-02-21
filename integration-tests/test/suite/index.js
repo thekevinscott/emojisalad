@@ -23,11 +23,10 @@ require('./help');
 // round, playing with three or more players
 require('./game');
 
-/*
-/*
 // tests for multiple games
 require('./multiple');
 
+/*
 // tests that passing works correctly
 require('./pass');
 */

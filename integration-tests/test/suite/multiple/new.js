@@ -13,7 +13,7 @@ const game_numbers = require('../../../../../config/numbers');
 describe('New Game', function() {
   describe('Legal', function() {
     it('should initiate a new game from a second phone number and prompt for invites', function() {
-      let players = getPlayers(3);
+      const players = getPlayers(3);
       return playGame(players).then(function() {
         return check(
           { player: players[0], msg: rule('new-game').example() },
@@ -28,8 +28,8 @@ describe('New Game', function() {
 
     describe('Inviting', function() {
       it('should send out an invite to a brand new player from the first game number with a regular onboarding process', function() {
-        let players = getPlayers(3);
-        let new_player = getPlayers(1)[0];
+        const players = getPlayers(3);
+        const new_player = getPlayers(1)[0];
         return playGame(players).then(function() {
           return setup([
             { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
@@ -48,8 +48,8 @@ describe('New Game', function() {
       });
 
       it('should send out an invite to an existing player in one game from the second game number with an abridged onboarding process', function() {
-        let players = getPlayers(3);
-        let existing_player = players[1];
+        const players = getPlayers(3);
+        const existing_player = players[1];
         return playGame(players).then(function() {
           return setup([
             { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
@@ -71,7 +71,7 @@ describe('New Game', function() {
 
   describe('Illegal', function() {
     it('should disallow a player from starting a new game if already playing the maximum number of games', function() {
-      let players = getPlayers(3);
+      const players = getPlayers(3);
       return playGame(players).then(function() {
         return Player.get(players[0]).then(function(player) {
           return User.update(player.user, { maximum_games: 2 });
@@ -93,7 +93,7 @@ describe('New Game', function() {
     });
 
     it('should disallow a player from inviting a player currently playing the maximum number of games', function() {
-      let players = getPlayers(3);
+      const players = getPlayers(3);
       return playGame(players).then(function() {
         return Player.get(players[0]).then(function(player) {
           return User.update(player.user, { maximum_games: 2 });
@@ -116,7 +116,7 @@ describe('New Game', function() {
     });
 
     it('should disallow a player from starting a new game if they have not finished onboarding', function() {
-      var player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: 'y' },
@@ -133,8 +133,8 @@ describe('New Game', function() {
     });
 
     it('should disallow a player from inviting a new player multiple times', function() {
-      let players = getPlayers(3);
-      let new_player = getPlayers(1)[0];
+      const players = getPlayers(3);
+      const new_player = getPlayers(1)[0];
       return playGame(players).then(function() {
         return setup([
           { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
@@ -153,8 +153,8 @@ describe('New Game', function() {
     });
 
     it('should disallow a player from inviting an existing player multiple times', function() {
-      let players = getPlayers(3);
-      let existing_player = players[1];
+      const players = getPlayers(3);
+      const existing_player = players[1];
       return playGame(players).then(function() {
         return setup([
           { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
@@ -174,8 +174,8 @@ describe('New Game', function() {
   });
 
   it('should be able to receive a text from a new game number and not create another user but create another player and another game', function() {
-    let players = getPlayers(3);
-    //let existing_player = players[1];
+    const players = getPlayers(3);
+    //const existing_player = players[1];
     return playGame(players).then(function() {
       //return setup([
         //{ player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
@@ -194,8 +194,8 @@ describe('New Game', function() {
   });
 
   it('should mark an invite as used after using it', function() {
-    let players = getPlayers(2);
-    let existing_player = players[1];
+    const players = getPlayers(2);
+    const existing_player = players[1];
     return playGame(players).then(function() {
       return setup([
         { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
