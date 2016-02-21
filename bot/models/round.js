@@ -8,14 +8,15 @@ const autosuggest = require('autosuggest');
 const api = require('../api');
 
 const Player = require('./player');
-let Game;
-//let Game = require('./game');
 
 let Round = {
   create: (game) => {
     return api('rounds', 'create', {}, {
       game_id: game.id
     });
+  },
+  guess: (round, params) => {
+    return api('rounds', 'guess', params, { round_id: round.id });
   },
   update: (round, params) => {
     return api('rounds', 'update', params, { round_id: round.id });

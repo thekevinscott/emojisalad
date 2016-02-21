@@ -109,6 +109,10 @@ describe('Round', () => {
       return guess('SILENCE OF THE LAMBS 12345', { phrase_id: phrase_id });
     });
 
+    it('should ignore all punctuation', () => {
+      return guess('SILENCE !@#$%^&*()-=_+~`,./?><\'";:[]{}|\ LAMBS', { phrase_id: phrase_id });
+    });
+
     it('should not accept an absurdly long phrase', () => {
       const the_guess = 'SILENCE OF THE LAMBS i think';
       return Round.guess(round, round.players[0], the_guess).then((round) => {

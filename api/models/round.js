@@ -81,7 +81,6 @@ let Round = {
     const levenshtein_distance = levenshtein(phrase, guess);
     //const distance = levenshtein(phrase, guess) / phrase.length;
     const acceptable_distance = 6;
-    //console.log('levenshtein', levenshtein_distance, phrase, guess);
     return levenshtein_distance <= acceptable_distance;
   },
   guess: (round, player, original_guess) => {
@@ -110,7 +109,7 @@ let Round = {
           }));
         }
       }).then((result) => {
-        let promises = [];
+        const promises = [];
         // we save the guess
         const guess_query = squel
                            .insert()
@@ -172,22 +171,26 @@ let Round = {
     }
   }),
   getPhrase: (game) => {
-    let game_phrases = squel
-                       .select()
-                       .field('phrase_id')
-                       .from('game_phrases')
-                       .where('game_id=?', game.id);
+    const game_phrases = squel
+                         .select()
+                         .field('phrase_id')
+                         .from('game_phrases')
+                         .where('game_id=?', game.id);
 
-    let order = 'RAND()';
+    const order = 'RAND()';
 
-    let query = squel
-                .select()
-                .from('phrases', 'p')
-                .field('p.phrase')
-                .field('p.id')
-                .where('p.id NOT IN ?', game_phrases)
-                .order(order)
-                .limit(1);
+    const query = squel
+                  .select()
+                  .field('p.id')
+                  .field('p.phrase')
+                  .field('c.clue')
+                  .from('phrases', 'p')
+                  .left_join('clues', 'c', 'c.phrase_id=p.id')
+                  .field('p.phrase')
+                  .field('p.id')
+                  .where('p.id NOT IN ?', game_phrases)
+                  .order(order)
+                  .limit(1);
 
     return db.query(query).then((rows) => {
       if ( rows ) {
@@ -216,27 +219,28 @@ let Round = {
       Game.getNextSubmitter(game),
       Round.getPhrase(game),
       (submitter, phrase) => {
-        let clues_allowed = squel
-                      .select()
-                      .field('clues_allowed')
-                      .from('games')
-                      .where('id=?',game.id);
+        const clues_allowed = squel
+                              .select()
+                              .field('clues_allowed')
+                              .from('games')
+                              .where('id=?',game.id);
 
-        let guesses = squel
-                      .select()
-                      .field('guesses')
-                      .from('games')
-                      .where('id=?',game.id);
+        const guesses = squel
+                        .select()
+                        .field('guesses')
+                        .from('games')
+                        .where('id=?',game.id);
 
-        let query = squel
-                    .insert()
-                    .into('rounds')
-                    .setFields({
-                      game_id: game.id,
-                      submitter_id: submitter.id,
-                      phrase_id: phrase.id,
-                      created: squel.fval('NOW(3)'),
-                    });
+        const query = squel
+                      .insert()
+                      .into('rounds')
+                      .setFields({
+                        game_id: game.id,
+                        submitter_id: submitter.id,
+                        phrase_id: phrase.id,
+                        created: squel.fval('NOW(3)'),
+                      });
+
         return db.query(query.toString()).then((result) => {
           const created = new Date();
           const round_id = result.insertId;
@@ -252,6 +256,7 @@ let Round = {
           return {
             id: round_id,
             game_id: game.id,
+            clue: phrase.clue,
             created: created,
             phrase: phrase.phrase,
             submission: '',
@@ -283,16 +288,15 @@ let Round = {
                 .field('r.winner_id')
                 .field('r.game_id')
                 .field('r.created')
-                //.field('r.guesses')
-                //.field('r.clues_allowed')
-                //.field('n.submission')
                 .field('r.submission')
                 .field('p.phrase')
+                .field('c.clue')
                 .from('rounds', 'r')
-                //.left_join('guesses', 'g', 'g.round_id=r.id')
                 .left_join('phrases', 'p', 'p.id=r.phrase_id')
+                .left_join('clues', 'c', 'c.phrase_id=p.id')
                 //.left_join('submissions', 'n', 'n.round_id=r.id')
-                .order('r.created, r.id');
+                .order('r.created, r.id')
+                //.group('r.id')
                 //.limit(1);
     if ( params.id ) {
       query = query
@@ -367,6 +371,7 @@ let Round = {
                     id: round.id,
                     game_id: round.game_id,
                     phrase: round.phrase,
+                    clue: round.clue,
                     submitter: submitter,
                     guesses: guesses_by_round_id[round.id],
                     winner: winner || null,

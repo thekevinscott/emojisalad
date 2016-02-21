@@ -135,7 +135,7 @@ describe('Signup', () => {
 
     describe('Blacklist', () => {
       const blacklistCheck = (msg) => {
-        let player = getPlayers(1)[0];
+        const player = getPlayers(1)[0];
         return setup([
           { player: player, msg: 'hello' },
           { player: player, msg: msg },
@@ -156,7 +156,7 @@ describe('Signup', () => {
       });
 
       it('should huh anything else', () => {
-        let player = getPlayers(1)[0];
+        const player = getPlayers(1)[0];
         return setup([
           { player: player, msg: 'hello' },
         ]).then(() => {

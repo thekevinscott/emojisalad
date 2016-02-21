@@ -9,12 +9,6 @@ require('./invite');
 // for other players to guess to
 require('./submission');
 
-/*
-// tests that game mechanics work, such as inviting
-// in the middle of a game, moving on to the next
-// round, playing with three or more players
-require('./game');
-
 // tests that guessing works correctly
 require('./guessing');
 
@@ -24,12 +18,16 @@ require('./clues');
 // tests that asking for help works correctly
 require('./help');
 
-// tests that passing works correctly
-require('./pass');
+// tests that game mechanics work, such as inviting
+// in the middle of a game, moving on to the next
+// round, playing with three or more players
+require('./game');
 
-// tests that scoring works correctly
-//require('./score');
-
+/*
+/*
 // tests for multiple games
 require('./multiple');
+
+// tests that passing works correctly
+require('./pass');
 */

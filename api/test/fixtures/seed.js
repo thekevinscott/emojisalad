@@ -18,14 +18,14 @@ module.exports = [
       { phrase: 'TIME AFTER TIME' },
     ]
   },
-  //{
-    //table: 'clues',
-    //rows: [
-      //{ id: 1, phrase_id: 1, clue: 'MOVIE' },
-      //{ id: 2, phrase_id: 1, clue: 'CLEVER GIRL' },
-      //{ id: 3, phrase_id: 1, clue: 'DINOSAURS' },
-      //{ id: 4, phrase_id: 2, clue: 'MOVIE' },
-      //{ id: 5, phrase_id: 2, clue: 'CLARICE' },
-    //]
-  //},
+  {
+    table: 'clues',
+    rows: [
+      { id: 1, phrase_id: 1, clue: 'MOVIE' },
+      { id: 2, phrase_id: 1, clue: 'CLEVER GIRL' },
+      { id: 3, phrase_id: 1, clue: 'DINOSAURS' },
+      { id: 4, phrase_id: 2, clue: 'MOVIE' },
+      { id: 5, phrase_id: 2, clue: 'CLARICE' },
+    ]
+  },
 ];

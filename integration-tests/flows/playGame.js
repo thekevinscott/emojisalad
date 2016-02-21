@@ -1,27 +1,23 @@
 'use strict';
 const setup = require('lib/setup');
-const startGame = require('lib/startGame');
-//const Round = require('../../../models/Round');
+const startGame = require('flows/startGame');
 
 // submit any old emoji to start a round
 const EMOJI = '😀';
 
-function playGame(players, options) {
-  if ( ! options ) { options = {}; }
-  return startGame(players).then(function(game) {
+/**
+ *
+ * @returns {String} game_phrase - The current round's correct game phrase
+ */
+const playGame = (players, return_game_phrase = false) => {
+  return startGame(players, return_game_phrase).then((game_phrase) => {
     return setup([
       {
         player: players[0],
         msg: EMOJI 
       }
-    ]).then(function() {
-      if ( options.clues_allowed ) {
-        return Round.update(game.round, {
-          clues_allowed: options.clues_allowed
-        });
-      }
-    }).then(function() {
-      return game;
+    ]).then(() => {
+      return game_phrase;
     });
   });
 }

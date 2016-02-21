@@ -16,18 +16,18 @@ const request = Promise.promisify(require('request'));
 //const req = require('./req');
 const _ = require('lodash');
 const sequence = require('./sequence');
-const services = require('config/services');
-//const game_numbers = require('../../../../config/numbers');
-//const game_numbers = [
-  //'+15551111111',
-  //'+15552222222',
-  //'+15553333333',
-  //'+15554444444',
-  //'+15559999999',
-//];
 
+const services = require('config/services');
 const port = services.testqueue.port;
-function setup(arr) {
+
+const noop = () => {};
+let callback = noop;
+const app = require('./server');
+app.post('/', (res) => {
+  callback(res);
+});
+
+const setup = (arr) => {
   if ( !_.isArray(arr) ) {
     arr = [arr];
   }
@@ -35,6 +35,8 @@ function setup(arr) {
   return sequence(arr.map((a, i) => {
     const player = a.player;
     const msg = a.msg;
+    const get_response = a.get_response;
+    const expect_response = (a.expect_response === false) ? false : true;
     if ( ! player.to && ! a.to ) {
       throw "Now you must provide an explicit to";
     }
@@ -67,14 +69,27 @@ function setup(arr) {
           try {
             body = JSON.parse(body);
           } catch(err) {}
-          return body;
+
+          if ( get_response ) {
+            return getAssociatedMessages(body.id, expect_response).then((messages) => {
+              if ( messages.length ) {
+                return {
+                  initiated_id: messages[0].initiated_id,
+                  messages: messages.map((message) => {
+                    delete message.initiated_id;
+                    return message;
+                  })
+                };
+              } else {
+                return null;
+              }
+            });
+          } else {
+            return {
+              initiated_id: body.id
+            }
+          }
         }
-        //console.log('res', res);
-        //if ( err ) {
-        //reject(err);
-        //} else {
-        //resolve(res);
-        //}
       }).catch((err) => {
         console.error(err);
       });
@@ -82,4 +97,67 @@ function setup(arr) {
   }));
 }
 
+const getAssociatedMessages = (initiated_id, expected = false) => {
+  const timeout_length = 3000;
+  const ping_length = 500;
+  let timer;
+  let ping;
+  return new Promise((resolve, reject) => {
+    const res = (body) => {
+      clearTimeout(timer);
+      clearInterval(ping);
+      callback = noop;
+      resolve(body);
+    }
+    setTimeout(() => {
+      callback = noop;
+      reject(`No message response within ${timeout_length/1000} seconds`);
+    }, timeout_length);
+
+    // only ping the server if we are expecting messages
+    if ( expected ) {
+      ping = setInterval(() => {
+        requestAssociatedMessages(initiated_id, res, expected);
+      }, ping_length);
+    }
+
+    callback = () => {
+      requestAssociatedMessages(initiated_id, res, expected);
+    };
+  });
+
+}
+
+const requestAssociatedMessages = (initiated_id, resolve, expected = false) => {
+  const url = `http://localhost:${port}/sent`;
+  return request({
+    url: url,
+    method: 'get',
+    qs: {
+      initiated_id: initiated_id
+    }
+  }).then((res) => {
+    let body = res.body;
+    try {
+      body = JSON.parse(body);
+    } catch(err) {}
+
+    // if we have actual expectations, we only
+    // want to return messages matching our initiator_id.
+    // If we get back an empty array, we assume
+    // our messages have yet to be processed
+    if ( expected ) {
+      if (body.length > 0) {
+        resolve(body);
+      }
+    } else {
+      // However, if we do not have any expectations,
+      // we expect to receive no messages. Therefore,
+      // on ping back, we should expect that no messages
+      // are waiting for us.
+      resolve(body);
+    }
+  });
+}
 module.exports = setup;
+module.exports.getAssociatedMessages = getAssociatedMessages;

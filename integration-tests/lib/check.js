@@ -14,10 +14,9 @@ const chai = require('chai');
 const expect = chai.expect;
 const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
-const setup = require('./setup');
+const setup = require('lib/setup');
 const Message = require('models/Message');
-const xml2js = Promise.promisifyAll(require('xml2js')).parseStringAsync; // example: xml2js 
-const levenshtein = require('levenshtein');
+
 const services = require('config/services');
 const port = services.testqueue.port;
 
@@ -33,23 +32,19 @@ const messages = {};
 // checks that a certain action's
 // return matches an expected array
 const check = (action, expected) => {
-  // this is the id of the initiating message;
-  // we'll use this to get back the associated messages to check against
-  let initiated_id;
+  // these commands instruct setup to return
+  // the associated message id,
+  // and if we expect messages, the associated
+  // messages
+  action.get_response = true;
+  action.expect_response = expected.length > 0;
   return setup(action).then((created_messages) => {
     const created_message = created_messages.shift();
-    if ( ! created_message.id ) {
-      console.error('********** created message', JSON.stringify(created_messages), JSON.stringify(action));
-      throw new Error('No message id provided');
-    }
-    initiated_id = created_message.id;
-    console.info('********** created message', initiated_id, JSON.stringify(created_message), JSON.stringify(action));
 
     return Promise.join(
       populateExpectedMessages(expected),
-      getAssociatedMessages(initiated_id, expected),
-      (processed, action_output) => {
-        const actions = parseActions(action_output);
+      (processed) => {
+        const actions = parseActions(created_message);
 
         processed.map((message) => {
           messages[message.key] = message;
@@ -58,15 +53,6 @@ const check = (action, expected) => {
         const expecteds = parseExpecteds(expected, messages);
 
         return inlineCheck(actions, expecteds);
-
-        //if ( inline_check ) {
-          //return inlineCheck(actions, expecteds);
-        //} else {
-          //return {
-            //output: actions,
-            //expected: expecteds
-          //};
-        //}
       }
     );
   });
@@ -90,78 +76,20 @@ const populateExpectedMessages = (expected) => {
   }));
 }
 
-const requestAssociatedMessages = (initiated_id, resolve, expected) => {
-  const url = `http://localhost:${port}/sent`;
-  return request({
-    url: url,
-    method: 'get',
-    qs: {
-      initiated_id: initiated_id
-    }
-  }).then((res) => {
-    let body = res.body;
-    try {
-      body = JSON.parse(body);
-    } catch(err) {}
-
-    // if we have actual expectations, we only
-    // want to return messages matching our initiator_id.
-    // If we get back an empty array, we assume
-    // our messages have yet to be processed
-    if ( expected.length ) {
-      if (body.length > 0) {
-        resolve(body);
-      }
-    } else {
-      // However, if we do not have any expectations,
-      // we expect to receive no messages. Therefore,
-      // on ping back, we should expect that no messages
-      // are waiting for us.
-      resolve(body);
-    }
-  });
-}
-
-const getAssociatedMessages = (initiated_id, expected) => {
-  const timeout_length = 5000;
-  const ping_length = 500;
-  let timer;
-  let ping;
-  return new Promise((resolve, reject) => {
-    const res = (body) => {
-      clearTimeout(timer);
-      clearInterval(ping);
-      callback = noop;
-      resolve(body);
-    }
-    setTimeout(() => {
-      callback = noop;
-      reject(`No message response within ${timeout_length/1000} seconds`);
-    }, timeout_length);
-
-    // only ping the server if we are expecting messages
-    if ( expected.length ) {
-      ping = setInterval(() => {
-        requestAssociatedMessages(initiated_id, res, expected);
-      }, ping_length);
-    }
-
-    callback = () => {
-      requestAssociatedMessages(initiated_id, res, expected);
-    };
-  });
-
-}
 const parseActions = (action_output) => {
-  return action_output.map((a) => {
-    let action = {
-      body : a.body
-    };
-    if ( a.to ) {
-      action.recipient = a.to;
-    }
-    return action;
-  });
+  if ( action_output && action_output.messages ) {
+    return action_output.messages.map((a) => {
+      let action = {
+        body : a.body
+      };
+      if ( a.to ) {
+        action.recipient = a.to;
+      }
+      return action;
+    });
+  } else {
+    return [];
+  }
 }
 
 const parseExpecteds = (expected, messages) => {
@@ -242,8 +170,6 @@ const checkBody = (action, expected) => {
   } else {
     // this indicates that we expect no response. Not sure
     // the best way to check for this.
-    console.log('*** this indicates that we expect no response');
-    console.log(action, expected);
     action.should.be(undefined);
   }
 }

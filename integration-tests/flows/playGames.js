@@ -2,9 +2,9 @@
 const Promise = require('bluebird');
 //const setup = require('../lib/setup');
 //const startGame = require('./startGame');
-const playGame = require('./playGame');
-const newGame = require('./newGame');
-const sequence = require('../lib/sequence');
+const playGame = require('flows/playGame');
+const newGame = require('flows/newGame');
+const sequence = require('lib/sequence');
 //const Round = require('../../../models/Round');
 
 let playGames = Promise.coroutine(function* (players, numberOfGames, options) {

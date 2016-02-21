@@ -4,19 +4,21 @@
  *
  */
 
-const getPlayers = require('../lib/getPlayers');
-const playGame = require('../flows/playGame');
-const setup = require('../lib/setup');
-const check = require('../lib/check');
-const rule = require('../../../config/rule');
+const getPlayers = require('lib/getPlayers');
+const playGame = require('flows/playGame');
+const startGame = require('flows/startGame');
+const setup = require('lib/setup');
+const check = require('lib/check');
+const rule = require('../../config/rule');
 const clue = rule('clue').example();
+const EMOJI = '😀';
 
-describe('Clues', function() {
+describe('Clues', () => {
 
-  it('should notify all the other players when somebody asks for a clue', function() {
-    var players = getPlayers(3);
+  it('should notify all the other players when somebody asks for a clue', () => {
+    const players = getPlayers(3);
 
-    return playGame(players).then(function() {
+    return playGame(players).then(() => {
       return check(
         { player: players[1], msg: clue },
         [
@@ -26,20 +28,18 @@ describe('Clues', function() {
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[1] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[2] }
         ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+      );
     });
   });
 
-  it('should repeat the clue if asked a second time', function() {
-    var players = getPlayers(3);
+  it('should repeat the clue if asked a second time', () => {
+    const players = getPlayers(3);
 
-    return playGame(players).then(function() {
+    return playGame(players).then(() => {
       return setup([
         { player: players[1], msg: clue },
       ]);
-    }).then(function() {
+    }).then(() => {
       return check(
         { player: players[1], msg: clue },
         [
@@ -49,9 +49,7 @@ describe('Clues', function() {
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[1] },
           { key: 'clue', options: [players[1].nickname, 'MOVIE'], to: players[2] }
         ]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
+      );
     });
   });
 

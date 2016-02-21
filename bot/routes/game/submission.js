@@ -41,6 +41,7 @@ module.exports = (game, submitter, input) => {
       //{ key: 'guessing-instructions', to: players[2] }
       
     } else {
+      console.error('round', round, game);
       throw "Round was not updated";
     }
   });

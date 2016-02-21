@@ -9,7 +9,7 @@ const startGame = require('flows/startGame');
 const check = require('lib/check');
 const EMOJI = '😀';
 
-describe.only('Submissions', () => {
+describe('Submissions', () => {
   it('should forward a text submission', () => {
     const players = getPlayers(3);
 
