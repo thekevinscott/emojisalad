@@ -152,9 +152,9 @@ function importDB(config, file) {
 
 function server(options) {
   return function() {
-    const DEBUG = util.env.DEBUG || 'true';
-    const PORT = util.env.PORT || '1338';
-    const ENVIRONMENT = util.env.ENVIRONMENT || 'development';
+    const DEBUG = options.DEBUG || util.env.DEBUG || 'true';
+    const PORT = options.PORT || util.env.PORT || '1338';
+    const ENVIRONMENT = options.ENVIRONMENT || util.env.ENVIRONMENT || 'development';
 
     if ( ! options ) {
       options = {};

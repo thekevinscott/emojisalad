@@ -1,9 +1,8 @@
 module.exports = [
-  //{
-    //table: 'game_numbers',
-    //rows: [
-      //{ id: 1, number: '+15559999999' },
-      //{ id: 2, number: '+15551111111' },
-    //]
-  //},
+  {
+    table: 'attributes',
+    rows: [
+      { key: 'timestamp', value: (new Date()).getTime() / 1000 }
+    ]
+  },
 ];

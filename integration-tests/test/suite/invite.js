@@ -10,8 +10,8 @@ const EMOJI = '😀';
 describe('Inviting', function() {
   /*
   describe('Invalid Phone Numbers', function() {
-    let players = getPlayers(2);
-    let inviter = players[0];
+    const players = getPlayers(2);
+    const inviter = players[0];
 
     before(function() {
       return signup(inviter);
@@ -65,43 +65,44 @@ describe('Inviting', function() {
   */
 
   describe('Valid numbers', function() {
-    let players = getPlayers(2);
-    let inviter = players[0];
-    before(function() {
+    const players = getPlayers(2);
+    const inviter = players[0];
+    before(() => {
       return signup(inviter);
     });
 
     this.timeout(10000);
     it('should be able to invite someone', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
 
       return check(
         // lose the intro of the number for testing
         { player: inviter, msg: 'invite '+player.number },
         [
           { key: 'intro_5', options: [player.number], to: inviter },
-          { key: 'invite', options: [inviter.nickname, player.number], to: player }
+          { key: 'invite', options: [inviter.nickname, inviter.avatar, player.number], to: player }
         ]);
     });
 
     it('should be able to invite a formatted number', () => {
 
-      let end = Math.floor(1000 + Math.random() * 9000);
-      let num = '+1860460'+end;
+      //const end = Math.floor(1000 + Math.random() * 9000);
+      //const num = '+1860460'+end;
+      const num = '+18604608183';
 
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       player.number = num;
 
       return check(
         { player: inviter, msg: 'invite '+player.number },
         [
           { key: 'intro_5', options: [player.number], to: inviter },
-          { key: 'invite', options: [inviter.nickname, player.avatar], to: player }
+          { key: 'invite', options: [inviter.nickname, inviter.avatar, player.avatar], to: player }
         ]);
     });
 
     it('should not be able to re-invite someone', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
 
       return setup([
         { player: inviter, msg: 'invite '+player.number }
@@ -116,7 +117,7 @@ describe('Inviting', function() {
     });
 
     it('should not be able to invite someone on do-not-call-list', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
@@ -135,7 +136,6 @@ describe('Inviting', function() {
       // get a kevin user, to make it easier
       // to parse who is who
       const player = getPlayers(2)[1];
-      const firstPhrase = 'JURASSIC PARK';
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
@@ -147,35 +147,65 @@ describe('Inviting', function() {
           [
             { key: 'accepted-invited', options: [player.nickname, player.avatar], to: inviter },
             { key: 'accepted-inviter', options: [player.nickname, player.avatar, inviter.nickname, inviter.avatar], to: player },
-            { key: 'game-start', options: [inviter.nickname, inviter.avatar, firstPhrase], to: inviter },
+            { key: 'game-start', options: [inviter.nickname, inviter.avatar, '*'], to: inviter },
           ]
         );
       });
     });
+
+    it('responds to a user who writes after inviting', () => {
+      // get a kevin user, to make it easier
+      // to parse who is who
+      const player = getPlayers(2)[1];
+
+      return setup([
+        { player: inviter, msg: 'invite '+player.number },
+      ]).then(() => {
+        return check(
+          { player: inviter, msg: 'sup big foot' },
+          [
+            { key: 'invited-chilling', to: inviter }
+          ]
+        );
+      });
+    });
+
+    it.only('should preformat incoming numbers; ari invited 8604608183, but +18604608183 is a new user', () => {
+
+      const player = getPlayers(1)[0];
+
+      return check(
+        { player: inviter, msg: 'invite '+player.number.substring(2) },
+        [
+          { key: 'intro_5', options: [player.number.substring(2)], to: inviter },
+          { key: 'invite', options: [inviter.nickname, inviter.avatar, player.avatar], to: player }
+        ]);
+    });
+
   });
 
   describe('Inviting during a game', function() {
     const runBothPlayers = (players) => {
-      it('should let submitter invite', () => {
-        let inviter = players[0];
-        let invitee = getPlayers(3).pop();
+      it('should const submitter invite', () => {
+        const inviter = players[0];
+        const invitee = getPlayers(3).pop();
         return check(
           { player: inviter, msg: 'invite '+invitee.number },
           [
             { to: inviter, key: 'intro_5', options: [invitee.number] },
-            { to: invitee, key: 'invite', options: [inviter.nickname] }
+            { to: invitee, key: 'invite', options: [inviter.nickname, inviter.avatar] }
           ]
         );
       });
 
-      it('should let player invite', () => {
-        let inviter = players[1];
-        let invitee = getPlayers(3).pop();
+      it('should const player invite', () => {
+        const inviter = players[1];
+        const invitee = getPlayers(3).pop();
         return check(
           { player: inviter, msg: 'invite '+invitee.number },
           [
             { to: inviter, key: 'intro_5', options: [invitee.number] },
-            { to: invitee, key: 'invite', options: [inviter.nickname, inviter.number] }
+            { to: invitee, key: 'invite', options: [inviter.nickname, inviter.avatar, inviter.number] }
           ]
         );
       });
@@ -184,7 +214,7 @@ describe('Inviting', function() {
     // should allow for an invite after a submission (by submitter and other player)
     // should allow for an invite after a correct answer (by submitter and other player)
     describe('before a round starts', () => {
-      let players = getPlayers(2);
+      const players = getPlayers(2);
       before(() => {
         return startGame(players);
       });
@@ -193,7 +223,7 @@ describe('Inviting', function() {
     });
 
     describe('during a round', () => {
-      let players = getPlayers(2);
+      const players = getPlayers(2);
       before(() => {
         return startGame(players).then(() => {
           return setup([
@@ -206,7 +236,7 @@ describe('Inviting', function() {
     });
 
     describe('after guessing incorrectly', () => {
-      let players = getPlayers(2);
+      const players = getPlayers(2);
       before(() => {
         return startGame(players).then(() => {
           return setup([
@@ -220,7 +250,7 @@ describe('Inviting', function() {
     });
 
     describe('after guessing correctly', () => {
-      let players = getPlayers(2);
+      const players = getPlayers(2);
       before(() => {
         return startGame(players).then(() => {
           return setup([
@@ -234,8 +264,8 @@ describe('Inviting', function() {
     });
 
     it('should be able to onboard a third player to the game', () => {
-      let players = getPlayers(2);
-      let invitee = getPlayers(3).pop();
+      const players = getPlayers(2);
+      const invitee = getPlayers(3).pop();
       return startGame(players).then(() => {
         return setup([
           { player: players[0], msg: 'invite '+invitee.number },
@@ -246,9 +276,9 @@ describe('Inviting', function() {
         return check(
           { player: invitee, msg: invitee.avatar },
           [
-            { to: players[0], key: 'accepted-invited', options: [invitee.nickname] },
-            { to: players[1], key: 'join-game', options: [invitee.nickname] },
-            { to: invitee, key: 'accepted-inviter', options: [invitee.nickname, players[0].nickname] },
+            { to: players[0], key: 'accepted-invited', options: [invitee.nickname, invitee.avatar] },
+            { to: players[1], key: 'join-game', options: [invitee.nickname, invitee.avatar] },
+            { to: invitee, key: 'accepted-inviter', options: [invitee.nickname, invitee.avatar, players[0].nickname, players[0].avatar] },
           ]
         );
       });

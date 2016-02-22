@@ -33,7 +33,7 @@ module.exports = (player, input) => {
         // has been delivered. soothe their aching souls.
         return [{
           player: player,
-          key: 'help-player-ready-for-game',
+          key: 'help-player-guessing',
           options : { game: game }
         }];
       } else {

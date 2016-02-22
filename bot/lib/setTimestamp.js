@@ -19,6 +19,8 @@ const setTimestamp = (messages) => {
       }).timestamp;
       console.info('last message timestamp', lastMessageTimestamp);
       return store(keys.TIMESTAMP, lastMessageTimestamp);
+    } else {
+      return store(keys.TIMESTAMP, (new Date()).getTime() / 1000);
     }
   } else {
     return store(keys.TIMESTAMP, messages);

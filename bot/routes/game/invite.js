@@ -6,13 +6,15 @@ const _ = require('lodash');
 const rule = require('config/rule');
 
 module.exports = (player, message) => {
-  const invites = rule('invite').match(message).split(' ');
+  // TODO: Figure out how to parse numbers better
+  const invites = rule('invite').match(message).split(' **** ');
 
   const invited_string = invites[0];
 
   return Invite.create(player, invites).then((invites) => {
     let invite = invites[0];
     if ( invite.error ) {
+      console.info('there is an invite error', invite);
       switch ( invite.code ) {
       case 1200:
           // Invite already exists
@@ -29,7 +31,7 @@ module.exports = (player, message) => {
         return [
           {
             player: player,
-            key: 'error-2',
+            key: 'error-3',
             options: [invited_string]
           },
         ];
@@ -45,6 +47,7 @@ module.exports = (player, message) => {
         break;
       }
     } else {
+      console.log('invite', invite);
       return [
         {
           player: invite.inviter_player,

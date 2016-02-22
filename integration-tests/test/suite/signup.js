@@ -10,7 +10,7 @@ describe('Signup', () => {
 
   describe('Test a brand new player', () => {
     it('should introduce itself when contacting for the first time', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return check(
         { player: player, msg: 'hello?' },
         [
@@ -20,7 +20,7 @@ describe('Signup', () => {
 
     describe('Saying yes', () => {
       const reachOut = () => {
-        let player = getPlayers(1)[0];
+        const player = getPlayers(1)[0];
         return setup([
           { player: player, msg: 'hi' }
         ]).then(() => {
@@ -57,7 +57,7 @@ describe('Signup', () => {
 
   describe('Nicknames and avatars', () => {
     it('should allow the player to submit a nickname', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: rule('yes').example() },
@@ -71,7 +71,7 @@ describe('Signup', () => {
     });
 
     it('should allow the player to accept the emoji', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: rule('yes').example() },
@@ -86,7 +86,7 @@ describe('Signup', () => {
     });
 
     it('should allow the player to change the emoji', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: 'y' },
@@ -102,7 +102,7 @@ describe('Signup', () => {
     });
 
     it('should disallow a player from submitting invalid emoji', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: 'y' },
@@ -118,7 +118,7 @@ describe('Signup', () => {
     });
 
     it('should disallow a player from submitting more than one emoji', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: 'y' },
@@ -170,8 +170,9 @@ describe('Signup', () => {
       });
     });
 
+
     it('should chide a player who tries to invite players before entering an avatar', () => {
-      let player = getPlayers(1)[0];
+      const player = getPlayers(1)[0];
       return setup([
         { player: player, msg: 'hello' },
         { player: player, msg: rule('yes').example() },

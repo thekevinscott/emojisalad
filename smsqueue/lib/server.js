@@ -3,6 +3,7 @@
 const queue = require('queue');
 
 queue({
+  name: require('config/app').name,
   options: {
     port: require('config/app').port,
     db: require('config/db')

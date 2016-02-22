@@ -10,11 +10,14 @@ const registry = require('microservice-registry');
 
 const endpoint = 'http://localhost:' + port + '/';
 
+const PROTOCOLS = process.env.PROTOCOLS;
+if ( ! PROTOCOLS ) {
+  throw "You must provide comma separated PROTOCOLS";
+}
 registry.register('bot', {
-  services: [
-    'testqueue',
+  services: PROTOCOLS.split(',').concat([
     'api'
-  ],
+  ]),
   api: {
     ping: {
       endpoint: endpoint + 'ping',

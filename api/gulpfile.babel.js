@@ -84,6 +84,8 @@ gulp.task('update-fixtures', (cb) => {
 gulp.task('test', (cb) => {
   return seed().then(() => {
     process.env.LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
+    process.env.ENVIRONMENT = 'test';
+    process.env.PORT = 1331;
     return gulp.src(['test/index.js'], { read: false })
     .pipe(mocha({
       timeout: 3000,
@@ -115,7 +117,11 @@ gulp.task('seed', (cb) => {
 
 gulp.task('server', () => {
   const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
-  return shared.server({ LOG_LEVEL: LOG_LEVEL })();
+  if ( ! util.env.ENVIRONMENT ) {
+    throw 'You must provide an environment';
+  }
+  const ENVIRONMENT = util.env.ENVIRONMENT;
+  return shared.server({ LOG_LEVEL: LOG_LEVEL, ENVIRONMENT: ENVIRONMENT })();
 })
 
 gulp.task('default', () => {

@@ -1,5 +1,5 @@
 const Round = require('models/round');
-describe('Rounds', function() {
+describe('Rounds', () => {
   require('./find');
   require('./create');
   require('./update');

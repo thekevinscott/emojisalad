@@ -60,7 +60,7 @@ function makeRequest(namespace, key, payload, params = {}) {
     //console.debug('data', data);
 
     return request(data).then((res) => {
-      console.info('response back!');
+      //console.info('response back!');
       return res;
     });
   });

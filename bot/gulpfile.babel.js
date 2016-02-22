@@ -17,7 +17,6 @@ const Promise = require('bluebird');
 const childExec = require('child_process').exec;
 const argv = require('yargs').argv;
 const mocha = require('gulp-mocha');
-const nodemon = require('gulp-nodemon');
 const chalk = require('chalk');
 const squel = require('squel');
 
@@ -38,10 +37,13 @@ function seed() {
     const seed = require('./test/fixtures/seed') || [];
     // various seeding commands
     return Promise.all(seed.map((cmd) => {
-      let query = squel
-                  .insert()
-                  .into(cmd.table)
-                  .setFieldsRows(cmd.rows);
+      const query = squel
+                    .insert({
+                      autoQuoteTableNames: true,
+                      autoQuoteFieldNames: true
+                    })
+                    .into(cmd.table)
+                    .setFieldsRows(cmd.rows);
       return db.query(query.toString());
     }));
   });
@@ -60,6 +62,7 @@ gulp.task('update-fixtures', (cb) => {
       table: 'messages',
       data: true
     },
+    'attributes'
   ];
   return shared.pullDB(production, tmp, tables).then((file) => {
     return shared.exec(['rm -f',sql_file].join(' ')).then(() => {
@@ -112,23 +115,23 @@ gulp.task('test', (cb) => {
 
 gulp.task('server', () => {
   // default protocols
-  let protocols = [
+  let PROTOCOLS = [
     'sms'
   ].join(',');
 
-  let port = '5000';
+  let PORT = '5000';
 
-  if ( util.env.QUEUES ) {
-    protocols = util.env.QUEUES;
+  if ( util.env.PROTOCOLS ) {
+    PROTOCOLS = util.env.PROTOCOLS;
   }
   if ( util.env.PORT ) {
-    port = util.env.PORT;
+    PORT = util.env.PORT;
   }
 
   const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
   return shared.server({
-    protocols: protocols,
-    port: port,
+    PROTOCOLS: PROTOCOLS,
+    PORT: PORT,
     LOG_LEVEL: LOG_LEVEL,
     TRIPWIRE_TRIP: util.env.TRIPWIRE_TRIP,
     TRIPWIRE_ALERT: util.env.TRIPWIRE_ALERT 

@@ -12,20 +12,22 @@ module.exports = [
   {
     table: 'phrases',
     rows: [
-      { phrase: 'JURASSIC PARK' },
-      { phrase: 'SILENCE OF THE LAMBS' },
-      { phrase: 'BUFFALO WILD WINGS' },
-      { phrase: 'TIME AFTER TIME' },
+      { id: 1, phrase: 'JURASSIC PARK' },
+      { id: 2, phrase: 'SILENCE OF THE LAMBS' },
+      { id: 3, phrase: 'BUFFALO WILD WINGS' },
+      { id: 4, phrase: 'TIME AFTER TIME' },
     ]
   },
   {
     table: 'clues',
     rows: [
-      { id: 1, phrase_id: 1, clue: 'MOVIE' },
-      { id: 2, phrase_id: 1, clue: 'CLEVER GIRL' },
-      { id: 3, phrase_id: 1, clue: 'DINOSAURS' },
-      { id: 4, phrase_id: 2, clue: 'MOVIE' },
-      { id: 5, phrase_id: 2, clue: 'CLARICE' },
+      { phrase_id: 1, clue: 'MOVIE' },
+      //{ id: 2, phrase_id: 1, clue: 'CLEVER GIRL' },
+      //{ id: 3, phrase_id: 1, clue: 'DINOSAURS' },
+      { phrase_id: 2, clue: 'MOVIE' },
+      //{ id: 5, phrase_id: 2, clue: 'CLARICE' },
+      { phrase_id: 3, clue: 'MOVIE' },
+      { phrase_id: 4, clue: 'MOVIE' },
     ]
   },
 ];

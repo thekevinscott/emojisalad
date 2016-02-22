@@ -20,6 +20,7 @@ describe('Guessing', () => {
       const players = getPlayers(3);
 
       return playGame(players, true).then((game_phrase) => {
+        //throw "This is not checking accurately, check guess.js:22"
         return check(
           { player: players[1], msg: guess + game_phrase },
           [
@@ -106,7 +107,6 @@ describe('Guessing', () => {
           { player: players[1], msg: guess + the_guess},
         ]);
       }).then(() => {
-        //console.log('the guess', the_guess);
         return check(
           { player: players[1], msg: guess + the_guess},
           [

@@ -1,6 +1,6 @@
 'use strict';
 
-var game_numbers = [
+const game_numbers = [
   //'+14692426535',
   //'+15133604807',
   '+15559999999',

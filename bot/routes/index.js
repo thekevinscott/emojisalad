@@ -11,7 +11,8 @@ const Router = (from, message, to) => {
     from: from,
     to: to
   }).then((players) => {
-    if ( players.length  ) {
+    console.info('players', players);
+    if ( players.length ) {
       const player = players.shift();
       //console.debug('Make sure to check blacklisted status here');
       if ( player.blacklist ) {

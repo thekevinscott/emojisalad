@@ -11,16 +11,21 @@ const rule = require('config/rule');
 //const kickoffGame = require('../shared/kickoffGame');
 
 module.exports = (user, input) => {
+  console.info('start thr game');
   return Invite.get({
     invited_id: user.id
   }).then((invites) => {
+    console.info('invites');
     return new Promise((resolve) => {
       if ( invites.length && invites[0].game ) {
+        console.info('add to game');
         resolve(Game.add(invites[0].game, [user]));
       } else {
+        console.info('create game');
         resolve(Game.create([user]));
       }
     }).then((game) => {
+      console.info('game is back', game);
       // now, our "user" now is a "player"; that means they
       // are assigned to a game and have a particular game number
       // associated with them.
@@ -28,7 +33,10 @@ module.exports = (user, input) => {
         return game_player.user_id === user.id;
       }).pop();
 
+      console.info('the player', player);
+
       if ( game.players.length === 1 ) {
+        console.info('there is one player in this game');
         // this is brand new game; invite some people
         return [{
           player: player,
@@ -36,6 +44,7 @@ module.exports = (user, input) => {
           options: [player.nickname, player.avatar]
         }];
       } else if ( game.round_count > 0 ) {
+        console.info('there are multiple players in this game. game is in progress!');
         const invite = invites[0];
         const inviter = invite.inviter_player;
         const invited = player; // just a renaming, to make this clearer
@@ -63,11 +72,16 @@ module.exports = (user, input) => {
           }, message);
         });
       } else {
+        console.info('create a new round, and start the game!');
         const invite = invites[0];
         const inviter = invite.inviter_player;
         const invited = player; // just a renaming, to make this clearer
 
+        console.info('invite', invite);
+        console.info('invited', invited);
+        console.info('inviter', inviter);
         return Round.create(game).then((round) => {
+          console.info('round', round);
           // start the game
           return [
             { key: 'accepted-invited', options: [invited.nickname, invited.avatar], player: inviter },

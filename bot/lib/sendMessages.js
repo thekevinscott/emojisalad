@@ -33,6 +33,7 @@ const sendMessages = (messages, options = {}) => {
     const messages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
     console.info('the messages to send', messages);
+    console.info('service', service);
     const options = {
       url: service.api.send.endpoint,
       method: service.api.send.method,

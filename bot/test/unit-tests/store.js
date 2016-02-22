@@ -5,29 +5,29 @@ const sinon = require('sinon');
 const Promise = require('bluebird');
 const store = require('store');
 
-describe('Store', function() {
-  it('loads correctly', function() {
+describe('Store', () => {
+  it('loads correctly', () => {
     store.should.be.ok;
   });
 
-  it('stores and gets a brand new key', function() {
+  it('stores and gets a brand new key', () => {
     const id = 'foo'+Math.random();
     const val = 'bar'+Math.random();
-    return store(id, val).then(function() {
+    return store(id, val).then(() => {
       return store(id);
-    }).then(function(result) {
+    }).then((result) => {
       result.should.equal(val);
     });
   });
 
-  it('stores and gets an existing key', function() {
+  it('stores and gets an existing key', () => {
     const id = 'foo'+Math.random();
     const val = 'bar'+Math.random();
-    return store(id, 'foo').then(function() {
+    return store(id, 'foo').then(() => {
       return store(id, val);
-    }).then(function() {
+    }).then(() => {
       return store(id);
-    }).then(function(result) {
+    }).then((result) => {
       result.should.equal(val);
     });
   });

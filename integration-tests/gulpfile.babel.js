@@ -79,7 +79,9 @@ function startServers(debug, log_level) {
       port: test_port,
       args: [
         '--CALLBACK_PORT',
-        '3999'
+        '3999',
+        '--LOG_LEVEL',
+        'warning'
       ]
     },
     {
@@ -91,7 +93,7 @@ function startServers(debug, log_level) {
         '9999999',
         '--TRIPWIRE_ALERT',
         '9999999',
-        '--QUEUES',
+        '--PROTOCOLS',
         [
           'testqueue'
         ].join(','),

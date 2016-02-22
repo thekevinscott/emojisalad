@@ -192,9 +192,11 @@ let Round = {
                   .order(order)
                   .limit(1);
 
+                  //console.log(query.toString());
     return db.query(query).then((rows) => {
       if ( rows ) {
         let phrase = rows[0];
+        //console.log('phrase', phrase);
         // mark this phrase as used
         let markPhrase = squel
                          .insert()
@@ -215,15 +217,17 @@ let Round = {
     if ( ! Game ) {
       Game = require('./game');
     }
+    console.info('create new round');
     return Promise.join(
       Game.getNextSubmitter(game),
       Round.getPhrase(game),
       (submitter, phrase) => {
-        const clues_allowed = squel
-                              .select()
-                              .field('clues_allowed')
-                              .from('games')
-                              .where('id=?',game.id);
+        console.info('got submitter', submitter);
+        //const clues_allowed = squel
+                              //.select()
+                              //.field('clues_allowed')
+                              //.from('games')
+                              //.where('id=?',game.id);
 
         const guesses = squel
                         .select()

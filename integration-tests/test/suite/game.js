@@ -31,7 +31,7 @@ describe('Game', () => {
         { player: players[1], msg: players[1].avatar },
         [
           { key: 'accepted-invited', options: [players[1].nickname, players[1].avatar], to: players[0] },
-          { key: 'accepted-inviter', options: [players[1].nickname, players[0].nickname, players[1].avatar], to: players[1] },
+          { key: 'accepted-inviter', options: [players[1].nickname, players[1].avatar, players[0].nickname, players[1].avatar], to: players[1] },
           { key: 'game-start', options: [players[0].nickname, players[0].avatar, '*'], to: players[0] }
         ]
       );
@@ -69,17 +69,34 @@ describe('Game', () => {
   });
 
   describe('Player order', () => {
-    it('should loop back to first player in the third round of a two person game', () => {
+    it('should proceed to second player in a two person game', () => {
       const players = getPlayers(2);
 
       return playGame(players, true).then((game_phrase) => {
-        return setup([
+        return check(
           { player: players[1], msg: guess + game_phrase, get_response: true },
+          [
+            { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, game_phrase] },
+            { to: players[0], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
+            { to: players[1], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
+            { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'] },
+          ]
+        );
+      });
+    });
+
+    it('should loop back to first player in the third round of a two person game', () => {
+      const players = getPlayers(2);
+
+      return playGame(players, true).then((first_game_phrase) => {
+        return setup([
+          { player: players[1], msg: guess + first_game_phrase, get_response: true },
           { player: players[1], msg: EMOJI },
         ]).then((messages) => {
-          const next_game_phrase = getPhrase(messages);
+          const game_phrase = getPhrase(messages);
           return check(
-            { player: players[0], msg: guess + next_game_phrase },
+            { player: players[0], msg: guess + game_phrase },
             [
               { to: players[1], key: 'says', options: [players[0].nickname, players[0].avatar, game_phrase] },
               { to: players[0], key: 'correct-guess', options: [players[0].nickname, players[0].avatar, game_phrase] },
@@ -124,6 +141,28 @@ describe('Game', () => {
       });
     });
 
+    it('should add a third player in the middle of the second round', () => {
+      const players = getPlayers(3);
+
+      return startGame(players.slice(0, 2), true).then((game_phrase) => {
+        return setup([
+          { player: players[0], msg: EMOJI },
+          { player: players[0], msg: 'invite '+players[2].number },
+          { player: players[2], msg: 'y' },
+          { player: players[2], msg: players[2].nickname },
+        ]).then(() => {
+          return check(
+            { player: players[2], msg: players[2].avatar },
+            [
+              { to: players[0], key: 'accepted-invited', options: [players[2].nickname, players[2].avatar] },
+              { to: players[1], key: 'join-game', options: [players[2].nickname, players[2].avatar] },
+              { to: players[2], key: 'accepted-inviter', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar] },
+            ]
+          );
+        });
+      });
+    });
+
     it('should add a third player at the second round and proceed to second player', () => {
       const players = getPlayers(3);
 
@@ -143,9 +182,6 @@ describe('Game', () => {
               { to: players[0], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
               { to: players[1], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
               { to: players[2], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
-              { to: players[0], key: 'join-game', options: [players[2].nickname, players[2].avatar ] },
-              { to: players[1], key: 'join-game', options: [players[2].nickname, players[2].avatar ] },
-              { to: players[2], key: 'join-game', options: [players[2].nickname, players[2].avatar ] },
               { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
               { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'] },
               { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
@@ -177,9 +213,6 @@ describe('Game', () => {
               { to: players[0], key: 'correct-guess', options: [players[0].nickname, players[0].avatar, game_phrase] },
               { to: players[1], key: 'correct-guess', options: [players[0].nickname, players[0].avatar, game_phrase] },
               { to: players[2], key: 'correct-guess', options: [players[0].nickname, players[0].avatar, game_phrase] },
-              { to: players[0], key: 'join-game', options: [players[2].nickname, players[2].avatar, ] },
-              { to: players[1], key: 'join-game', options: [players[2].nickname, players[2].avatar, ] },
-              { to: players[2], key: 'join-game', options: [players[2].nickname, players[2].avatar, ] },
               { to: players[0], key: 'game-next-round', options: [players[2].nickname, players[2].avatar ] },
               { to: players[1], key: 'game-next-round', options: [players[2].nickname, players[2].avatar ] },
               { to: players[2], key: 'game-next-round-suggestion', options: [players[2].nickname, players[2].avatar, '*'] },
@@ -218,10 +251,6 @@ describe('Game', () => {
               { to: players[1], key: 'correct-guess', options: [players[0].nickname, players[0].avatar, game_phrase] },
               { to: players[2], key: 'correct-guess', options: [players[0].nickname, players[0].avatar, game_phrase] },
               { to: players[3], key: 'correct-guess', options: [players[0].nickname, players[0].avatar, game_phrase] },
-              { to: players[0], key: 'join-game', options: [players[3].nickname, players[3].avatar ] },
-              { to: players[1], key: 'join-game', options: [players[3].nickname, players[3].avatar ] },
-              { to: players[2], key: 'join-game', options: [players[3].nickname, players[3].avatar ] },
-              { to: players[3], key: 'join-game', options: [players[3].nickname, players[3].avatar ] },
               { to: players[0], key: 'game-next-round', options: [players[3].nickname, players[3].avatar, ] },
               { to: players[1], key: 'game-next-round', options: [players[3].nickname, players[3].avatar, ] },
               { to: players[2], key: 'game-next-round', options: [players[3].nickname, players[3].avatar, ] },

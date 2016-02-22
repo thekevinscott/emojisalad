@@ -8,42 +8,31 @@ const using = Promise.using;
 const url = require('config/db').mongo;
 
 const store = (key, val) => {
-  return using(
-    getConnectionAsync(),
-    (connection) => {
-      //console.info('connection has been gotten');
-      const coll = connection.collection('attributes');
-      //console.log('coll', coll);
-      if ( val !== undefined ) {
-        //console.log('set');
-        return coll.updateAsync({ key: key }, {
-          key: key,
-          val: val
-        }, {
-          upsert: true
-        });
+  if ( val ) {
+    const query = squel
+                  .insert({ autoQuoteTableNames: true, autoQuoteFieldNames: true })
+                  .into('attributes')
+                  .setFields({
+                    value: val,
+                    key: key
+                  }).onDupUpdate('value', val)
+  
+    return db.query(query);
+  } else {
+    const query = squel
+                  .select({ autoQuoteTableNames: true, autoQuoteFieldNames: true })
+                  .field('value')
+                  .from('attributes')
+                  .where('`key`=?',key);
+  
+    return db.query(query).then((rows) => {
+      if ( rows && rows.length ) {
+        return rows[0].value;
       } else {
-        //console.info('mongo get');
-        return coll.findOneAsync({ key: key }).then((item) => {
-          //console.info('For key', key, 'found item', item);
-          if ( item ) {
-            return item.val;
-          }
-        });
+        return null;
       }
-    }
-  ).then((data) => {
-    return data;
-  });
-}
-
-const getConnectionAsync = () => {
-  //console.info('get connection async');
-  return mongodb.MongoClient.connectAsync(url)
-  .disposer((connection) => {
-    //console.info('close mongo connection');
-    connection.close();
-  });
+    });
+  }
 }
 
 module.exports = store;

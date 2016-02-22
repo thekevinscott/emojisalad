@@ -24,7 +24,17 @@ describe('Help', () => {
         return check(
           { player: submitter, msg: help },
           [
-            { to: submitter, key: 'help-submitter-waiting-for-submission', },
+            {
+              to: submitter,
+              key: 'help-submitter-waiting-for-submission',
+              options: {
+                game: {
+                  round: {
+                    submitter: submitter
+                  }
+                }
+              }
+            },
           ]
         );
       });
@@ -34,7 +44,7 @@ describe('Help', () => {
       const players = getPlayers(3);
       const submitter = players[0];
 
-      return startGame(players).then((game) => {
+      return startGame(players).then(() => {
         return setup([
           { player: submitter, msg: EMOJI }
         ]);
@@ -42,7 +52,17 @@ describe('Help', () => {
         return check(
           { player: submitter, msg: help },
           [
-            { to: submitter, key: 'help-submitter-submitted', },
+            {
+              to: submitter,
+              key: 'help-submitter-submitted',
+              options: {
+                game: {
+                  round: {
+                    submitter: submitter
+                  }
+                }
+              }
+            },
           ]
         );
       });
@@ -72,7 +92,17 @@ describe('Help', () => {
         return check(
           { player: players[2], msg: help },
           [
-            { to: players[2], key: 'help-player-ready-for-game' },
+            {
+              to: players[2],
+              key: 'help-player-ready-for-game',
+              options: {
+                game: {
+                  round: {
+                    submitter: players[0]
+                  }
+                }
+              }
+            },
           ]
         );
       });
@@ -83,17 +113,20 @@ describe('Help', () => {
       const EMOJI_CLUE = '😀';
 
       return playGame(players).then(() => {
-        const options = {
-          game: {
-            round: {
-              submission: EMOJI_CLUE
-            }
-          }
-        };
         return check(
           { player: players[2], msg: help },
           [
-            { to: players[2], key: 'help-player-guessing', options: options },
+            {
+              to: players[2],
+              key: 'help-player-guessing',
+              options: {
+                game: {
+                  round: {
+                    submission: EMOJI_CLUE
+                  }
+                }
+              }
+            },
           ]
         );
       });

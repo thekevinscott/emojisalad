@@ -17,7 +17,7 @@ module.exports = (player, input) => {
           options: [
             player.nickname,
             player.avatar,
-            'MOVIlE'
+            game.round.clue
           ]
         };
       }));

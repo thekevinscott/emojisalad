@@ -20,48 +20,46 @@ squel.registerValueHandler(Date, function(date) {
 });
 
 const Game = {
-  getNextSubmitter: (game) => {
+  getNextSubmitter: (game_params) => {
     return Promise.join(
-      Round.find({ game_id: game.id, most_recent: true }),
-      Game.getBattingOrder(game),
-      (round, players) => {
-        let next = players[0];
-        if ( round ) {
+      Round.findOne({ game_id: game_params.id, most_recent: true }),
+      Game.findOne(game_params),
+      (round, game) => {
+        console.info('game', game);
+        const players = game.players;
+        console.info('game get next submitter', round, players);
+        let next;
+        //if ( round ) {
+        if ( round && round.id ) {
+          console.info('round exists, the players are', players, 'the submitter is', round.submitter);
           for ( let i=0,l=players.length; i<l; i++ ) {
-            if ( players[i].id === round.submitter_id ) {
+            if ( players[i].id === round.submitter.id ) {
+              console.info('there is a match!', round.submitter.id);
               if ( i < l-1 ) {
+                console.info('grab the next one');
                 // grab the next one
                 next = players[i + 1];
               } else {
+                console.info('go to 0');
                 next = players[0];
               }
               // else, just use the first player
               break;
             }
           }
-        //} else {
-          //next = players[0];
+        } else if ( players.length ) {
+          console.info('theres no round');
+          next = players[0];
+        } else {
+          throw new Error('wtf, no round and no players');
         }
-        return Player.findOne({ id: next.id });
+        return Player.findOne({ id: next.id }).then((player) => {
+          console.info('next', player);
+          return player;
+        });
       }
     );
   },
-  checkGuess: function(game, player, guess) {
-    return Round.checkGuess(game, player, guess);
-  },
-  /*
-  getGuessesLeft: function(game) {
-    return Promise.all(game.round.players.map(function(game_player) {
-      if ( game_player.state === 'passed' || game_player.state === 'lost' ) {
-        return 0;
-      } else {
-        return Round.getGuessesLeft(game, game_player);
-      }
-    })).reduce(function(prev, current) {
-      return prev + current;
-    });
-  },
-  */
   checkInput: function(str) {
     if ( str === '' ) {
       return 'text';
@@ -73,35 +71,6 @@ const Game = {
       return 'text';
     }
   },
-  saveSubmission: Promise.coroutine(function* (player, message, game_number) {
-    let game = yield this.get({ player: player, game_number: game_number });
-    yield Round.saveSubmission(game, player, message);
-    game.round.submission = message;
-    return game;
-  }),
-  /*
-  newRound: function(game) {
-    console.info('new round');
-    return Round.create(game).then(function(round) {
-      console.info('round submitter', round.submitter.id, round.submitter.nickname);
-      return Promise.all(game.players.map(function(game_player) {
-        console.info('player', game_player.id, game_player.nickname);
-        let state;
-        if ( game_player.id === round.submitter.id ) {
-          state = 'waiting-for-submission';
-        } else {
-          state = 'waiting-for-round';
-        }
-        console.info('expected state', state);
-        return Player.update(game_player, {
-          state: state,
-        });
-      })).then(function() {
-        return round;
-      });
-    });
-  },
-  */
   getPhrase: function(game) {
     let game_phrases = squel
                        .select()
@@ -248,6 +217,7 @@ const Game = {
       }
     );
   }),
+  /*
   getBattingOrder: (game) => {
     const query = squel
                   .select({ autoQuoteFieldNames: true })
@@ -264,6 +234,7 @@ const Game = {
                 //.where('game_id=?',game.id);
     //return db.query(query);
   },
+  */
   /*
   addToBattingOrder: function(game, player) {
     return this.getBattingOrder(game).then(function(order) {

@@ -52,36 +52,30 @@ const read = () => {
         throw new Error('No Timestamp found');
       }
       console.info('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
-
+      console.info('get messages');
       return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
-        console.info('messages length', messages);
+        console.info('set Timestamp for messages');
+        return setTimestamp(messages).then(() => {
 
-        if ( messages.length ) {
+          console.info('messages length', messages);
 
-          console.info('messages', messages);
-          return sequential(messages.map((message) => {
-            return () => {
-              return processMessage(message);
-            }
-          })).filter((message) => {
-            // remove any undefined messages;
-            // we might get these if there's no response,
-            // for instance, if a user marks herself 
-            // as blacklisted.
-            return message;
-          }).then((processed_messages) => {
-          //})).then((processed_messages) => {
-            console.info('processed messages', processed_messages);
+          if ( messages.length ) {
 
-            // set timestamp once we've retrieved the messages and processed them,
-            // but before we've sent them.
-            //
-            // The logic here is that, if there is some error with sending and some
-            // of the messages go out but not all of them, we don't want to 
-            // resend out potentially invalid messages, which could happen if we don't
-            // accurately record the timestamp.
-            console.info('set Timestamp for messages');
-            return setTimestamp(messages).then(() => {
+            console.info('messages', messages);
+            return sequential(messages.map((message) => {
+              return () => {
+                return processMessage(message);
+              }
+            })).filter((message) => {
+              // remove any undefined messages;
+              // we might get these if there's no response,
+              // for instance, if a user marks herself 
+              // as blacklisted.
+              return message;
+            }).then((processed_messages) => {
+              //})).then((processed_messages) => {
+              console.info('processed messages', processed_messages);
+
               console.info('prepare to send messages');
 
               return sendMessages(processed_messages).then(() => {
@@ -95,11 +89,11 @@ const read = () => {
                 }
               });
             });
-          });
-        } else {
-          console.info('set processing to false, 3');
-          processing = false;
-        }
+          } else {
+            console.info('set processing to false, 3');
+            processing = false;
+          }
+        });
       });
     }).catch((err) => {
       console.error(err.stack);

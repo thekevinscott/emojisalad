@@ -3,6 +3,7 @@ const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
 const Emoji = require('models/emoji');
+const Phone = require('models/phone');
 
 let Player;
 const default_maximum_games = 4;
@@ -18,21 +19,27 @@ const User = {
       nickname = params.nickname;
     }
 
-    return Emoji.getRandom().then((avatar) => {
-      let query = squel
-                  .insert({ autoQuoteFieldNames: true })
-                  .into('users')
-                  .setFields({
-                    created: squel.fval('NOW(3)'),
-                    last_activity: squel.fval('NOW(3)'),
-                    from: params.from,
-                    //avatar: avatar,
-                    nickname: nickname,
-                    maximum_games: default_maximum_games
-                  });
-      return db.create(query).then((result) => {
-        return User.findOne(result.insertId).then((user) => {
-          return user;
+    return Emoji.getRandom().then((result) => {
+      const avatar = result.emoji;
+      console.log('prepare to parse the phone', params.from);
+      return Phone.parse([params.from]).then((numbers) => {
+        const number = numbers[0];
+        console.log('parsed the number', number);
+        const query = squel
+                      .insert({ autoQuoteFieldNames: true })
+                      .into('users')
+                      .setFields({
+                        created: squel.fval('NOW(3)'),
+                        last_activity: squel.fval('NOW(3)'),
+                        from: number,
+                        avatar: avatar,
+                        nickname: nickname,
+                        maximum_games: default_maximum_games
+                      });
+        return db.create(query).then((result) => {
+          return User.findOne(result.insertId).then((user) => {
+            return user;
+          });
         });
       });
     });

@@ -46,11 +46,19 @@ const check = (action, expected) => {
       (processed) => {
         const actions = parseActions(created_message);
 
+        if ( expected.length && ! processed.length ) {
+          console.error('*** expected', expected);
+          console.error('*** processed', processed);
+          throw 'wtf, no processed, this probably implies a bug';
+        }
+
         processed.map((message) => {
           messages[message.key] = message;
         });
 
+        //console.log('*** messages', messages);
         const expecteds = parseExpecteds(expected, messages);
+        //console.log('*** expecteds', expecteds);
 
         return inlineCheck(actions, expecteds);
       }
@@ -59,6 +67,7 @@ const check = (action, expected) => {
 };
 
 const populateExpectedMessages = (expected) => {
+  const messages = {};
   return Promise.all(expected.map((message) => {
     if ( ! messages[message.key] ) {
       messages[message.key] = true;
@@ -133,6 +142,8 @@ const parseExpecteds = (expected, messages) => {
 }
 
 const inlineCheck = (actions, expecteds) => {
+  //console.log('\n\ncheck actions', actions);
+  //console.log('\n\ncheck expectds', expecteds);
   if ( actions.length !== expecteds.length ) {
     // this will throw an error; but it'll indicate exactly
     // what's wrong with our expectations
@@ -153,19 +164,30 @@ const inlineCheck = (actions, expecteds) => {
 };
 
 const escapeRegExp = (str) => {
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  //return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  return str.replace(/\?/g,'\\?')
+            .replace(/\+/g,'\\+')
+            .replace(/\)/g,'\\)')
+            .replace(/\(/g,'\\(');
 }
+
 
 const checkBody = (action, expected) => {
   if ( expected && expected.body ) {
-    const expected_body = escapeRegExp(expected.body.replace(/\*/g,'(.*)'));
+    const expected_body = escapeRegExp(expected.body).replace(/\*/g,'(.*)');
     const re = new RegExp(expected_body);
+    const action_body = action.body;
+
     try {
-      re.test(action.body);
+      //console.log('expected body', expected_body.replace('\\n',''));
+      //console.log('action body', action_body.replace('\\n',''));
+      if ( ! re.test(action_body) ) {
+        throw new Error();
+      };
     } catch(err) {
       // this will fail but we'll get a nice
       // error message out of it
-      action.body.should.equal(expected);
+      action_body.should.equal(expected.body);
     }
   } else {
     // this indicates that we expect no response. Not sure

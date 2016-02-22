@@ -11,6 +11,7 @@ const rule = require('config/rule');
 //const kickoffGame = require('../shared/kickoffGame');
 
 module.exports = (user, input) => {
+  console.info('here be the avatar');
   const to = user.to;
   return new Promise((resolve, reject) => {
     if ( rule('keep').test(input) ) {
@@ -31,6 +32,7 @@ module.exports = (user, input) => {
       });
     }
   }).then((user) => {
+    console.info('**** START THE GAME');
     return require('../game/start')(user, input);
   }).catch((err) => {
     if ( err !== 'error-14' ) {
