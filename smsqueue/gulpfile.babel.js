@@ -14,10 +14,11 @@ const chalk = require('chalk');
 const squel = require('squel');
 
 const shared = require('../shared/gulp');
+const app = require('config/app');
 
 gulp.task('server', (opts) => {
-  const PORT = util.env.PORT || '5009';
-  const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
+  const PORT = util.env.PORT || app.port;
+  const LOG_LEVEL = util.env.LOG_LEVEL || app.log_level;
   return shared.server({ LOG_LEVEL: LOG_LEVEL, PORT: PORT })();
 });
 
