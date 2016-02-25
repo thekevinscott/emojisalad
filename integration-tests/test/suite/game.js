@@ -261,4 +261,8 @@ describe('Game', () => {
       });
     });
   });
+
+  it('should gracefully handle running out of new phrases', () => {
+    throw '1';
+  });
 });
