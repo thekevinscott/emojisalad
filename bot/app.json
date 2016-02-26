@@ -1,5 +1,12 @@
 [{
   "name"      : "bot",
   "script"    : "./index.js",
-  "args"      : "['--LOG_LEVEL' ,'info', '--PORT', '5000', '--ENVIRONMENT', 'production', '--PROTOCOLS', 'sms', '--TRIPWIRE_TRIP', '20', '--TRIPWIRE_ALERT', '5']"
+  "env": {
+    "LOG_LEVEL": "info",
+    "PORT": "5000",
+    "ENVIRONMENT": "production",
+    "PROTOCOLS": "sms",
+    "TRIPWIRE_TRIP": "20",
+    "TRIPWIRE_ALERT": "10"
+  }
 }]
