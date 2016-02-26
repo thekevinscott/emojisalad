@@ -16,6 +16,7 @@
     "gulp-nodemon": "^2.0.6",
     "gulp-util": "^3.0.7",
     "pmx": "^0.6.0",
+    "microservice-registry":"https://github.com/scottlabs/microservice-registry.git",
     "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
     "squel": "^4.3.1",
     "twilio": "^2.8.0"
