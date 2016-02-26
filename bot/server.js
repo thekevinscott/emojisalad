@@ -37,6 +37,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 app.use(pmx.expressErrorHandler());
 
 app.listen(port, () => {
+  app.get('/ping', (req, res) => {
+    res.json({ error: 'Services not loaded yet' });
+    res.end();
+  });
   registry.ready(() => {
     console.info(`EmojinaryFriend Bot: ${port}`);
 
