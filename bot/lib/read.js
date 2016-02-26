@@ -40,9 +40,9 @@ const sequential = (fns) => {
 // in this case, we want to queue those pings to run
 // immediately on complete (but only one ping can get queued up)
 const read = () => {
-  console.info('read, processing', processing);
+  console.info('read function, processing: ', processing);
   if ( processing === false ) {
-    console.info('set processing to true');
+    //console.info('set processing to true');
     processing = true;
     clear();
 
@@ -92,6 +92,7 @@ const read = () => {
           } else {
             console.info('set processing to false, 3');
             processing = false;
+            timer = setTimeout(read, runTime*1000);
           }
         });
       });
