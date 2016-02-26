@@ -106,6 +106,8 @@ const read = () => {
       processing = false;
       if ( queued_read_action ) {
         read();
+      } else {
+        timer = setTimeout(read, runTime*1000);
       }
       throw err;
     });
