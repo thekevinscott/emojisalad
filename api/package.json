@@ -11,6 +11,7 @@
     "auto-loader": "^0.2.0",
     "autosuggest": "git+ssh://git@bitbucket.org/thekevinscott/autosuggest.git",
     "babel": "^5.8.23",
+    "babel-polyfill": "^6.5.0",
     "babel-register": "^6.4.3",
     "bluebird": "^3.1.1",
     "body-parser": "^1.13.3",
