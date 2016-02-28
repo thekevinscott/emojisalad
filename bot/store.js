@@ -5,8 +5,6 @@ const squel = require('squel').useFlavour('mysql');
 const mongodb = Promise.promisifyAll(require('mongodb'));
 const using = Promise.using;
 
-const url = require('config/db').mongo;
-
 const store = (key, val) => {
   if ( val ) {
     const query = squel
