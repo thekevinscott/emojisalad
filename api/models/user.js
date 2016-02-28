@@ -19,10 +19,13 @@ const User = {
       nickname = params.nickname;
     }
 
+    console.info('create user 1');
     return Emoji.getRandom().then((result) => {
+      console.info('create user 2');
       const avatar = result.emoji;
       console.log('prepare to parse the phone', params.from);
       return Phone.parse([params.from]).then((numbers) => {
+        console.info('create user 3');
         const number = numbers[0];
         console.log('parsed the number', number);
         const query = squel

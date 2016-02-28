@@ -44,6 +44,7 @@ function findOne(req) {
   return User.findOne(user_id);
 }
 function create(req) {
+  console.info('create user');
   return User.create(req.body);
 }
 function update(req) {
