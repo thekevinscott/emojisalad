@@ -42,7 +42,6 @@ const sequential = (fns) => {
 const read = () => {
   console.info('read function, processing: ', processing);
   if ( processing === false ) {
-    //console.info('set processing to true');
     processing = true;
     clear();
 
@@ -52,12 +51,12 @@ const read = () => {
         throw new Error('No Timestamp found');
       }
       console.info('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
-      console.info('get messages');
+      //console.info('get messages');
       return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
-        console.info('set Timestamp for messages');
+        //console.info('set Timestamp for messages');
         return setTimestamp(messages).then(() => {
 
-          console.info('messages length', messages);
+          //console.info('messages length', messages);
 
           if ( messages.length ) {
 
@@ -76,11 +75,11 @@ const read = () => {
               //})).then((processed_messages) => {
               console.info('processed messages', processed_messages);
 
-              console.info('prepare to send messages');
+              //console.info('prepare to send messages');
 
               return sendMessages(processed_messages).then(() => {
                 console.info('messages are sent');
-                console.info('set processing ot false');
+                //console.info('set processing ot false');
                 processing = false;
                 if ( queued_read_action ) {
                   console.info('read immediately again');
@@ -92,7 +91,7 @@ const read = () => {
               });
             });
           } else {
-            console.info('set processing to false, 3');
+            console.info('no messages found, set processing to false, 3');
             processing = false;
             timer = setTimeout(read, runTime*1000);
           }
