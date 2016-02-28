@@ -26,7 +26,5 @@ require('./game');
 // tests for multiple games
 require('./multiple');
 
-/*
 // tests that passing works correctly
 require('./pass');
-*/
