@@ -9,6 +9,7 @@ const default_maximum_games = 4;
 
 const User = {
   create: (params) => {
+    console.info('API: User create', params);
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
