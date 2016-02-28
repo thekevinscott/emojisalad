@@ -4,7 +4,7 @@ const db = require('db');
 const Promise = require('bluebird');
 const User = require('models/user');
 const _ = require('lodash');
-const api = require('../api');
+const api = require('../service')('api');
 
 let Player = {
   // create a new player

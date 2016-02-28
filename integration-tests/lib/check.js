@@ -56,9 +56,7 @@ const check = (action, expected) => {
           messages[message.key] = message;
         });
 
-        //console.log('*** messages', messages);
         const expecteds = parseExpecteds(expected, messages);
-        //console.log('*** expecteds', expecteds);
 
         return inlineCheck(actions, expecteds);
       }
@@ -142,8 +140,6 @@ const parseExpecteds = (expected, messages) => {
 }
 
 const inlineCheck = (actions, expecteds) => {
-  //console.log('\n\ncheck actions', actions);
-  //console.log('\n\ncheck expectds', expecteds);
   if ( actions.length !== expecteds.length ) {
     // this will throw an error; but it'll indicate exactly
     // what's wrong with our expectations
@@ -179,8 +175,6 @@ const checkBody = (action, expected) => {
     const action_body = action.body;
 
     try {
-      //console.log('expected body', expected_body.replace('\\n',''));
-      //console.log('action body', action_body.replace('\\n',''));
       if ( ! re.test(action_body) ) {
         throw new Error();
       };

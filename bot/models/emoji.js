@@ -5,7 +5,7 @@ const _ = require('lodash');
 const emojiExists = require('emoji-exists');
 const db = require('db');
 
-const api = require('../api');
+const api = require('../service')('api');
 
 const Emoji = {
   checkInput: function(str) {

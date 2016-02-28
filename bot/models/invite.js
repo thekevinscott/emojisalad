@@ -6,7 +6,7 @@ const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
 
-const api = require('../api');
+const api = require('../service')('api');
 
 const Invite = {
   create: (inviter, invites) => {

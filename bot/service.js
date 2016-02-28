@@ -15,54 +15,24 @@ const request = function(options) {
     if ( body ) {
       return body;
     } else {
-      throw new Error(`No response from API: ${JSON.stringify(options)}`);
+      throw new Error(`No response from service: ${JSON.stringify(options)}`);
     }
   });
 }
 
-let api_service = registry.get('api');
-
-function getAPI() {
+function getService(name) {
   const pinging_interval = 50;
   return new Promise((resolve) => {
-    if ( registry.get('api') ) {
-      resolve(registry.get('api').api);
+    if ( registry.get(name) ) {
+      resolve(registry.get(name).api);
     } else {
       let interval = setInterval(() => {
-        if ( registry.get('api') ) {
+        if ( registry.get(name) ) {
           clearInterval(interval);
-          resolve(registry.get('api').api);
+          resolve(registry.get(name).api);
         }
       }, pinging_interval);
     }
-  });
-}
-
-function makeRequest(namespace, key, payload, params = {}) {
-  //console.debug('make request');
-  return getAPI().then((api) => {
-    //console.debug('api back', api);
-    if ( !api[namespace] ) {
-      throw new Error(`No namespace for ${namespace}`);
-    } else if ( !api[namespace][key] ) {
-      throw new Error(`No key for ${namespace} ${key}`);
-    }
-    let data = {
-      url: processEndpoint(`${api[namespace][key].endpoint}`, params),
-      method: `${api[namespace][key].method}`
-    };
-    if ( data.method === 'GET' ) {
-      data.qs = payload;
-    } else {
-      data.form = payload;
-    }
-
-    //console.debug('data', data);
-
-    return request(data).then((res) => {
-      console.info('response back:', res);
-      return res;
-    });
   });
 }
 
@@ -92,4 +62,34 @@ const processEndpoint = (endpoint, params = {}) => {
   ].join('')
 }
 
-module.exports = makeRequest;
+module.exports = function(name) {
+  if ( ! name ) {
+    throw "You must provide a valid name for a service now";
+  }
+  return function(namespace, key, payload, params = {}) {
+    //console.debug('make request');
+    return getService(name).then((service) => {
+      if ( !service[namespace] ) {
+        throw new Error(`No namespace for ${namespace}`);
+      } else if ( !service[namespace][key] ) {
+        throw new Error(`No key for ${namespace} ${key}`);
+      }
+      let data = {
+        url: processEndpoint(`${service[namespace][key].endpoint}`, params),
+        method: `${service[namespace][key].method}`
+      };
+      if ( data.method === 'GET' ) {
+        data.qs = payload;
+      } else {
+        data.form = payload;
+      }
+
+      //console.debug('data', data);
+
+      return request(data).then((res) => {
+        console.info('response back:', res);
+        return res;
+      });
+    });
+  }
+};

@@ -83,8 +83,10 @@ const read = () => {
                 console.info('set processing ot false');
                 processing = false;
                 if ( queued_read_action ) {
+                  console.info('read immediately again');
                   read();
                 } else {
+                  console.info('set timeout to read next', runTime);
                   timer = setTimeout(read, runTime*1000);
                 }
               });

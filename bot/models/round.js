@@ -5,7 +5,7 @@ const db = require('db');
 const rule = require('config/rule');
 const levenshtein = require('levenshtein');
 const autosuggest = require('autosuggest');
-const api = require('../api');
+const api = require('../service')('api');
 
 const Player = require('./player');
 

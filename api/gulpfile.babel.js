@@ -30,10 +30,10 @@ function seed() {
     const seed = require('./test/fixtures/seed') || [];
     // various seeding commands
     return Promise.all(seed.map((cmd) => {
-      let query = squel
-                  .insert()
-                  .into(cmd.table)
-                  .setFieldsRows(cmd.rows);
+      const query = squel
+                    .insert()
+                    .into(cmd.table)
+                    .setFieldsRows(cmd.rows);
       return db.query(query.toString());
     }));
   });

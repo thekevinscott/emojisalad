@@ -64,7 +64,7 @@ describe('Inviting', function() {
   });
   */
 
-  describe('Valid numbers', function() {
+  describe('Valid numbers', () => {
     const players = getPlayers(2);
     const inviter = players[0];
     before(() => {
@@ -170,17 +170,19 @@ describe('Inviting', function() {
       });
     });
 
-    it.only('should preformat incoming numbers; ari invited 8604608183, but +18604608183 is a new user', () => {
+    // TODO: Figure out a good way to test this without
+    // actual tight integration with Twilio's servers
+    //it('should preformat incoming numbers; ari invited 8604608183, but +18604608183 is a new user', () => {
 
-      const player = getPlayers(1)[0];
+      //const player = getPlayers(1)[0];
 
-      return check(
-        { player: inviter, msg: 'invite '+player.number.substring(2) },
-        [
-          { key: 'intro_5', options: [player.number.substring(2)], to: inviter },
-          { key: 'invite', options: [inviter.nickname, inviter.avatar, player.avatar], to: player }
-        ]);
-    });
+      //return check(
+        //{ player: inviter, msg: 'invite '+player.number.substring(2) },
+        //[
+          //{ key: 'intro_5', options: [player.number.substring(2)], to: inviter },
+          //{ key: 'invite', options: [inviter.nickname, inviter.avatar, player.avatar], to: player }
+        //]);
+    //});
 
   });
 

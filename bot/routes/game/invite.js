@@ -2,67 +2,77 @@
 const Promise = require('bluebird');
 //const Player = require('models/player');
 const Invite = require('models/invite');
+const Phone = require('models/phone');
 const _ = require('lodash');
 const rule = require('config/rule');
 
 module.exports = (player, message) => {
+  let invited_string;
   // TODO: Figure out how to parse numbers better
   const invites = rule('invite').match(message).split(' **** ');
 
-  const invited_string = invites[0];
+  //const invited_string = invites[0];
 
-  return Invite.create(player, invites).then((invites) => {
-    let invite = invites[0];
-    if ( invite.error ) {
-      console.info('there is an invite error', invite);
-      switch ( invite.code ) {
-      case 1200:
-          // Invite already exists
-        return [
-          {
-            player: player,
-            key: 'error-2',
-            options: [invited_string]
-          },
-        ];
-        break;
-      case 1202:
-          // Invite already exists
-        return [
-          {
-            player: player,
-            key: 'error-3',
-            options: [invited_string]
-          },
-        ];
-        break;
-      default:
-        return [
-          {
-            player: player,
-            key: 'error-4',
-            options: [invited_string]
-          },
-        ];
-        break;
-      }
+  return Phone.parse({ number: invites[0] }).then((response) => {
+    invited_string = response.number;
+    invites[0] = invited_string;
+    return Invite.create(player, invites);
+  }).then((invites) => {
+    if ( invites.error ) {
+      console.error(player, message, invites);
+      throw new Error("Invite Create was called incorrectly");
     } else {
-      console.log('invite', invite);
-      return [
-        {
-          player: invite.inviter_player,
-          key: 'intro_5',
-          options: [invited_string]
-        },
-        {
-          key: 'invite',
-          options: [
-            invite.inviter_player.nickname,
-            invite.inviter_player.avatar
-          ],
-          player: invite.invited_user
-        },
-      ];
+      let invite = invites[0] || { error: 'No invite found' };
+      if ( invite.error ) {
+        console.info('there is an invite error', invite);
+        switch ( invite.code ) {
+        case 1200:
+          // Invite already exists
+          return [
+            {
+              player: player,
+              key: 'error-2',
+              options: [invited_string]
+            },
+          ];
+          break;
+        case 1202:
+          // Invite already exists
+          return [
+            {
+              player: player,
+              key: 'error-3',
+              options: [invited_string]
+            },
+          ];
+          break;
+        default:
+          return [
+            {
+              player: player,
+              key: 'error-4',
+              options: [invited_string]
+            },
+          ];
+          break;
+        }
+      } else {
+        return [
+          {
+            player: invite.inviter_player,
+            key: 'intro_5',
+            options: [invited_string]
+          },
+          {
+            key: 'invite',
+            options: [
+              invite.inviter_player.nickname,
+              invite.inviter_player.avatar
+            ],
+            player: invite.invited_user
+          },
+        ];
+      }
     }
   });
 

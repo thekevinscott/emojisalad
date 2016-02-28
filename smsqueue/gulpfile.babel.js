@@ -8,7 +8,7 @@ const gulp = require('gulp');
 const util = require('gulp-util');
 const Promise = require('bluebird');
 const childExec = require('child_process').exec;
-//const mocha = require('gulp-mocha');
+const mocha = require('gulp-mocha');
 const nodemon = require('gulp-nodemon');
 const chalk = require('chalk');
 const squel = require('squel');
@@ -22,6 +22,28 @@ gulp.task('server', (opts) => {
   return shared.server({ LOG_LEVEL: LOG_LEVEL, PORT: PORT })();
 });
 
+/**
+ * Seed the test suite from the saved SQL file,
+ * and some seed commands in here, then run the test suite
+ */
+gulp.task('test', (cb) => {
+  process.env.LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
+  return gulp.src(['test/index.js'], { read: false })
+  .pipe(mocha({
+    timeout: 10000,
+    slow: 500,
+    bail: true
+  }))
+  .on('error', function(data) {
+    console.error(data.message);
+    process.exit(1);
+  })
+  .once('end', function() {
+    process.exit();
+  });
+});
+
 gulp.task('default', () => {
   console.log('* server - Spins up the server with default arguments');
+  console.log('* test - Run tests for SMS Queue');
 });

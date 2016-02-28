@@ -81,7 +81,7 @@ function startServers(debug, log_level) {
         '--CALLBACK_PORT',
         '3999',
         '--LOG_LEVEL',
-        'warning'
+        'info'
       ]
     },
     {

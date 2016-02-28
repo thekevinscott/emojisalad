@@ -14,6 +14,31 @@ const clue = rule('clue').example();
 const EMOJI = '😀';
 
 describe('Clues', () => {
+  it('should gracefully decline a submitter\'s clue request prior to round submission', () => {
+    const players = getPlayers(3);
+
+    return startGame(players).then(() => {
+      return check(
+        { player: players[0], msg: clue },
+        [
+          { key: 'no-clue-before-submission-for-submitter', options: [], to: players[0] },
+        ]
+      );
+    });
+  });
+
+  it('should gracefully decline a guesser\'s clue request prior to round submission', () => {
+    const players = getPlayers(3);
+
+    return startGame(players).then(() => {
+      return check(
+        { player: players[1], msg: clue },
+        [
+          { key: 'no-clue-before-submission-for-guesser', options: [], to: players[1] },
+        ]
+      );
+    });
+  });
 
   it('should notify all the other players when somebody asks for a clue', () => {
     const players = getPlayers(3);

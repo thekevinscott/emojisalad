@@ -5,7 +5,6 @@ const Phone = require('models/phone');
 const Player = require('models/player');
 const User = require('models/user');
 const Message = require('models/message');
-const Twilio = require('models/twilio');
 const Promise = require('bluebird');
 const concatenate = require('lib/concatenateMessages');
 const req = Promise.promisify(require('request'));

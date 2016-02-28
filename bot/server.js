@@ -36,11 +36,15 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.use(pmx.expressErrorHandler());
 
+let ping = (req, res) => {
+  res.json({ error: 'Services not loaded yet' });
+  res.end();
+};
 app.listen(port, () => {
   app.get('/ping', (req, res) => {
-    res.json({ error: 'Services not loaded yet' });
-    res.end();
+    ping(req, res);
   });
+
   registry.ready(() => {
     console.info(`EmojinaryFriend Bot: ${port}`);
 
@@ -49,7 +53,7 @@ app.listen(port, () => {
     // on a cron schedule, or also has the ability to respond to a 'ping',
     // which will trigger the script as well.
     const main = require('main');
-    app.get('/ping', main);
+    ping = main;
     main();
   });
 });

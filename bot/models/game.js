@@ -13,7 +13,7 @@ const Round = require('./round');
 const default_guesses = 2;
 const default_clues_allowed = 1;
 
-const api = require('../api');
+const api = require('../service')('api');
 
 squel.registerValueHandler(Date, (date) => {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';

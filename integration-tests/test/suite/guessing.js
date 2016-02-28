@@ -78,19 +78,23 @@ describe('Guessing', () => {
         );
       });
     });
-  });
 
-  describe('Incorrect', () => {
-    it('should not be notified on an incorrect guess', () => {
+    it('should allow a guesser to guess before the emoji is submitted', () => {
       const players = getPlayers(3);
 
-      return playGame(players, false).then(() => {
-        const this_guess = 'foo';
+      return startGame(players, true).then((game_phrase) => {
+        const the_guess = game_phrase;
         return check(
-          { player: players[1], msg: guess + this_guess},
+          { player: players[1], msg: guess + game_phrase },
           [
-            { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] },
-            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] },
+            { to: players[0],key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
+            { to: players[2],key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
+            { to: players[0], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
+            { to: players[1], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
+            { to: players[2], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
+            { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
           ]
         );
       });
@@ -112,6 +116,47 @@ describe('Guessing', () => {
           [
             { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
             { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
+          ]
+        );
+      });
+    });
+
+    it('should allow a guesser guess after a submitter guesses before submitting', () => {
+      const players = getPlayers(3);
+
+      return startGame(players, true).then((game_phrase) => {
+        return setup([
+          { player: players[0], msg: guess + game_phrase },
+        ]).then(() => {
+          return check(
+            { player: players[1], msg: guess + game_phrase },
+            [
+              { key: 'says', options: [players[1].nickname, players[1].avatar, game_phrase], to: players[0] },
+              { key: 'says', options: [players[1].nickname, players[1].avatar, game_phrase], to: players[2] },
+              { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[0] },
+              { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
+              { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[2] },
+              { key: 'game-next-round', options: [players[1].nickname, players[1].avatar,], to: players[0] },
+              { key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
+              { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] },
+            ]
+          );
+        });
+      });
+    });
+  });
+
+  describe('Incorrect', () => {
+    it('should not be notified on an incorrect guess', () => {
+      const players = getPlayers(3);
+
+      return playGame(players, false).then(() => {
+        const this_guess = 'foo';
+        return check(
+          { player: players[1], msg: guess + this_guess},
+          [
+            { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] },
           ]
         );
       });

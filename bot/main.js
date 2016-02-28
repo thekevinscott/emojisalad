@@ -2,7 +2,7 @@
 const read = require('lib/read');
 
 const main = (req, res) => {
-  console.info('main');
+  console.info('main has been pung!');
   if ( res ) {
     res.json({});
     res.end();
