@@ -1,5 +1,8 @@
 'use strict';
 
+const port = process.env.PORT || params.options.port;
+
+const endpoint = "http://localhost:" + port + "/";
 const app = require('queue')({
   name: require('config/app').name,
   options: {
@@ -7,7 +10,15 @@ const app = require('queue')({
     db: require('config/db')
   },
   parse: require('lib/parse'),
-  send: require('lib/sms')
+  send: require('lib/sms'),
+  api: {
+    phone: {
+      parse: {
+        endpoint: endpoint + 'phone',
+        method: 'GET'
+      }
+    }
+  }
 });
 
 const phone = require('lib/phone');

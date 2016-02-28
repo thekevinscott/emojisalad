@@ -21,7 +21,7 @@ const User = {
 
     console.info('create user 1');
     return Emoji.getRandom().then((result) => {
-      console.info('create user 2');
+      console.info('create user 2', result);
       const avatar = result.emoji;
       //console.log('prepare to parse the phone', params.from);
       console.info('create user 3');
