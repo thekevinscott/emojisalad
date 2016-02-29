@@ -25,9 +25,9 @@ module.exports = (player, message) => {
           return require('./guess')(game, player, message);
         } else {
           if ( rule('pass').test(message) ) {
+            return require('./pass')(game, player, message);
+          } else {
             if ( ! game.round.submission ) {
-              return require('./pass')(game, player, message);
-            } else {
               // listen for an emoji submission
               return Emoji.checkInput(message).then((result) => {
                 if ( result.type === 'emoji' || result.type === 'mixed' ) {
@@ -36,9 +36,9 @@ module.exports = (player, message) => {
                   return require('./say')(game, player, message);
                 }
               });
+            } else {
+              return require('./say')(game, player, message);
             }
-          } else {
-            return require('./say')(game, player, message);
           }
         }
       } else {

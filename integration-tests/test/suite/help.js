@@ -17,7 +17,7 @@ const EMOJI = '😀';
 describe('Help', () => {
   describe('Submitter', () => {
     it('should give help to a submitter before they submit their clue', () => {
-      const players = getPlayers(3);
+      const players = getPlayers(2);
       const submitter = players[0];
 
       return startGame(players).then(() => {
@@ -41,7 +41,7 @@ describe('Help', () => {
     });
 
     it('should give help to a submitter after they submit their clue', () => {
-      const players = getPlayers(3);
+      const players = getPlayers(2);
       const submitter = players[0];
 
       return startGame(players).then(() => {
@@ -86,14 +86,14 @@ describe('Help', () => {
     //});
 
     it('should give help to a player while they\'re waiting for emoji', () => {
-      const players = getPlayers(3);
+      const players = getPlayers(2);
 
       return startGame(players).then(() => {
         return check(
-          { player: players[2], msg: help },
+          { player: players[1], msg: help },
           [
             {
-              to: players[2],
+              to: players[1],
               key: 'help-player-ready-for-game',
               options: {
                 game: {
@@ -109,15 +109,15 @@ describe('Help', () => {
     });
 
     it('should give help to a player during a game', () => {
-      const players = getPlayers(3);
+      const players = getPlayers(2);
       const EMOJI_CLUE = '😀';
 
       return playGame(players).then(() => {
         return check(
-          { player: players[2], msg: help },
+          { player: players[1], msg: help },
           [
             {
-              to: players[2],
+              to: players[1],
               key: 'help-player-guessing',
               options: {
                 game: {
@@ -133,7 +133,7 @@ describe('Help', () => {
     });
 
     //it('should give help to a player after a round', () => {
-      //const players = getPlayers(3);
+      //const players = getPlayers(2);
 
       //return playGame(players).then(() => {
         //return setup([

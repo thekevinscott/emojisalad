@@ -7,63 +7,7 @@ const startGame = require('flows/startGame');
 const rule = require('config/rule');
 const EMOJI = '😀';
 
-describe('Inviting', function() {
-  /*
-  describe('Invalid Phone Numbers', function() {
-    const players = getPlayers(2);
-    const inviter = players[0];
-
-    before(function() {
-      return signup(inviter);
-    });
-
-    it('should reject an invalid invite phrase', function() {
-      return check(
-        { player: inviter, msg: 'foobar' },
-        [{ key: 'error-8', to: inviter }]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
-    });
-
-    it('should reject a nothing string', function() {
-      return check(
-        { player: inviter, msg: 'invite' },
-        [{ key: 'error-8', to: inviter }]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
-    });
-
-    it('should reject a nothing string, this time with white space', function() {
-      return check(
-        { player: inviter, msg: 'invite ' },
-        [{ key: 'error-8', to: inviter }]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
-    });
-
-    it('should reject a string as number', function() {
-      return check(
-        { player: inviter, msg: 'invite foo' },
-        [{ key: 'error-1', options: ['foo'], to: inviter }]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
-    });
-
-    it('should reject a short number', function() {
-      return check(
-        { player: inviter, msg: 'invite 860460' },
-        [{ key: 'error-1', options: ['860460'], to: inviter }]
-      ).then(function(obj) {
-        obj.output.should.deep.equal(obj.expected);
-      });
-    });
-  });
-  */
-
+describe('Inviting', () => {
   describe('Valid numbers', () => {
     const players = getPlayers(2);
     const inviter = players[0];
@@ -71,7 +15,6 @@ describe('Inviting', function() {
       return signup(inviter);
     });
 
-    this.timeout(10000);
     it('should be able to invite someone', () => {
       const player = getPlayers(1)[0];
 
@@ -153,23 +96,6 @@ describe('Inviting', function() {
       });
     });
 
-    it('responds to a user who writes after inviting', () => {
-      // get a kevin user, to make it easier
-      // to parse who is who
-      const player = getPlayers(2)[1];
-
-      return setup([
-        { player: inviter, msg: 'invite '+player.number },
-      ]).then(() => {
-        return check(
-          { player: inviter, msg: 'sup big foot' },
-          [
-            { key: 'invited-chilling', to: inviter }
-          ]
-        );
-      });
-    });
-
     // TODO: Figure out a good way to test this without
     // actual tight integration with Twilio's servers
     //it('should preformat incoming numbers; ari invited 8604608183, but +18604608183 is a new user', () => {
@@ -186,9 +112,26 @@ describe('Inviting', function() {
 
   });
 
-  describe('Inviting during a game', function() {
+  describe('during a game', () => {
+    it('responds to a user who writes after inviting', () => {
+      const players = getPlayers(2);
+      return signup(players[0]).then(() => {
+        return setup([
+          { player: players[0], msg: 'invite '+players[1].number },
+        ]);
+      }).then(() => {
+        return check(
+          { player: players[0], msg: 'sup big foot' },
+          [
+            { key: 'invited-chilling', to: players[0] }
+          ]
+        );
+      });
+    });
+
+
     const runBothPlayers = (players) => {
-      it('should const submitter invite', () => {
+      it('should let submitter invite', () => {
         const inviter = players[0];
         const invitee = getPlayers(3).pop();
         return check(
@@ -200,7 +143,7 @@ describe('Inviting', function() {
         );
       });
 
-      it('should const player invite', () => {
+      it('should let player invite', () => {
         const inviter = players[1];
         const invitee = getPlayers(3).pop();
         return check(
