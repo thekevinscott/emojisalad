@@ -1,6 +1,6 @@
 'use strict';
 
-const port = process.env.PORT || params.options.port;
+const port = process.env.PORT;
 
 const endpoint = "http://localhost:" + port + "/";
 const app = require('queue')({
