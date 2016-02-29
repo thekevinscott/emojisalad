@@ -6,7 +6,6 @@ require('babel-polyfill');
 //require('app-module-path').addPath(__dirname);
 const gulp = require('gulp');
 const util = require('gulp-util');
-const Promise = require('bluebird');
 const childExec = require('child_process').exec;
 const mocha = require('gulp-mocha');
 const nodemon = require('gulp-nodemon');
