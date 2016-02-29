@@ -17,12 +17,15 @@ module.exports = function(app) {
         //const data = ( route.method === 'get' ) ? req.query : req.body;
         try {
           route.fn(req).then((results) => {
+            console.info('request successful', route, results);
             res.status(200).json(results);
           }).catch((err) => {
+            console.info('request unsuccessful', route, err);
             res.status(400).json({ error: err });
             //console.info('error', err.stack);
           });
         } catch(err) {
+          console.info('request unsuccessful', route, err);
           res.status(400).json({ error: err });
           //console.info('error', err.stack);
         }
