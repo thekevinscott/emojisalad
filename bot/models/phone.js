@@ -14,7 +14,7 @@ const service = require('../service')(PROTOCOLS[0]);
 
 const Phone = {
   parse: (params) => {
-    //console.log('its about to happen');
+    console.info('its about to attempt to parse the phone', params, service);
     return service('phone', 'parse', params);
   },
 };

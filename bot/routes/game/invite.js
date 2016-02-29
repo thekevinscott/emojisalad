@@ -14,9 +14,14 @@ module.exports = (player, message) => {
   //const invited_string = invites[0];
 
   return Phone.parse({ number: invites[0] }).then((response) => {
-    invited_string = response.number;
-    invites[0] = invited_string;
-    return Invite.create(player, invites);
+    if ( response && response.number ) {
+      invited_string = response.number;
+      invites[0] = invited_string;
+      return Invite.create(player, invites);
+    } else {
+      console.error('error parsing phone', response, message);
+      throw new Error("Problem parsing phone number");
+    }
   }).then((invites) => {
     if ( invites.error ) {
       console.error(player, message, invites);

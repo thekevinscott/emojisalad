@@ -2,7 +2,10 @@
 
 const port = process.env.PORT;
 
-const endpoint = "http://localhost:" + port + "/";
+const endpoint = "http://localhost:" + require('config/app').port + "/";
+
+console.info('endpoint for sms queue', endpoint);
+
 const app = require('queue')({
   name: require('config/app').name,
   options: {
