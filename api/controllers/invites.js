@@ -17,6 +17,7 @@ module.exports = [
 
 function create(req) {
   const inviter_id = req.body.inviter_id;
+  console.info('req body', req.body);
   if ( ! inviter_id ) {
     throw "You must provide an inviter_id";
   } else if ( !parseInt(inviter_id) ) {
