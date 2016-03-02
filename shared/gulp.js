@@ -21,11 +21,20 @@ function spawn(command, args, stdout, stderr, close) {
     });
   }
 
-  if ( close ) {
-    child.on('close', (data) => {
-      close(data, command, args);
+  child.slaughter = () => {
+    return new Promise((resolve) => {
+      //console.log(child.pid);
+      child.on('close', (code, signal) => {
+        //console.log('IVE BEEN CLOSED', code, signal);
+        if ( close ) {
+          close(code, signal);
+        }
+        resolve();
+      });
+      child.stdin.pause();
+      child.kill();
     });
-  }
+  };
 
   return child;
 }
@@ -150,8 +159,8 @@ function importDB(config, file) {
   });
 }
 
-function server(options) {
-  return function() {
+const server = (options) => {
+  return () => {
     const DEBUG = options.DEBUG || util.env.DEBUG || 'true';
     const PORT = options.PORT || util.env.PORT || '1338';
     const ENVIRONMENT = options.ENVIRONMENT || util.env.ENVIRONMENT || 'development';
@@ -173,18 +182,26 @@ function server(options) {
       return `${key.toUpperCase()}=${options[key]}`;
     }));
 
-    return spawn('env', args.concat([
+    const child = spawn('env', args.concat([
       cmd,
       'index.js',
-    ]),
-    (data) => {
+    ]), (data) => {
       let color = 'yellow';
       //console.log(chalk.green('heyo'));
       console.log(chalk[color](`${data}`));
-    },
-    (err) => {
+    }, (err) => {
       console.error(`${err}`);
     });
+
+    //console.log('CHILD PID', child.pid);
+    process.on('exit', () => {
+      //console.log('WHOAA HORSEY');
+      child.stdin.pause();
+      child.kill('SIGKILL');
+    });
+
+    //console.log('return a child for', options);
+    return child;
   }
 }
 

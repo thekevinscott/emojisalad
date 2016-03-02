@@ -28,7 +28,7 @@ const test_port = services.testqueue.port;
  * This imports the stored SQL file, then seeds it
  * with required data
  */
-function seed() {
+const seed = () => {
   const commands = [
     {
       chdir: '../api',
@@ -57,10 +57,13 @@ function seed() {
 
 /**
  * This starts the various servers
+ * Returns an array of children that are the results
+ * of require('child_process').spawn
  */
 
-function startServers(debug, log_level) {
-  const servers_debug = false;
+const startServers = (debug, log_level) => {
+  const services_debug = false;
+  let begin_talking = false;
 
   const commands = [
     {
@@ -102,18 +105,13 @@ function startServers(debug, log_level) {
     }
   ];
   const stdout = (data, command, args) => {
-    if ( servers_debug ) {
+    if ( services_debug ) {
       console.log(`${data}`);
     }
   };
   const stderr = (data, command, args) => {
     const error = data.toString().split('\\n').join('\n');
     console.error(chalk.red(`stderr: ${error}`));
-  };
-  const close = (data, command, args) => {
-    console.log(`${command} ${args} close: ${data}`);
-    console.log('server has closed');
-    process.exit();
   };
 
   return Promise.all(commands.map((cmd) => {
@@ -123,6 +121,7 @@ function startServers(debug, log_level) {
         if ( obj.advertisement ) {
           const service = JSON.parse(lzw.decode(obj.advertisement));
           if ( service.available ) {
+            begin_talking = true;
             resolve(child);
           }
         }
@@ -139,8 +138,23 @@ function startServers(debug, log_level) {
         '--PORT',
         cmd.port
       ].concat(cmd.args || []);
-      child = shared.spawn(command, args, stdout, stderr, close);
+
+      child = shared.spawn(command, args, stdout, stderr, () => {
+        //console.log('close a service');
+        //console.log(`close service ${cmd.chdir.split('../').pop()}`);
+      });
+
+      child.stdout.on('data', (data) => {
+        if ( process.env.DEBUG && begin_talking ) {
+          if ( child.options.color ) {
+            console.log(chalk.bold(child.options.name), chalk[child.options.color](`${data}`));
+          } else {
+            console.log(server.options.name, `${data}`);
+          }
+        }
+      });
       child.options = cmd;
+
     });
   }));
 }
@@ -162,71 +176,58 @@ gulp.task('test', (cb) => {
   // Seed the Bot database
   const log_level = util.env.LOG_LEVEL || 'warning';
   let servers = [];
-  function killServers() {
-    return servers.map((server) => {
-      server.stdin.pause();
-      server.kill();
-    });
+  const killServers = () => {
+    return Promise.all(servers.map((server) => {
+      return server.slaughter();
+    }));
   }
   return seed().then(() => {
     return startServers(process.env.DEBUG, log_level);
-  }).then((servers) => {
+  }).then((response) => {
+    servers = response;
     process.chdir('../integration-tests');
 
-    servers.map((server) => {
-      server.stdout.on('data', (data) => {
-        if ( process.env.DEBUG ) {
-          if ( server.options.color ) {
-            console.log(chalk.bold(server.options.name), chalk[server.options.color](`${data}`));
-          } else {
-            console.log(server.options.name, `${data}`);
-          }
-        }
-      });
-      server.stderr.on('data', (data) => {
-        //killServers();
-        //process.exit(1);
-      });
-      server.on('close', (data, command, args) => {
-        killServers();
-        process.exit(1);
+    return new Promise((resolve, reject) => {
+      return gulp.src(['test/index.js'], { read: false })
+      .pipe(mocha({
+        timeout: 30000,
+        slow: 1500,
+        //bail: true
+      }))
+      .on('error', (data) => {
+        console.log('mocha caught error', data.message);
+        //console.error('error', data.message);
+        reject(data.message);
+      })
+      .once('end', () => {
+        //console.log('mocha is done');
+        resolve();
       });
     });
-
-
-    return gulp.src(['test/index.js'], { read: false })
-    .pipe(mocha({
-      timeout: 30000,
-      slow: 1500,
-      //bail: true
-    }))
-    .on('error', function(data) {
-      console.error('error', data.message);
-      killServers();
-      process.exit(1);
-    })
-    .once('end', function() {
-      console.log('end');
-      killServers();
+  }).then(() => {
+    //console.log('promise chain has completed');
+    return killServers().then(() => {
+      //console.log('exit with 0');
       process.exit();
     });
-  }).catch(function(err) {
-    console.log('caught', err);
-    //killServers();
-    console.error(err);
-    process.exit(1);
+  }).catch((err) => {
+    console.error(chalk.red(err));
+    return killServers().then(() => {
+      //console.log('kill servers has resolved, exit with 1');
+      process.exit(1);
+    });
   }).done(() => {
-    //console.log('done');
-    //killServers();
-    //cb();
   });
+  process.on('exit', () => {
+    return killServers();
+  })
 });
 
-function request(url) {
+const request = (url) => {
   return new Promise((resolve, reject) => {
     superagent 
     .get(url)
-    .end(function(err, res){
+    .end((err, res) => {
       if ( err ) {
         reject(err);
       } else {
