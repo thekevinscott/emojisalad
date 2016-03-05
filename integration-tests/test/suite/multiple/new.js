@@ -39,7 +39,7 @@ describe('New Game', () => {
             { player: players[0], msg: rule('invite').example() + new_player.number, to: game_numbers[1] },
             [
               { key: 'intro_5', options: [new_player.number], to: players[0], from: game_numbers[1] },
-              { key: 'invite', options: [players[0].nickname], to: new_player, from: game_numbers[0]  }
+              { key: 'invite', options: [players[0].nickname, players[0].avatar], to: new_player, from: game_numbers[0]  }
             ]
           );
         });
@@ -57,7 +57,7 @@ describe('New Game', () => {
             { player: players[0], msg: rule('invite').example() + existing_player.number, to: game_numbers[1] },
             [
               { key: 'intro_existing_player', options: [existing_player.number], to: players[0], from: game_numbers[1] },
-              { key: 'invite_existing_player', options: [existing_player.nickname, players[0].nickname], to: existing_player, from: game_numbers[1]  }
+              { key: 'invite_existing_player', options: [existing_player.nickname, existing_player.avatar, players[0].nickname, players[0].avatar], to: existing_player, from: game_numbers[1]  }
             ]
           );
         });
@@ -69,11 +69,9 @@ describe('New Game', () => {
     it('should disallow a player from starting a new game if already playing the maximum number of games', () => {
       const players = getPlayers(3);
       return playGame(players).then(() => {
-        return Player.get(players[0]).then((player) => {
-          return User.update(player.user, { maximum_games: 2 });
-        });
-      }).then(() => {
         return setup([
+          { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
+          { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
           { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
         ]);
       }).then(() => {
@@ -89,11 +87,9 @@ describe('New Game', () => {
     it('should disallow a player from inviting a player currently playing the maximum number of games', () => {
       const players = getPlayers(3);
       return playGame(players).then(() => {
-        return Player.get(players[0]).then((player) => {
-          return User.update(player.user, { maximum_games: 2 });
-        });
-      }).then(() => {
         return setup([
+          { player: players[2], msg: rule('new-game').example(), to: game_numbers[0] },
+          { player: players[2], msg: rule('new-game').example(), to: game_numbers[0] },
           { player: players[2], msg: rule('new-game').example(), to: game_numbers[0] },
           { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
         ]);
@@ -102,21 +98,6 @@ describe('New Game', () => {
           { player: players[0], msg: rule('invite').example() + players[2].number, to: game_numbers[1] },
           [
             { key: 'error-12', to: players[0], from: game_numbers[1] },
-          ]
-        );
-      });
-    });
-
-    it('should disallow a player from starting a new game if they have not finished onboarding', () => {
-      const player = getPlayers(1)[0];
-      return setup([
-        { player: player, msg: 'hello' },
-        { player: player, msg: 'y' },
-      ]).then(() => {
-        return check(
-          { player: player, msg: rule('new-game').example() },
-          [
-            { key: 'error-13', to: player }
           ]
         );
       });
@@ -163,35 +144,12 @@ describe('New Game', () => {
     const players = getPlayers(3);
     //const existing_player = players[1];
     return playGame(players).then(() => {
-      //return setup([
-        //{ player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
-        //{ player: players[0], msg: rule('invite').example() + existing_player.number, to: game_numbers[1] },
-      //]);
-    }).then(() => {
       return check(
         { player: players[0], msg: 'sup', to: game_numbers[1] },
         [
-          { key: 'new-game', options: [players[0].nickname], to: players[0], from: game_numbers[1] },
+          { key: 'new-game', options: [players[0].nickname, players[0].avatar], to: players[0], from: game_numbers[1] },
         ]
       );
-    });
-  });
-
-  it('should mark an invite as used after using it', () => {
-    const players = getPlayers(2);
-    const existing_player = players[1];
-    return playGame(players).then(() => {
-      return setup([
-        { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
-        { player: players[0], msg: rule('invite').example() + existing_player.number, to: game_numbers[1] },
-        { player: existing_player, msg: 'yes', to: game_numbers[1] },
-      ]);
-    }).then(() => {
-      return Player.get(existing_player);
-    }).then((player) => {
-      return Invite.getInvite(player);
-    }).then((invite) => {
-      invite.used.should.equal(1);
     });
   });
 });

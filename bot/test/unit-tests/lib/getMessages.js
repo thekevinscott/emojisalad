@@ -77,7 +77,7 @@ describe('Get Messages', function() {
           url: received,
           method: 'GET',
           qs: {
-            date: timestamp
+            id: timestamp
           }
         });
         callback(null, { body: JSON.stringify(returned) });

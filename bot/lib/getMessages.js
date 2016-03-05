@@ -4,26 +4,28 @@ const request = Promise.promisify(require('request'));
 const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
 
-const getMessages = (timestamp, protocols, options = {}) => {
+//const getMessages = (timestamp, protocols, options = {}) => {
+const getMessages = (ids, protocols, options = {}) => {
   //console.log('time to get messages');
-  if ( ! timestamp ) {
-    throw "You must provide a timestamp";
-  } else if ( ! parseFloat(timestamp) ) {
-    throw "You must provide a valid timestamp";
+  if ( ids === undefined ) {
+    throw "You must provide ids";
   }
+
   return Promise.all(protocols.map((protocol) => {
     //if ( queue_registrys[protocol] ) {
     const service = registry.get(protocol)
     if ( ! service ) {
       throw new Error(`No service found for protocol ${protocol}`);
     }
-    return request({
+    const payload = {
       url: service.api.received.endpoint,
       method: service.api.received.method,
       qs: {
-        date: timestamp
+        id: ids[protocol]
       }
-    }).then((response) => {
+    };
+    //console.info('payload', payload);
+    return request(payload).then((response) => {
       if ( ! response || ! response.body ) {
         throw response;
       }

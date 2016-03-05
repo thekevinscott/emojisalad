@@ -169,6 +169,10 @@ let Player = {
       query = query.where('u.nickname LIKE ?',params.nickname+'%');
     }
     
+    if ( params.to ) {
+      query = query.where('n.`number` = ?',params.to);
+    }
+    
     if ( params.from ) {
       query = query.where('u.`from` LIKE ?',params.from+'%');
     }

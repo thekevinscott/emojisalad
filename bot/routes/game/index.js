@@ -13,7 +13,7 @@ module.exports = (player, message) => {
   } else if ( rule('clue').test(message) ) {
     return require('./clue')(player, message);
   } else if ( rule('new-game').test(message) ) {
-    return require('./new_game')(player, message);
+    return require('./new_game')(player);
   } else if ( rule('help').test(message) ) {
     return require('./help')(player, message);
   } else {

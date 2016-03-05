@@ -7,8 +7,9 @@ const runTime = 5;
 const getMessages = require('lib/getMessages');
 const processMessage = require('lib/processMessage');
 const sendMessages = require('lib/sendMessages');
-const setTimestamp = require('lib/setTimestamp');
-const getTimestamp = require('lib/getTimestamp');
+const store = require('store');
+const setStore = require('lib/setStore');
+//const getTimestamp = require('lib/getTimestamp');
 
 let timer;
 let queued_read_action = false;
@@ -40,27 +41,49 @@ const sequential = (fns) => {
 // in this case, we want to queue those pings to run
 // immediately on complete (but only one ping can get queued up)
 const read = () => {
-  console.info('read function, processing: ', processing);
   if ( processing === false ) {
+    console.info('call the read function');
     processing = true;
     clear();
 
+    const protocol_ids = {};
     //const lastRecordedTimestamp = yield 
-    return getTimestamp().then((lastRecordedTimestamp) => {
-      if ( ! lastRecordedTimestamp ) {
-        throw new Error('No Timestamp found');
-      }
-      console.info('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
-      //console.info('get messages');
-      return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
-        //console.info('set Timestamp for messages');
-        return setTimestamp(messages).then(() => {
+    return Promise.all(allowed_protocols.map((protocol) => {
+      return store(`${protocol}_queue_id`).then((id) => {
+        if ( ! id ) {
+          id = 0;
+        }
+        protocol_ids[protocol] = id;
+      });
+    })).then(() => {
+    //return store('queue_id').then((last_queue_id) => {
+    //return getTimestamp().then((lastRecordedTimestamp) => {
+      //if ( ! lastRecordedTimestamp ) {
+        //throw new Error('No Timestamp found');
+      //}
+      //if ( ! last_queue_id ) {
+        //last_queue_id = 0;
+      //}
+      //console.info('last queue id', last_queue_id);
+      //const protocol_ids = {
+        //'testqueue': last_queue_id,
+        //'sms': last_queue_id
+      //}
+      //console.info('lastRecord', lastRecordedTimestamp, new Date(lastRecordedTimestamp * 1000), 'current time', new Date());
+      //return getMessages(lastRecordedTimestamp, allowed_protocols, tripwire_settings).then((messages) => {
+      return getMessages(protocol_ids, allowed_protocols, tripwire_settings).then((messages) => {
+        console.info('messages returned', messages);
+        console.info('got messages', messages.map((message) => {
+          return message;
+        }));
+        if ( messages.length ) {
 
-          //console.info('messages length', messages);
 
-          if ( messages.length ) {
+          //return store('queue_id', messages[messages.length-1].id).then(() => {
+          return setStore(messages).then(() => {
 
-            console.info('messages', messages);
+
+            console.info('the retrieved messages from the protocol', messages);
             return sequential(messages.map((message) => {
               return () => {
                 return processMessage(message);
@@ -72,14 +95,9 @@ const read = () => {
               // as blacklisted.
               return message;
             }).then((processed_messages) => {
-              //})).then((processed_messages) => {
-              console.info('processed messages', processed_messages);
-
-              //console.info('prepare to send messages');
+              //console.info('the processed messages', processed_messages);
 
               return sendMessages(processed_messages).then(() => {
-                console.info('messages are sent');
-                //console.info('set processing ot false');
                 processing = false;
                 if ( queued_read_action ) {
                   console.info('read immediately again');
@@ -90,12 +108,12 @@ const read = () => {
                 }
               });
             });
-          } else {
-            console.info('no messages found, set processing to false, 3');
-            processing = false;
-            timer = setTimeout(read, runTime*1000);
-          }
-        });
+          });
+        } else {
+          console.info('no messages found, set processing to false, 3');
+          processing = false;
+          timer = setTimeout(read, runTime*1000);
+        }
       });
     }).catch((err) => {
       console.error(err.stack);
@@ -113,6 +131,7 @@ const read = () => {
       throw err;
     });
   } else {
+    console.info('read is already processing, queue this for the next go round');
     queued_read_action = true;
     return new Promise((resolve) => {
       resolve();

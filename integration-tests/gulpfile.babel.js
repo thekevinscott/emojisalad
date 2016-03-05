@@ -83,8 +83,8 @@ const startServers = (debug, log_level) => {
       args: [
         '--CALLBACK_PORT',
         '3999',
-        '--LOG_LEVEL',
-        'info'
+        //'--LOG_LEVEL',
+        //'info'
       ]
     },
     {
@@ -192,7 +192,7 @@ gulp.task('test', (cb) => {
       .pipe(mocha({
         timeout: 30000,
         slow: 1500,
-        //bail: true
+        bail: util.env.BAIL || false
       }))
       .on('error', (data) => {
         console.log('mocha caught error', data.message);

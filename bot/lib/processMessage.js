@@ -9,9 +9,8 @@ const Promise = require('bluebird');
 const concatenate = require('lib/concatenateMessages');
 const req = Promise.promisify(require('request'));
 
-module.exports = function (message) {
-  console.info('\n==========process message===========\n');
-  console.info('message', message);
+module.exports = (message) => {
+  console.info('==========process message===========', message);
   if ( ! message.from ) {
     throw new Error("No from provided");
   }
@@ -24,15 +23,18 @@ module.exports = function (message) {
 
   // responses comes back as an array of messages
   return router(message.from, message.body, message.to).then((responses) => {
-    console.info('responses back', responses);
+    //console.info('responses back', responses);
     if ( responses && _.isArray(responses) && responses.length ) {
-      return Message.parse(responses, message);
+      return Message.parse(responses, message).then((response) => {
+        console.info('response from router', response);
+        return response;
+      });
     //} else {
       //throw new Error('Invalid messages provided: ' + JSON.stringify(responses, null, 2));
     }
   }).then((messages) => {
     if ( messages && messages.length ) {
-      console.info('messages back, now concatenate them', messages);
+      //console.info('messages back, now concatenate them', messages);
       return concatenate(messages);
     }
   });

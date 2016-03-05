@@ -179,6 +179,7 @@ const checkBody = (action, expected) => {
         throw new Error();
       };
     } catch(err) {
+      console.error(action, expected);
       // this will fail but we'll get a nice
       // error message out of it
       action_body.should.equal(expected.body);

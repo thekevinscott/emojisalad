@@ -19,7 +19,9 @@ module.exports = (user, input) => {
     console.info('go to avatar');
     return require('./avatar')(user, input);
   } else {
-    console.info('WTF');
-    throw new Error('Should never get to the end of user onboarding');
+    console.info('go to new game');
+    // this must be a brand new message
+    // to a new number; create a new game for them.
+    return require('../game/new_game')(null, user);
   }
 };

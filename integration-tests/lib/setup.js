@@ -111,7 +111,7 @@ const getAssociatedMessages = (initiated_id, expected = false) => {
     }
     setTimeout(() => {
       callback = noop;
-      reject(`No message response within ${timeout_length/1000} seconds`);
+      reject(`No message response within ${timeout_length/1000} seconds for id ${initiated_id}`);
     }, timeout_length);
 
     // only ping the server if we are expecting messages
