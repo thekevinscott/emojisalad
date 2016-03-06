@@ -32,12 +32,13 @@ const setup = (arr) => {
     arr = [arr];
   }
 
-  return sequence(arr.map((a, i) => {
+  const fns = arr.map((a, i) => {
     const player = a.player;
     const msg = a.msg;
     const get_response = a.get_response;
     const expect_response = (a.expect_response === false) ? false : true;
     if ( ! player.to && ! a.to ) {
+      console.error('a', a, 'i', i);
       throw "Now you must provide an explicit to";
     }
     //const to = a.to || game_numbers[0];
@@ -54,7 +55,7 @@ const setup = (arr) => {
       const message = {
         body: msg,
         to: to || player.to,
-        from: player.number
+        from: player.number || player.from
       };
 
       const url = `http://localhost:${port}/receive`;
@@ -87,15 +88,16 @@ const setup = (arr) => {
           } else {
             return {
               initiated_id: body.id
-            }
+            };
           }
         }
       }).catch((err) => {
         console.error(err);
       });
-    }
-  }));
-}
+    };
+  });
+  return sequence(fns);
+};
 
 const getAssociatedMessages = (initiated_id, expected = false) => {
   const timeout_length = 3000;
@@ -108,7 +110,7 @@ const getAssociatedMessages = (initiated_id, expected = false) => {
       clearInterval(ping);
       callback = noop;
       resolve(body);
-    }
+    };
     setTimeout(() => {
       callback = noop;
       reject(`No message response within ${timeout_length/1000} seconds for id ${initiated_id}`);
@@ -125,8 +127,7 @@ const getAssociatedMessages = (initiated_id, expected = false) => {
       requestAssociatedMessages(initiated_id, res, expected);
     };
   });
-
-}
+};
 
 const requestAssociatedMessages = (initiated_id, resolve, expected = false) => {
   const url = `http://localhost:${port}/sent`;
@@ -158,6 +159,7 @@ const requestAssociatedMessages = (initiated_id, resolve, expected = false) => {
       resolve(body);
     }
   });
-}
+};
+
 module.exports = setup;
 module.exports.getAssociatedMessages = getAssociatedMessages;

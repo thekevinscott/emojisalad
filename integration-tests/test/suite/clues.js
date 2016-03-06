@@ -11,7 +11,7 @@ const setup = require('lib/setup');
 const check = require('lib/check');
 const rule = require('../../config/rule');
 const clue = rule('clue').example();
-const EMOJI = '😀';
+//const EMOJI = '😀';
 
 describe('Clues', () => {
   it('should gracefully decline a submitter\'s clue request prior to round submission', () => {
@@ -21,7 +21,7 @@ describe('Clues', () => {
       return check(
         { player: players[0], msg: clue },
         [
-          { key: 'no-clue-before-submission-for-submitter', options: [], to: players[0] },
+          { key: 'no-clue-before-submission-for-submitter', options: [], to: players[0] }
         ]
       );
     });
@@ -34,7 +34,7 @@ describe('Clues', () => {
       return check(
         { player: players[1], msg: clue },
         [
-          { key: 'no-clue-before-submission-for-guesser', options: [], to: players[1] },
+          { key: 'no-clue-before-submission-for-guesser', options: [], to: players[1] }
         ]
       );
     });
@@ -62,7 +62,7 @@ describe('Clues', () => {
 
     return playGame(players).then(() => {
       return setup([
-        { player: players[1], msg: clue },
+        { player: players[1], msg: clue }
       ]);
     }).then(() => {
       return check(

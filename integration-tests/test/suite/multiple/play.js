@@ -1,11 +1,12 @@
 'use strict';
-const _ = require('lodash');
-const Promise = require('bluebird');
-const request = Promise.promisify(require('request'));
-const services = require('config/services');
-const port = services.api.port;
+//const _ = require('lodash');
+//const Promise = require('bluebird');
+//const request = Promise.promisify(require('request'));
+//const services = require('config/services');
+//const port = services.api.port;
 const getPlayers = require('lib/getPlayers');
 const playGames = require('flows/playGames');
+const startGames = require('flows/startGames');
 const playGame = require('flows/playGame');
 const check = require('lib/check');
 const setup = require('lib/setup');
@@ -117,111 +118,121 @@ describe('Play', () => {
     });
   });
 
-  it.only('should be able to submit submissions to two simultaneous games', () => {
+  it('should be able to submit submissions to two simultaneous games', () => {
     const players = getPlayers(3);
-    return playGames(players, 2).then(() => {
-      const url = `http://localhost:${port}/players`;
-      return request({
-        url,
-        method: 'get',
-        qs: {
-          from: players[0].from
-        }
+    const number_of_games = 2;
+    return startGames(players, number_of_games).then((games) => {
+      return Promise.all(games.map((game) => {
+        game.round.should.have.property('submission', null);
+        const game_guesser = game.players[0];
+        return check(
+          { player: game_guesser, msg: EMOJI },
+          [
+            { key: 'game-submission-sent', to: game.players[0] },
+            { key: 'emojis', options: [game_guesser.nickname, game_guesser.avatar, EMOJI], to: game.players[1] },
+            { key: 'emojis', options: [game_guesser.nickname, game_guesser.avatar, EMOJI], to: game.players[2] },
+            { key: 'guessing-instructions', to: game.players[1] },
+            { key: 'guessing-instructions', to: game.players[2] }
+          ]
+        );
+      })).then((results) => {
+        results.length.should.equal(number_of_games);
       });
-    }).then((res) => {
-      const body = res.body;
-      console.log('body', body);
-      _.uniq(game_ids).length.should.equal(2);
+    });
+  });
+
+  it('should be able to cross talk in a game', () => {
+    const players = getPlayers(3);
+    const number_of_games = 2;
+    return playGames(players, number_of_games).then((games) => {
+      return Promise.all(games.map((game) => {
+        const msg = 'foo';
+        const game_guesser = game.players[1];
+        return check(
+          { player: game_guesser, msg: rule('guess').example()+msg },
+          [
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[0] },
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[2] }
+          ]
+        );
+      })).then((results) => {
+        results.length.should.equal(number_of_games);
+      });
     });
   });
 
   it('should be able to guess on two simultaneous games', () => {
     const players = getPlayers(3);
-    const guesser = players[1];
-    //const existing_player = players[1];
-    return playGames(players, 2).then(() => {
-      return Player.get(guesser);
-    }).then((player) => {
-      const msg = 'foo';
-      return Promise.all(game_numbers.map((game_number) => {
-        return Game.get({ player }).then(() => {
-          return check(
-            { player, msg: rule('guess').example()+msg, to: game_number },
-            [
-              { key: 'says', options: [player.nickname, player.avatar, rule('guess').example() + msg], to: players[0] },
-              { key: 'says', options: [player.nickname, player.avatar, rule('guess').example() + msg], to: players[2] }
-            ]
-          );
-        });
-      }));
+    const number_of_games = 2;
+    return playGames(players, number_of_games).then((games) => {
+      return Promise.all(games.map((game) => {
+        const msg = game.round.phrase;
+        const game_guesser = game.players[1];
+        return check(
+          { player: game_guesser, msg: rule('guess').example()+msg },
+          [
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[0] },
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[2] },
+            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[0] },
+            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[1] },
+            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[2] },
+            { key: 'game-next-round', options: [game_guesser.nickname, game_guesser.avatar], to: game.players[0] },
+            { key: 'game-next-round-suggestion', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[1] },
+            { key: 'game-next-round', options: [game_guesser.nickname, game_guesser.avatar], to: game.players[2] }
+          ]
+        );
+      })).then((results) => {
+        results.length.should.equal(number_of_games);
+      });
     });
   });
 
   it('should be able to ask for clues to two simultaneous games', () => {
     const players = getPlayers(3);
-    const guesser = players[1];
-    return playGames(players, 2).then(() => {
-      return Player.get(guesser);
-    }).then(() => {
-      return Promise.all(game_numbers.map((game_number) => {
+    const number_of_games = 2;
+    return playGames(players, number_of_games).then((games) => {
+      return Promise.all(games.map((game) => {
+        const game_guesser = game.round.players[0];
         return check(
-          { player: players[2], msg: rule('clue').example(), to: game_number },
+          { player: game_guesser, msg: rule('clue').example() },
           [
-            { key: 'says', options: [players[2].nickname, players[2].avatar, rule('clue').example()], to: players[0] },
-            { key: 'says', options: [players[2].nickname, players[2].avatar, rule('clue').example()], to: players[1] },
-            { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[0] },
-            { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[1] },
-            { key: 'clue', options: [players[2].nickname, 'MOVIE'], to: players[2] }
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game.players[0] },
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game.players[2] },
+            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[0] },
+            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[1] },
+            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[2] }
           ]
         );
-      })).then((responses) => {
-        responses.length.should.equal(2);
+      })).then((results) => {
+        results.length.should.equal(number_of_games);
       });
     });
   });
 
-  it('should be able to ask for help to two simultaneous games', () => {
+  it('should be able to ask for help in two simultaneous games', () => {
     const players = getPlayers(3);
-    const guesser = players[1];
-    //const existing_player = players[1];
-    return playGames(players, 2).then(() => {
-      return Player.get(guesser);
-    }).then((player) => {
-      return Promise.all(game_numbers.map((game_number) => {
-        return setup([
-          { player, msg: rule('help').example(), to: game_number }
-        ]);
-      })).then((responses) => {
-        const EMOJI_CLUE = '😀';
-        const game = { round: { submission: EMOJI_CLUE } };
-        responses.length.should.equal(2);
-        return Message.get(['help-player-guessing'], {'help-player-guessing': {game}}).then((message) => {
-          message = message.pop();
-          const first = responses[0][0];
-          const second = responses[1][0];
-          first.Response.Sms[0]._.should.equal(message.message);
-          second.Response.Sms[0]._.should.equal(message.message);
-          first.Response.Sms[0].$.from.should.equal(game_numbers[0]);
-          second.Response.Sms[0].$.from.should.equal(game_numbers[1]);
-        });
+    const number_of_games = 2;
+    return playGames(players, number_of_games).then((games) => {
+      return Promise.all(games.map((game) => {
+        const options = {
+          game: {
+            round: {
+              submission: EMOJI
+            }
+          }
+        };
+        return check(
+          { player: game.players[1], msg: rule('help').example() },
+          [
+            { key: 'help-player-guessing', options, to: game.players[1] }
+          ]
+        );
+      })).then((results) => {
+        results.length.should.equal(number_of_games);
       });
     });
   });
 });
-
-const getGames = (player_object, fn) => {
-  return Promise.all(game_numbers.map((game_number) => {
-    const player_params = {
-      to: game_number,
-      from: player_object.from
-    };
-    return Player.get(player_params).then((player) => {
-      return Game.get({ player }).then((game) => {
-        return fn(game);
-      });
-    });
-  }));
-}
 
 const setupTwoGames = (players, invitee) => {
   const inviter = players[0];
@@ -240,4 +251,4 @@ const setupTwoGames = (players, invitee) => {
       }));
     }
   });
-}
+};

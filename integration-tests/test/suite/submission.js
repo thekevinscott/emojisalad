@@ -16,10 +16,10 @@ describe('Submissions', () => {
     return startGame(players).then(() => {
       const msg = 'foo';
       return check(
-        { player: players[0], msg: msg },
+        { player: players[0], msg },
         [
           { to: players[1], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
-          { to: players[2], key: 'says', options: [players[0].nickname, players[0].avatar, msg] },
+          { to: players[2], key: 'says', options: [players[0].nickname, players[0].avatar, msg] }
         ]
       );
     });
@@ -46,7 +46,7 @@ describe('Submissions', () => {
   */
 
   it('should forward the submission to other players', () => {
-    let players = getPlayers(3);
+    const players = getPlayers(3);
 
     return startGame(players).then(() => {
       return check(
@@ -68,7 +68,7 @@ describe('Submissions', () => {
     return startGame(players).then(() => {
       const msg = EMOJI + 'foo' + EMOJI ;
       return check(
-        { player: players[0], msg: msg },
+        { player: players[0], msg },
         [
           { key: 'game-submission-sent', to: players[0] },
           { key: 'emojis', options: [players[0].nickname, players[0].avatar,  msg ], to: players[1] },

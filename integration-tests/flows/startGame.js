@@ -8,7 +8,7 @@ const startGame = (players, return_game_phrase = false) => {
   return signup(players[0]).then(() => {
     return sequence(players.slice(1).map((player, i) => {
       return () => {
-        const should_return_game_phrase = i === 0 && return_game_phrase 
+        const should_return_game_phrase = i === 0 && return_game_phrase;
         return invite(players[0], player, should_return_game_phrase);
       };
     }));
@@ -17,6 +17,6 @@ const startGame = (players, return_game_phrase = false) => {
       return getPhrase(messages);
     }
   });
-}
+};
 
 module.exports = startGame;

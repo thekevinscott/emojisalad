@@ -11,10 +11,10 @@ const getPhrase = (messages) => {
   const message = messages.filter((message) => {
     return message.messages;
   }).pop().messages.filter((message) => {
-    return regex.test(message.body)
+    return regex.test(message.body);
   }).pop();
 
   return message.body.match(regex).pop();
-}
+};
 
 module.exports = getPhrase;

@@ -4,13 +4,13 @@ const _ = require('lodash');
 
 const sequence = (fns) => {
   return Promise.reduce(fns, (response, fn) => {
-    if ( ! _.isFunction(fn) ) {
-      console.error('invalid function', fn);
-      throw "You must provide a valid function";
+    if ( _.isFunction(fn) ) {
+      return fn().then((output) => {
+        return response.concat(output);
+      });
+    } else {
+      return response.concat(fn);
     }
-    return fn().then(function(output) {
-      return response.concat(output);
-    });
   }, []);
 };
 

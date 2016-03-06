@@ -11,7 +11,7 @@ const setup = require('lib/setup');
 const check = require('lib/check');
 const rule = require('../../config/rule');
 const guess = rule('guess').example();
-const EMOJI = '😀';
+//const EMOJI = '😀';
 
 describe('Guessing', () => {
 
@@ -29,9 +29,9 @@ describe('Guessing', () => {
             { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[0] },
             { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
             { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[2] },
-            { key: 'game-next-round', options: [players[1].nickname, players[1].avatar,], to: players[0] },
+            { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[0] },
             { key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
-            { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] },
+            { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] }
           ]
         );
       });
@@ -52,7 +52,7 @@ describe('Guessing', () => {
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'] },
-            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] }
           ]
         );
       });
@@ -73,7 +73,7 @@ describe('Guessing', () => {
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'] },
-            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] }
           ]
         );
       });
@@ -94,7 +94,7 @@ describe('Guessing', () => {
             { to: players[2], key: 'correct-guess', options: [players[1].nickname, players[1].avatar, game_phrase] },
             { to: players[0], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
             { to: players[1], key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'] },
-            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] },
+            { to: players[2], key: 'game-next-round', options: [players[1].nickname, players[1].avatar] }
           ]
         );
       });
@@ -108,14 +108,14 @@ describe('Guessing', () => {
         return setup([
           { player: players[1], msg: guess + the_guess},
           { player: players[1], msg: guess + the_guess},
-          { player: players[1], msg: guess + the_guess},
+          { player: players[1], msg: guess + the_guess}
         ]);
       }).then(() => {
         return check(
           { player: players[1], msg: guess + the_guess},
           [
             { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
-            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, the_guess] }
           ]
         );
       });
@@ -126,7 +126,7 @@ describe('Guessing', () => {
 
       return startGame(players, true).then((game_phrase) => {
         return setup([
-          { player: players[0], msg: guess + game_phrase },
+          { player: players[0], msg: guess + game_phrase }
         ]).then(() => {
           return check(
             { player: players[1], msg: guess + game_phrase },
@@ -136,9 +136,9 @@ describe('Guessing', () => {
               { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[0] },
               { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
               { key: 'correct-guess', options: [players[1].nickname, players[1].avatar, '*'], to: players[2] },
-              { key: 'game-next-round', options: [players[1].nickname, players[1].avatar,], to: players[0] },
+              { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[0] },
               { key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
-              { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] },
+              { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] }
             ]
           );
         });
@@ -146,7 +146,7 @@ describe('Guessing', () => {
     });
   });
 
-  describe('Incorrect', () => {
+  describe('incorrect', () => {
     it('should not be notified on an incorrect guess', () => {
       const players = getPlayers(3);
 
@@ -156,7 +156,7 @@ describe('Guessing', () => {
           { player: players[1], msg: guess + this_guess},
           [
             { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] },
-            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] }
           ]
         );
       });

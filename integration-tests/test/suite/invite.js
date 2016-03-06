@@ -34,12 +34,12 @@ describe('Inviting', () => {
       const num = '+18604608183';
 
       const player = getPlayers(1)[0];
-      player.number = num;
+      player.from = num;
 
       return check(
-        { player: inviter, msg: 'invite '+player.number },
+        { player: inviter, msg: 'invite '+player.from },
         [
-          { key: 'intro_5', options: [player.number], to: inviter },
+          { key: 'intro_5', options: [player.from], to: inviter },
           { key: 'invite', options: [inviter.nickname, inviter.avatar, player.avatar], to: player }
         ]);
     });
@@ -53,7 +53,7 @@ describe('Inviting', () => {
         return check(
           { player: inviter, msg: 'invite '+player.number },
           [
-            { key: 'error-2', options: [player.number], to: inviter },
+            { key: 'error-2', options: [player.number], to: inviter }
           ]
         );
       });
@@ -64,12 +64,12 @@ describe('Inviting', () => {
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
-        { player: player, msg: rule('no').example() }
+        { player, msg: rule('no').example() }
       ]).then(() => {
         return check(
           { player: inviter, msg: 'invite '+player.number },
           [
-            { key: 'error-3', options: [player.number], to: inviter },
+            { key: 'error-3', options: [player.number], to: inviter }
           ]
         );
       });
@@ -82,15 +82,15 @@ describe('Inviting', () => {
 
       return setup([
         { player: inviter, msg: 'invite '+player.number },
-        { player: player, msg: 'yes' },
-        { player: player, msg: player.nickname },
+        { player, msg: 'yes' },
+        { player, msg: player.nickname }
       ]).then(() => {
         return check(
-          { player: player, msg: player.avatar },
+          { player, msg: player.avatar },
           [
             { key: 'accepted-invited', options: [player.nickname, player.avatar], to: inviter },
             { key: 'accepted-inviter', options: [player.nickname, player.avatar, inviter.nickname, inviter.avatar], to: player },
-            { key: 'game-start', options: [inviter.nickname, inviter.avatar, '*'], to: inviter },
+            { key: 'game-start', options: [inviter.nickname, inviter.avatar, '*'], to: inviter }
           ]
         );
       });
@@ -117,7 +117,7 @@ describe('Inviting', () => {
       const players = getPlayers(2);
       return signup(players[0]).then(() => {
         return setup([
-          { player: players[0], msg: 'invite '+players[1].number },
+          { player: players[0], msg: 'invite '+players[1].number }
         ]);
       }).then(() => {
         return check(
@@ -154,7 +154,7 @@ describe('Inviting', () => {
           ]
         );
       });
-    }
+    };
 
     // should allow for an invite after a submission (by submitter and other player)
     // should allow for an invite after a correct answer (by submitter and other player)
@@ -215,7 +215,7 @@ describe('Inviting', () => {
         return setup([
           { player: players[0], msg: 'invite '+invitee.number },
           { player: invitee, msg: 'yes' },
-          { player: invitee, msg: invitee.nickname },
+          { player: invitee, msg: invitee.nickname }
         ]);
       }).then(() => {
         return check(
@@ -223,7 +223,7 @@ describe('Inviting', () => {
           [
             { to: players[0], key: 'accepted-invited', options: [invitee.nickname, invitee.avatar] },
             { to: players[1], key: 'join-game', options: [invitee.nickname, invitee.avatar] },
-            { to: invitee, key: 'accepted-inviter', options: [invitee.nickname, invitee.avatar, players[0].nickname, players[0].avatar] },
+            { to: invitee, key: 'accepted-inviter', options: [invitee.nickname, invitee.avatar, players[0].nickname, players[0].avatar] }
           ]
         );
       });

@@ -1,31 +1,38 @@
 'use strict';
 //const Promise = require('bluebird');
-//const setup = require('../lib/setup');
+//const request = Promise.promisify(require('request'));
+//const services = require('config/services');
+//const port = services.api.port;
+const setup = require('lib/setup');
 //const startGame = require('./startGame');
-const playGame = require('flows/playGame');
-const newGame = require('flows/newGame');
+const startGames = require('flows/startGames');
 const sequence = require('lib/sequence');
 //const Round = require('../../../models/Round');
 
-const playGames = (players, numberOfGames, options) => {
+// submit any old emoji to start a round
+const EMOJI = '😀';
+
+const playGames = (players, number_of_games, options) => {
   if ( ! options ) { options = {}; }
 
-  return playGame(players, options).then(() => {
-    numberOfGames -= 1;
-    if ( numberOfGames > 0) {
-      return sequence(Array.from({ length: numberOfGames }).map(() => {
-        return () => {
-          return newGame(players);
-        };
-      //})).then((games) => {
-        //games.unshift(game);
-        //return games;
-      //});
-      }));
-    //} else {
-      //return [game];
-    }
+  return startGames(players, number_of_games, options).then((games) => {
+    return sequence(games.map((game) => {
+      const player = game.players.filter((game_player) => {
+        return game_player.from === players[0].from;
+      }).pop();
+
+      const msg = {
+        player,
+        msg: EMOJI,
+        get_response: true
+      };
+
+      return () => {
+        return setup([msg]);
+      };
+    })).then(() => {
+      return games;
+    });
   });
 };
-
 module.exports = playGames;

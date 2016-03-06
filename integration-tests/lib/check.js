@@ -10,18 +10,18 @@
  *
  */
 'use strict';
-const chai = require('chai');
-const expect = chai.expect;
+//const chai = require('chai');
+//const expect = chai.expect;
 const Promise = require('bluebird');
-const request = Promise.promisify(require('request'));
+//const request = Promise.promisify(require('request'));
 const setup = require('lib/setup');
 const Message = require('models/Message');
 
-const services = require('config/services');
-const port = services.testqueue.port;
+//const services = require('config/services');
+//const port = services.testqueue.port;
 
 const noop = () => {};
-let callback = noop;
+const callback = noop;
 const app = require('./server');
 app.post('/', (res) => {
   callback(res);
@@ -74,19 +74,19 @@ const populateExpectedMessages = (expected) => {
   }).filter((el) => {
     return el;
   }).map((message) => {
-    let options = {};
+    const options = {};
     options[message.key] = message.options;
     return Message.get([message.key], options).then((msg) => {
       return msg[0];
     });
     //return Message.get([message.key], message.options);
   }));
-}
+};
 
 const parseActions = (action_output) => {
   if ( action_output && action_output.messages ) {
     return action_output.messages.map((a) => {
-      let action = {
+      const action = {
         body : a.body
       };
       if ( a.to ) {
@@ -97,21 +97,21 @@ const parseActions = (action_output) => {
   } else {
     return [];
   }
-}
+};
 
 const parseExpecteds = (expected, messages) => {
   let expecteds = [];
   // first pass, associated messages with a particular expected message
   if ( expected.length ) {
-    for ( let i=0;i<expected.length;i++ ) {
-      let expected_obj = {
-        body : messages[expected[i].key].body
+    expecteds = expected.map((expected_message) => {
+      const expected_obj = {
+        body : messages[expected_message.key].body
       };
-      if ( expected[i].to ) {
-        expected_obj.recipient = expected[i].to.number;
+      if ( expected_message.to ) {
+        expected_obj.recipient = expected_message.to.from || expected_message.to.number;
       }
-      expecteds.push(expected_obj);
-    }
+      return expected_obj;
+    });
   }
 
   // second pass, conatenate particular expecteds to a particular player
@@ -124,7 +124,7 @@ const parseExpecteds = (expected, messages) => {
     return obj;
   }, {});
 
-  let seen = {};
+  const seen = {};
   return expecteds.map((e) => {
     if ( ! seen[e.recipient] ) {
       seen[e.recipient] = true;
@@ -133,16 +133,19 @@ const parseExpecteds = (expected, messages) => {
   }).filter(e => e).map((recipient) => {
     const expected_bodies = concatenated_by_recipient[recipient];
     return {
-      recipient: recipient,
+      recipient,
       body: expected_bodies.join('\n\n')
     };
   });
-}
+};
 
 const inlineCheck = (actions, expecteds) => {
   if ( actions.length !== expecteds.length ) {
     // this will throw an error; but it'll indicate exactly
     // what's wrong with our expectations
+    console.error('***** message length mismatch *****');
+    console.error('actions', actions);
+    console.error('expecteds', expecteds);
     actions.should.deep.equal(expecteds);
   }
 
@@ -165,8 +168,7 @@ const escapeRegExp = (str) => {
             .replace(/\+/g,'\\+')
             .replace(/\)/g,'\\)')
             .replace(/\(/g,'\\(');
-}
-
+};
 
 const checkBody = (action, expected) => {
   if ( expected && expected.body ) {
@@ -179,7 +181,8 @@ const checkBody = (action, expected) => {
         throw new Error();
       };
     } catch(err) {
-      console.error(action, expected);
+      //console.error('***** error found *****');
+      //console.error(action, expected);
       // this will fail but we'll get a nice
       // error message out of it
       action_body.should.equal(expected.body);
@@ -189,6 +192,6 @@ const checkBody = (action, expected) => {
     // the best way to check for this.
     action.should.be(undefined);
   }
-}
+};
 
 module.exports = check;
