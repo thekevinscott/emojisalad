@@ -1,14 +1,22 @@
 'use strict';
 const _ = require('lodash');
+const faker = require('faker');
 const getRandomPhone = require('./getRandomPhone');
 const game_numbers = [
   '+15551111111',
   '+15552222222',
   '+15553333333',
   '+15554444444',
-  '+15559999999',
+  '+15559999999'
 ];
-const EMOJI = '🐳';
+const EMOJIS = [
+  '🐳',
+  '🌟',
+  '🍔',
+  '🐦',
+  '🐃'
+
+];
 
 // if a number is the argument, this is the number of players
 // to create.
@@ -17,42 +25,47 @@ const EMOJI = '🐳';
 // in as the players we wish to create. fill in the missing
 // fields
 
-let listOfNicknames = [
-  'Ari',
-  'Kevin',
-  'SCHLOOOOO',
-  'Dave'
-];
+//let listOfNicknames = [
+  //'Ari',
+  //'Kevin',
+  //'SCHLOOOOO',
+  //'Dave'
+//];
 
 function getPlayers(arg) {
   let players = [];
   if ( _.isNumber(arg) ) {
     for ( let i=0;i<arg;i++ ) {
-      let number = getRandomPhone();
+      const number = getRandomPhone();
       players.push({
-        number: number,
+        number,
         from: number,
-        nickname: listOfNicknames[i]+Math.random(),
+        nickname: faker.name.findName(),
         to: game_numbers[0],
-        avatar: EMOJI
+        avatar: getEmojis()
       });
     }
-  } else if ( _.isArray(arg) ) { 
-    let nicknameCount = 0;
+  } else if ( _.isArray(arg) ) {
+    //let nicknameCount = 0;
     players = arg;
-    players.map(function(player) {
+    players.map((player) => {
       if ( ! player.phone ) {
         player.phone = getRandomPhone();
       }
       if ( ! player.nickname ) {
-        player.nickname = listOfNicknames[nicknameCount++]+Math.random();
+        //player.nickname = listOfNicknames[nicknameCount++]+Math.random();
+        player.nickname = faker.name.findName();
       }
       if ( ! player.avatar ) {
-        player.avatar = EMOJI;
+        player.avatar = getEmojis();
       }
     });
   }
   return players;
+}
+
+function getEmojis() {
+  return EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
 }
 
 module.exports = getPlayers;

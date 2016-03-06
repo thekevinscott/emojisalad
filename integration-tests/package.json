@@ -52,6 +52,7 @@
     "casperjs": "^1.1.0-beta3",
     "chai": "^3.2.0",
     "chai-datetime": "^1.4.0",
+    "faker": "^3.0.1",
     "fill-keys": "^1.0.2",
     "glob-stream": "^5.3.1",
     "globule": "^0.2.0",

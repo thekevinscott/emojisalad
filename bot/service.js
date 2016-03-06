@@ -5,7 +5,7 @@ const Promise = require('bluebird');
 const req = Promise.promisify(require('request'));
 const request = function(options) {
   //console.log('options', options);
-  return req(options).then(function(response) {
+  return req(options).then((response) => {
     //console.log('re', response);
     let body = response.body;
     try {
@@ -26,7 +26,7 @@ function getService(name) {
     if ( registry.get(name) ) {
       resolve(registry.get(name).api);
     } else {
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         if ( registry.get(name) ) {
           clearInterval(interval);
           resolve(registry.get(name).api);
@@ -74,7 +74,7 @@ module.exports = function(name) {
       } else if ( !service[namespace][key] ) {
         throw new Error(`No key for ${namespace} ${key}`);
       }
-      let data = {
+      const data = {
         url: processEndpoint(`${service[namespace][key].endpoint}`, params),
         method: `${service[namespace][key].method}`
       };
@@ -86,6 +86,7 @@ module.exports = function(name) {
 
       //console.debug('data', data);
 
+      //console.info('request', data);
       return request(data).then((res) => {
         //console.info('response back:', res);
         return res;

@@ -50,10 +50,7 @@ gulp.task('update-fixtures', (cb) => {
   const tables = [
     'categories',
     'clues',
-    {
-      table: 'emojis',
-      data: true
-    },
+    'emojis',
     'game_numbers',
     'games',
     'game_phrases',

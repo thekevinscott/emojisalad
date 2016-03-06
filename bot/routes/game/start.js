@@ -1,25 +1,30 @@
 'use strict';
 const _ = require('lodash');
 const Promise = require('bluebird');
-const Player = require('models/player');
+//const Player = require('models/player');
 const Round = require('models/round');
 const Invite = require('models/invite');
-const User = require('models/user');
+//const User = require('models/user');
 const Game = require('models/game');
-const Emoji = require('models/emoji');
-const rule = require('config/rule');
-//const kickoffGame = require('../shared/kickoffGame');
+//const Emoji = require('models/emoji');
+//const rule = require('config/rule');
 
-module.exports = (user, input) => {
-  console.info('start thr game');
+module.exports = (user) => {
+  console.info('start the game route');
   return Invite.get({
-    invited_id: user.id
+    invited_id: user.id,
+    used: 0
   }).then((invites) => {
     console.info('invites');
     return new Promise((resolve) => {
       if ( invites.length && invites[0].game ) {
         console.info('add to game');
-        resolve(Game.add(invites[0].game, [user]));
+        return Game.add(invites[0].game, [user]).then((game) => {
+          //console.info('USE INVITE 2');
+          return Invite.use(_.assign({ game_id: game.id },invites[0])).then(() => {
+            resolve(game);
+          });
+        });
       } else {
         console.info('create game');
         resolve(Game.create([user]));
@@ -39,7 +44,7 @@ module.exports = (user, input) => {
         console.info('there is one player in this game');
         // this is brand new game; invite some people
         return [{
-          player: player,
+          player,
           key: 'intro_4',
           options: [player.nickname, player.avatar]
         }];
@@ -60,15 +65,15 @@ module.exports = (user, input) => {
             };
           } else if ( player.id === inviter.id ) {
             message = {
-              key: 'accepted-invited', options: [invited.nickname, invited.avatar],
+              key: 'accepted-invited', options: [invited.nickname, invited.avatar]
             };
           } else {
             message = {
-              key: 'join-game', options: [invited.nickname, invited.avatar],
+              key: 'join-game', options: [invited.nickname, invited.avatar]
             };
           }
           return _.assign({
-            player: player
+            player
           }, message);
         });
       } else {
@@ -86,7 +91,7 @@ module.exports = (user, input) => {
           return [
             { key: 'accepted-invited', options: [invited.nickname, invited.avatar], player: inviter },
             { key: 'accepted-inviter', options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar], player: invited },
-            { key: 'game-start', options: [round.submitter.nickname, round.submitter.avatar, round.phrase], player: round.submitter },
+            { key: 'game-start', options: [round.submitter.nickname, round.submitter.avatar, round.phrase], player: round.submitter }
           ];
         });
       }

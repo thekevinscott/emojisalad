@@ -6,18 +6,18 @@ require('babel-polyfill');
 //require('app-module-path').addPath(__dirname);
 const gulp = require('gulp');
 const util = require('gulp-util');
-const node_util = require('util');
+//const node_util = require('util');
 const Promise = require('bluebird');
-const argv = require('yargs').argv;
+//const argv = require('yargs').argv;
 const mocha = require('gulp-mocha');
-const nodemon = require('gulp-nodemon');
+//const nodemon = require('gulp-nodemon');
 const chalk = require('chalk');
-const squel = require('squel');
-const superagent = require('superagent');
+//const squel = require('squel');
+//const superagent = require('superagent');
 const d = require('node-discover')();
 const lzw = require('node-lzw');
 const shared = require('../shared/gulp');
-const sql_file = 'test/fixtures/test-db.sql';
+//const sql_file = 'test/fixtures/test-db.sql';
 
 const services = require('./config/services');
 const api_port = services.api.port;
@@ -31,13 +31,13 @@ const test_port = services.testqueue.port;
 const seed = () => {
   const commands = [
     {
-      chdir: '../api',
+      chdir: '../api'
     },
     {
-      chdir: '../testqueue',
+      chdir: '../testqueue'
     },
     {
-      chdir: '../bot',
+      chdir: '../bot'
     }
   ];
   return Promise.all(commands.map((command) => {
@@ -83,8 +83,8 @@ const startServers = (debug, log_level) => {
       args: [
         '--CALLBACK_PORT',
         '3999',
-        //'--LOG_LEVEL',
-        //'info'
+        '--LOG_LEVEL',
+        'warning'
       ]
     },
     {
@@ -99,17 +99,17 @@ const startServers = (debug, log_level) => {
         '--PROTOCOLS',
         [
           'testqueue'
-        ].join(','),
+        ].join(',')
       ],
       port: bot_port
     }
   ];
-  const stdout = (data, command, args) => {
+  const stdout = (data) => {
     if ( services_debug ) {
       console.log(`${data}`);
     }
   };
-  const stderr = (data, command, args) => {
+  const stderr = (data) => {
     const error = data.toString().split('\\n').join('\n');
     console.error(chalk.red(`stderr: ${error}`));
   };
@@ -149,7 +149,7 @@ const startServers = (debug, log_level) => {
           if ( child.options.color ) {
             console.log(chalk.bold(child.options.name), chalk[child.options.color](`${data}`));
           } else {
-            console.log(server.options.name, `${data}`);
+            console.log(child.options.name, `${data}`);
           }
         }
       });
@@ -171,7 +171,7 @@ gulp.task('seed', (cb) => {
  * Seed the test suite from the saved SQL file,
  * and some seed commands in here, then run the test suite
  */
-gulp.task('test', (cb) => {
+gulp.task('test', () => {
   process.env.DEBUG = util.env.debug || false;
   // Seed the Bot database
   const log_level = util.env.LOG_LEVEL || 'warning';
@@ -216,26 +216,26 @@ gulp.task('test', (cb) => {
       //console.log('kill servers has resolved, exit with 1');
       process.exit(1);
     });
-  }).done(() => {
+  //}).done(() => {
   });
   process.on('exit', () => {
     return killServers();
   })
 });
 
-const request = (url) => {
-  return new Promise((resolve, reject) => {
-    superagent 
-    .get(url)
-    .end((err, res) => {
-      if ( err ) {
-        reject(err);
-      } else {
-        resolve(res);
-      }
-    });
-  });
-}
+//const request = (url) => {
+  //return new Promise((resolve, reject) => {
+    //superagent
+    //.get(url)
+    //.end((err, res) => {
+      //if ( err ) {
+        //reject(err);
+      //} else {
+        //resolve(res);
+      //}
+    //});
+  //});
+//}
 
 gulp.task('default', () => {
   //console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');

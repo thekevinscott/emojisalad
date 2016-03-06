@@ -3,7 +3,7 @@ const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
 const User = require('models/user');
-const _ = require('lodash');
+//const _ = require('lodash');
 let Game;
 
 let Player = {

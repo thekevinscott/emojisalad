@@ -2,7 +2,7 @@
 const squel = require('squel');
 const db = require('db');
 const Promise = require('bluebird');
-const Phone = require('./phone');
+//const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
 const Game = require('./game');
@@ -75,12 +75,12 @@ const Invite = {
                   };
                 } else {
                   //console.debug('invite create 9');
-                  let query = squel
-                              .insert()
-                              .into('invites')
-                              .set('game_id', game.id)
-                              .set('invited_id', invited_user.id)
-                              .set('inviter_id', params.inviter_id);
+                  const query = squel
+                                .insert()
+                                .into('invites')
+                                .set('game_id', game.id)
+                                .set('invited_id', invited_user.id)
+                                .set('inviter_id', params.inviter_id);
 
                   //console.debug(query.toString());
                   return db.query(query).then((row) => {
@@ -88,9 +88,9 @@ const Invite = {
 
                     return {
                       id: row.insertId,
-                      game: game,
-                      invited_user: invited_user,
-                      inviter_player: inviter_player
+                      game,
+                      invited_user,
+                      inviter_player
                     }
                   });
                 }
@@ -157,6 +157,8 @@ const Invite = {
       query = query.where('i.used = ?',params.used);
     }
 
+    console.info('params', params);
+    console.info('invite query', query.toString());
     return db.query(query).then((invites) => {
       if ( invites && invites.length ) {
         return Promise.join(
@@ -214,13 +216,14 @@ const Invite = {
   }),
   */
   use: (invite_id) => {
-    let query = squel
-                .update()
-                .table('invites')
-                .set('used=1')
-                .where('id=?',invite_id);
+    console.info('USE THIS INVITE', invite_id);
+    const query = squel
+                  .update()
+                  .table('invites')
+                  .set('used=1')
+                  .where('id=?',invite_id);
 
-    return db.query(query.toString()).then((rows) => {
+    return db.query(query.toString()).then(() => {
       return Invite.findOne(invite_id);
     });
   }

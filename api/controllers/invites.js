@@ -6,7 +6,7 @@ module.exports = [
   {
     path: '/',
     method: 'get',
-    fn: find 
+    fn: find
   },
   {
     path: '/:invite_id',
@@ -46,6 +46,7 @@ function findOne(req) {
   return Invite.findOne(invite_id);
 }
 function use(req) {
+  console.info('Invite use controller');
   return Invite.use(req.params.invite_id);
 }
 
@@ -57,7 +58,7 @@ module.exports.create = {
 module.exports.use = {
   path: '/:game_id/invites/:invite_id/use',
   method: 'post',
-  fn: use 
+  fn: use
 };
 module.exports.find = {
   path: '/:game_id/invites',

@@ -3,7 +3,6 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const Player = require('models/player');
 //const Round = require('models/round');
-const Invite = require('models/invite');
 const User = require('models/user');
 const Game = require('models/game');
 const Emoji = require('models/emoji');

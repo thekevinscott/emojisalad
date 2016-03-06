@@ -44,11 +44,11 @@ const setup = (arr) => {
     const to = a.to || player.to;
     if ( ! player ) {
       console.error(a, i);
-      reject("No player provided");
+      throw new Error("No player provided");
     }
     if ( ! msg ) {
       console.error('index', i, 'array', arr);
-      reject("No msg provided");
+      throw new Error("No msg provided");
     }
     return () => {
       const message = {
@@ -60,7 +60,7 @@ const setup = (arr) => {
       const url = `http://localhost:${port}/receive`;
 
       return request({
-        url: url,
+        url,
         method: 'post',
         form: message
       }).then((res) => {
@@ -131,10 +131,10 @@ const getAssociatedMessages = (initiated_id, expected = false) => {
 const requestAssociatedMessages = (initiated_id, resolve, expected = false) => {
   const url = `http://localhost:${port}/sent`;
   return request({
-    url: url,
+    url,
     method: 'get',
     qs: {
-      initiated_id: initiated_id
+      initiated_id
     }
   }).then((res) => {
     let body = res.body;

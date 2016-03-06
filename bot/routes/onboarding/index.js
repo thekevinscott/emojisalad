@@ -1,14 +1,19 @@
 'use strict';
-const Promise = require('bluebird');
-const Player = require('models/player');
-const Invite = require('models/invite');
-const User = require('models/user');
-const rule = require('config/rule');
-const _ = require('lodash');
+//const Promise = require('bluebird');
+//const Player = require('models/player');
+//const Invite = require('models/invite');
+//const User = require('models/user');
+//const Round = require('models/round');
+//const Invite = require('models/invite');
+
+//const Game = require('models/game');
+//const Emoji = require('models/emoji');
+//const rule = require('config/rule');
+//const _ = require('lodash');
 //var Message = require('../../models/message');
 
-module.exports = (user, input) => {
-  console.info('onboarding', user);
+module.exports = ( user, input ) => {
+  console.info( 'onboarding', user );
   if ( ! user.confirmed ) {
     console.info('go to confirm');
     return require('./confirm')(user, input);
@@ -19,9 +24,7 @@ module.exports = (user, input) => {
     console.info('go to avatar');
     return require('./avatar')(user, input);
   } else {
-    console.info('go to new game');
-    // this must be a brand new message
-    // to a new number; create a new game for them.
-    return require('../game/new_game')(null, user);
+    console.info('start the game');
+    return require('../game/start')(user, input);
   }
 };
