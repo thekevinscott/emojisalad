@@ -23,6 +23,9 @@ module.exports = ( user, input ) => {
   } else if ( ! user.confirmed_avatar ) {
     console.info('go to avatar');
     return require('./avatar')(user, input);
+  //} else if ( user.players.length ) {
+    //console.info('new game');
+    //return require('../game/new_game')(user, input);
   } else {
     console.info('start the game');
     return require('../game/start')(user, input);

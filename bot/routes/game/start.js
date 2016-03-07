@@ -54,7 +54,6 @@ module.exports = (user) => {
         const inviter = invite.inviter_player;
         const invited = player; // just a renaming, to make this clearer
 
-        //console.log('GAME PLAYERS', game.players.length);
         return game.players.map((player) => {
           let message;
 

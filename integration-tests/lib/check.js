@@ -16,6 +16,7 @@ const Promise = require('bluebird');
 //const request = Promise.promisify(require('request'));
 const setup = require('lib/setup');
 const Message = require('models/Message');
+//const game_numbers = require('config/numbers');
 
 //const services = require('config/services');
 //const port = services.testqueue.port;
@@ -87,7 +88,8 @@ const parseActions = (action_output) => {
   if ( action_output && action_output.messages ) {
     return action_output.messages.map((a) => {
       const action = {
-        body : a.body
+        body: a.body,
+        game_number: a.from
       };
       if ( a.to ) {
         action.recipient = a.to;
@@ -109,6 +111,7 @@ const parseExpecteds = (expected, messages) => {
       };
       if ( expected_message.to ) {
         expected_obj.recipient = expected_message.to.from || expected_message.to.number;
+        expected_obj.game_number = expected_message.to.to;
       }
       return expected_obj;
     });
@@ -118,9 +121,9 @@ const parseExpecteds = (expected, messages) => {
   const concatenated_by_recipient = expecteds.reduce((obj, expected) => {
     const recipient = expected.recipient;
     if ( !obj[recipient] ) {
-      obj[recipient] = [];
+      obj[recipient] = { game_number: expected.game_number, body: [] };
     }
-    obj[recipient].push(expected.body);
+    obj[recipient].body.push(expected.body);
     return obj;
   }, {});
 
@@ -131,9 +134,11 @@ const parseExpecteds = (expected, messages) => {
       return e.recipient;
     }
   }).filter(e => e).map((recipient) => {
-    const expected_bodies = concatenated_by_recipient[recipient];
+    const expected_bodies = concatenated_by_recipient[recipient].body;
+    const game_number = concatenated_by_recipient[recipient].game_number;
     return {
       recipient,
+      game_number,
       body: expected_bodies.join('\n\n')
     };
   });

@@ -1,15 +1,15 @@
 // a separate router. all routes come in to platforms which then routes them here.
 'use strict';
 
-const Promise = require('bluebird');
+//const Promise = require('bluebird');
 const Player = require('models/player');
 const User = require('models/user');
 
 const Router = (from, message, to) => {
   console.info(`===========Router Index: ${message} | ${from} | ${to} `);
   return Player.get({
-    from: from,
-    to: to
+    from,
+    to
   }).then((players) => {
     console.info('players', players);
     if ( players.length ) {
@@ -26,7 +26,7 @@ const Router = (from, message, to) => {
       // or being onboarded
       console.info(`prepare to get users by from, ${from}`);
       return User.get({
-        from: from
+        from
       }).then((users) => {
         //console.info('users back', users);
         // if user exists, we are being onboarded

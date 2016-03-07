@@ -9,7 +9,7 @@ module.exports = [
   {
     path: '/',
     method: 'get',
-    fn: find 
+    fn: find
   },
   {
     path: '/',
@@ -25,11 +25,11 @@ module.exports = [
     path: '/:game_id/players',
     method: 'post',
     fn: add
-  },
+  }
   //{
     //path: '/:game_id',
     //method: 'delete',
-    //fn: remove 
+    //fn: remove
   //},
 ].concat([
   invites.create,
@@ -38,7 +38,7 @@ module.exports = [
   rounds.find,
   rounds.create,
   rounds.update,
-  rounds.guess,
+  rounds.guess
 ]);
 
 function create(req) {

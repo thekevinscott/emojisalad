@@ -8,12 +8,12 @@ const getPlayers = require('lib/getPlayers');
 const startGame = require('flows/startGame');
 const playGame = require('flows/playGame');
 const check = require('lib/check');
-const setup = require('lib/setup');
+//const setup = require('lib/setup');
 const rule = require('../../config/rule');
-const clue = rule('clue').example();
+//const clue = rule('clue').example();
 const pass = rule('pass').example();
-const guess = rule('guess').example();
-const EMOJI = '😀';
+//const guess = rule('guess').example();
+//const EMOJI = '😀';
 
 describe('Pass', () => {
   it('should let a submitter pass before submitting emoji', () => {
@@ -28,9 +28,9 @@ describe('Pass', () => {
           { key: 'pass', options: [players[0].nickname, players[0].avatar], to: players[0] },
           { key: 'pass', options: [players[0].nickname, players[0].avatar], to: players[1] },
           { key: 'pass', options: [players[0].nickname, players[0].avatar], to: players[2] },
-          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar,], to: players[0] },
+          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[0] },
           { key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
-          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] },
+          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] }
         ]
       );
     });
@@ -48,9 +48,9 @@ describe('Pass', () => {
           { key: 'pass', options: [players[0].nickname, players[0].avatar], to: players[0] },
           { key: 'pass', options: [players[0].nickname, players[0].avatar], to: players[1] },
           { key: 'pass', options: [players[0].nickname, players[0].avatar], to: players[2] },
-          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar,], to: players[0] },
+          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[0] },
           { key: 'game-next-round-suggestion', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
-          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] },
+          { key: 'game-next-round', options: [players[1].nickname, players[1].avatar], to: players[2] }
         ]
       );
     });
@@ -64,7 +64,7 @@ describe('Pass', () => {
         { player: players[1], msg: pass },
         [
           { key: 'says', options: [players[1].nickname, players[1].avatar, pass], to: players[0] },
-          { key: 'says', options: [players[1].nickname, players[1].avatar, pass], to: players[2] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, pass], to: players[2] }
         ]
       );
     });
@@ -78,7 +78,7 @@ describe('Pass', () => {
         { player: players[1], msg: pass },
         [
           { key: 'says', options: [players[1].nickname, players[1].avatar, pass], to: players[0] },
-          { key: 'says', options: [players[1].nickname, players[1].avatar, pass], to: players[2] },
+          { key: 'says', options: [players[1].nickname, players[1].avatar, pass], to: players[2] }
         ]
       );
     });

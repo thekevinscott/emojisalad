@@ -79,6 +79,4 @@ describe('Submissions', () => {
       );
     });
   });
-
-
 });

@@ -52,25 +52,6 @@ describe('Play', () => {
         );
       });
     });
-
-    it('should onboard an existing user to the bench of a new game', () => {
-      const players = getPlayers(3);
-      return setupTwoGames(players).then(() => {
-        return setup([
-          { player: players[1], msg: 'yes', to: game_numbers[1] },
-          { player: players[0], msg: EMOJI, to: game_numbers[1] }
-        ]);
-      }).then(() => {
-        return check(
-          { player: players[2], msg: 'yes', to: game_numbers[1] },
-          [
-            { key: 'accepted-invited-next-round', options: [players[2].nickname, players[2].avatar], to: players[0] },
-            { key: 'join-game-next-round', options: [players[2].nickname, players[2].avatar], to: players[1] },
-            { key: 'accepted-inviter-next-round', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar], to: players[2] }
-          ]
-        );
-      });
-    });
   });
 
   describe('New Player', () => {

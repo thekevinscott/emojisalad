@@ -12,10 +12,10 @@ const Round = require('./round');
 //const Round = require('./round');
 
 // number of guesses a player gets per round
-const default_guesses = 2;
-const default_clues_allowed = 1;
+//const default_guesses = 2;
+//const default_clues_allowed = 1;
 
-squel.registerValueHandler(Date, function(date) {
+squel.registerValueHandler(Date, (date) => {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
 
@@ -60,7 +60,7 @@ const Game = {
       }
     );
   },
-  checkInput: function(str) {
+  checkInput: (str) => {
     if ( str === '' ) {
       return 'text';
     } else if ( emojiExists(str) ) {
@@ -71,32 +71,32 @@ const Game = {
       return 'text';
     }
   },
-  getPhrase: function(game) {
-    let game_phrases = squel
-                       .select()
-                       .field('phrase_id')
-                       .from('game_phrases')
-                       .where('game_id=?', game.id);
-    let query = squel
-                .select()
-                .from('phrases', 'p')
-                .field('p.phrase')
-                .field('p.id')
-                .where('p.id NOT IN ?', game_phrases)
-                .order('p.id')
-                .limit(1);
+  getPhrase: (game) => {
+    const game_phrases = squel
+                         .select()
+                         .field('phrase_id')
+                         .from('game_phrases')
+                         .where('game_id=?', game.id);
+    const query = squel
+                  .select()
+                  .from('phrases', 'p')
+                  .field('p.phrase')
+                  .field('p.id')
+                  .where('p.id NOT IN ?', game_phrases)
+                  .order('p.id')
+                  .limit(1);
 
-    return db.query(query).then(function(rows) {
+    return db.query(query).then((rows) => {
       if ( rows ) {
-        let phrase = rows[0];
+        const phrase = rows[0];
         // mark this phrase as used
-        let markPhrase = squel
-                         .insert()
-                         .into('game_phrases')
-                         .setFields({
-                           game_id: game.id,
-                           phrase_id: phrase.id
-                         });
+        const markPhrase = squel
+                           .insert()
+                           .into('game_phrases')
+                           .setFields({
+                             game_id: game.id,
+                             phrase_id: phrase.id
+                           });
         db.query(markPhrase);
         return phrase;
       } else {
@@ -104,170 +104,6 @@ const Game = {
       }
     });
   },
-  /*
-  getPlayers: function(game) {
-
-    let query = squel
-                .select({ autoEscapeFieldNames: true })
-                .field('p.id')
-                .field('p.created')
-                .field('n.number', 'to')
-                .field('u.nickname')
-                .field('u.avatar')
-                .field('u.from')
-                .field('u.from', 'number')
-                .field('u.id', 'user_id')
-                .field('s.state')
-                .field('gp.score')
-                .from('game_players', 'gp')
-                .left_join('games', 'g', 'gp.game_id = g.id')
-                .left_join('players', 'p', 'p.id = gp.player_id')
-                .left_join('users', 'u', 'u.id = p.user_id')
-                .left_join('player_states', 's', 's.id = p.state_id')
-                .left_join('game_numbers', 'n', 'n.id = p.to')
-                .where('g.id=?', game.id)
-                .order('p.id');
-
-    if ( game.round ) {
-      let guesses = squel
-                    .select()
-                    .field('player_id')
-                    .field('count(1) as guesses')
-                    .from('guesses')
-                    .where('round_id=?',game.round.id);
-      query = query.left_join(guesses, 'e', 'e.player_id=p.id');
-      query = query.field('COALESCE(e.guesses, 0) as guesses');
-    }
-
-    return db.query(query);
-  },
-  */
-  /*
-  get: Promise.coroutine(function* (params, info) {
-    let games = yield this.getAll(params, info);
-    if ( games.length ) {
-      let game = games[0];
-      game.round = yield Round.getLast(game);
-      game.players = yield this.getPlayers(game);
-
-      if ( game.round ) {
-        game.players.map(function(game_player) {
-          if ( game_player.id === game.round.submitter_id ) {
-            game.round.submitter = game_player;
-          } else {
-            if ( ! game.round.players ) { game.round.players = []; }
-            game.round.players.push(game_player);
-          }
-        });
-      } else if ( game.state !== 'pending' ) {
-        console.error(game);
-        throw "Non pending games should have an associated round";
-      }
-      //console.info('game returned', game);
-      return game;
-    } else {
-      return null;
-    }
-  }),
-  getAll: Promise.coroutine(function* (params, info) {
-    let query = squel
-                .select()
-                .field('g.id')
-                .field('g.last_activity')
-                .field('g.random')
-                .field('s.state')
-                .from('games', 'g')
-                .left_join('game_players', 'p', 'p.game_id = g.id')
-                .left_join('game_states', 's', 's.id = g.state_id')
-                .left_join('players', 'u', 'u.id=p.player_id')
-                .group('g.id')
-                .order('g.created', false);
-
-    if ( params.player ) {
-      query.where('p.player_id=?',params.player.id);
-    } else if ( params.id ) {
-      query.where('g.id=?',params.id);
-    }
-
-    if ( params.last_activity ) {
-      query.where('g.last_activity<?', params.last_activity);
-    }
-
-    //console.info('params', params);
-    console.info(query.toString());
-
-    let games = yield db.query(query.toString());
-    if ( !games.length && info ) {
-      console.info('no games found', query.toString());
-    }
-    //console.info('games', games);
-    return games;
-  }),
-  */
-  start: Promise.coroutine(function* (game) {
-    return yield Promise.join(
-      Game.newRound(game),
-      this.update(game, {
-        state: 'playing'
-      }),
-      this.generateBattingOrder(game),
-      function(round) {
-        game.round = round;
-        return game;
-      }
-    );
-  }),
-  /*
-  getBattingOrder: (game) => {
-    const query = squel
-                  .select({ autoQuoteFieldNames: true })
-                  .field('id')
-                  .from('players')
-                  .order('created')
-                  .where('game_id=?',game.id);
-    return db.query(query);
-    //let query = squel
-                //.select({ autoQuoteFieldNames: true })
-                //.field('player_id')
-                //.field('order')
-                //.from('player_order')
-                //.where('game_id=?',game.id);
-    //return db.query(query);
-  },
-  */
-  /*
-  addToBattingOrder: function(game, player) {
-    return this.getBattingOrder(game).then(function(order) {
-      let nextOrder;
-      if ( order.length ) {
-        nextOrder = order.pop().order + 1;
-      } else {
-        nextOrder = 0;
-      }
-      return this.addBatter(game, player, nextOrder);
-    }.bind(this));
-  },
-  */
-  /*
-  generateBattingOrder: function(game) {
-    return this.getPlayers(game).then(function(game_players) {
-      return Promise.all(_.shuffle(game_players).map(function(game_player, i) {
-        return this.addBatter(game, game_player, i);
-      }.bind(this)));
-    }.bind(this));
-  },
-  addBatter: function(game, player, order) {
-    let query = squel
-                .insert({ autoQuoteFieldNames: true })
-                .into('player_order')
-                .setFields({
-                  game_id: game.id,
-                  player_id: player.id,
-                  order: order
-                });
-    return db.query(query);
-  },
-  */
   add: (game, users) => {
     //console.debug('huzzah add');
     return new Promise((resolve) => {
@@ -280,14 +116,14 @@ const Game = {
       }
     }).then((game) => {
       return Promise.all(users.map((user) => {
-        let player_params = {
+        const player_params = {
           game_id: game.id,
-          user_id: user.id,
+          user_id: user.id
         };
         if ( user.to ) {
           player_params.to = user.to;
         }
-        return Player.create(player_params).catch((err) => {
+        return Player.create(player_params).catch(() => {
           return null;
         });
       })).then((players) => {
@@ -320,10 +156,11 @@ const Game = {
     });
   },
   find: (params = {}) => {
-    let rounds = squel
-                 .select()
-                 .from('rounds')
-                 .order('id', false);
+    const rounds = squel
+                   .select()
+                   .from('rounds')
+                   .order('id', false);
+
     let query = squel
                 .select()
                 .field('g.id')
@@ -366,8 +203,8 @@ const Game = {
       if ( games && games.length ) {
         const game_ids = games.map(game => game.id);
         return Promise.join(
-          Player.find({ game_ids: game_ids }).then(getByGameID),
-          Round.find({ game_ids: game_ids, most_recent: true }).then(getByGameID),
+          Player.find({ game_ids }).then(getByGameID),
+          Round.find({ game_ids, most_recent: true }).then(getByGameID),
           (players = {}, rounds = {}) => {
             return games.map((game) => {
               const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
@@ -376,7 +213,7 @@ const Game = {
                 created: game.created,
                 players: players[game.id] || [],
                 round_count: game.round_count,
-                round: round
+                round
               };
             });
           }
@@ -417,17 +254,17 @@ const Game = {
           });
         }
       }).then(() => {
-        let query = squel
-                    .insert()
-                    .into('games', 'g')
-                    .setFields({
-                      //clues_allowed: default_clues_allowed,
-                      created: squel.fval('NOW(3)'),
-                      last_activity: squel.fval('NOW(3)')
-                    });
+        const query = squel
+                      .insert()
+                      .into('games', 'g')
+                      .setFields({
+                        //clues_allowed: default_clues_allowed,
+                        created: squel.fval('NOW(3)'),
+                        last_activity: squel.fval('NOW(3)')
+                      });
 
         return db.create(query);
-      }).then(function(result) {
+      }).then((result) => {
         if ( ! result || ! result.insertId ) {
           //console.error(query.toString());
           throw "There was an error inserting game";
@@ -440,7 +277,7 @@ const Game = {
         return Game.add(game, users);
       });
     }
-  },
+  }
 };
 
 module.exports = Game;

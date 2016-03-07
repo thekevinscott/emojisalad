@@ -102,7 +102,7 @@ const getManifest = (port) => {
         //description: 'Update a user'
       }
     }
-  }
+  };
 
   return manifest;
 };

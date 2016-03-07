@@ -1,10 +1,10 @@
 'use strict';
-const _ = require('lodash');
+//const _ = require('lodash');
 const Promise = require('bluebird');
-const Player = require('models/player');
+//const Player = require('models/player');
 //const Round = require('models/round');
 const User = require('models/user');
-const Game = require('models/game');
+//const Game = require('models/game');
 const Emoji = require('models/emoji');
 const rule = require('config/rule');
 //const kickoffGame = require('../shared/kickoffGame');
@@ -20,7 +20,6 @@ module.exports = (user, input) => {
     } else {
       return Emoji.checkInput(input).then((result) => {
         if ( result.type === 'emoji' && result.number === 1 ) {
-          const to = user.to;
           resolve(User.update(user, {
             avatar: input,
             confirmed_avatar: 1
@@ -30,9 +29,10 @@ module.exports = (user, input) => {
         }
       });
     }
-  }).then((user) => {
+  }).then((updated_user) => {
+    updated_user.to = to;
     console.info('**** START THE GAME');
-    return require('../game/start')(user, input);
+    return require('../game/start')(updated_user, input);
   }).catch((err) => {
     if ( err !== 'error-14' ) {
       console.error('err', err);
