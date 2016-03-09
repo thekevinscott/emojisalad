@@ -27,9 +27,9 @@ describe('Play', () => {
         return check(
           { player: players[1], msg: 'yes', to: game_numbers[1] },
           [
-            { key: 'accepted-invited', options: [players[1].nickname, players[1].avatar], to: players[0] },
-            { key: 'accepted-inviter', options: [players[1].nickname, players[1].avatar, players[0].nickname, players[0].avatar], to: players[1] },
-            { key: 'game-start', options: [players[0].nickname, players[0].avatar, '*'], to: players[0] }
+            { key: 'accepted-invited', options: [players[1].nickname, players[1].avatar], to: players[0], from: game_numbers[1] },
+            { key: 'accepted-inviter', options: [players[1].nickname, players[1].avatar, players[0].nickname, players[0].avatar], to: players[1], from: game_numbers[1] },
+            { key: 'game-start', options: [players[0].nickname, players[0].avatar, '*'], to: players[0], from: game_numbers[1] }
           ]
         );
       });
@@ -45,9 +45,9 @@ describe('Play', () => {
         return check(
           { player: players[2], msg: 'yes', to: game_numbers[1] },
           [
-            { key: 'accepted-invited', options: [players[2].nickname, players[2].avatar], to: players[0] },
-            { key: 'join-game', options: [players[2].nickname, players[2].avatar], to: players[1] },
-            { key: 'accepted-inviter', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar], to: players[2] }
+            { key: 'accepted-invited', options: [players[2].nickname, players[2].avatar], to: players[0], from: game_numbers[1] },
+            { key: 'join-game', options: [players[2].nickname, players[2].avatar], to: players[1], from: game_numbers[1] },
+            { key: 'accepted-inviter', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar], to: players[2], from: game_numbers[1] }
           ]
         );
       });
@@ -60,16 +60,16 @@ describe('Play', () => {
       const invitee = getPlayers(1).pop();
       return setupTwoGames(players, invitee).then(() => {
         return setup([
-          { player: invitee, msg: rule('yes').example(), to: game_numbers[0] },
-          { player: invitee, msg: invitee.nickname, to: game_numbers[0] }
+          { player: invitee, msg: rule('yes').example(), to: game_numbers[1] },
+          { player: invitee, msg: invitee.nickname, to: game_numbers[1] }
         ]);
       }).then(() => {
         return check(
-          { player: invitee, msg: invitee.avatar, to: game_numbers[0] },
+          { player: invitee, msg: invitee.avatar, to: game_numbers[1] },
           [
-            { key: 'accepted-invited', options: [invitee.nickname, invitee.avatar], to: players[0] },
-            { key: 'accepted-inviter', options: [invitee.nickname, invitee.avatar, players[0].nickname, players[0].avatar], to: invitee },
-            { key: 'game-start', options: [players[0].nickname, players[0].avatar, '*'], to: players[0] }
+            { key: 'accepted-invited', options: [invitee.nickname, invitee.avatar], to: players[0], from: game_numbers[1] },
+            { key: 'accepted-inviter', options: [invitee.nickname, invitee.avatar, players[0].nickname, players[0].avatar], to: invitee, from: game_numbers[1] },
+            { key: 'game-start', options: [players[0].nickname, players[0].avatar, '*'], to: players[0], from: game_numbers[1] }
           ]
         );
       });
@@ -83,16 +83,16 @@ describe('Play', () => {
 
           { player: players[1], msg: rule('yes').example(), to: game_numbers[1] },
           { player: players[0], msg: rule('invite').example()+invitee.number, to: game_numbers[1] },
-          { player: invitee, msg: rule('yes').example(), to: game_numbers[0] },
-          { player: invitee, msg: invitee.nickname, to: game_numbers[0] }
+          { player: invitee, msg: rule('yes').example(), to: game_numbers[1] },
+          { player: invitee, msg: invitee.nickname, to: game_numbers[1] }
         ]);
       }).then(() => {
         return check(
-          { player: invitee, msg: invitee.avatar, to: game_numbers[0] },
+          { player: invitee, msg: invitee.avatar, to: game_numbers[1] },
           [
-            { key: 'accepted-invited', options: [invitee.nickname, invitee.avatar], to: players[0] },
-            { key: 'join-game', options: [invitee.nickname, invitee.avatar], to: players[1] },
-            { key: 'accepted-inviter', options: [invitee.nickname, invitee.avatar, players[0].nickname, players[0].avatar], to: invitee }
+            { key: 'accepted-invited', options: [invitee.nickname, invitee.avatar], to: players[0], from: game_numbers[1] },
+            { key: 'join-game', options: [invitee.nickname, invitee.avatar], to: players[1], from: game_numbers[1] },
+            { key: 'accepted-inviter', options: [invitee.nickname, invitee.avatar, players[0].nickname, players[0].avatar], to: invitee, from: game_numbers[1] }
           ]
         );
       });

@@ -14,22 +14,22 @@ const game_numbers = require('config/numbers');
 
 describe('New Game', () => {
   describe('Legal', () => {
-    //it.only('should initiate a new game from a second phone number and prompt for invites', () => {
-      //const players = getPlayers(3);
-      //return playGame(players).then(() => {
-        //const player = players[0];
-        //player.to = game_numbers[1];
-        //return check(
-          //{ player, msg: 'foo' },
-          //[
-            //{ key: 'new-game', options: [player.nickname, player.avatar], to: player, from: game_numbers[1] }
-          //]
-        //);
-      //});
-    //});
+    it('should initiate a new game from a second phone number and prompt for invites', () => {
+      const players = getPlayers(3);
+      return playGame(players).then(() => {
+        const player = players[0];
+        player.to = game_numbers[1];
+        return check(
+          { player, msg: 'foo' },
+          [
+            { key: 'new-game', options: [player.nickname, player.avatar], to: player, from: game_numbers[1] }
+          ]
+        );
+      });
+    });
 
     describe('Inviting', () => {
-      it('should send out an invite to a brand new player from the first game number with a regular onboarding process', () => {
+      it('should send out an invite to a brand new player from the same game number with a regular onboarding process', () => {
         const players = getPlayers(3);
         const new_player = getPlayers(1)[0];
         return playGame(players).then(() => {
@@ -41,7 +41,7 @@ describe('New Game', () => {
             { player: players[0], msg: rule('invite').example() + new_player.number, to: game_numbers[1] },
             [
               { key: 'intro_5', options: [new_player.number], to: players[0], from: game_numbers[1] },
-              { key: 'invite', options: [players[0].nickname, players[0].avatar], to: new_player, from: game_numbers[0]  }
+              { key: 'invite', options: [players[0].nickname, players[0].avatar], to: new_player, from: game_numbers[1]  }
             ]
           );
         });
@@ -155,7 +155,7 @@ describe('New Game', () => {
     });
   });
 
-  it.only('should create a player on the same number the user is texting on', () => {
+  it('should create a player on the same number the user is texting on', () => {
     const player = getPlayers(1)[0];
     player.to = game_numbers[game_numbers.length-1];
     return setup([

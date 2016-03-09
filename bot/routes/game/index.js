@@ -1,10 +1,10 @@
 'use strict';
-const Promise = require('bluebird');
+//const Promise = require('bluebird');
 //const Player = require('models/player');
 const Game = require('models/game');
-const Round = require('models/round');
+//const Round = require('models/round');
 const Emoji = require('models/emoji');
-const _ = require('lodash');
+//const _ = require('lodash');
 const rule = require('config/rule');
 
 module.exports = (player, message) => {
@@ -13,7 +13,8 @@ module.exports = (player, message) => {
   } else if ( rule('clue').test(message) ) {
     return require('./clue')(player, message);
   } else if ( rule('new-game').test(message) ) {
-    return require('./new_game')(player);
+    const user = { id: player.user_id, to: player.to };
+    return require('./new_game')(user);
   } else if ( rule('help').test(message) ) {
     return require('./help')(player, message);
   } else {
@@ -43,7 +44,7 @@ module.exports = (player, message) => {
         }
       } else {
         return [{
-          player: player,
+          player,
           key: 'invited-chilling'
         }];
       }

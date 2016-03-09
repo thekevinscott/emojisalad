@@ -2,24 +2,27 @@
 const Promise = require('bluebird');
 //const Player = require('models/player');
 const _ = require('lodash');
-const rule = require('config/rule');
+//const rule = require('config/rule');
 const Game = require('models/game');
 const User = require('models/user');
 
-module.exports = (player, user = null) => {
+module.exports = (user_params) => {
+  console.info('new game', user_params);
   return new Promise((resolve) => {
-    if ( user ) {
-      resolve(user);
+    if ( user_params.number_of_players ) {
+      resolve(user_params);
     } else {
       return User.get({
-        player_id: player.id
+        id: user_params.id
       }).then((users) => {
         resolve(users.pop());
       });
     }
   }).then((user) => {
     console.info('user', user);
-    if ( user.number_of_players < user.maximum_games ) {
+    console.info('number of players', user.number_of_players);
+    console.info('maximum games', user.maximum_games);
+    if ( parseInt(user.number_of_players, 10) < parseInt(user.maximum_games, 10) ) {
       console.info('create the game');
       return Game.create([user]).then((game) => {
         const new_player = game.players.filter((game_player) => {
@@ -39,8 +42,10 @@ module.exports = (player, user = null) => {
     } else {
       console.info('dont create the game');
       return [{
-        player: player,
-        key: 'error-maximum-games',
+        player: _.assign({
+          to: user_params.to
+        }, user),
+        key: 'error-maximum-games'
       }];
     }
   });

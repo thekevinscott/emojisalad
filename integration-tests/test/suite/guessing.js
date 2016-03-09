@@ -146,7 +146,7 @@ describe('Guessing', () => {
     });
   });
 
-  describe('incorrect', () => {
+  describe('Incorrect', () => {
     it('should not be notified on an incorrect guess', () => {
       const players = getPlayers(3);
 

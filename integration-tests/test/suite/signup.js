@@ -57,7 +57,7 @@ describe('Signup', () => {
   });
 
   describe('Nicknames and avatars', () => {
-    it.only('should allow the player to submit a nickname', () => {
+    it('should allow the player to submit a nickname', () => {
       const player = getPlayers(1)[0];
       return setup([
         { player, msg: 'hello' },

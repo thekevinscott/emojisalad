@@ -111,7 +111,7 @@ const parseExpecteds = (expected, messages) => {
       };
       if ( expected_message.to ) {
         expected_obj.recipient = expected_message.to.from || expected_message.to.number;
-        expected_obj.game_number = expected_message.to.to;
+        expected_obj.game_number = expected_message.from || expected_message.to.to;
       }
       return expected_obj;
     });

@@ -1,10 +1,10 @@
 'use strict';
-const Promise = require('bluebird');
-const Player = require('models/player');
-const Invite = require('models/invite');
+//const Promise = require('bluebird');
+//const Player = require('models/player');
+//const Invite = require('models/invite');
 const User = require('models/user');
 const rule = require('config/rule');
-const _ = require('lodash');
+//const _ = require('lodash');
 
 module.exports = (user, input) => {
   console.info('confirm route');
@@ -36,7 +36,7 @@ module.exports = (user, input) => {
     console.info('they said something so we say wtf');
     return [{
       key: 'onboarding_wtf',
-      player: user 
+      player: user
     }];
   }
-}
+};
