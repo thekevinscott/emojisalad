@@ -49,9 +49,9 @@ describe('Clues', () => {
         [
           { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[0] },
           { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[2] },
-          { key: 'clue', options: [players[1].nickname, players[1].avatar, 'MOVIE'], to: players[0] },
-          { key: 'clue', options: [players[1].nickname, players[1].avatar, 'MOVIE'], to: players[1] },
-          { key: 'clue', options: [players[1].nickname, players[1].avatar, 'MOVIE'], to: players[2] }
+          { key: 'clue', options: [players[1].nickname, players[1].avatar, '*'], to: players[0] },
+          { key: 'clue', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
+          { key: 'clue', options: [players[1].nickname, players[1].avatar, '*'], to: players[2] }
         ]
       );
     });
@@ -70,9 +70,9 @@ describe('Clues', () => {
         [
           { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[0] },
           { key: 'says', options: [players[1].nickname, players[1].avatar, clue], to: players[2] },
-          { key: 'clue', options: [players[1].nickname, players[1].avatar, 'MOVIE'], to: players[0] },
-          { key: 'clue', options: [players[1].nickname, players[1].avatar, 'MOVIE'], to: players[1] },
-          { key: 'clue', options: [players[1].nickname, players[1].avatar, 'MOVIE'], to: players[2] }
+          { key: 'clue', options: [players[1].nickname, players[1].avatar, '*'], to: players[0] },
+          { key: 'clue', options: [players[1].nickname, players[1].avatar, '*'], to: players[1] },
+          { key: 'clue', options: [players[1].nickname, players[1].avatar, '*'], to: players[2] }
         ]
       );
     });

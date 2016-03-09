@@ -36,13 +36,7 @@ const Invite = {
           }
         });
       })).then((invited_users) => {
-
-        //return User.getPlayersNum(user);
-      //}).then((players) => {
-        //if ( players >= user.maximum_games) {
-          //throw new Error(12);
-        //}
-
+        //console.log('invited users', invited_users);
         return Game.findOne({ player_id: params.inviter_id }).then((game) => {
           return Promise.all(invited_users.map((invited_user) => {
             if ( invited_user.blacklist ) {
@@ -74,23 +68,47 @@ const Invite = {
                     code: 1203
                   };
                 } else {
-                  //console.debug('invite create 9');
-                  const query = squel
-                                .insert()
-                                .into('invites')
-                                .set('game_id', game.id)
-                                .set('invited_id', invited_user.id)
-                                .set('inviter_id', params.inviter_id);
+                  //const game_number = inviter_player.to;
+                  const player_game_numbers = invited_user.players.map((player) => {
+                    return player.to;
+                  });
+                  let game_number_id = squel
+                                       .select()
+                                       .field('id')
+                                       .field('number')
+                                       .from('game_numbers', 'n')
+                                       .limit(1);
 
-                  //console.debug(query.toString());
-                  return db.query(query).then((row) => {
-                    invited_user.to = inviter_player.to;
+                  if ( player_game_numbers.length ) {
+                    game_number_id = game_number_id.where('n.number NOT IN ?', player_game_numbers);
+                  }
+                  return db.query(game_number_id.toString()).then((rows) => {
+                    if ( rows && rows.length ) {
+                      const game_number = rows[0];
 
-                    return {
-                      id: row.insertId,
-                      game,
-                      invited_user,
-                      inviter_player
+                      const query = squel
+                                    .insert()
+                                    .into('invites')
+                                    .set('game_id', game.id)
+                                    .set('game_number_id', game_number.id)
+                                    .set('invited_id', invited_user.id)
+                                    .set('inviter_id', params.inviter_id);
+
+                      return db.query(query.toString()).then((row) => {
+                        invited_user.to = game_number.number;
+                        //console.log('invited user', invited_user);
+
+                        return {
+                          id: row.insertId,
+                          game,
+                          //game_number,
+                          invited_user,
+                          inviter_player
+                        };
+                      });
+                    } else {
+                      console.error('No game numbers returned for', invited_user);
+                      throw new Error('No game numbers returned, major error');
                     }
                   });
                 }
@@ -125,8 +143,10 @@ const Invite = {
   find: (params = {}) => {
     let query = squel
                 .select()
+                .field('n.number', 'game_number')
                 .field('i.*')
                 .from('invites', 'i')
+                .left_join('game_numbers', 'n', 'n.id=i.game_number_id')
                 .left_join('games', 'g', 'g.id=i.game_id');
 
     if ( params.id ) {
@@ -166,7 +186,6 @@ const Invite = {
           Player.find({ ids: invites.map(invite => invite.inviter_id) }),
           User.find({ ids: invites.map(invite => invite.invited_id) }),
           (games_arr, inviters, inviteds) => {
-        //return Game.find({ player_ids: invites.map(invite => invite.inviter_id) }).then((games) => {
             const games = _.indexBy(games_arr, 'id');
             const players = _.indexBy(inviters, 'id');
             const users = _.indexBy(inviteds, 'id');
@@ -175,7 +194,7 @@ const Invite = {
               return {
                 id: invite.id,
                 game: games[invite.game_id],
-                invited_user: users[invite.invited_id],
+                invited_user: _.assign({ to: invite.game_number }, users[invite.invited_id]),
                 inviter_player: players[invite.inviter_id],
                 used: invite.used
               };

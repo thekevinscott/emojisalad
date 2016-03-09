@@ -53,7 +53,7 @@ const seed = () => {
     console.log(`Seeding complete`);
     return res;
   });
-}
+};
 
 /**
  * This starts the various servers
@@ -157,7 +157,7 @@ const startServers = (debug, log_level) => {
 
     });
   }));
-}
+};
 
 gulp.task('seed', (cb) => {
   seed().then(() => {
@@ -180,7 +180,7 @@ gulp.task('test', () => {
     return Promise.all(servers.map((server) => {
       return server.slaughter();
     }));
-  }
+  };
   return seed().then(() => {
     return startServers(process.env.DEBUG, log_level);
   }).then((response) => {
@@ -220,7 +220,7 @@ gulp.task('test', () => {
   });
   process.on('exit', () => {
     return killServers();
-  })
+  });
 });
 
 //const request = (url) => {

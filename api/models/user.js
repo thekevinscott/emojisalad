@@ -34,8 +34,8 @@ const User = {
                       created: squel.fval('NOW(3)'),
                       last_activity: squel.fval('NOW(3)'),
                       from: number,
-                      avatar: avatar,
-                      nickname: nickname,
+                      avatar,
+                      nickname,
                       maximum_games: default_maximum_games
                     });
       return db.create(query).then((result) => {
@@ -46,7 +46,7 @@ const User = {
     });
   },
   update: (user, params) => {
-    let whitelist = [
+    const whitelist = [
       'nickname',
       'blacklist',
       'maximum_games',
@@ -54,10 +54,10 @@ const User = {
       'confirmed',
       'confirmed_avatar'
     ];
-    let query = squel
-                .update()
-                .table('users', 'u')
-                .where('u.id=?', user.id);
+    const query = squel
+                  .update()
+                  .table('users', 'u')
+                  .where('u.id=?', user.id);
 
     let valid_query = false;
     whitelist.map((key) => {
@@ -90,12 +90,11 @@ const User = {
     if ( params.id ) {
       query = query.where('u.id=?',params.id);
     }
-    
     if ( params.from ) {
       query = query.where('u.`from`=?',params.from);
     }
 
-    let rows = yield db.query(query.toString());
+    const rows = yield db.query(query.toString());
     if ( rows.length ) {
       return rows[0].players;
     } else {
@@ -106,12 +105,12 @@ const User = {
     if ( ! Player ) {
       Player = require('models/player');
     }
-  
-    let number_of_players = squel
-                            .select()
-                            .field('count(id)')
-                            .from('players', 'p')
-                            .where('p.user_id=u.id')
+
+    const number_of_players = squel
+                              .select()
+                              .field('count(id)')
+                              .from('players', 'p')
+                              .where('p.user_id=u.id');
 
     let query = squel
                 .select()
@@ -129,7 +128,7 @@ const User = {
     if ( params.nickname ) {
       query = query.where('u.nickname LIKE ?',params.nickname+'%');
     }
-    
+
     if ( params.from ) {
       query = query.where('u.`from` LIKE ?',params.from+'%');
     }
@@ -138,7 +137,7 @@ const User = {
       query = query
               .where('p.id=?',params.player_id);
     }
-              
+
     const archived = params.archived || 0;
     query.where('u.archived=?', archived);
 
@@ -177,11 +176,11 @@ const User = {
     });
   },
   remove: (user_id) => {
-    let query = squel
-                .update()
-                .set('archived', 1)
-                .table('users', 'u')
-                .where('u.id=?', user_id);
+    const query = squel
+                  .update()
+                  .set('archived', 1)
+                  .table('users', 'u')
+                  .where('u.id=?', user_id);
 
     return db.query(query).then((rows) => {
       if ( rows && rows.affectedRows ) {

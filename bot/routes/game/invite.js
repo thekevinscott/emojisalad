@@ -1,10 +1,10 @@
 'use strict';
-const Promise = require('bluebird');
+//const Promise = require('bluebird');
 //const Player = require('models/player');
 const Invite = require('models/invite');
 const User = require('models/user');
 const Phone = require('models/phone');
-const _ = require('lodash');
+//const _ = require('lodash');
 const rule = require('config/rule');
 
 module.exports = (player, message) => {
@@ -40,7 +40,7 @@ module.exports = (player, message) => {
       console.error(player, message, invites);
       throw new Error("Invite Create was called incorrectly");
     } else {
-      let invite = invites[0] || { error: 'No invite found' };
+      const invite = invites[0] || { error: 'No invite found' };
       if ( invite.error ) {
         console.info('there is an invite error', invite);
         switch ( invite.code ) {
@@ -48,43 +48,44 @@ module.exports = (player, message) => {
           // Invite already exists
           return [
             {
-              player: player,
+              player,
               key: 'error-2',
               options: [invited_string]
-            },
+            }
           ];
           break;
         case 1202:
           // Invite already exists
           return [
             {
-              player: player,
+              player,
               key: 'error-3',
               options: [invited_string]
-            },
+            }
           ];
           break;
         case 1204:
           // Invited user playing maximum games
           return [
             {
-              player: player,
-              key: 'error-12',
-            },
+              player,
+              key: 'error-12'
+            }
           ];
           break;
         default:
           return [
             {
-              player: player,
+              player,
               key: 'error-4',
               options: [invited_string]
-            },
+            }
           ];
           break;
         }
       } else {
         if ( existing_user ) {
+          //console.log('invite', invite);
           return [
             {
               player: invite.inviter_player,
@@ -100,7 +101,7 @@ module.exports = (player, message) => {
                 invite.inviter_player.avatar
               ],
               player: invite.invited_user
-            },
+            }
           ];
         } else {
           return [
@@ -116,7 +117,7 @@ module.exports = (player, message) => {
                 invite.inviter_player.avatar
               ],
               player: invite.invited_user
-            },
+            }
           ];
         }
       }

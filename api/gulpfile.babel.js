@@ -7,10 +7,10 @@ require('babel-polyfill');
 const gulp = require('gulp');
 const util = require('gulp-util');
 const Promise = require('bluebird');
-const argv = require('yargs').argv;
+//const argv = require('yargs').argv;
 const mocha = require('gulp-mocha');
-const nodemon = require('gulp-nodemon');
-const chalk = require('chalk');
+//const nodemon = require('gulp-nodemon');
+//const chalk = require('chalk');
 const squel = require('squel');
 
 const shared = require('../shared/gulp');
@@ -51,8 +51,14 @@ gulp.task('update-fixtures', (cb) => {
     'categories',
     'clues',
     'emojis',
-    'game_numbers',
-    'games',
+    {
+      data: false,
+      table: 'game_numbers'
+    },
+    {
+      data: false,
+      table: 'games'
+    },
     'game_phrases',
     'guesses',
     'invites',
@@ -118,8 +124,8 @@ gulp.task('server', () => {
     throw 'You must provide an environment';
   }
   const ENVIRONMENT = util.env.ENVIRONMENT;
-  return shared.server({ LOG_LEVEL: LOG_LEVEL, ENVIRONMENT: ENVIRONMENT })();
-})
+  return shared.server({ LOG_LEVEL, ENVIRONMENT })();
+});
 
 gulp.task('default', () => {
   console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');

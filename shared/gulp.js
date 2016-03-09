@@ -74,7 +74,7 @@ function getConnectionString(config) {
     "-p'" + config.password+"'",
     "-h",
     config.host,
-    config.database,
+    config.database
   ].join(" ");
 }
 
@@ -86,19 +86,24 @@ function pullDB(config, tmp, tables) {
     tables = [];
   }
 
-  const tables_without_data = tables.filter((table) => {
-    if ( table.data === undefined ) {
-      return table;
-    } else if ( table.data !== true ) {
-      return table.table;
+  const parsed_tables = tables.reduce((obj, table) => {
+    console.log('table', table);
+    if ( table.data === false ) {
+      obj['tables_without_data'].push(table.table);
+    } else {
+      if ( table.table ) {
+        obj['tables_with_data'].push(table.table);
+      } else {
+        obj['tables_with_data'].push(table);
+      }
     }
-  });
+    return obj;
+  }, { tables_without_data: [], tables_with_data: [] });
+  const tables_without_data = parsed_tables['tables_without_data'];
+  const tables_with_data = parsed_tables['tables_with_data'];
 
-  const tables_with_data = tables.map((table) => {
-    if ( table.data ) {
-      return table.table;
-    }
-  });
+  console.log('tables with data', tables_with_data);
+  console.log('tables without data', tables_without_data);
 
   const dumpSchemas = [
     'mysqldump',
@@ -120,9 +125,9 @@ function pullDB(config, tmp, tables) {
     'gzip >>',
     tmp+zippedFile
   ];
-  return exec('mkdir -p '+tmp).then(function() {
+  return exec('mkdir -p '+tmp).then(() => {
     return exec('rm -f '+tmp+file);
-  }).then(function() {
+  }).then(() => {
     if ( tables_without_data.length ) {
       console.log('dumping schemas');
       //console.log(dumpSchemas.join(' '));

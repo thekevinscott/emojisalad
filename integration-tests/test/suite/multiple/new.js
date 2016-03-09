@@ -41,7 +41,7 @@ describe('New Game', () => {
             { player: players[0], msg: rule('invite').example() + new_player.number, to: game_numbers[1] },
             [
               { key: 'intro_5', options: [new_player.number], to: players[0], from: game_numbers[1] },
-              { key: 'invite', options: [players[0].nickname, players[0].avatar], to: new_player, from: game_numbers[1]  }
+              { key: 'invite', options: [players[0].nickname, players[0].avatar], to: new_player, from: game_numbers[0]  }
             ]
           );
         });
@@ -63,6 +63,56 @@ describe('New Game', () => {
             ]
           );
         });
+      });
+    });
+
+    it('should be able to receive a text from a new game number and not create another user but create another player and another game', () => {
+      const players = getPlayers(3);
+      //const existing_player = players[1];
+      return playGame(players).then(() => {
+        return check(
+          { player: players[0], msg: 'sup', to: game_numbers[1] },
+          [
+            { key: 'new-game', options: [players[0].nickname, players[0].avatar], to: players[0], from: game_numbers[1] }
+          ]
+        );
+      });
+    });
+
+    it('should create a player on the same number the user is texting on', () => {
+      const player = getPlayers(1)[0];
+      player.to = game_numbers[game_numbers.length-1];
+      return setup([
+        { player, msg: 'hello' },
+        { player, msg: 'y' },
+        { player, msg: player.nickname }
+      ]).then(() => {
+        return check(
+          { player, msg: EMOJI },
+          [
+            { key: 'intro_4', options: [ player.nickname, EMOJI ], to: player }
+          ]);
+      });
+    });
+
+    it('should create a player on a new number if user is already playing a game', () => {
+      const players = getPlayers(2);
+      const new_player = getPlayers(1)[0];
+      return playGame(players).then(() => {
+        return setup([
+          { player: new_player, msg: 'hello' },
+          { player: new_player, msg: 'y' },
+          { player: new_player, msg: new_player.nickname },
+          { player: new_player, msg: new_player.avatar }
+        ]);
+      }).then(() => {
+        return check(
+          { player: new_player, msg: rule('invite').example() + players[0].number },
+          [
+            { key: 'intro_existing_player', options: [players[0].number], to: new_player, from: game_numbers[0] },
+            { key: 'invite_existing_player', options: [players[0].nickname, players[0].avatar, new_player.nickname, new_player.avatar], to: players[0], from: game_numbers[1]  }
+          ]
+        );
       });
     });
   });
@@ -142,32 +192,4 @@ describe('New Game', () => {
     });
   });
 
-  it('should be able to receive a text from a new game number and not create another user but create another player and another game', () => {
-    const players = getPlayers(3);
-    //const existing_player = players[1];
-    return playGame(players).then(() => {
-      return check(
-        { player: players[0], msg: 'sup', to: game_numbers[1] },
-        [
-          { key: 'new-game', options: [players[0].nickname, players[0].avatar], to: players[0], from: game_numbers[1] }
-        ]
-      );
-    });
-  });
-
-  it('should create a player on the same number the user is texting on', () => {
-    const player = getPlayers(1)[0];
-    player.to = game_numbers[game_numbers.length-1];
-    return setup([
-      { player, msg: 'hello' },
-      { player, msg: 'y' },
-      { player, msg: player.nickname }
-    ]).then(() => {
-      return check(
-        { player, msg: EMOJI },
-        [
-          { key: 'intro_4', options: [ player.nickname, EMOJI ], to: player }
-        ]);
-    });
-  });
 });

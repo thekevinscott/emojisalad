@@ -8,6 +8,6 @@ const services = {
   testqueue: {
     port: 5997
   }
-}
+};
 
 module.exports = services;
