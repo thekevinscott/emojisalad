@@ -1,19 +1,19 @@
 'use strict';
-const squel = require('squel');
-const db = require('db');
+//const squel = require('squel');
+//const db = require('db');
 const proxyquire = require('proxyquire');
 const User = require('models/user');
 const Round = require('models/round');
-const post = require('test/support/request').post;
+//const post = require('test/support/request').post;
 const Promise = require('bluebird');
-const EMOJI = '👍';
+//const EMOJI = '👍';
 
 describe('Game', () => {
   describe('getNextSubmitter', () => {
     const getGame = (round) => {
       if ( ! round ) {
         round = {
-          findOne: (params) => {
+          findOne: () => {
             return new Promise((resolve) => {
               resolve({});
             });
@@ -37,7 +37,7 @@ describe('Game', () => {
           if ( users.length > 1 ) {
             return Game.add(game, users.slice(1)).then((game) => {
               return {
-                Game: Game,
+                Game,
                 game: game
               };
             });
