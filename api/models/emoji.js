@@ -32,7 +32,8 @@ const Emoji = {
     });
   },
   getNumOfEmoji: (str) => {
-    return EmojiData.scan(str).length;
+    return emojiExists.number(str);
+    //return EmojiData.scan(str).length;
   },
   getRandom: () => {
     const query = squel

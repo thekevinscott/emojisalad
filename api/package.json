@@ -20,7 +20,7 @@
     "chalk": "^1.1.1",
     "dateformat": "^1.0.12",
     "emoji-data": "^0.2.0",
-    "emoji-exists": "^0.0.6",
+    "emoji-exists": "^0.0.7",
     "express": "^4.13.4",
     "gulp-nodemon": "^2.0.3",
     "kerberos": "0.0.17",
