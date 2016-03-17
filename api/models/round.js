@@ -10,19 +10,20 @@ const Player = require('./player');
 //const Game = require('./game');
 let Game;
 
-let Round = {
-  getCluesLeft: function(game) {
-    let clue_query = squel
-                     .select()
-                     .field('count(1) as cnt')
-                     .from('round_clues')
-                     .where('round_id=?',game.round.id);
-    return db.query(clue_query).then(function(rows) {
+const Round = {
+  getCluesLeft: (game) => {
+    const clue_query = squel
+                       .select()
+                       .field('count(1) as cnt')
+                       .from('round_clues')
+                       .where('round_id=?',game.round.id);
+    return db.query(clue_query).then((rows) => {
       return game.round.clues_allowed - rows[0].cnt;
     });
   },
+  /*
   getClue: Promise.coroutine(function* (game, player) {
-    let clue_query = squel
+    const clue_query = squel
                      .select()
                      .field('clue_id')
                      .from('round_clues')
@@ -45,23 +46,12 @@ let Round = {
     //let clue = rows[0];
 
     //if ( clue ) {
-      /*
-      let update_clue_query = squel
-                              .insert()
-                              .into('round_clues')
-                              .setFields({
-                                player_id: player.id,
-                                round_id: game.round.id,
-                                clue_id: clue.clue_id
-                              });
-
-      db.query(update_clue_query);
-      */
       //return clue;
     //} else {
       //return null;
     //}
   }),
+  */
 
   parsePhrase: (phrase) => {
     const ignored_words = [
@@ -78,10 +68,12 @@ let Round = {
   },
   checkPhrase: (phrase, guess) => {
     // check distance of phrase
-    const levenshtein_distance = levenshtein(phrase, guess);
-    //const distance = levenshtein(phrase, guess) / phrase.length;
-    const acceptable_distance = 6;
-    return levenshtein_distance <= acceptable_distance;
+    //const levenshtein_distance = levenshtein(phrase, guess);
+    const distance = levenshtein(phrase, guess) / phrase.length;
+    //console.log('distance', distance);
+    //const acceptable_distance = 6;
+    //return levenshtein_distance <= acceptable_distance;
+    return distance <= 0.31;
   },
   guess: (round, player, original_guess) => {
     return Round.findOne(round).then((round) => {
@@ -103,7 +95,7 @@ let Round = {
             } else {
               return false;
             }
-          }).catch((err) => {
+          }).catch(() => {
             // swallow this silently
             return false;
           }));
@@ -137,6 +129,7 @@ let Round = {
       });
     });
   },
+  /*
   getLast: Promise.coroutine(function* (game) {
     let query = squel
                 .select()
@@ -160,16 +153,16 @@ let Round = {
                 .order('r.id', false)
                 //.group('r.id')
                 .limit(1);
-                        
-    let rounds = yield db.query(query);
+    const rounds = yield db.query(query);
     if ( rounds.length ) {
-      let round = rounds[0];
+      const round = rounds[0];
       console.info('round', round);
       return round;
     } else {
       return null;
     }
   }),
+  */
   getPhrase: (game) => {
     const game_phrases = squel
                          .select()
@@ -192,19 +185,17 @@ let Round = {
                   .order(order)
                   .limit(1);
 
-                  //console.log(query.toString());
     return db.query(query).then((rows) => {
       if ( rows ) {
-        let phrase = rows[0];
-        //console.log('phrase', phrase);
+        const phrase = rows[0];
         // mark this phrase as used
-        let markPhrase = squel
-                         .insert()
-                         .into('game_phrases')
-                         .setFields({
-                           game_id: game.id,
-                           phrase_id: phrase.id
-                         });
+        const markPhrase = squel
+                           .insert()
+                           .into('game_phrases')
+                           .setFields({
+                             game_id: game.id,
+                             phrase_id: phrase.id
+                           });
         return db.query(markPhrase).then(() => {
           return phrase;
         });
@@ -229,11 +220,11 @@ let Round = {
                               //.from('games')
                               //.where('id=?',game.id);
 
-        const guesses = squel
-                        .select()
-                        .field('guesses')
-                        .from('games')
-                        .where('id=?',game.id);
+        //const guesses = squel
+                        //.select()
+                        //.field('guesses')
+                        //.from('games')
+                        //.where('id=?',game.id);
 
         const query = squel
                       .insert()
@@ -242,7 +233,7 @@ let Round = {
                         game_id: game.id,
                         submitter_id: submitter.id,
                         phrase_id: phrase.id,
-                        created: squel.fval('NOW(3)'),
+                        created: squel.fval('NOW(3)')
                       });
 
         return db.query(query.toString()).then((result) => {
@@ -261,11 +252,11 @@ let Round = {
             id: round_id,
             game_id: game.id,
             clue: phrase.clue,
-            created: created,
+            created,
             phrase: phrase.phrase,
             submission: '',
-            submitter: submitter,
-            players: players
+            submitter,
+            players
           };
         });
       }
@@ -299,20 +290,19 @@ let Round = {
                 .left_join('phrases', 'p', 'p.id=r.phrase_id')
                 .left_join('clues', 'c', 'c.phrase_id=p.id')
                 //.left_join('submissions', 'n', 'n.round_id=r.id')
-                .order('r.created, r.id')
+                .order('r.created, r.id');
                 //.group('r.id')
                 //.limit(1);
     if ( params.id ) {
       query = query
-              .where('r.id=?',params.id); 
+              .where('r.id=?',params.id);
     }
-                        
     if ( params.game_id ) {
       query = query
-              .where('r.game_id = ?',params.game_id); 
+              .where('r.game_id = ?',params.game_id);
     } else if ( params.game_ids ) {
       query = query
-              .where('r.game_id IN ?',params.game_ids); 
+              .where('r.game_id IN ?',params.game_ids);
     }
 
     return db.query(query).then((rounds) => {
@@ -369,14 +359,14 @@ let Round = {
                   })[0];
 
                   const winner = players.filter((player) => {
-                    return player.id === round.winner_id
+                    return player.id === round.winner_id;
                   })[0];
                   return {
                     id: round.id,
                     game_id: round.game_id,
                     phrase: round.phrase,
                     clue: round.clue,
-                    submitter: submitter,
+                    submitter,
                     guesses: guesses_by_round_id[round.id],
                     winner: winner || null,
                     submission: round.submission,
@@ -395,6 +385,7 @@ let Round = {
       }
     });
   },
+  /*
   saveSubmission: Promise.coroutine(function* (game, player, submission) {
 
     // all other players who are not submitter (not the player)
@@ -411,17 +402,18 @@ let Round = {
     });
     yield Promise.all(promises);
     yield this.update(game.round, { state: 'playing' });
-    let query = squel
-                .insert()
-                .into('submissions')
-                .setFields({
-                  submission: submission,
-                  round_id: game.round.id,
-                  player_id: player.id
-                });
+    const query = squel
+                  .insert()
+                  .into('submissions')
+                  .setFields({
+                    submission,
+                    round_id: game.round.id,
+                    player_id: player.id
+                  });
 
     yield db.query(query);
   }),
+  */
   update: (params, data = {}) => {
     if ( ! params.id ) {
       throw "You must provide a round id to update by";
@@ -450,8 +442,7 @@ let Round = {
               query = query.set('phrase_id', data.phrase_id);
             }
 
-            //console.debug('**** DID YA CALL SET');
-            return db.query(query).then((result) => {
+            return db.query(query).then(() => {
               return Round.findOne(round);
             }).catch((err) => {
               console.error('err', err);
