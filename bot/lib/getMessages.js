@@ -13,7 +13,7 @@ const getMessages = (ids, protocols, options = {}) => {
 
   return Promise.all(protocols.map((protocol) => {
     //if ( queue_registrys[protocol] ) {
-    const service = registry.get(protocol)
+    const service = registry.get(protocol);
     if ( ! service ) {
       throw new Error(`No service found for protocol ${protocol}`);
     }
@@ -44,7 +44,8 @@ const getMessages = (ids, protocols, options = {}) => {
       throw err;
     });
   })).then((responses) => {
-    return [].concat.apply([], responses);
+    return [].concat(...responses);
+    //return [].concat.apply([], responses);
   }).then((responses) => {
     if ( options.trip && responses.length >= options.trip ) {
       sendAlert(responses, 'tripped', 'get');

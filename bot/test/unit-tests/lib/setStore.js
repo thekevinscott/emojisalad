@@ -2,16 +2,16 @@
 
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
-const Promise = require('bluebird');
+//const Promise = require('bluebird');
 
-describe('Set Store', function() {
-  it('loads correctly', function() {
+describe('Set Store', () => {
+  it('loads correctly', () => {
     const setStore = require('lib/setStore');
     setStore.should.be.ok;
   });
 
-  it('does not set a store for an empty array', function() {
-    let spy = sinon.spy();
+  it('does not set a store for an empty array', () => {
+    const spy = sinon.spy();
     const setStore = proxyquire('lib/setStore', {
       store: spy
     });
@@ -19,102 +19,55 @@ describe('Set Store', function() {
     spy.called.should.equal(false);
   });
 
-  it('sets the correct store of a single message', function(done) {
-    const ts = new Date();
+  it('sets the correct store of a single message', (done) => {
+    const rand = Math.random();
     const setStore = proxyquire('lib/setStore', {
-      store: Promise.coroutine(function* (key, store) {
-        store.should.equal(ts);
+      store: (key, store) => {
+        store.should.equal(rand);
         return done();
-      })
+      }
     });
     return setStore([{
-      store: ts
+      protocol: 'foo',
+      id: rand
     }]);
   });
 
-  it('sets the latest store of an array of messages', function(done) {
-    const ts = '2015-01-01 10:00:00';
+  it('sets the latest store of an array of messages', (done) => {
     const setStore = proxyquire('lib/setStore', {
-      store: Promise.coroutine(function* (key, store) {
-        store.should.equal(ts);
+      store: (key, store) => {
+        store.should.equal(2);
         done();
-      })
+      }
     });
     return setStore([
       {
-        store: '2014-01-01 10:00:00'
+        protocol: 'foo',
+        id: 1
       },
       {
-        store: ts
+        protocol: 'foo',
+        id: 2
       }
     ]);
   });
 
-  it('sets the latest store of an array of out of order messages', function(done) {
-    const ts = '2015-01-01 10:00:00';
+  it('sets the latest store of an array of out of order messages', (done) => {
     const setStore = proxyquire('lib/setStore', {
-      store: Promise.coroutine(function* (key, store) {
-        store.should.equal(ts);
+      store: (key, store) => {
+        store.should.equal(2);
         done();
-      })
+      }
     });
     return setStore([
       {
-        store: '2014-01-01 10:00:00'
+        protocol: 'foo',
+        id: 2
       },
       {
-        store: ts
-      },
-      {
-        store: '2013-01-01 10:00:00'
-      },
+        protocol: 'foo',
+        id: 1
+      }
     ]);
-  });
-
-  it('sets the latest store with millisecond precision', function(done) {
-    const ts = '2015-12-25 23:33:48.482396';
-    const setStore = proxyquire('lib/setStore', {
-      store: Promise.coroutine(function* (key, store) {
-        store.should.equal(ts);
-        done();
-      })
-    });
-    return setStore([
-      {
-        store: ts
-      },
-      {
-        store: '2015-12-25 23:33:48.482395'
-      },
-    ]);
-  });
-
-  it('handles dates with periods in them', function(done) {
-    const ts = '2015.12.25 23:33:48';
-    const setStore = proxyquire('lib/setStore', {
-      store: Promise.coroutine(function* (key, store) {
-        store.should.equal(ts);
-        done();
-      })
-    });
-    return setStore([
-      {
-        store: ts
-      },
-      {
-        store: '2015.12.24 23:33:48'
-      },
-    ]);
-  });
-
-  it('should set store if given a raw store', (done) => {
-    const ts = (new Date()).getTime() / 1000;
-    const setStore = proxyquire('lib/setStore', {
-      store: Promise.coroutine(function* (key, store) {
-        store.should.equal(ts);
-        done();
-      })
-    });
-    return setStore(ts);
   });
 });

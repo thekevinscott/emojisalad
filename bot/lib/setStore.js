@@ -2,18 +2,22 @@
 
 const store = require('store');
 const Promise = require('bluebird');
-const _ = require('lodash');
-const keys = require('../config/keys');
+//const _ = require('lodash');
+//const keys = require('../config/keys');
 
 const setStore = (messages) => {
   const messages_by_protocol = messages.reduce((obj, message) => {
-    obj[message.protocol] = message;
+    if ( ! obj[message.protocol] ) {
+      obj[message.protocol] = [];
+    }
+    obj[message.protocol].push(message);
     return obj;
   }, {});
-    
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
     const key = `${protocol}_queue_id`;
-    const message = messages_by_protocol[protocol];
+    const message = messages_by_protocol[protocol].sort((a, b) => {
+      return a.id > b.id;
+    }).pop();
     return store(key, message.id);
   }));
 };
@@ -41,12 +45,12 @@ const setTimestamp = (messages) => {
 }
 */
 
-function getDate(str) {
-  const timestamp = new Date(str);
-  if ( str.length > 20 && str.split('.').length === 2 ) {
-    timestamp.setMilliseconds(str.split('.').pop());
-  }
-  return timestamp.getTime() / 1000;
-}
+//function getDate(str) {
+  //const timestamp = new Date(str);
+  //if ( str.length > 20 && str.split('.').length === 2 ) {
+    //timestamp.setMilliseconds(str.split('.').pop());
+  //}
+  //return timestamp.getTime() / 1000;
+//}
 
 module.exports = setStore;

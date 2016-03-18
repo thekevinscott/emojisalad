@@ -5,7 +5,7 @@ const sinon = require('sinon');
 const _ = require('lodash');
 const registry = (options = {} ) => {
   return {
-    get: (protocol) => {
+    get: () => {
       return {
         api: {
           received: {
@@ -17,15 +17,15 @@ const registry = (options = {} ) => {
             method: 'POST'
           }
         }
-      }
+      };
     }
-  }
+  };
 };
 const getMessages = proxyquire('lib/getMessages', {
   'microservice-registry' : registry()
 });
 
-describe('Get Messages', function() {
+describe('Get Messages', () => {
   it('loads correctly', () => {
     getMessages.should.be.ok;
   });
@@ -33,7 +33,7 @@ describe('Get Messages', function() {
   it('should throw an error without a timestamp', () => {
     const fn = sinon.spy();
     const getMessages = proxyquire('lib/getMessages', {
-      request: fn,
+      request: fn
     });
     (getMessages).should.throw();
   });
@@ -41,9 +41,9 @@ describe('Get Messages', function() {
   it('should throw an error with an invalid timestamp', () => {
     const fn = sinon.spy();
     const getMessages = proxyquire('lib/getMessages', {
-      request: fn,
+      request: fn
     });
-    (function() { getMessages('foo') }).should.throw();
+    (function() { getMessages('foo'); }).should.throw();
   });
 
   it('should do nothing for an empty queues object', () => {
@@ -65,13 +65,13 @@ describe('Get Messages', function() {
     const conf = {
       queues: {
         foobar: {
-          received: received
+          received
         }
       }
     };
 
     const getMessages = proxyquire('lib/getMessages', {
-      'microservice-registry': registry({ received: received }),
+      'microservice-registry': registry({ received }),
       request: (options, callback) => {
         options.should.deep.equal({
           url: received,
@@ -84,7 +84,7 @@ describe('Get Messages', function() {
       },
       'config/services': conf
     });
-    return getMessages(timestamp, ['foobar']).then((res) => {
+    return getMessages({ foobar: timestamp }, ['foobar']).then((res) => {
       returned[0].protocol = 'foobar';
       res.should.deep.equal(returned);
     });
@@ -97,7 +97,7 @@ describe('Get Messages', function() {
     const conf = {
       queues: {
         foobar: {
-          received: received
+          received
         }
       }
     };
@@ -109,7 +109,7 @@ describe('Get Messages', function() {
       },
       'config/services': conf
     });
-    return getMessages(timestamp, ['foobar']).then((res) => {
+    return getMessages({ foobar: timestamp }, ['foobar']).then((res) => {
       res.should.deep.equal(returned);
     });
   });
@@ -122,7 +122,7 @@ describe('Get Messages', function() {
     const timestamp = Math.random();
     const returned = [
       [{ body: Math.random(), from: Math.random() }],
-      [{ body: Math.random(), from: Math.random() }],
+      [{ body: Math.random(), from: Math.random() }]
     ];
     const conf = {
       queues: {
@@ -131,7 +131,7 @@ describe('Get Messages', function() {
         },
         bar: {
           received: received[1]
-        },
+        }
       }
     };
 
@@ -146,8 +146,8 @@ describe('Get Messages', function() {
                   method: 'GET'
                 }
               }
-            }
-          }
+            };
+          };
 
           let index;
           if (protocol === 'foo' ) {
@@ -168,7 +168,7 @@ describe('Get Messages', function() {
       },
       'config/services': conf
     });
-    return getMessages(timestamp, ['foo','bar']).then((res) => {
+    return getMessages({ foo: timestamp, bar: timestamp }, ['foo','bar']).then((res) => {
       res.length.should.equal(2);
       res[0].should.deep.equal(_.assign({}, returned[0][0], { protocol: 'foo' }));
       res[1].should.deep.equal(_.assign({}, returned[1][0], { protocol: 'bar' }));
@@ -178,20 +178,20 @@ describe('Get Messages', function() {
   describe('Tripwire', () => {
     const options = {
       'alert': 2,
-      'trip': 4,
+      'trip': 4
     };
 
     function callGetMessages(number_of_messages, sendAlert) {
       const received = 'foo'+Math.random();
       const timestamp = Math.random();
-      let returned = [];
+      const returned = [];
       for ( let i = 0; i < number_of_messages; i++ ) {
         returned.push({ body: 'foo' + Math.random() });
       }
       const conf = {
         queues: {
           foobar: {
-            received: received
+            received
           }
         }
       };
@@ -205,25 +205,25 @@ describe('Get Messages', function() {
         './sendAlert': sendAlert
       });
 
-      return getMessages(timestamp, ['foobar'], options);
+      return getMessages({ foobar: timestamp }, ['foobar'], options);
     }
 
     describe('Alerts', () => {
       it('should not send an alert if under the alert number', () => {
         const fn = sinon.spy();
-        return callGetMessages(options.alert - 1, fn).then((res) => {
+        return callGetMessages(options.alert - 1, fn).then(() => {
           fn.called.should.equal(false);
         });
       });
       it('should send an alert if equal to the alert number', () => {
         const fn = sinon.spy();
-        return callGetMessages(options.alert, fn).then((res) => {
+        return callGetMessages(options.alert, fn).then(() => {
           fn.called.should.equal(true);
         });
       });
       it('should send an alert if over the alert number', () => {
         const fn = sinon.spy();
-        return callGetMessages(options.alert + 1, fn).then((res) => {
+        return callGetMessages(options.alert + 1, fn).then(() => {
           fn.called.should.equal(true);
         });
       });

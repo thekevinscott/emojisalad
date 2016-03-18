@@ -6,7 +6,7 @@ const _ = require('lodash');
 const sinon = require('sinon');
 
 function prom(data) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(data);
   });
 }
@@ -16,7 +16,7 @@ function getProcessMessage(obj) {
     return prom(data);
   }
   return proxyquire('lib/processMessage', _.assign({}, {
-    'routes': function(player, body, to) {
+    'routes': () => {
       return prom([]);
     },
     'models/message': {
@@ -31,8 +31,8 @@ function getProcessMessage(obj) {
   }, obj));
 }
 
-describe('Process Message', function() {
-  it('loads correctly', function() {
+describe('Process Message', () => {
+  it('loads correctly', () => {
     getProcessMessage().should.be.ok;
   });
 
@@ -42,7 +42,6 @@ describe('Process Message', function() {
         return {};
       }
     });
-    
     (() => {
       processMessage();
     }).should.throw;
@@ -53,7 +52,6 @@ describe('Process Message', function() {
     const processMessage = getProcessMessage({
       'concatenateMessages': spy
     });
-    
     return processMessage({
       from: 'foo',
       to: 'bar',
