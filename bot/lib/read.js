@@ -44,7 +44,7 @@ const sequential = (fns) => {
 // immediately on complete (but only one ping can get queued up)
 const read = () => {
   if ( processing === false ) {
-    console.info('call the read function');
+    //console.info('read');
     processing = true;
 
     return runRead().catch((err) => {
@@ -54,14 +54,9 @@ const read = () => {
         clearTimeout(timer);
       }
       console.info('set processing to false 2');
-      processing = false;
-      //if ( queued_read_action ) {
-        //read();
-      //} else {
-        //timer = setTimeout(read, runTime*1000);
-      //}
       throw err;
     }).finally(() => {
+      processing = false;
       if ( callbacks.length ) {
         const output_promise_of_read = read();
         while ( callbacks.length ) {
@@ -101,10 +96,10 @@ const runRead = () => {
   return getProtocolIDs().then((protocol_ids) => {
     return getMessages(protocol_ids, allowed_protocols, tripwire_settings).then((messages) => {
       //console.info('messages returned', messages);
-      console.info('got messages', messages.map((message) => {
-        return message;
-      }));
       if ( messages.length ) {
+        console.info('got messages', messages.map((message) => {
+          return message;
+        }));
         return setStore(messages).then(() => {
           console.info('the retrieved messages from the protocol', messages);
           return sequential(messages.map((message) => {
@@ -118,23 +113,10 @@ const runRead = () => {
             // as blacklisted.
             return message;
           }).then((processed_messages) => {
-
-            return sendMessages(processed_messages).then(() => {
-              processing = false;
-              //if ( queued_read_action ) {
-                //console.info('read immediately again');
-                //read();
-              //} else {
-                //console.info('set timeout to read next', runTime);
-                //timer = setTimeout(read, runTime*1000);
-              //}
-            });
+            console.info('processed messages', processed_messages.length);
+            return sendMessages(processed_messages);
           });
         });
-      } else {
-        console.info('no messages found, set processing to false, 3');
-        processing = false;
-        timer = setTimeout(read, runTime*1000);
       }
     });
   });

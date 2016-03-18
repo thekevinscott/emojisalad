@@ -40,6 +40,11 @@ module.exports = (user) => {
 
       console.info('the player', player);
 
+      if ( ! player ) {
+        console.error('error: no player found for game: ', game);
+        throw new Error('No player found for game');
+      }
+
       if ( game.players.length === 1 ) {
         console.info('there is one player in this game');
         // this is brand new game; invite some people

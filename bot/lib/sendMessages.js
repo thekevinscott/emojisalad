@@ -7,7 +7,7 @@ const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
 
 const sendMessages = (messages, options = {}) => {
-  //console.info('messages to send', messages);
+  console.info('messages to send', messages);
 
   if ( options.trip && messages.length >= options.trip ) {
     sendAlert(messages, 'tripped', 'send');
@@ -28,17 +28,18 @@ const sendMessages = (messages, options = {}) => {
     return obj;
   }, {});
 
-  //console.info('messages_by_protocol', messages_by_protocol);
+  console.info('messages_by_protocol', messages_by_protocol);
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
+    console.info('protocol', protocol);
     const messages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
     //console.info('the messages to send', messages);
-    //console.info('service', service);
+    console.info('service', service);
     const options = {
       url: service.api.send.endpoint,
       method: service.api.send.method,
       form: {
-        messages: messages
+        messages
       }
     };
     //console.info('sending options', options);
