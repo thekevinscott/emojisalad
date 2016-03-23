@@ -43,7 +43,7 @@ module.exports = (game, player, input) => {
             options: [input],
             protocol: 'sms'
           };
-        }), 30000);
+        }), 30*60000); // 30 minutes
         // else, incorrect guess
         return messages;
       }

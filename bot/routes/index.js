@@ -16,8 +16,10 @@ const Router = (from, message, to) => {
       const player = players.shift();
       //console.debug('Make sure to check blacklisted status here');
       if ( player.blacklist ) {
+        console.info('blacklisted player', player);
         return;
       } else {
+        console.info('send to game', player, message);
         return require('./game')(player, message);
       }
       // this means we are in a game

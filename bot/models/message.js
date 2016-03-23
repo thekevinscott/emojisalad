@@ -6,7 +6,7 @@ const Promise = require('bluebird');
 const db = require('db');
 //const config = require('../../config/twilio')[process.env.ENVIRONMENT];
 
-let Message = {
+const Message = {
   get: Promise.coroutine(function* (key, options) {
     if ( ! options ) {
       options = [];
@@ -15,10 +15,10 @@ let Message = {
       key = [key];
     }
 
-    let query = squel
-                .select()
-                .from('messages')
-                .where('`key` IN ?',key);
+    const query = squel
+                  .select()
+                  .from('messages')
+                  .where('`key` IN ?',key);
 
     let messages = yield db.query(query);
     if ( messages.length ) {
@@ -67,21 +67,22 @@ let Message = {
         }
       });
 
-      let rows = yield Message.get(responses.map(function(response) {
+      let rows = yield Message.get(responses.map((response) => {
         if ( ! response.key ) {
           throw new Error("Every response must have a key: " + JSON.stringify(response));
         }
         return response.key;
       }), options);
 
-      rows.map(function(row) {
+      rows.map((row) => {
         messages[row.key] = row.body;
       });
 
-      return responses.map(function(response) {
+      return responses.map((response) => {
         let to;
         let from;
 
+        console.info('response player', response);
         if ( response.player.from ) {
           from = response.player.from;
         } else if ( response.player.user.from ) {

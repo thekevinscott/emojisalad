@@ -1,5 +1,6 @@
 const sendMessages = require('lib/sendMessages');
 const Message = require('models/message');
+const registry = require('microservice-registry');
 
 const timers = {};
 
@@ -8,7 +9,10 @@ const timers = {};
 // there should also be a way to clear timers.
 const setTimer = (game, messages, timeout) => {
   timers[game.id] = setTimeout(() => {
-    return Message.parse(messages).then((parsed_messages) => {
+    const messages_with_protocol = messages.filter((message) => {
+      return registry.get(message.protocol);
+    });
+    return Message.parse(messages_with_protocol).then((parsed_messages) => {
       return sendMessages(parsed_messages);
     });
   }, timeout);

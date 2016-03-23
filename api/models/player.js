@@ -1,12 +1,12 @@
 'use strict';
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
-const Promise = require('bluebird');
+//const Promise = require('bluebird');
 const User = require('models/user');
 //const _ = require('lodash');
 let Game;
 
-let Player = {
+const Player = {
   // create a new player
   create: (params) => {
     if ( ! Game ) {
@@ -48,12 +48,12 @@ let Player = {
         //
         // In this case, we auto generate a game
         // number for this player
-        let get_to_query = squel
-                           .select({ autoEscapeFieldNames: true })
-                           .field('p.`to`')
-                           //.field('`to`')
-                           .from('players','p')
-                           .where('p.user_id=?',user.id);
+        const get_to_query = squel
+                             .select({ autoEscapeFieldNames: true })
+                             .field('p.`to`')
+                             //.field('`to`')
+                             .from('players','p')
+                             .where('p.user_id=?',user.id);
 
         number_query = squel
                        .select()
@@ -87,15 +87,15 @@ let Player = {
         }
       });
     }).then((player_params) => {
-      let query = squel
-                  .insert({ autoQuoteFieldNames: true })
-                  .into('players')
-                  .setFields({
-                    to: player_params.to,
-                    created: squel.fval('NOW(3)'),
-                    user_id: player_params.user_id,
-                    game_id: player_params.game_id,
-                  });
+      const query = squel
+                    .insert({ autoQuoteFieldNames: true })
+                    .into('players')
+                    .setFields({
+                      to: player_params.to,
+                      created: squel.fval('NOW(3)'),
+                      user_id: player_params.user_id,
+                      game_id: player_params.game_id
+                    });
 
       //let state;
       //if ( params.initial_state ) {
@@ -131,6 +131,7 @@ let Player = {
   },
 
   find: (params = {}) => {
+    console.info('player find params', params);
     //console.log('find player with params', params);
     let archived = 0;
     if ( params.archived !== undefined ) {
@@ -157,7 +158,7 @@ let Player = {
                 .order('p.id')
                 .left_join('game_numbers','n','n.id=p.`to`')
                 .left_join('games','g','g.id=p.game_id')
-                .left_join('users', 'u', 'u.id=p.user_id')
+                .left_join('users', 'u', 'u.id=p.user_id');
 
     if ( params.id ) {
       query = query.where('p.id=?',params.id);
@@ -168,11 +169,11 @@ let Player = {
     if ( params.nickname ) {
       query = query.where('u.nickname LIKE ?',params.nickname+'%');
     }
-    
+
     if ( params.to ) {
       query = query.where('n.`number` = ?',params.to);
     }
-    
+
     if ( params.from ) {
       query = query.where('u.`from` LIKE ?',params.from+'%');
     }
@@ -194,84 +195,15 @@ let Player = {
     //console.log('find player', query.toString());
     return db.query(query);
   },
-  
-
-  /*
-  get: Promise.coroutine(function* (params) {
-    if ( !params.id && ( (!params.from && !params.number) || !params.to )) {
-      console.error('params', params);
-      throw new Error({
-        message: 'Tried to select on an invalid params key'
-      });
-    } 
-
-    let user_params = {};
-    if ( params.from ) {
-      user_params.from = params.from;
-    } else if ( params.number ) {
-      user_params.from = params.number;
-    } else if ( params.id ) {
-      user_params.player_id = params.id;
-    }
-
-    let user = yield User.get(user_params);
-
-    if ( ! user ) {
-      return null;
-    } else {
-      let query = squel
-                  .select({ autoEscapeFieldNames: true })
-                  .field('p.id')
-                  .field('p.created')
-                  .field('p.blacklist')
-                  .field('p.state_id')
-                  .field('n.number','to')
-                  .field('s.state', 'state')
-                  .field('u.id', 'user_id')
-                  .field('u.blacklist')
-                  .field('u.nickname')
-                  .from('players', 'p')
-                  .left_join('game_numbers','n','n.id=p.`to`')
-                  .left_join('player_states', 's', 's.id = p.state_id')
-                  .left_join('users', 'u', 'u.id = p.user_id')
-                  .where('u.id=?', user.id);
-
-      if ( params.id ) {
-        query = query.where('p.`id`=?', params.id);
-      } else if ( params.to ) {
-        query = query
-                .where('n.number=?',params.to);
-      }
-
-      let players = yield db.query(query.toString());
-
-      if ( ! players.length ) {
-        return null;
-      } else {
-
-        let player = players[0];
-
-        player.number = user.from;
-        player.from = user.from;
-        player.user_id = user.id;
-        player.avatar = user.avatar;
-        player.user = user;
-
-        return player;
-      }
-    }
-  }),
-  */
-
   update: (player, params) => {
     //let whitelist = [
       //'to'
     //];
 
-    let query = squel
-                .update()
-                .table('players', 'p')
-                .where('p.id=?', player.id);
+    const query = squel
+                  .update()
+                  .table('players', 'p')
+                  .where('p.id=?', player.id);
 
     let valid_query = false;
     //whitelist.map((key) => {
@@ -283,11 +215,11 @@ let Player = {
 
     if ( params.to ) {
       valid_query = true;
-      let game_number = squel
-                        .select()
-                        .field('id')
-                        .from('game_numbers','n')
-                        .where('number = ?', params.to);
+      const game_number = squel
+                          .select()
+                          .field('id')
+                          .from('game_numbers','n')
+                          .where('number = ?', params.to);
       query.set('`to`', game_number);
     }
 
@@ -303,46 +235,46 @@ let Player = {
       }
     });
   },
-  logLastActivity: function(player, game_number) {
-    if ( ! Game ) {
-      Game = require('./game');
-    }
-    const promises = [];
-    if ( player && player.id ) {
-      let update_player = squel
-                        .update()
-                        .table('players')
-                        .setFields({
-                          last_activity: squel.fval('NOW(3)')
-                        })
-                       .where('id=?',player.id);
+  //logLastActivity: function(player, game_number) {
+    //if ( ! Game ) {
+      //Game = require('./game');
+    //}
+    //const promises = [];
+    //if ( player && player.id ) {
+      //let update_player = squel
+                        //.update()
+                        //.table('players')
+                        //.setFields({
+                          //last_activity: squel.fval('NOW(3)')
+                        //})
+                       //.where('id=?',player.id);
 
-      promises.push(db.query(update_player));
+      //promises.push(db.query(update_player));
 
-      promises.push(Game.get({ player: player, game_number: game_number }).then(function(game) {
-        if ( game && game.id ) {
+      //promises.push(Game.get({ player: player, game_number: game_number }).then((game) => {
+        //if ( game && game.id ) {
 
-          let update_game = squel
-                            .update()
-                            .table('games')
-                            .setFields({
-                              last_activity: squel.fval('NOW(3)')
-                            })
-                           .where('id=?',game.id);
+          //const update_game = squel
+                              //.update()
+                              //.table('games')
+                              //.setFields({
+                                //last_activity: squel.fval('NOW(3)')
+                              //})
+                             //.where('id=?',game.id);
 
-          return db.query(update_game);
-        }
-      }));
-    }
+          //return db.query(update_game);
+        //}
+      //}));
+    //}
 
-    return Promise.all(promises);
-  },
+    //return Promise.all(promises);
+  //},
   remove: (player_id) => {
-    let query = squel
-                .update()
-                .set('archived', 1)
-                .table('players', 'p')
-                .where('p.id=?', player_id);
+    const query = squel
+                  .update()
+                  .set('archived', 1)
+                  .table('players', 'p')
+                  .where('p.id=?', player_id);
 
     return db.query(query).then((rows) => {
       if ( rows && rows.affectedRows ) {

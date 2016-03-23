@@ -63,10 +63,18 @@ module.exports = (user) => {
           let message;
 
           if ( player.id === invited.id ) {
-            message = {
-              key: 'accepted-inviter',
-              options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar]
-            };
+            if ( 0 && game.round.submission ) {
+              message = {
+                key: 'accepted-inviter-in-progress',
+                //key: 'accepted-inviter',
+                options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar]
+              };
+            } else {
+              message = {
+                key: 'accepted-inviter',
+                options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar]
+              };
+            }
           } else if ( player.id === inviter.id ) {
             message = {
               key: 'accepted-invited', options: [invited.nickname, invited.avatar]

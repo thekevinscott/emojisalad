@@ -64,6 +64,60 @@ describe('New Game', () => {
           );
         });
       });
+
+      it.only('should invite an existing user to a new game and they join after emojis are sent', () => {
+        const players = getPlayers(3);
+        //const existing_player = players[1];
+        return playGame(players).then(() => {
+          return setup([
+            { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
+            { player: players[0], msg: rule('invite').example() + players[1].number, to: game_numbers[1] },
+            { player: players[0], msg: rule('invite').example() + players[2].number, to: game_numbers[1] },
+            { player: players[1], msg: rule('yes').example(), to: game_numbers[1] },
+            { player: players[0], msg: EMOJI, to: game_numbers[1] }
+          ]);
+        }).then(() => {
+          console.log('****', players[2], game_numbers[1]);
+          return check(
+            { player: players[2], msg: rule('yes').example(), to: game_numbers[1] },
+            [
+
+              { from: game_numbers[1], to: players[0], key: 'accepted-invited', options: [players[2].nickname, players[2].avatar] },
+              { from: game_numbers[1], to: players[1], key: 'join-game', options: [players[2].nickname, players[2].avatar] },
+              { from: game_numbers[1], to: players[2], key: 'accepted-inviter-in-progress', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar] },
+              { from: game_numbers[1], key: 'emojis', options: [players[0].nickname, players[0].avatar, EMOJI ], to: players[2] },
+              { from: game_numbers[1], key: 'guessing-instructions', to: players[2] }
+            ]
+          );
+        });
+      });
+
+      it('should invite an existing user to a new game and they join before the second round', () => {
+        const players = getPlayers(3);
+        //const existing_player = players[1];
+        return playGame(players, true).then((game) => {
+          return setup([
+            { player: players[0], msg: rule('new-game').example(), to: game_numbers[0] },
+            { player: players[0], msg: rule('invite').example() + players[1].number, to: game_numbers[1] },
+            { player: players[0], msg: rule('invite').example() + players[2].number, to: game_numbers[1] },
+            { player: players[1], msg: rule('yes').example(), to: game_numbers[1] },
+            { player: players[0], msg: EMOJI, to: game_numbers[1] },
+            { player: players[1], msg: game.round.phrase, to: game_numbers[1] }
+          ]);
+        }).then(() => {
+          return check(
+            { player: players[2], msg: rule('yes').example(), to: game_numbers[1] },
+            [
+
+              { to: players[0], key: 'accepted-invited', options: [players[2].nickname, players[2].avatar] },
+              { to: players[1], key: 'join-game', options: [players[2].nickname, players[2].avatar] },
+              { to: players[2], key: 'accepted-inviter', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar] },
+              { key: 'emojis', options: [players[0].nickname, players[0].avatar, EMOJI ], to: players[2] },
+              { key: 'guessing-instructions', to: players[2] }
+            ]
+          );
+        });
+      });
     });
 
     it('should be able to receive a text from a new game number and not create another user but create another player and another game', () => {
