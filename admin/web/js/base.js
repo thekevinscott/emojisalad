@@ -22,7 +22,6 @@ export var Base = {
     } else {
       var url = this.url();
     }
-    console.log(url);
     reqwest({
       url: url,
       method: 'get'

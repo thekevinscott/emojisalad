@@ -14,12 +14,12 @@ const playGame = (players, return_game_phrase = false) => {
     return setup([
       {
         player: players[0],
-        msg: EMOJI 
+        msg: EMOJI
       }
     ]).then(() => {
       return game_phrase;
     });
   });
-}
+};
 
 module.exports = playGame;

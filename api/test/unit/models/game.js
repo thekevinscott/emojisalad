@@ -38,13 +38,13 @@ describe('Game', () => {
             return Game.add(game, users.slice(1)).then((game) => {
               return {
                 Game,
-                game: game
+                game
               };
             });
           } else {
             return {
-              Game: Game,
-              game: game
+              Game,
+              game
             };
           }
         });
@@ -68,7 +68,7 @@ describe('Game', () => {
     it('should return the first player if two exist and no round', () => {
       const froms = [
         getRand(),
-        getRand(),
+        getRand()
       ];
 
       return createGame(froms).then((response) => {
@@ -83,13 +83,13 @@ describe('Game', () => {
     it('should return the second player if a round exists', () => {
       const froms = [
         getRand(),
-        getRand(),
+        getRand()
       ];
 
       return createGame(froms).then((response) => {
         const Game = response.Game;
         const game = response.game;
-        return Round.create(game).then((round) => {
+        return Round.create(game).then(() => {
           return Game.getNextSubmitter(game).then((player) => {
             player.from.should.equal(froms[1]);
           });
@@ -101,16 +101,17 @@ describe('Game', () => {
       const froms = [
         getRand(),
         getRand(),
-        getRand(),
+        getRand()
       ];
 
       return createGame(froms).then((response) => {
         const Game = response.Game;
         const game = response.game;
-        return Round.create(game).then((round) => {
+        return Round.create(game).then(() => {
           return Round.create(game);
-        }).then((round) => {
+        }).then(() => {
           return Game.getNextSubmitter(game).then((player) => {
+            //console.log('player', player);
             player.from.should.equal(froms[2]);
           });
         });
@@ -121,17 +122,17 @@ describe('Game', () => {
       const froms = [
         getRand(),
         getRand(),
-        getRand(),
+        getRand()
       ];
 
       return createGame(froms).then((response) => {
         const Game = response.Game;
         const game = response.game;
-        return Round.create(game).then((round) => {
+        return Round.create(game).then(() => {
           return Round.create(game);
-        }).then((round) => {
+        }).then(() => {
           return Round.create(game);
-        }).then((round) => {
+        }).then(() => {
           return Game.getNextSubmitter(game).then((player) => {
             player.from.should.equal(froms[0]);
           });
@@ -144,4 +145,4 @@ describe('Game', () => {
 
 const getRand = () => {
   return ''+Math.random();
-}
+};

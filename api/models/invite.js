@@ -2,7 +2,6 @@
 const squel = require('squel');
 const db = require('db');
 const Promise = require('bluebird');
-//const Phone = require('./phone');
 const Player = require('./player');
 const User = require('./user');
 const Game = require('./game');
@@ -38,6 +37,9 @@ const Invite = {
       })).then((invited_users) => {
         //console.log('invited users', invited_users);
         return Game.findOne({ player_id: params.inviter_id }).then((game) => {
+          const players = game.players.map((player) => {
+            return player.from;
+          });
           return Promise.all(invited_users.map((invited_user) => {
             if ( invited_user.blacklist ) {
               return {
@@ -45,10 +47,15 @@ const Invite = {
                 code: 1202
               };
             } else if ( invited_user.id === inviter_player.user_id ) {
-              // loose equality, because one could be a string or an integer
               return {
                 error: `You can't invite yourself`,
                 code: 1203
+              };
+            } else if ( players.indexOf(invited_user.from) !== -1 ) {
+              //console.log('players', players, invited_user.from);
+              return {
+                error: `User is already in game`,
+                code: 1205
               };
             } else {
               return Invite.findOne({ used: 0, game_id: game.id, invited: invited_user.id }).then((invite) => {

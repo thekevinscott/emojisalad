@@ -6,3 +6,4 @@ require('./players');
 require('./emoji');
 require('./invites');
 require('./rounds');
+require('./phones');

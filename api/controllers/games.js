@@ -1,9 +1,13 @@
 'use strict';
 const Game = require('models/game');
+const Promise = require('bluebird');
 const _ = require('lodash');
+const request = Promise.promisify(require('request'));
 
 const invites = require('./invites');
 const rounds = require('./rounds');
+const registry = require('microservice-registry');
+let sms;
 
 module.exports = [
   {
@@ -25,12 +29,12 @@ module.exports = [
     path: '/:game_id/players',
     method: 'post',
     fn: add
+  },
+  {
+    path: '/:game_id/messages',
+    method: 'get',
+    fn: messages
   }
-  //{
-    //path: '/:game_id',
-    //method: 'delete',
-    //fn: remove
-  //},
 ].concat([
   invites.create,
   invites.use,
@@ -74,15 +78,88 @@ function add(req) {
   }
   return Game.add(game_id, users);
 }
-//function update(req) {
-  //return Player.update({ id: req.params.player_id }, req.body);
-//}
-//function remove(req) {
-  //const player_id = req.params.player_id;
-  //if ( ! player_id ) {
-    //throw "No player ID provided, how is that possible?";
-  //} else if ( !parseInt(player_id) ) {
-    //throw "Invalid player ID provided";
-  //}
-  //return Player.remove(player_id);
-//}
+function messages(req) {
+  const game_id = req.params.game_id;
+  if ( ! game_id ) {
+    throw "No game ID provided, how is that possible?";
+  } else if ( !parseInt(game_id) ) {
+    throw "Invalid game ID provided";
+  }
+  return new Promise((resolve) => {
+    if ( ! sms ) {
+      sms = registry.get('sms');
+    }
+    if ( sms ) {
+      Game.findOne({ id : game_id }).then((game) => {
+        return Promise.reduce(game.players, (obj, player) => {
+          return getReceivedAndSent(player).then((messages) => {
+            obj[player.nickname] = messages;
+            return obj;
+          });
+        }, {}).then((obj) => {
+          resolve(obj);
+        });
+      });
+    } else {
+      console.error('no sms');
+      resolve([]);
+    }
+  });
+}
+
+function getReceivedAndSent(player) {
+  function getMessagesByType(type) {
+    let qs;
+    if ( type === 'sent' ) {
+      qs = {
+        from: player.to,
+        to: player.from
+      };
+    } else {
+      qs = {
+        from: player.from,
+        to: player.to
+      };
+    }
+    const payload = {
+      url: sms.api[type].endpoint,
+      method: sms.api[type].method,
+      qs
+    };
+
+    return request(payload).then((response) => {
+      if ( ! response || ! response.body ) {
+        throw response;
+      }
+      let body = response.body;
+
+      // if err, already parsed
+      try { body = JSON.parse(body); } catch(err) {}
+
+      body = body.map((b) => {
+        return _.assign({
+          type
+        }, b);
+      });
+      return body;
+    }).catch((err) => {
+      console.error(err);
+      throw err;
+    });
+  }
+  return Promise.join(
+    getMessagesByType('received'),
+    getMessagesByType('sent'),
+    (received, sent) => {
+      return received.concat(sent).sort((a, b) => {
+        //console.log(a.timestamp, b.timestamp);
+        return a.timestamp - b.timestamp;
+
+      }).map((message) => {
+        return _.assign({
+          date: new Date(message.timestamp * 1000)
+        }, message);
+      });
+    }
+  );
+}

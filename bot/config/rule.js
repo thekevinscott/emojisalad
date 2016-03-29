@@ -59,7 +59,7 @@ const rules = {
     flags: 'i',
     example: [
       'pass'
-    ],
+    ]
   },
   'phrase': {
     pattern: '^%(phrase)s',
@@ -86,28 +86,34 @@ function createRegExp(pattern, flags) {
 }
 
 module.exports = function(key, options) {
-  var regex;
+  let regex;
 
   if ( ! options ) {
     options = {};
   }
 
   if ( rules[key] ) {
-    let pattern = sprintf(rules[key].pattern, options);
+    const pattern = sprintf(rules[key].pattern, options);
     regex = createRegExp(pattern, rules[key].flags);
   }
   return {
-    test: function(input) {
+    test: (input) => {
       return regex.test(input.trim());
     },
-    match: function(input) {
-      return input.match(regex).pop().trim();
+    match: (input) => {
+      const result = input.match(regex);
+      if ( result && result.length ) {
+        return result.pop().trim();
+      } else {
+        return null;
+      }
+      //console.log('result', result);
     },
-    example: function() {
+    example: () => {
       if ( !rules[key] ) {
         throw "No rule found for "+key;
       }
-      var examples = rules[key].example;
+      const examples = rules[key].example;
       return examples[Math.floor(Math.random()*examples.length)];
     }
   };

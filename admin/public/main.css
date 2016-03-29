@@ -70,12 +70,36 @@ table td textarea {
   display: flex;
   flex-direction: column;
 }
+.stats {
+  display: flex;
+}
+.round-stats {
+  padding-left: 20px;
+}
 .game-stats {
   margin-bottom: 20px;
 }
 .messages {
   display: flex;
   flex: 1;
+  padding-top: 20px;
+}
+.phone {
+  background: #fff;
+  flex: 1;
+  border: 1px solid #ccc;
+  margin-right: 20px;
+  padding: 20px;
+  overflow: scroll;
+}
+.phone .message {
+  padding-bottom: 10px;
+}
+.phone .message.sent {
+  text-align: right;
+}
+.phone:last-child {
+  margin-right: 0;
 }
 iframe {
   background: #fff;

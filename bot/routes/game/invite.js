@@ -10,15 +10,20 @@ const rule = require('config/rule');
 module.exports = (player, message) => {
   let invited_string;
   let existing_user;
-  // TODO: Figure out how to parse numbers better
-  const invites = rule('invite').match(message).split(' **** ');
+  //console.log('message', message);
+  let number = rule('invite').match(message);
+  if ( ! number ) {
+    number = message;
+  }
+  //console.log('number', number);
 
-  //const invited_string = invites[0];
-
-  return Phone.parse({ number: invites[0] }).then((response) => {
-    if ( response && response.number ) {
-      invited_string = response.number;
-      invites[0] = invited_string;
+  return Phone.parse(number).then((response) => {
+    //console.log('response', response);
+    if ( response && response.phone ) {
+      invited_string = response.phone;
+      number = invited_string;
+      //console.log('number', number);
+      //invites[0] = invited_string;
       const payload = {
         from: invited_string
       };
@@ -30,12 +35,15 @@ module.exports = (player, message) => {
         }
       });
     } else {
-      console.error('error parsing phone', response, message);
-      throw new Error("Problem parsing phone number");
+      //console.log('error in invite');
+      //console.error('error parsing phone', response, message);
+      throw new Error(`Problem parsing phone number: ${JSON.stringify(response)} ${message}`);
     }
   }).then(() => {
-    return Invite.create(player, invites);
+    //console.log('creat invite');
+    return Invite.create(player, [ number ]);
   }).then((invites) => {
+    //console.log('back, invites', invites);
     if ( invites.error ) {
       console.error(player, message, invites);
       throw new Error("Invite Create was called incorrectly");
@@ -64,12 +72,34 @@ module.exports = (player, message) => {
             }
           ];
           break;
+        case 1203:
+          // Cannot invite yourself
+          return [
+            {
+              player,
+              key: 'error-16',
+              options: []
+            }
+          ];
+          break;
         case 1204:
           // Invited user playing maximum games
           return [
             {
               player,
               key: 'error-12'
+            }
+          ];
+          break;
+        case 1205:
+          // Invited user is already in the game
+          return [
+            {
+              player,
+              key: 'error-15',
+              options: [
+                number
+              ]
             }
           ];
           break;
@@ -122,58 +152,16 @@ module.exports = (player, message) => {
         }
       }
     }
+  }).catch(() => {
+    //console.error('err', err);
+    // Invite already exists
+    return [
+      {
+        player,
+        key: 'error-4',
+        options: [invited_string]
+      }
+    ];
   });
 
-  /*
-    // let the inviting player know we messaged
-    // their buddy, and let the buddy
-    // know they've been invited
-    if ( players.invited_player.state === 'invited-to-new-game' ) {
-      return [
-        {
-          player: players.inviting_player,
-          key: 'intro_existing_player',
-          options: [input]
-        },
-        {
-          key: 'invite_existing_player',
-          options: [players.invited_player.nickname, players.inviting_player.nickname],
-          player: players.invited_player
-        },
-      ];
-    } else if ( players.invited_player.state === 'waiting-for-confirmation' ) {
-      return [
-        {
-          player: players.inviting_player,
-          key: 'intro_5',
-          options: [input]
-        },
-        {
-          key: 'invite',
-          options: [
-            players.inviting_player.nickname,
-            players.inviting_player.number,
-          ],
-          player: players.invited_player
-        },
-      ];
-    } else {
-      console.error(players);
-      throw "Unsupported state for invited player";
-    }
-
-  } catch(error) {
-    if ( error && parseInt(error.message) ) {
-      return [{
-        player: inviter,
-        key: 'error-'+error.message,
-        options: [input]
-      }];
-    } else {
-      console.error('HANDLE THIS', error.message);
-      throw error;
-    }
-  }
-  */
 };
-

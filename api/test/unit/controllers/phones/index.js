@@ -1,0 +1,3 @@
+describe('Phones', () => {
+  require('./parse');
+});

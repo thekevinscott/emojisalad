@@ -40,7 +40,8 @@ describe('Round Model', () => {
       Round.parsePhrase('the of an foo an a for and ').should.equal('foo');
     });
   });
-  describe.only('guess', () => {
+
+  describe('guess', () => {
     let round;
 
     beforeEach(() => {

@@ -2,6 +2,7 @@
 //const Promise = require('bluebird');
 //const Player = require('models/player');
 const Game = require('models/game');
+//const Phone = require('models/phone');
 //const Round = require('models/round');
 const Emoji = require('models/emoji');
 //const _ = require('lodash');
@@ -55,11 +56,26 @@ module.exports = (player, message) => {
           }
         }
       } else {
-        console.info('game round chillind');
         return [{
           player,
           key: 'invited-chilling'
         }];
+        /*
+        return Phone.parse(message).then((result) => {
+          if ( result && result.phone ) {
+            console.log('1');
+            return require('./invite')(player, message);
+            //console.log('phones', phones);
+          } else {
+            // see if the input is a valid phone number
+            console.info('game round chillind');
+            return [{
+              player,
+              key: 'invited-chilling'
+            }];
+          }
+        });
+        */
       }
     });
   }

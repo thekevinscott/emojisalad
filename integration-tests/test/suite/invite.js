@@ -75,6 +75,15 @@ describe('Inviting', () => {
       });
     });
 
+    it('should handle invalid numbers such as 555', () => {
+      return check(
+        { player: inviter, msg: 'invite 555' },
+        [
+          { key: 'error-4', options: ['555'], to: inviter }
+        ]
+      );
+    });
+
     it('should be able to onboard an invited player', () => {
       // get a kevin user, to make it easier
       // to parse who is who
@@ -96,19 +105,20 @@ describe('Inviting', () => {
       });
     });
 
-    it('should be able to invite someone without the word invite', () => {
-      const player = getPlayers(2)[1];
+    //it('should be able to invite someone without the word invite, but only when a game is not in progress', () => {
+      //const player = getPlayers(1)[0];
+      //const num = '+18604608183';
+      //player.from = num;
 
-      return check(
-        { player: inviter, msg: player.number },
-        [
-          { key: 'intro_5', options: [player.from], to: inviter },
-          { key: 'invite', options: [inviter.nickname, inviter.avatar, player.avatar], to: player }
-        ]
-      );
-    });
+      //return check(
+        //{ player: inviter, msg: 'invite '+player.from },
+        //[
+          //{ key: 'intro_5', options: [player.from], to: inviter },
+          //{ key: 'invite', options: [inviter.nickname, inviter.avatar, player.avatar], to: player }
+        //]);
+    //});
 
-    describe.only('More complicated edge cases', () => {
+    describe('More complicated edge cases', () => {
       it('should let a second user inviting the same user know they\'ve been invited already', () => {
         const players = getPlayers(3);
         return startGame(players.slice(0,2)).then(() => {
@@ -129,21 +139,24 @@ describe('Inviting', () => {
         const players = getPlayers(2);
         return startGame(players).then(() => {
           return check(
-            { player: players[1], msg: 'invite '+players[2].number },
+            { player: players[1], msg: 'invite '+players[0].number },
             [
-              { key: 'error-2', options: [players[2].number], to: players[1] }
+              { key: 'error-15', options: [players[0].number], to: players[1] }
             ]
           );
         });
       });
 
       it('should disallow inviting yourself', () => {
-      });
-
-      it('should handle invalid numbers such as 555-555-5555', () => {
-      });
-
-      it('should handle invalid numbers such as 555', () => {
+        const players = getPlayers(2);
+        return startGame(players).then(() => {
+          return check(
+            { player: players[1], msg: 'invite '+players[1].number },
+            [
+              { key: 'error-16', options: [players[1].number], to: players[1] }
+            ]
+          );
+        });
       });
     });
 

@@ -36,14 +36,19 @@ module.exports = (game, player, input) => {
           })).concat(new_round(game, round));
         });
       } else {
-        setTimer(game, game.players.map((game_player) => {
-          return {
-            player: game_player,
-            key: 'cron',
-            options: [input],
-            protocol: 'sms'
-          };
-        }), 30*60000); // 30 minutes
+        // if a game is in progress, set a timeout to say the guess
+        // was incorrect
+        if ( resulting_round.submission ) {
+          setTimer(game, game.players.map((game_player) => {
+            return {
+              player: game_player,
+              key: 'cron',
+              options: [input],
+              protocol: 'sms'
+            };
+          }), 30 * 60 * 1000); // 30 minutes
+        }
+
         // else, incorrect guess
         return messages;
       }

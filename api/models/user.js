@@ -23,7 +23,6 @@ const User = {
     return Emoji.getRandom().then((result) => {
       console.info('create user 2', result);
       const avatar = result.emoji;
-      //console.log('prepare to parse the phone', params.from);
       console.info('create user 3');
       const number = params.from;
       console.info('parsed the number', number);
@@ -73,7 +72,10 @@ const User = {
 
     return db.query(query).then((rows) => {
       if ( rows && rows.changedRows ) {
-        return User.findOne(user.id);
+        return User.findOne(user.id).then((user) => {
+          //console.log('updated user', params, user);
+          return user;
+        });
       } else {
         return null;
       }

@@ -56,38 +56,23 @@ module.exports = (user) => {
       } else if ( game.round_count > 0 ) {
         console.info('there are multiple players in this game. game is in progress!');
         const invite = invites[0];
-        const inviter = invite.inviter_player;
-        const invited = player; // just a renaming, to make this clearer
-
-        return game.players.map((player) => {
-          let message;
-
-          if ( player.id === invited.id ) {
-            if ( 0 && game.round.submission ) {
-              message = {
-                key: 'accepted-inviter-in-progress',
-                //key: 'accepted-inviter',
-                options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar]
-              };
-            } else {
-              message = {
-                key: 'accepted-inviter',
-                options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar]
-              };
-            }
-          } else if ( player.id === inviter.id ) {
-            message = {
-              key: 'accepted-invited', options: [invited.nickname, invited.avatar]
-            };
-          } else {
-            message = {
-              key: 'join-game', options: [invited.nickname, invited.avatar]
-            };
-          }
-          return _.assign({
+        if ( game.round.submission ) {
+          // round is in progress
+          return getInviteAcceptedMessages(game, invite, player, 'accepted-inviter-in-progress').concat([{
+            key: 'emojis',
+            options: [game.round.submitter.nickname, game.round.submitter.avatar, game.round.submission],
             player
-          }, message);
-        });
+          },
+          {
+            key: 'guessing-instructions',
+            options: [],
+            player
+          }]);
+        } else {
+          // round has yet to begin
+          return getInviteAcceptedMessages(game, invite, player, 'accepted-inviter');
+        }
+
       } else {
         console.info('create a new round, and start the game!');
         const invite = invites[0];
@@ -108,5 +93,32 @@ module.exports = (user) => {
         });
       }
     });
+  });
+};
+
+const getInviteAcceptedMessages = (game, invite, player, invited_key) => {
+  const inviter = invite.inviter_player;
+  const invited = player; // just a renaming, to make this clearer
+
+  return game.players.map((player) => {
+    let message;
+
+    if ( player.id === invited.id ) {
+      message = {
+        key: invited_key,
+        options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar]
+      };
+    } else if ( player.id === inviter.id ) {
+      message = {
+        key: 'accepted-invited', options: [invited.nickname, invited.avatar]
+      };
+    } else {
+      message = {
+        key: 'join-game', options: [invited.nickname, invited.avatar]
+      };
+    }
+    return _.assign({
+      player
+    }, message);
   });
 };

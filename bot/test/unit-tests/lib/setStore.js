@@ -70,4 +70,23 @@ describe('Set Store', () => {
       }
     ]);
   });
+
+  it('sets the latest store of an array of out of order messages and checks that they are integers', (done) => {
+    const setStore = proxyquire('lib/setStore', {
+      store: (key, store) => {
+        store.should.equal(10);
+        done();
+      }
+    });
+    return setStore([
+      {
+        protocol: 'foo',
+        id: 10
+      },
+      {
+        protocol: 'foo',
+        id: 9
+      }
+    ]);
+  });
 });

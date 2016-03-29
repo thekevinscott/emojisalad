@@ -15,8 +15,11 @@ const setStore = (messages) => {
   }, {});
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
     const key = `${protocol}_queue_id`;
-    const message_id = messages_by_protocol[protocol].sort().pop();
-    //console.log('message id to set', message_id);
+    //console.log(messages_by_protocol);
+    const message_id = messages_by_protocol[protocol].sort((a, b) => {
+      return parseInt(a) > parseInt(b);
+    }).pop();
+    //console.log('set: ', message_id);
     return store(key, message_id);
   }));
 };

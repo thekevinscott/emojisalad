@@ -20,13 +20,13 @@ module.exports = [
   {
     path: '/:user_id',
     method: 'put',
-    fn: update 
+    fn: update
   },
   {
     path: '/:user_id',
     method: 'delete',
-    fn: remove 
-  },
+    fn: remove
+  }
 
 ];
 

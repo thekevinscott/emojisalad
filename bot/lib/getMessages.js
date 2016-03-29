@@ -24,7 +24,7 @@ const getMessages = (ids, protocols, options = {}) => {
         id: ids[protocol]
       }
     };
-    //console.info('payload', payload);
+    //console.log('payload', payload);
     return request(payload).then((response) => {
       if ( ! response || ! response.body ) {
         throw response;

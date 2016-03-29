@@ -101,6 +101,12 @@ const getManifest = (port) => {
         method: 'PUT'
         //description: 'Update a user'
       }
+    },
+    phones: {
+      parse: {
+        endpoint: `${base_url}phones/:phone`,
+        method: 'GET'
+      }
     }
   };
 

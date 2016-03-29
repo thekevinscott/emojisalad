@@ -1,38 +1,35 @@
 'use strict';
 //To do :  , Livereload
 
-var gulp = require('gulp');
-var livereload = require('gulp-livereload');
-var stylus = require('gulp-stylus');
-// var transform = require('vinyl-transform');
-var source = require('vinyl-source-stream');
-var browserify = require('browserify');
-//var uglify = require('gulp-uglify');
-var babel = require('babelify');
-var nodemon = require('gulp-nodemon');
+const gulp = require('gulp');
+const livereload = require('gulp-livereload');
+const stylus = require('gulp-stylus');
+const source = require('vinyl-source-stream');
+const browserify = require('browserify');
+const babel = require('babelify');
+const nodemon = require('gulp-nodemon');
 
 // Webserver
-gulp.task('webserver', function() {
-	nodemon({
+gulp.task('webserver', () => {
+  nodemon({
     script: 'index.js',
     ext: 'js html',
     env: { 'ENVIRONMENT': 'production' }
   });
-  
 });
 
 
 
 
 // Read Javascript, run Browserfy, Babel and Uglify (one day...)
-gulp.task('js', function() {
+gulp.task('js', () => {
   console.log('JS');
-  var b = browserify({
+  const b = browserify({
     debug: true
   });
   b.transform(babel); // use the babel transform
   b.add('./web/js/main.js');
-  var out = b.bundle().on('error', function(err) {
+  const out = b.bundle().on('error', function(err) {
     //If you want details of the error in the console
     console.log(err.toString());
     this.emit('end');
@@ -47,7 +44,7 @@ gulp.task('js', function() {
 
 
 // Stylus
-gulp.task('style', function () {
+gulp.task('style', () => {
   gulp.src('./web/styles/main.styl')
     .pipe(stylus())
     .pipe(gulp.dest('./public'))
@@ -55,11 +52,10 @@ gulp.task('style', function () {
 });
 
 
-gulp.task('watch', function() {
-	livereload.listen();
-    gulp.watch('./web/styles/**/*.styl', ['style']);
-    gulp.watch('./web/js/**/*', ['js']);
-    // gulp.watch('./gulpfile.js', ['js','style']);
+gulp.task('watch', () => {
+  livereload.listen();
+  gulp.watch('./web/styles/**/*.styl', ['style']);
+  gulp.watch('./web/js/**/*', ['js']);
 });
 
 gulp.task('default', ['js', 'style', 'webserver', 'watch']);

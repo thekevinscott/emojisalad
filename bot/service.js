@@ -18,7 +18,7 @@ const request = function(options) {
       throw new Error(`No response from service: ${JSON.stringify(options)}`);
     }
   });
-}
+};
 
 function getService(name) {
   const pinging_interval = 50;
@@ -59,8 +59,8 @@ const processEndpoint = (endpoint, params = {}) => {
     parts[2],
     parts[3],
     processed_rest.join('/')
-  ].join('')
-}
+  ].join('');
+};
 
 module.exports = function(name) {
   if ( ! name ) {
@@ -70,6 +70,7 @@ module.exports = function(name) {
     //console.debug('make request');
     return getService(name).then((service) => {
       if ( !service[namespace] ) {
+        console.error(service, name, namespace);
         throw new Error(`No namespace for ${namespace}`);
       } else if ( !service[namespace][key] ) {
         throw new Error(`No key for ${namespace} ${key}`);
@@ -92,5 +93,5 @@ module.exports = function(name) {
         return res;
       });
     });
-  }
+  };
 };

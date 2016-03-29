@@ -14,6 +14,7 @@ const Invite = require('models/invite');
 
 module.exports = ( user, input ) => {
   console.info( 'onboarding', user );
+  //console.log( 'onboarding', input, user );
   if ( ! user.confirmed ) {
     console.info('go to confirm');
     return require('./confirm')(user, input);

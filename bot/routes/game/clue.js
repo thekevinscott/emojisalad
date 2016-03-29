@@ -1,8 +1,8 @@
 'use strict';
-const Promise = require('bluebird');
+//const Promise = require('bluebird');
 //const Player = require('models/player');
-const _ = require('lodash');
-const rule = require('config/rule');
+//const _ = require('lodash');
+//const rule = require('config/rule');
 const Game = require('models/game');
 
 module.exports = (player, input) => {
@@ -12,13 +12,13 @@ module.exports = (player, input) => {
     if ( !game.round.submission ) {
       if ( player.id === game.round.submitter.id ) {
         return [{
-          player: player,
+          player,
           key: 'no-clue-before-submission-for-submitter',
           options: []
         }];
       } else {
         return [{
-          player: player,
+          player,
           key: 'no-clue-before-submission-for-guesser',
           options: []
         }];
