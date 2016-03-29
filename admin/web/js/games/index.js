@@ -10,8 +10,7 @@ const Link = Router.Link;
 
 export const Games = React.createClass({
   mixins: [Base], // Use the mixin
-  //url: '/api/games',
-  url: 'http://localhost:1330/games',
+  url: api.games.get.endpoint,
   render: function() {
     let content;
     if ( this.state.loading ) {
@@ -40,11 +39,11 @@ export const Games = React.createClass({
 export const Game = React.createClass({
   mixins: [Base], // Use the mixin
   url: function() {
-    return `http://localhost:1330/games/${this.props.params.game_id}`;
+    return `${api.games.get.endpoint}/${this.props.params.game_id}`;
   },
   componentWillMount: function() {
     reqwest({
-      url: `http://localhost:1330/games/${this.props.params.game_id}/messages`,
+      url: `${api.games.get.endpoint}/${this.props.params.game_id}/messages`,
       method: 'get'
     }).then(function(messages) {
       this.setState({
@@ -59,12 +58,14 @@ export const Game = React.createClass({
     } else if ( this.state.error ) {
       content = this.state.error;
     } else {
-      const phones = this.state.data.players.map((player) => {
+      const phones = this.state.data.players.map(function(player) {
         let messages;
-        if ( this.state.messages ) {
+        if ( this.state.messages && this.state.messages[player.nickname] && this.state.messages[player.nickname].length ) {
+          console.log(this.state.messages);
           messages = this.state.messages[player.nickname].map((message) => {
+            const className = `message ${message.type}`;
             return (
-              <div className=`message ${message.type}`>
+              <div className={className}>
                 {message.body}
               </div>
             );
@@ -76,7 +77,7 @@ export const Game = React.createClass({
             {messages}
           </div>
         );
-      });
+      }.bind(this));
       content = (
         <div className="game-container">
           <div className="stats">
