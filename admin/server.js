@@ -50,12 +50,15 @@ require('./api/routes/messages')(app);
 require('./api/routes/scores')(app);
 require('./api/routes/phrases')(app);
 
+app.all('/api/**', function(req, res) {
+  console.log(req.path);
+  res.json({});
+});
+
 // bootstrap our web app
 app.get('*', function(req, res) {
   const api = registry.get('api');
 
-  res.render('app', {
-    api: api.api
-  });
+  res.render('app');
 });
 

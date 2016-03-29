@@ -169,6 +169,7 @@ const Game = {
                 .field('COUNT(r.id)', 'round_count')
                 .left_join(rounds, 'r', 'r.game_id=g.id')
                 .group('g.id')
+                .group('r.id')
                 .from('games', 'g');
 
     if ( params.id ) {
@@ -198,6 +199,8 @@ const Game = {
         return obj;
       }, {});
     };
+
+    //console.log('api query', query.toString());
 
     return db.query(query).then((games) => {
       if ( games && games.length ) {

@@ -11,7 +11,7 @@ const setup = require('lib/setup');
 const check = require('lib/check');
 const rule = require('../../config/rule');
 const guess = rule('guess').example();
-//const EMOJI = '😀';
+const EMOJI = '😀';
 
 describe('Guessing', () => {
 
@@ -147,6 +147,21 @@ describe('Guessing', () => {
   });
 
   describe('Incorrect', () => {
+    it.only('should be able to store an emoji as a guess', () => {
+      const players = getPlayers(3);
+
+      return playGame(players, false).then(() => {
+        const this_guess = EMOJI;
+        return check(
+          { player: players[1], msg: guess + this_guess},
+          [
+            { to: players[0], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] },
+            { to: players[2], key: 'says', options: [players[1].nickname, players[1].avatar, this_guess] }
+          ]
+        );
+      });
+    });
+
     it('should not be notified on an incorrect guess', () => {
       const players = getPlayers(3);
 

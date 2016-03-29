@@ -10,7 +10,7 @@ const Link = Router.Link;
 
 export const Games = React.createClass({
   mixins: [Base], // Use the mixin
-  url: api.games.get.endpoint,
+  url: '/api/games',
   render: function() {
     let content;
     if ( this.state.loading ) {
@@ -39,11 +39,11 @@ export const Games = React.createClass({
 export const Game = React.createClass({
   mixins: [Base], // Use the mixin
   url: function() {
-    return `${api.games.get.endpoint}/${this.props.params.game_id}`;
+    return `/api/games/${this.props.params.game_id}`;
   },
   componentWillMount: function() {
     reqwest({
-      url: `${api.games.get.endpoint}/${this.props.params.game_id}/messages`,
+      url: `/api/games/${this.props.params.game_id}/messages`,
       method: 'get'
     }).then(function(messages) {
       this.setState({
