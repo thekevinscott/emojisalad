@@ -22,6 +22,7 @@ squel.registerValueHandler(Date, (date) => {
 const Game = {
   getNextSubmitter: (game_params) => {
     console.info('get next submitter!');
+    console.info('parameters', game_params);
     return Promise.join(
       Round.findOne({ game_id: game_params.id, most_recent: true }),
       Game.findOne(game_params),
@@ -145,6 +146,7 @@ const Game = {
     });
   },
   findOne: (params) => {
+    console.info('prepare to find a single game', params);
     if (parseInt(params)) {
       params = { id: params };
     }
@@ -177,6 +179,7 @@ const Game = {
     if ( params.id ) {
       query = query.where('g.id=?',params.id);
     }
+    console.info('find game 2');
 
     if ( params.player_id ) {
       query = query
@@ -202,7 +205,7 @@ const Game = {
       }, {});
     };
 
-    //console.log('api query', query.toString());
+    console.info('api query', query.toString());
 
     return db.query(query).then((games) => {
       console.info('return from games');

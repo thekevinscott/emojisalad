@@ -10,12 +10,24 @@
   "license": "ISC",
   "dependencies": {
     "app-module-path": "^1.0.5",
+    "babel-polyfill": "^6.6.0",
     "babel-register": "^6.3.13",
-    "bluebird": "^3.1.1",
-    "lodash": "^3.10.1",
-    "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git"
+    "bluebird": "^3.3.3",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.0.6",
+    "gulp-util": "^3.0.7",
+    "isomorphic-fetch": "^2.2.1",
+    "microservice-registry": "https://github.com/scottlabs/microservice-registry.git",
+    "pmx": "^0.6.0",
+    "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
+    "squel": "^4.3.1",
+    "twilio": "^2.8.0"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-datetime": "^1.4.1",
+    "gulp-mocha": "^2.2.0",
+    "mocha": "^2.4.5",
     "ngrok": "^0.2.2"
   }
 }

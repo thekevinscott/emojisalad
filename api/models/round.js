@@ -241,7 +241,7 @@ const Round = {
                         created: squel.fval('NOW(3)')
                       });
 
-                      console.info('query', query.toString());
+        console.info('query', query.toString());
         return db.query(query.toString()).then((result) => {
           console.info('created the new round');
           const created = new Date();
@@ -273,6 +273,7 @@ const Round = {
     );
   },
   findOne: (params) => {
+    console.info('prepare to find a single round', params);
     if (parseInt(params)) {
       params = { id: params };
     }
