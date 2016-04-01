@@ -1,5 +1,14 @@
 [{
-  "name"      : "api",
-  "script"    : "./index.js",
-  "args"      : "['--LOG_LEVEL' ,'info', '--PORT', '1338', '--ENVIRONMENT', 'production']"
+  "name" : "api",
+  "script" : "./index.js",
+  "env": {
+    "LOG_LEVEL": "info",
+    "PORT" : "1338",
+    "ENVIRONMENT": "production"
+  }
 }]
+
+
+
+
+

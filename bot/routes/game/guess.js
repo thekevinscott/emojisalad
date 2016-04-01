@@ -25,6 +25,9 @@ module.exports = (game, player, input) => {
       if ( resulting_round.winner && resulting_round.winner.id ) {
         return Round.create(game).then((round) => {
           console.info('round', round);
+          if ( round.error ) {
+            console.error('There was an error creating the round');
+          }
           // correct guess!
           //return messages.concat(game.round.players.map((game_player) => {
           return messages.concat(game.players.map((game_player) => {
