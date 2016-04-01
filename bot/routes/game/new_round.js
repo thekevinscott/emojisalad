@@ -7,6 +7,13 @@ const new_round = (game, round) => {
     const message = {
       player: game_player
     };
+    if ( ! game_player.id ) {
+      console.error('Why is there no game player id', game_player);
+    }
+
+    if ( ! round.submitter ) {
+      console.error('Why is there no roudn submitter', round);
+    }
     if ( game_player.id === round.submitter.id ) {
       return _.assign({
         key: 'game-next-round-suggestion',
