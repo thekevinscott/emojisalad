@@ -21,6 +21,7 @@ squel.registerValueHandler(Date, (date) => {
 
 const Game = {
   getNextSubmitter: (game_params) => {
+    console.info('get next submitter!');
     return Promise.join(
       Round.findOne({ game_id: game_params.id, most_recent: true }),
       Game.findOne(game_params),
@@ -156,6 +157,7 @@ const Game = {
     });
   },
   find: (params = {}) => {
+    console.info('find game');
     const rounds = squel
                    .select()
                    .from('rounds')
@@ -203,12 +205,14 @@ const Game = {
     //console.log('api query', query.toString());
 
     return db.query(query).then((games) => {
+      console.info('return from games');
       if ( games && games.length ) {
         const game_ids = games.map(game => game.id);
         return Promise.join(
           Player.find({ game_ids }).then(getByGameID),
           Round.find({ game_ids, most_recent: true }).then(getByGameID),
           (players = {}, rounds = {}) => {
+            console.info('found games');
             return games.map((game) => {
               const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
               return {

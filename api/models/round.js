@@ -185,8 +185,11 @@ const Round = {
                   .order(order)
                   .limit(1);
 
+    console.info('get phrase 1');
     return db.query(query).then((rows) => {
+      console.info('get phrase 2');
       if ( rows ) {
+        console.info('get phrase 3');
         const phrase = rows[0];
         // mark this phrase as used
         const markPhrase = squel
@@ -196,7 +199,9 @@ const Round = {
                              game_id: game.id,
                              phrase_id: phrase.id
                            });
+        console.info('get phrase 4');
         return db.query(markPhrase).then(() => {
+          console.info('get phrase 5');
           return phrase;
         });
       } else {
@@ -238,7 +243,7 @@ const Round = {
 
                       console.info('query', query.toString());
         return db.query(query.toString()).then((result) => {
-          console.log('created the new round');
+          console.info('created the new round');
           const created = new Date();
           const round_id = result.insertId;
           let players = [];
@@ -310,7 +315,9 @@ const Round = {
               .where('r.game_id IN ?',params.game_ids);
     }
 
+    console.log('prepare to find round');
     return db.query(query).then((rounds) => {
+      console.log('got roudns back');
       if ( rounds.length ) {
         if ( params.most_recent ) {
           const rounds_by_game_id = rounds.reduce((obj, round) => {
