@@ -236,7 +236,9 @@ const Round = {
                         created: squel.fval('NOW(3)')
                       });
 
+                      console.info('query', query.toString());
         return db.query(query.toString()).then((result) => {
+          console.log('created the new round');
           const created = new Date();
           const round_id = result.insertId;
           let players = [];
@@ -248,7 +250,7 @@ const Round = {
             });
           }
 
-          return {
+          const round = {
             id: round_id,
             game_id: game.id,
             clue: phrase.clue,
@@ -258,6 +260,9 @@ const Round = {
             submitter,
             players
           };
+          console.info('the round payload', round);
+
+          return round;
         });
       }
     );
