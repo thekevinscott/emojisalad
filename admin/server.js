@@ -36,7 +36,7 @@ app.use(expressSession({secret: 'ssdffdsfsfsfsffo $$$!!!!#@@@ fodis230eorwdfiklj
 require('./api/passport')(app);
 app.set('port', (process.env.PORT || 5001));
 
-//console.log('Waiting for API to load');
+console.log('Waiting for API to load');
 registry.ready(() => {
   app.listen(app.get('port'), () => {
     console.log("Node app is running at localhost:" + app.get('port'));
@@ -83,4 +83,4 @@ const getFetch = (route, method, res) => {
   }).catch((err) => {
     res.json({ err: err.message });
   });
-}
+};

@@ -1,0 +1,9 @@
+[{
+  "name" : "admin",
+  "script" : "./index.js",
+  "env": {
+    "LOG_LEVEL": "info",
+    "PORT" : "5001",
+    "ENVIRONMENT": "production"
+  }
+}]
