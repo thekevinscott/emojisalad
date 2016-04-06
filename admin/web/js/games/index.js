@@ -18,7 +18,7 @@ export const Games = React.createClass({
     } else if ( this.state.error ) {
       content = this.state.error;
     } else {
-      const games = this.state.data.map((game) => {
+      const games = this.state.data.reverse().map((game) => {
         const nicknames = game.players.map((player) => {
           return player.nickname;
         }).join(', ');

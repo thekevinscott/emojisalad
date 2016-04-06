@@ -19,7 +19,7 @@ export var Dashboard = React.createClass({
         <h1>This is a Dashboard page</h1>
         <ul>
           <li><Link to="games">Games</Link></li>
-          <li><Link to="players">Players</Link></li>
+          <li><Link to="users">Users</Link></li>
         </ul>
       </div>
     );
