@@ -7,17 +7,17 @@ let game_number;
 const from = ''+Math.random();
 const nickname = ''+Math.random();
 
-describe('Find', function() {
-  before(function() {
+describe('Find', () => {
+  before(() => {
     game_number = '+15559999999';
     return Promise.all([
-      post({ url: '/users', data: { from: from, to: game_number }}),
-      post({ url: '/users', data: { from: from+'a', to: game_number }}),
-      post({ url: '/users', data: { from: Math.random(), to: game_number, nickname: nickname }})
+      post({ url: '/users', data: { protocol_id: 1, from, to: game_number }}),
+      post({ url: '/users', data: { protocol_id: 1, from: from+'a', to: game_number }}),
+      post({ url: '/users', data: { protocol_id: 1, from: Math.random(), to: game_number, nickname }})
     ]);
   });
 
-  it('should return a list of all users', function() {
+  it('should return a list of all users', () => {
     return get({ url: '/users' }).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.be.above(0);
@@ -30,21 +30,23 @@ describe('Find', function() {
     });
   });
 
-  it('should return a list of all users matching a from', function() {
-    return get({ url: '/users', data: { from: from }}).then((res) => {
+  it('should return a list of all users matching a from', () => {
+    return get({ url: '/users', data: { from }}).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.equal(2);
       res.body[0].should.have.property('id');
-      res.body[0].should.have.property('from', from);
+      res.body[0].should.have.property('from');
       res.body[0].should.have.property('avatar');
       res.body[0].should.have.property('created');
       res.body[0].should.have.property('confirmed');
       res.body[0].should.have.property('blacklist');
+
+      res.body[0].from.should.contain(from);
     });
   });
 
-  it('should return a list of all users matching a nickname', function() {
-    return get({ url: '/users', data: { nickname: nickname }}).then((res) => {
+  it('should return a list of all users matching a nickname', () => {
+    return get({ url: '/users', data: { nickname }}).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.equal(1);
       res.body[0].should.have.property('id');
@@ -59,12 +61,12 @@ describe('Find', function() {
     });
   });
 
-  it('should return associated players with each user', function() {
+  it.only('should return associated players with each user', () => {
     const nickname = 'foobar';
     return createUser(nickname).then((user) => {
       return createUser(nickname);
     }).then(() => {
-      return get({ url: '/users', data: { nickname: nickname }});
+      return get({ url: '/users', data: { nickname }});
     }).then((res) => {
       res.statusCode.should.equal(200);
       res.body[0].should.have.property('players');
@@ -83,23 +85,23 @@ describe('Find', function() {
     });
   });
 
-  describe('findOne', function() {
-    it('should only accept numeric IDs', function() {
+  describe('findOne', () => {
+    it('should only accept numeric IDs', () => {
       return get({ url: `/users/foo` }).then((res) => {
         res.statusCode.should.equal(400);
       });
     });
 
-    it('should return blank for a user not found', function() {
+    it('should return blank for a user not found', () => {
       return get({ url: `/users/999999999` }).then((res) => {
         res.statusCode.should.equal(200);
         res.body.should.not.have.property('id');
       });
     });
 
-    it('should return a single user', function() {
+    it('should return a single user', () => {
       return User.find().then((users) => {
-        let user = users[0];
+        const user = users[0];
         return get({ url: `/users/${user.id}` }).then((res) => {
           res.statusCode.should.equal(200);
           res.body.id.should.equal(user.id);
@@ -115,7 +117,7 @@ describe('Find', function() {
       });
     });
 
-    it('should return all the players associated with a user', function() {
+    it('should return all the players associated with a user', () => {
       return createUser(Math.random()).then((user) => {
         return get({ url: `/users/${user.id}` }).then((res) => {
           res.statusCode.should.equal(200);
@@ -128,7 +130,7 @@ describe('Find', function() {
 });
 
 function createUser(nickname) {
-  return post({ url: '/users', data: { from: Math.random(), to: game_number, nickname: nickname+Math.random() }}).then((res) => {
+  return post({ url: '/users', data: { from: Math.random(), to: game_number, protocol_id: 1, nickname: nickname+Math.random() }}).then((res) => {
     const user = res.body;
     return post({
       url: '/games',

@@ -13,6 +13,9 @@ const User = {
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
+    if ( ! params.protocol_id ) {
+      throw "You must provide a protocol id for a user";
+    }
 
     let nickname = '';
     if ( params.nickname ) {
@@ -35,6 +38,7 @@ const User = {
                       from: number,
                       avatar,
                       nickname,
+                      protocol_id: params.protocol_id,
                       maximum_games: default_maximum_games
                     });
       return db.create(query).then((result) => {
@@ -73,7 +77,6 @@ const User = {
     return db.query(query).then((rows) => {
       if ( rows && rows.changedRows ) {
         return User.findOne(user.id).then((user) => {
-          //console.log('updated user', params, user);
           return user;
         });
       } else {
@@ -135,13 +138,18 @@ const User = {
       query = query.where('u.`from` LIKE ?',params.from+'%');
     }
 
+    if ( params.protocol_id ) {
+      query = query.where('u.`protocol_id` = ?',params.protocol_id);
+    }
+
     if ( params.player_id ) {
       query = query
               .where('p.id=?',params.player_id);
     }
 
     const archived = params.archived || 0;
-    query.where('u.archived=?', archived);
+    query = query.where('u.archived=?', archived);
+    query = query.group('u.id');
 
     return db.query(query).then((users) => {
       if ( users.length ) {

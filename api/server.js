@@ -3,12 +3,12 @@
 const pmx = require('pmx');
 const app = require('express')();
 
-const service = require('microservice-registry');
+const registry = require('microservice-registry');
 
 const port = process.env.PORT || 1338;
+console.log('port', port);
 
-service.register('api',{
-  services: ['testqueue'],
+registry.register('api',{
   api: require('./manifest')(port)
 });
 
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 app.listen(app.get('port'), () => {
   console.info(`EmojinaryFriend API: ${process.env.ENVIRONMENT}`);
-  service.ready();
+  registry.ready();
 });
 
 app.use(pmx.expressErrorHandler());

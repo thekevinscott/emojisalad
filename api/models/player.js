@@ -1,10 +1,11 @@
 'use strict';
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
-//const Promise = require('bluebird');
 const User = require('models/user');
-//const _ = require('lodash');
 let Game;
+const registry = require('microservice-registry');
+const Promise = require('bluebird');
+const request = Promise.promisify(require('request'));
 
 const Player = {
   // create a new player
@@ -13,11 +14,11 @@ const Player = {
       Game = require('./game');
     }
     if ( ! params.from && ! params.user_id ) {
-      throw "You must provide a from or user_id field";
+      throw "you must provide a from or user_id field";
     }
 
     if ( ! params.game_id) {
-      throw "You must provide a game_id field";
+      throw "you must provide a game_id field";
     }
 
     let user_params = {};
@@ -26,57 +27,58 @@ const Player = {
     } else {
       user_params = { from: params.from };
     }
+    console.log('find user');
     return User.findOne(user_params).then((user) => {
       if ( ! user || !user.id ) {
-        throw 'You must provide a valid from or user_id field';
+        throw 'you must provide a valid from or user_id field';
       } else {
         return user;
       }
     }).then((user) => {
       let number_query;
+      let options;
+
+      console.log('got user');
+      const service = registry.get('testqueue');
       if ( params.to ) {
-        number_query = squel
-                       .select()
-                       .field('id')
-                       .field('number')
-                       .from('game_numbers','n')
-                       .where('n.number=?', params.to);
+
+        options = {
+          url: processEndpoint(service.api.senders.getID.endpoint, { sender: params.to }),
+          method: service.api.senders.getID.method
+        };
       } else {
         // no game number has been specified;
         // for instance, if an invite has
         // been created.
         //
-        // In this case, we auto generate a game
+        // in this case, we auto generate a game
         // number for this player
-        const get_to_query = squel
-                             .select({ autoEscapeFieldNames: true })
-                             .field('p.`to`')
-                             //.field('`to`')
-                             .from('players','p')
-                             .where('p.user_id=?',user.id);
-
-        number_query = squel
-                       .select()
-                       .field('id')
-                       .field('number')
-                       .from('game_numbers','n')
-                       .where('n.id NOT IN ?', get_to_query)
-                       .order('id')
-                       .limit(1);
+        options = {
+          url: service.api.senders.get.endpoint,
+          method: service.api.senders.get.method
+        };
       }
 
-      return db.query(number_query.toString()).then((numbers_rows) => {
-
-        if ( !numbers_rows.length ) {
-          console.error(number_query.toString());
-          throw "No game number found";
-        } else {
-          return {
-            to : numbers_rows[0].id,
-            user_id: user.id
-          };
-        }
+      return request(options).then((response) => {
+        return JSON.parse(response.body);
+      }).then((response) => {
+        return {
+          to: response.id,
+          user_id: user.id
+        };
       });
+      //return db.query(number_query.toString()).then((numbers_rows) => {
+
+        //if ( !numbers_rows.length ) {
+          //console.error(number_query.toString());
+          //throw "No game number found";
+        //} else {
+          //return {
+            //to : numbers_rows[0].id,
+            //user_id: user.id
+          //};
+        //}
+      //});
     }).then((player_params) => {
       return Game.findOne(params.game_id).then((game) => {
         if ( ! game || !game.id ) {
@@ -105,6 +107,7 @@ const Player = {
         //state = 'waiting-for-confirmation';
       //}
 
+      console.log(query.toString());
       //query.setFields({ 'state_id': squel
                                    //.select()
                                    //.field('id')
@@ -112,8 +115,15 @@ const Player = {
                                    //.where('state=?',state)});
 
 
-      return db.create(query.toString()).then((result) => {
-        return Player.findOne(result.insertId);
+      return Player.findOne( player_params ).then((pl) => {
+        console.log('pl', pl);
+        return db.create(query.toString()).then((result) => {
+          console.log('result', result);
+          return Player.findOne(result.insertId);
+        }).catch((err) => {
+          console.error('err', err);
+          throw err;
+        });
       });
     });
   },
@@ -132,7 +142,6 @@ const Player = {
 
   find: (params = {}) => {
     console.info('player find params', params);
-    //console.log('find player with params', params);
     let archived = 0;
     if ( params.archived !== undefined ) {
       archived = params.archived;
@@ -143,7 +152,8 @@ const Player = {
                 .field('p.id')
                 .field('p.created')
                 .field('p.archived')
-                .field('n.number','to')
+                .field('p.`to`')
+                //.field('n.number','to')
                 //.field('p.state_id')
                 .field('u.id', 'user_id')
                 .field('g.id', 'game_id')
@@ -152,11 +162,12 @@ const Player = {
                 .field('u.from')
                 .field('u.blacklist')
                 .field('u.avatar')
+                .field('u.protocol_id')
                 .field('u.archived', 'user_archived')
                 .from('players', 'p')
                 .where('p.archived=?', archived)
                 .order('p.id')
-                .left_join('game_numbers','n','n.id=p.`to`')
+                //.left_join('game_numbers','n','n.id=p.`to`')
                 .left_join('games','g','g.id=p.game_id')
                 .left_join('users', 'u', 'u.id=p.user_id');
 
@@ -171,7 +182,8 @@ const Player = {
     }
 
     if ( params.to ) {
-      query = query.where('n.`number` = ?',params.to);
+      //query = query.where('n.`number` = ?',params.to);
+      query = query.where('p.`to` = ?',params.to);
     }
 
     if ( params.from ) {
@@ -186,15 +198,19 @@ const Player = {
       query = query.where('u.`id` IN ?',params.user_ids);
     }
 
+    if ( params.protocol_id ) {
+      query = query.where('u.protocol_id = ?',params.protocol_id);
+    }
+
     if ( params.game_id ) {
       query = query.where('g.`id` = ?',params.game_id);
     } else if ( params.game_ids ) {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 
-    //console.log('find player', query.toString());
     return db.query(query);
   },
+  /*
   update: (player, params) => {
     //let whitelist = [
       //'to'
@@ -206,22 +222,16 @@ const Player = {
                   .where('p.id=?', player.id);
 
     let valid_query = false;
-    //whitelist.map((key) => {
-      //if ( params[key] ) {
-        //valid_query = true;
-        //query.set(key, params[key]);
-      //}
-    //});
 
-    if ( params.to ) {
-      valid_query = true;
-      const game_number = squel
-                          .select()
-                          .field('id')
-                          .from('game_numbers','n')
-                          .where('number = ?', params.to);
-      query.set('`to`', game_number);
-    }
+    //if ( params.to ) {
+      //valid_query = true;
+      //const game_number = squel
+                          //.select()
+                          //.field('id')
+                          //.from('game_numbers','n')
+                          //.where('number = ?', params.to);
+      //query.set('`to`', game_number);
+    //}
 
     if ( ! valid_query ) {
       throw "You must provide a valid key to update";
@@ -235,40 +245,7 @@ const Player = {
       }
     });
   },
-  //logLastActivity: function(player, game_number) {
-    //if ( ! Game ) {
-      //Game = require('./game');
-    //}
-    //const promises = [];
-    //if ( player && player.id ) {
-      //let update_player = squel
-                        //.update()
-                        //.table('players')
-                        //.setFields({
-                          //last_activity: squel.fval('NOW(3)')
-                        //})
-                       //.where('id=?',player.id);
-
-      //promises.push(db.query(update_player));
-
-      //promises.push(Game.get({ player: player, game_number: game_number }).then((game) => {
-        //if ( game && game.id ) {
-
-          //const update_game = squel
-                              //.update()
-                              //.table('games')
-                              //.setFields({
-                                //last_activity: squel.fval('NOW(3)')
-                              //})
-                             //.where('id=?',game.id);
-
-          //return db.query(update_game);
-        //}
-      //}));
-    //}
-
-    //return Promise.all(promises);
-  //},
+  */
   remove: (player_id) => {
     const query = squel
                   .update()
@@ -287,3 +264,29 @@ const Player = {
 };
 
 module.exports = Player;
+
+const processEndpoint = (endpoint, params = {}) => {
+  const parts = endpoint.split(/^(.*):\/\/([A-Za-z0-9\-\.]+)(:[0-9]+)?(.*)/);
+  let rest;
+  while ( ! rest && parts.length ) {
+    rest = parts.pop();
+  }
+  const keys = Object.keys(params);
+  const processed_rest = rest.split('/').map((piece) => {
+    const index = keys.indexOf(piece.substring(1));
+    if ( piece.substring(0,1) === ':' && index !== -1 ) {
+      const key = keys[index];
+      return params[key];
+    } else {
+      return piece;
+    }
+  });
+
+  return [
+    parts[1],
+    '://',
+    parts[2],
+    parts[3],
+    processed_rest.join('/')
+  ].join('');
+};

@@ -70,7 +70,6 @@ const Round = {
     // check distance of phrase
     //const levenshtein_distance = levenshtein(phrase, guess);
     const distance = levenshtein(phrase, guess) / phrase.length;
-    //console.log('distance', distance);
     //const acceptable_distance = 6;
     //return levenshtein_distance <= acceptable_distance;
     return distance <= 0.31;
@@ -316,9 +315,7 @@ const Round = {
               .where('r.game_id IN ?',params.game_ids);
     }
 
-    console.log('prepare to find round');
     return db.query(query).then((rounds) => {
-      console.log('got roudns back');
       if ( rounds.length ) {
         if ( params.most_recent ) {
           const rounds_by_game_id = rounds.reduce((obj, round) => {

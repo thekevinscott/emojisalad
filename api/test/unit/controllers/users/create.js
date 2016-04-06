@@ -2,12 +2,12 @@ const post = require('test/support/request').post;
 
 const User = require('models/user');
 let game_number;
-describe('Create', function() {
-  before(function() {
+describe('Create', () => {
+  before(() => {
     game_number = '+15559999999';
   });
-  describe('Invalid', function() {
-    it('should reject a missing from', function() {
+  describe('Invalid', () => {
+    it('should reject a missing from', () => {
       return post({
         url: '/users',
         data: { }
@@ -16,18 +16,32 @@ describe('Create', function() {
         res.error.text.should.contain('You must provide a from field');
       });
     });
+
+    it('should reject a missing protocol id', () => {
+      return post({
+        url: '/users',
+        data: {
+          from: 'foobar'
+        }
+      }).then((res) => {
+        res.statusCode.should.equal(400);
+        res.error.text.should.contain('You must provide a protocol id');
+      });
+    });
   });
 
-  describe('Valid', function() {
-    it('should create a user', function() {
+  describe('Valid', () => {
+    it('should create a user', () => {
       return User.find().then((users) => {
         const len = users.length;
         return post({
           url: '/users',
           data: {
-            from: ''+Math.random()
+            from: ''+Math.random(),
+            protocol_id: 1
           }
         }).then((res) => {
+          //console.log('res', res);
           res.statusCode.should.equal(200);
           return User.find();
         }).then((users) => {
@@ -36,12 +50,13 @@ describe('Create', function() {
       });
     });
 
-    it('should respond to create with the user payload', function() {
+    it('should respond to create with the user payload', () => {
       const from = ''+Math.random();
       return post({
         url: '/users',
         data: {
-          from: from
+          from,
+          protocol_id: 1
         }
       }).then((res) => {
         res.body.from.should.equal(from);
@@ -54,12 +69,13 @@ describe('Create', function() {
       });
     });
 
-    it('should default to 0 for confirmed', function() {
+    it('should default to 0 for confirmed', () => {
       const from = ''+Math.random();
       return post({
         url: '/users',
         data: {
-          from: from
+          from,
+          protocol_id: 1
         }
       }).then((res) => {
         return User.findOne(res.body.id);
@@ -69,12 +85,13 @@ describe('Create', function() {
       });
     });
 
-    it('should default to 0 for confirmed_avatar', function() {
+    it('should default to 0 for confirmed_avatar', () => {
       const from = ''+Math.random();
       return post({
         url: '/users',
         data: {
-          from: from
+          from,
+          protocol_id: 1
         }
       }).then((res) => {
         return User.findOne(res.body.id);

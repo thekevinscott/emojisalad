@@ -1,4 +1,3 @@
-const services = {
-}
+const services = { };
 
 module.exports = services;

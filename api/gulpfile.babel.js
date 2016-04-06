@@ -60,12 +60,27 @@ gulp.task('update-fixtures', (cb) => {
       table: 'games'
     },
     'game_phrases',
-    'guesses',
-    'invites',
+    {
+      data: false,
+      table: 'guesses'
+    },
+    {
+      data: false,
+      table: 'invites'
+    },
     'phrases',
-    'players',
-    'rounds',
-    'users'
+    {
+      data: false,
+      table: 'players'
+    },
+    {
+      data: false,
+      table: 'rounds'
+    },
+    {
+      data: false,
+      table: 'users'
+    }
   ];
   return shared.pullDB(production, tmp, tables).then((file) => {
     return shared.exec(['rm -f',sql_file].join(' ')).then(() => {

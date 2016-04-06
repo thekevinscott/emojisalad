@@ -107,6 +107,7 @@ const Game = {
     });
   },
   add: (game, users) => {
+    console.info('get ready to add users to game', game, users);
     //console.debug('huzzah add');
     return new Promise((resolve) => {
       resolve();
@@ -117,6 +118,7 @@ const Game = {
         return Game.findOne(game.id);
       }
     }).then((game) => {
+      console.info('found teh game', game, users);
       return Promise.all(users.map((user) => {
         const player_params = {
           game_id: game.id,
@@ -125,10 +127,13 @@ const Game = {
         if ( user.to ) {
           player_params.to = user.to;
         }
-        return Player.create(player_params).catch(() => {
+        console.info('prepare to create player');
+        return Player.create(player_params).catch((err) => {
+          console.info('did not create player', err);
           return null;
         });
       })).then((players) => {
+        console.info('players created', players);
         game.players = game.players.concat(players.filter(player => player));
         return game;
       });
@@ -173,7 +178,7 @@ const Game = {
                 .field('COUNT(r.id)', 'round_count')
                 .left_join(rounds, 'r', 'r.game_id=g.id')
                 .group('g.id')
-                .group('r.id')
+                //.group('r.id')
                 .from('games', 'g');
 
     if ( params.id ) {
@@ -205,7 +210,7 @@ const Game = {
       }, {});
     };
 
-    console.info('api query', query.toString());
+    console.log('api query', query.toString());
 
     return db.query(query).then((games) => {
       console.info('return from games');

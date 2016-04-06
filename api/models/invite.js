@@ -6,6 +6,8 @@ const Player = require('./player');
 const User = require('./user');
 const Game = require('./game');
 const _ = require('lodash');
+const registry = require('microservice-registry');
+const request = Promise.promisify(require('request'));
 
 const Invite = {
   /**
@@ -25,17 +27,17 @@ const Invite = {
         throw "You must provide a valid inviter_id";
       }
     }).then((inviter_player) => {
+      //console.info('inviter stuff', inviter_player);
       //console.debug('create 3', params.invites);
       return Promise.all(params.invites.map((invite) => {
         return User.findOne({ from: invite }).then((user) => {
           if ( user && user.id ) {
             return user;
           } else {
-            return User.create({ from: invite });
+            return User.create({ from: invite, protocol_id: inviter_player.protocol_id });
           }
         });
       })).then((invited_users) => {
-        //console.log('invited users', invited_users);
         return Game.findOne({ player_id: params.inviter_id }).then((game) => {
           const players = game.players.map((player) => {
             return player.from;
@@ -52,7 +54,6 @@ const Invite = {
                 code: 1203
               };
             } else if ( players.indexOf(invited_user.from) !== -1 ) {
-              //console.log('players', players, invited_user.from);
               return {
                 error: `User is already in game`,
                 code: 1205
@@ -75,40 +76,41 @@ const Invite = {
                     code: 1203
                   };
                 } else {
-                  //const game_number = inviter_player.to;
-                  const player_game_numbers = invited_user.players.map((player) => {
+                  const player_sender_ids = invited_user.players.map((player) => {
                     return player.to;
                   });
-                  let game_number_id = squel
-                                       .select()
-                                       .field('id')
-                                       .field('number')
-                                       .from('game_numbers', 'n')
-                                       .limit(1);
 
-                  if ( player_game_numbers.length ) {
-                    game_number_id = game_number_id.where('n.number NOT IN ?', player_game_numbers);
-                  }
-                  return db.query(game_number_id.toString()).then((rows) => {
-                    if ( rows && rows.length ) {
-                      const game_number = rows[0];
+                  const service = registry.get('testqueue');
+                  const options = {
+                    url: service.api.senders.get.endpoint,
+                    method: service.api.senders.get.method,
+                    qs: {
+                      exclude: player_sender_ids
+                    }
+                  };
+
+                  return request(options).then((response) => {
+                    return JSON.parse(response.body);
+                  }).then((response) => {
+                    if ( response && response.id ) {
+                      //const game_number = rows[0];
 
                       const query = squel
                                     .insert()
                                     .into('invites')
                                     .set('game_id', game.id)
-                                    .set('game_number_id', game_number.id)
+                                    //.set('game_number_id', game_number.id)
+                                    .set('game_number_id', response.id)
                                     .set('invited_id', invited_user.id)
                                     .set('inviter_id', params.inviter_id);
 
                       return db.query(query.toString()).then((row) => {
-                        invited_user.to = game_number.number;
-                        //console.log('invited user', invited_user);
+                        //invited_user.to = game_number.number;
+                        invited_user.to = response.id;
 
                         return {
                           id: row.insertId,
                           game,
-                          //game_number,
                           invited_user,
                           inviter_player
                         };
@@ -150,10 +152,11 @@ const Invite = {
   find: (params = {}) => {
     let query = squel
                 .select()
-                .field('n.number', 'game_number')
+                .field('i.game_number_id', 'sender')
+                //.field('n.number', 'game_number')
                 .field('i.*')
                 .from('invites', 'i')
-                .left_join('game_numbers', 'n', 'n.id=i.game_number_id')
+                //.left_join('game_numbers', 'n', 'n.id=i.game_number_id')
                 .left_join('games', 'g', 'g.id=i.game_id');
 
     if ( params.id ) {
@@ -201,7 +204,8 @@ const Invite = {
               return {
                 id: invite.id,
                 game: games[invite.game_id],
-                invited_user: _.assign({ to: invite.game_number }, users[invite.invited_id]),
+                //invited_user: _.assign({ to: invite.game_number }, users[invite.invited_id]),
+                invited_user: _.assign({ to: invite.sender }, users[invite.invited_id]),
                 inviter_player: players[invite.inviter_id],
                 used: invite.used
               };
