@@ -13,7 +13,7 @@ const User = {
     if ( ! params.from ) {
       throw "You must provide a from field for a user";
     }
-    if ( ! params.protocol_id ) {
+    if ( ! params.protocol ) {
       throw "You must provide a protocol id for a user";
     }
 
@@ -38,7 +38,7 @@ const User = {
                       from: number,
                       avatar,
                       nickname,
-                      protocol_id: params.protocol_id,
+                      protocol: params.protocol,
                       maximum_games: default_maximum_games
                     });
       return db.create(query).then((result) => {
@@ -138,8 +138,8 @@ const User = {
       query = query.where('u.`from` LIKE ?',params.from+'%');
     }
 
-    if ( params.protocol_id ) {
-      query = query.where('u.`protocol_id` = ?',params.protocol_id);
+    if ( params.protocol ) {
+      query = query.where('u.`protocol` = ?',params.protocol);
     }
 
     if ( params.player_id ) {

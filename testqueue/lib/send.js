@@ -15,21 +15,18 @@ const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
 const _ = require('lodash');
 
-module.exports = Promise.coroutine(function* (params) {
+module.exports = (params) => {
   const url = `http://localhost:${process.env.CALLBACK_PORT}`;
 
-  try {
-    const result = request({
-      method: 'POST',
-      url: url,
-      form: params
+  request({
+    method: 'POST',
+    url,
+    form: params
+  });
+  return new Promise((resolve) => {
+    resolve({
+      status: 1
     });
-  } catch(err) {
-    // just eat the error, it dont matter
-    console.debug('error', err);
-  }
+  });
 
-  return {
-    status: 1
-  };
-});
+};

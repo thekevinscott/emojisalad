@@ -24,7 +24,7 @@ const tripwire_settings = {
   trip: process.env.TRIPWIRE_TRIP || 20
 };
 
-const callbacks = [];
+let callbacks = [];
 
 const sequential = (fns) => {
   return Promise.reduce(fns, (response, fn) => {
@@ -44,10 +44,14 @@ const sequential = (fns) => {
 // immediately on complete (but only one ping can get queued up)
 const read = () => {
   if ( processing === false ) {
+    //console.log('process read');
     //console.info('read');
     processing = true;
 
-    return runRead().catch((err) => {
+    return runRead().then(() => {
+      //console.log('run read is complete');
+    }).catch((err) => {
+      //console.log('error with read');
       console.error(err.stack);
       pmx.notify(err);
       if ( timer ) {
@@ -56,69 +60,85 @@ const read = () => {
       console.info('set processing to false 2');
       throw err;
     }).finally(() => {
+      //console.log('done with read', callbacks.length);
       processing = false;
       if ( callbacks.length ) {
-        const output_promise_of_read = read();
-        while ( callbacks.length ) {
-          const callback = callbacks.pop();
-          callback(output_promise_of_read);
-        }
+        //console.log('immediately do anotehr read');
+        const callbacks_to_process = callbacks;
+        callbacks = [];
+        return read().then((output_promise_of_read) => {
+          callbacks_to_process.map((callback) => {
+            callback(output_promise_of_read);
+          });
+        });
       } else {
+        //console.log('no clalbacks, let it sit');
         timer = setTimeout(read, runTime*1000);
       }
     });
   } else {
+    //console.log('do not process read (yet)');
     return new Promise((resolve) => {
       console.info('read is already processing, queue this for the next go round');
       //queued_read_action = true;
       callbacks.push((promise) => {
+        //console.log('processed waiting read!');
         resolve(promise);
       });
     });
   }
 };
 
-const getProtocolIDs = () => {
-  const protocol_ids = {};
+const getLastProtocolMessageIDs = () => {
+  const last_protocol_message_ids = {};
   return Promise.all(allowed_protocols.map((protocol) => {
     return store(`${protocol}_queue_id`).then((id) => {
       if ( ! id ) {
         id = 0;
       }
-      protocol_ids[protocol] = id;
+      last_protocol_message_ids[protocol] = id;
     });
   })).then(() => {
-    return protocol_ids;
+    return last_protocol_message_ids;
   });
 };
 
 const runRead = () => {
-  return getProtocolIDs().then((protocol_ids) => {
-    return getMessages(protocol_ids, allowed_protocols, tripwire_settings).then((messages) => {
-      //console.info('messages returned', messages);
-      if ( messages.length ) {
-        console.info('got messages', messages.map((message) => {
+  //console.log('run read 1');
+  return getLastProtocolMessageIDs().then((last_protocol_message_ids) => {
+    //console.log('run read 2');
+    return getMessages(last_protocol_message_ids, allowed_protocols, tripwire_settings);
+  }).then((messages) => {
+    //console.log('run read 3');
+    if ( messages.length ) {
+      //console.log('run read 4');
+      console.info('got messages', messages.map((message) => {
+        return message;
+      }));
+      return setStore(messages).then(() => {
+        //console.log('run read 5');
+        console.info('the retrieved messages from the protocol', messages);
+        return sequential(messages.map((message) => {
+          return () => {
+            return processMessage(message);
+          };
+        })).filter((message) => {
+          // remove any undefined messages;
+          // we might get these if there's no response,
+          // for instance, if a user marks herself
+          // as blacklisted.
           return message;
-        }));
-        return setStore(messages).then(() => {
-          console.info('the retrieved messages from the protocol', messages);
-          return sequential(messages.map((message) => {
-            return () => {
-              return processMessage(message);
-            };
-          })).filter((message) => {
-            // remove any undefined messages;
-            // we might get these if there's no response,
-            // for instance, if a user marks herself
-            // as blacklisted.
-            return message;
-          }).then((processed_messages) => {
-            console.info('processed messages', processed_messages.length);
-            return sendMessages(processed_messages);
-          });
+        }).then((processed_messages) => {
+          //console.log('run read 6');
+          console.info('processed messages', processed_messages.length);
+          return sendMessages(processed_messages);
         });
-      }
-    });
+      });
+    } else {
+      //console.log('run read 4b');
+    }
+  }).then(() => {
+    //console.log('run read 7 - everything is done!');
   });
 };
 

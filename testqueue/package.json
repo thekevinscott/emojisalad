@@ -17,7 +17,7 @@
     "node-discovery": "^0.2.1-1",
     "pmx": "^0.6.0",
     "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
-    "squel": "^4.2.3",
+    "squel": "^4.0.0",
     "yargs": "^3.32.0"
   },
   "devDependencies": {

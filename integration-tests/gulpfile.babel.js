@@ -42,12 +42,10 @@ const seed = () => {
   ];
   return Promise.all(commands.map((command) => {
     process.chdir(command.chdir);
-    const seed_command = [
-      [
-        'gulp',
-        'seed'
-      ].join(' ')
-    ];
+    const seed_command = [[
+      'gulp',
+      'seed'
+    ].join(' ')];
     return shared.exec(seed_command);
   })).then((res) => {
     console.log(`Seeding complete`);
@@ -84,7 +82,7 @@ const startServers = (debug, log_level) => {
         '--CALLBACK_PORT',
         '3999',
         '--LOG_LEVEL',
-        'warning'
+        'info'
       ]
     },
     {
@@ -97,9 +95,7 @@ const startServers = (debug, log_level) => {
         '--TRIPWIRE_ALERT',
         '9999999',
         '--PROTOCOLS',
-        [
-          'testqueue'
-        ].join(',')
+        [ 'testqueue' ].join(',')
       ],
       port: bot_port
     }
@@ -116,16 +112,6 @@ const startServers = (debug, log_level) => {
 
   return Promise.all(commands.map((cmd) => {
     return new Promise((resolve) => {
-      let child;
-      d.on('added', (obj) => {
-        if ( obj.advertisement ) {
-          const service = JSON.parse(lzw.decode(obj.advertisement));
-          if ( service.available ) {
-            begin_talking = true;
-            resolve(child);
-          }
-        }
-      });
 
       process.chdir(cmd.chdir);
       const command = 'gulp';
@@ -139,9 +125,18 @@ const startServers = (debug, log_level) => {
         cmd.port
       ].concat(cmd.args || []);
 
-      child = shared.spawn(command, args, stdout, stderr, () => {
+      const child = shared.spawn(command, args, stdout, stderr, () => {
         //console.log('close a service');
         //console.log(`close service ${cmd.chdir.split('../').pop()}`);
+      });
+      d.on('added', (obj) => {
+        if ( obj.advertisement ) {
+          const service = JSON.parse(lzw.decode(obj.advertisement));
+          if ( service.available ) {
+            begin_talking = true;
+            resolve(child);
+          }
+        }
       });
 
       child.stdout.on('data', (data) => {

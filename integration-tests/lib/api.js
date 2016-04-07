@@ -7,7 +7,7 @@ const port = services.api.port;
 const api = (params) => {
   const url = `http://localhost:${port}/${params.url}`;
 
-  let options = {
+  const options = {
     url: url,
     method: params.method || 'GET',
   };

@@ -7,13 +7,13 @@ Promise.promisifyAll(require("mysql/lib/Connection").prototype);
 Promise.promisifyAll(require("mysql/lib/Pool").prototype);
 
 function getPool(config) {
-  let pool = mysql.createPool({
+  const pool = mysql.createPool({
     host     : config.host,
     user     : config.user,
     password : config.password,
     charset  : config.charset,
     database : config.database,
-    connectionLimit: 10,
+    connectionLimit: 10
   });
 
   function getConnection() {
@@ -21,9 +21,9 @@ function getPool(config) {
   }
 
   return {
-    query: function(sql) {
-      return getConnection().then(function(conn) {
-        let args = [];
+    query: (sql) => {
+      return getConnection().then((conn) => {
+        const args = [];
         if ( typeof(sql) === 'string' ) {
           args.push(sql);
         } else {
@@ -32,15 +32,15 @@ function getPool(config) {
           args.push(param.values);
         }
 
-        return conn.queryAsync.apply(conn,args).then(function(rows) {
+        return conn.queryAsync.apply(conn,args).then((rows) => {
           return rows[0];
-        }).catch(function(err) {
+        }).catch((err) => {
           if ( err ) {
             switch(err.errno) {
               // dup entry
             case 1062:
               return null;
-            default: 
+            default:
               if ( typeof(sql) === 'string' ) {
                 err.sql = sql;
               } else {
@@ -53,7 +53,7 @@ function getPool(config) {
             }
           }
           throw err;
-        }).finally(function() {
+        }).finally(() => {
           conn.release();
         });
       });
@@ -61,7 +61,7 @@ function getPool(config) {
   };
 }
 
-let pools = new Map();
+const pools = new Map();
 
 function getDB(config) {
   if (!pools.get(config)) {
@@ -70,7 +70,7 @@ function getDB(config) {
   //} else {
     //console.log('pool already exists for ',config.database);
   }
-  let pool = pools.get(config);
+  const pool = pools.get(config);
   return pool;
 }
 

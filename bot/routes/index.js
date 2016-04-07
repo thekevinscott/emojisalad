@@ -5,13 +5,14 @@
 const Player = require('models/player');
 const User = require('models/user');
 
-const Router = (from, message, to) => {
-  console.info(`===========Router Index: ${message} | ${from} | ${to} `);
+const Router = (from, message, to, protocol) => {
+  console.info(`===========Router Index: ${message} | ${from} | ${to} | ${protocol}`);
   return Player.get({
     from,
-    to
+    to,
+    protocol
   }).then((players) => {
-    console.info('players', players);
+    //console.info('players', players);
     if ( players.length ) {
       const player = players.shift();
       //console.debug('Make sure to check blacklisted status here');
@@ -19,7 +20,8 @@ const Router = (from, message, to) => {
         console.info('blacklisted player', player);
         return;
       } else {
-        console.info('send to game', player, message);
+        console.info('send to game');
+        //console.info('send to game', player, message);
         return require('./game')(player, message);
       }
       // this means we are in a game
@@ -28,7 +30,8 @@ const Router = (from, message, to) => {
       // or being onboarded
       console.info(`prepare to get users by from, ${from}`);
       return User.get({
-        from
+        from,
+        protocol
       }).then((users) => {
         //console.info('users back', users);
         // if user exists, we are being onboarded
@@ -45,7 +48,7 @@ const Router = (from, message, to) => {
           }
         } else {
           console.info('create user');
-          return require('./create-user')(from, message, to);
+          return require('./create-user')(from, message, to, protocol);
         }
       });
     }

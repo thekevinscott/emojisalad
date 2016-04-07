@@ -34,7 +34,7 @@ const Invite = {
           if ( user && user.id ) {
             return user;
           } else {
-            return User.create({ from: invite, protocol_id: inviter_player.protocol_id });
+            return User.create({ from: invite, protocol: inviter_player.protocol });
           }
         });
       })).then((invited_users) => {

@@ -6,6 +6,7 @@ const Promise = require('bluebird');
 const fetch = require('isomorphic-fetch');
 
 queue({
+  name: 'mail',
   options: {
     port: require('config/app').port,
     db: require('config/db')

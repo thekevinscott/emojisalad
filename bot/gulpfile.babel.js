@@ -62,7 +62,14 @@ gulp.task('update-fixtures', (cb) => {
       table: 'messages',
       data: true
     },
-    'attributes'
+    {
+      table: 'attributes',
+      data: false
+    },
+    {
+      table: 'protocols',
+      data: false
+    }
   ];
   return shared.pullDB(production, tmp, tables).then((file) => {
     return shared.exec(['rm -f',sql_file].join(' ')).then(() => {

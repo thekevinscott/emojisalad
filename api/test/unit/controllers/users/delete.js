@@ -11,7 +11,7 @@ describe('Delete', () => {
   before(() => {
     game_number = '+15559999999';
     return Promise.all([
-      post({ url: '/users', data: { protocol_id: 1, from, to: game_number }})
+      post({ url: '/users', data: { protocol: 'testqueue', from, to: game_number }})
     ]);
   });
 

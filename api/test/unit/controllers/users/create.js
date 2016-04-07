@@ -38,7 +38,7 @@ describe('Create', () => {
           url: '/users',
           data: {
             from: ''+Math.random(),
-            protocol_id: 1
+            protocol: 'testqueue'
           }
         }).then((res) => {
           //console.log('res', res);
@@ -56,7 +56,7 @@ describe('Create', () => {
         url: '/users',
         data: {
           from,
-          protocol_id: 1
+          protocol: 'testqueue'
         }
       }).then((res) => {
         res.body.from.should.equal(from);
@@ -75,7 +75,7 @@ describe('Create', () => {
         url: '/users',
         data: {
           from,
-          protocol_id: 1
+          protocol: 'testqueue'
         }
       }).then((res) => {
         return User.findOne(res.body.id);
@@ -91,7 +91,7 @@ describe('Create', () => {
         url: '/users',
         data: {
           from,
-          protocol_id: 1
+          protocol: 'testqueue'
         }
       }).then((res) => {
         return User.findOne(res.body.id);

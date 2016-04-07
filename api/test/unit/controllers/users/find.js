@@ -11,9 +11,9 @@ describe('Find', () => {
   before(() => {
     game_number = '+15559999999';
     return Promise.all([
-      post({ url: '/users', data: { protocol_id: 1, from, to: game_number }}),
-      post({ url: '/users', data: { protocol_id: 1, from: from+'a', to: game_number }}),
-      post({ url: '/users', data: { protocol_id: 1, from: Math.random(), to: game_number, nickname }})
+      post({ url: '/users', data: { protocol: 'testqueue', from, to: game_number }}),
+      post({ url: '/users', data: { protocol: 'testqueue', from: from+'a', to: game_number }}),
+      post({ url: '/users', data: { protocol: 'testqueue', from: Math.random(), to: game_number, nickname }})
     ]);
   });
 
@@ -130,7 +130,7 @@ describe('Find', () => {
 });
 
 function createUser(nickname) {
-  return post({ url: '/users', data: { from: Math.random(), to: game_number, protocol_id: 1, nickname: nickname+Math.random() }}).then((res) => {
+  return post({ url: '/users', data: { from: Math.random(), to: game_number, protocol: 'testqueue', nickname: nickname+Math.random() }}).then((res) => {
     const user = res.body;
     return post({
       url: '/games',

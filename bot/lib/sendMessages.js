@@ -7,7 +7,8 @@ const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
 
 const sendMessages = (messages, options = {}) => {
-  console.info('messages to send', messages);
+  //console.log('send 1');
+  //console.info('messages to send', messages);
 
   if ( options.trip && messages.length >= options.trip ) {
     sendAlert(messages, 'tripped', 'send');
@@ -29,12 +30,14 @@ const sendMessages = (messages, options = {}) => {
   }, {});
 
   console.info('messages_by_protocol', messages_by_protocol);
+  //console.log('send 2');
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
-    console.info('protocol', protocol);
+    //console.log('send 3', protocol);
+    //console.info('protocol', protocol);
     const messages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
     //console.info('the messages to send', messages);
-    console.info('service', service);
+    //console.info('service', service);
     const options = {
       url: service.api.send.endpoint,
       method: service.api.send.method,
@@ -43,13 +46,17 @@ const sendMessages = (messages, options = {}) => {
       }
     };
     //console.info('sending options', options);
+    //console.log('send 4', options);
     return request(options).then((response) => {
+      //console.log('send 5');
       //console.info('the gotten repsonse', response);
       return response;
     }).catch((err) => {
+      //console.log('send 5a');
       console.info('error sending response', err);
     });
   })).then((response) => {
+    //console.log('send 6');
     console.info('messages are sent! within sendMessages');
     return response;
   });

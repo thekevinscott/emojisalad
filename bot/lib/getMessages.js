@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
 const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
+//const Protocol = require('./protocol');
 
 //const getMessages = (timestamp, protocols, options = {}) => {
 const getMessages = (ids, protocols, options = {}) => {
@@ -10,6 +11,8 @@ const getMessages = (ids, protocols, options = {}) => {
   if ( ids === undefined ) {
     throw "You must provide ids";
   }
+
+  console.info('the protocols', protocols);
 
   return Promise.all(protocols.map((protocol) => {
     //if ( queue_registrys[protocol] ) {
@@ -36,6 +39,7 @@ const getMessages = (ids, protocols, options = {}) => {
 
       body = body.map((b) => {
         b.protocol = protocol;
+        //b.protocol_id = Protocol.getID(protocol);
         return b;
       });
       return body;

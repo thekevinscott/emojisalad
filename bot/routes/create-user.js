@@ -4,9 +4,9 @@
 const User = require('models/user');
 const _ = require('lodash');
 
-module.exports = (from, input, to) => {
+module.exports = (from, input, to, protocol) => {
   console.info('lets create that user');
-  return User.create({ from }).then((response) => {
+  return User.create({ from, protocol }).then((response) => {
     if ( response.error ) {
       console.error('Error creating user', response);
       throw new Error('Error creating user');

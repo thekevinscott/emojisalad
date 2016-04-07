@@ -31,6 +31,6 @@ app.get('/phone', (req, res) => {
   return phone(number).then((result) => {
     res.json({ number : result });
   }).catch((error) => {
-    res.json({ error : error });
+    res.json({ error });
   });
 });

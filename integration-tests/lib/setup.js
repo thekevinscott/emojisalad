@@ -119,6 +119,7 @@ const getAssociatedMessages = (initiated_id, expected = false) => {
     // only ping the server if we are expecting messages
     if ( expected ) {
       ping = setInterval(() => {
+        console.log('*** get associated messages', initiated_id);
         requestAssociatedMessages(initiated_id, res, expected);
       }, ping_length);
     }

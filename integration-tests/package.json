@@ -57,7 +57,7 @@
     "glob-stream": "^5.3.1",
     "globule": "^0.2.0",
     "grunt": "^0.4.5",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-env": "^0.2.0",
     "gulp-exec": "^2.1.1",
     "gulp-mocha": "^2.1.3",

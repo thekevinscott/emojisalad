@@ -8,18 +8,13 @@ const _ = require('lodash');
 
 const from_name = 'EmojiBot';
 const url = `https://api:${config.apiKey}@api.mailgun.net/v3/${config.domain}/messages`;
-//const url = `https://api.mailgun.net/v3/${config.domain}/messages`;
 module.exports = (params) => {
-  console.info('CUSTOM SEND FUNCTION', params);
   const newParams = {
-    //to: params.to,
-    to: 'thekevinscott@gmail.com',
-    from: `${from_name} <emojibot@${config.domain}>`,
-    text: 'foobar'
+    to: params.to,
+    from: `${from_name} <${params.from}>`,
+    subject: 'Your emojinary friend',
+    text: params.body
   };
-
-  console.info('params to send', newParams);
-  console.log(url);
 
   return request({
     url,
@@ -28,7 +23,6 @@ module.exports = (params) => {
   }).then((response) => {
     return JSON.parse(response.body);
   }).then((message) => {
-    console.log('here we be');
     return { data: JSON.stringify(message) };
   }).catch((err) => {
     console.error('error', err);

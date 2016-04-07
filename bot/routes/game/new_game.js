@@ -25,9 +25,11 @@ module.exports = (user_params) => {
     if ( parseInt(user.number_of_players, 10) < parseInt(user.maximum_games, 10) ) {
       console.info('create the game');
       return Game.create([user]).then((game) => {
+        console.info('created game', game);
         const new_player = game.players.filter((game_player) => {
           return game_player.user_id === user.id;
         }).pop();
+        console.info('new player', new_player);
 
         return [{
           player: new_player,

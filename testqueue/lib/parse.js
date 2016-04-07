@@ -4,5 +4,5 @@ module.exports = function parse(params) {
     to: params.to || params.To,
     from: params.from || params.From,
     data: JSON.stringify(params)
-  }
-}
+  };
+};

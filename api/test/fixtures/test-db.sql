@@ -149,7 +149,7 @@ CREATE TABLE `users` (
   `archived` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `confirmed` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `confirmed_avatar` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `protocol_id` int(11) unsigned NOT NULL,
+  `protocol` varchar(255),
   PRIMARY KEY (`id`),
   UNIQUE KEY `from` (`from`),
   KEY `from_index` (`from`)

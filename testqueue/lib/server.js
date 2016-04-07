@@ -18,11 +18,24 @@ const app = queue({
         endpoint: `${base_url}phone`,
         method: 'GET'
       }
+    },
+    senders: {
+      getID: {
+        endpoint: `${base_url}senders/:sender`,
+        method: 'GET'
+      },
+      get: {
+        endpoint: `${base_url}senders`,
+        method: 'GET'
+      }
     }
   }
 });
 
 app.get('/phone', (req, res) => {
   const number = req.query.number;
-  res.json({ number: number });
+  res.json({ number });
 });
+
+app.get('/senders', require('./senders'));
+app.get('/senders/:sender', require('./senders').getSenderID);

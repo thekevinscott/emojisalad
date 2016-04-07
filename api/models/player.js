@@ -27,21 +27,20 @@ const Player = {
     } else {
       user_params = { from: params.from };
     }
-    console.log('find user');
+
     return User.findOne(user_params).then((user) => {
       if ( ! user || !user.id ) {
         throw 'you must provide a valid from or user_id field';
       } else {
         return user;
       }
+      /*
     }).then((user) => {
       let number_query;
       let options;
-
-      console.log('got user');
-      const service = registry.get('testqueue');
+      const service = registry.get(user.protocol);
+      console.log('5');
       if ( params.to ) {
-
         options = {
           url: processEndpoint(service.api.senders.getID.endpoint, { sender: params.to }),
           method: service.api.senders.getID.method
@@ -59,7 +58,9 @@ const Player = {
         };
       }
 
+      console.log('options', options);
       return request(options).then((response) => {
+        console.log('response', response.body);
         return JSON.parse(response.body);
       }).then((response) => {
         return {
@@ -80,15 +81,22 @@ const Player = {
         //}
       //});
     }).then((player_params) => {
+    */
+    }).then((user) => {
+      //console.log('the player params, with sender id', player_params);
       return Game.findOne(params.game_id).then((game) => {
         if ( ! game || !game.id ) {
           throw 'You must provide a valid game_id';
         } else {
-          player_params.game_id = game.id;
-          return player_params;
+          return {
+            game_id: game.id,
+            user_id: user.id,
+            to: params.to
+          };
         }
       });
     }).then((player_params) => {
+      //console.log('**** player params', player_params);
       const query = squel
                     .insert({ autoQuoteFieldNames: true })
                     .into('players')
@@ -107,7 +115,6 @@ const Player = {
         //state = 'waiting-for-confirmation';
       //}
 
-      console.log(query.toString());
       //query.setFields({ 'state_id': squel
                                    //.select()
                                    //.field('id')
@@ -115,10 +122,9 @@ const Player = {
                                    //.where('state=?',state)});
 
 
+                                   //console.log('query', query.toString());
       return Player.findOne( player_params ).then((pl) => {
-        console.log('pl', pl);
         return db.create(query.toString()).then((result) => {
-          console.log('result', result);
           return Player.findOne(result.insertId);
         }).catch((err) => {
           console.error('err', err);
@@ -162,7 +168,7 @@ const Player = {
                 .field('u.from')
                 .field('u.blacklist')
                 .field('u.avatar')
-                .field('u.protocol_id')
+                .field('u.protocol')
                 .field('u.archived', 'user_archived')
                 .from('players', 'p')
                 .where('p.archived=?', archived)
@@ -198,8 +204,8 @@ const Player = {
       query = query.where('u.`id` IN ?',params.user_ids);
     }
 
-    if ( params.protocol_id ) {
-      query = query.where('u.protocol_id = ?',params.protocol_id);
+    if ( params.protocol ) {
+      query = query.where('u.protocol = ?',params.protocol);
     }
 
     if ( params.game_id ) {
