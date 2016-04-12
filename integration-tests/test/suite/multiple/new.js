@@ -10,7 +10,7 @@ const rule = require('../../../config/rule');
 //const guess = rule('guess').example();
 const EMOJI = '😀';
 
-const game_numbers = require('config/numbers');
+const game_numbers = require('../../../../testqueue/config/numbers');
 
 describe('New Game', () => {
   describe('Legal', () => {

@@ -8,6 +8,7 @@ const setup = require('lib/setup');
 const startGames = require('flows/startGames');
 const sequence = require('lib/sequence');
 //const Round = require('../../../models/Round');
+const parseSenderIDs = require('lib/parseSenderIDs');
 
 // submit any old emoji to start a round
 const EMOJI = '😀';
@@ -17,7 +18,8 @@ const playGames = (players, number_of_games, options) => {
 
   return startGames(players, number_of_games, options).then((games) => {
     return sequence(games.map((game) => {
-      const player = game.players.filter((game_player) => {
+      const game_players = parseSenderIDs(game.players);
+      const player = game_players.filter((game_player) => {
         return game_player.from === players[0].from;
       }).pop();
 

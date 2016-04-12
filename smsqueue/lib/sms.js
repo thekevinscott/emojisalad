@@ -22,12 +22,20 @@ const sms = Promise.coroutine(function* (params) {
     const to = yield validNumber(params.to);
     const from = yield validNumber(params.from);
     newParams = {
-      to: to,
-      from: from,
-      body: params.body,
+      to,
+      from,
+      body: params.body
     };
-    let result = yield sendMessage(newParams);
-    return newParams;
+    const result = yield sendMessage(newParams);
+    if ( result.status === 'queued' ) {
+      return {
+        status: 2
+      };
+    } else {
+      return {
+        status: 3
+      };
+    }
   } else {
     return {};
   }

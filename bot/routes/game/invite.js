@@ -4,51 +4,68 @@
 const Invite = require('models/invite');
 const User = require('models/user');
 const Phone = require('models/phone');
+const Email = require('models/email');
 //const _ = require('lodash');
 const rule = require('config/rule');
 
 module.exports = (player, message) => {
-  let invited_string;
   let existing_user;
-  //console.log('message', message);
-  let number = rule('invite').match(message);
-  if ( ! number ) {
-    number = message;
+  let parsed_invitee;
+  console.info('message', message);
+  let invited_string = rule('invite').match(message);
+  if ( ! invited_string ) {
+    invited_string = message;
   }
-  //console.log('number', number);
+  console.info('invitee', invited_string);
 
-  return Phone.parse(number).then((response) => {
-    //console.log('response', response);
-    if ( response && response.phone ) {
-      invited_string = response.phone;
-      number = invited_string;
-      //console.log('number', number);
-      //invites[0] = invited_string;
-      const payload = {
-        from: invited_string
-      };
-      console.info('user payload', payload);
-      return User.get(payload).then((users) => {
-        console.info('found users', users);
-        if ( users.length ) {
-          existing_user = users.pop();
+  return Phone.parse(invited_string).then((response) => {
+    console.info('response', response);
+    if ( ! response || ! response.phone ) {
+      // this means its not a valid phone. is it a valid email?
+      return Email.parse(invited_string).then((response) => {
+        console.info('email parse response', response);
+        if ( ! response || ! response.email ) {
+          // not a valid email either.
+          // because our majority use case is sms,
+          // alert the user that the phone number was invalid
+          throw new Error(`Problem parsing phone number: ${JSON.stringify(response)} ${message}`);
+        } else {
+          return {
+            protocol: 'mail',
+            from: response.email
+          };
         }
       });
     } else {
-      //console.log('error in invite');
-      //console.error('error parsing phone', response, message);
-      throw new Error(`Problem parsing phone number: ${JSON.stringify(response)} ${message}`);
+      return {
+        protocol: 'sms',
+        from: response.phone
+      };
     }
-  }).then(() => {
-    //console.log('creat invite');
-    return Invite.create(player, [ number ]);
-  }).then((invites) => {
-    //console.log('back, invites', invites);
-    if ( invites.error ) {
-      console.error(player, message, invites);
+  }).then((invitee) => {
+    //parsed_invitee = invitee;
+    //invites[0] = invited_string;
+    //const payload = {
+      //from: invited_string
+    //};
+    console.info('user payload', invitee);
+    return User.get(invitee).then((users) => {
+      console.info('found users', users);
+      if ( users.length ) {
+        existing_user = users.pop();
+      }
+    }).then(() => {
+      return Invite.create(player, invitee);
+    });
+  //}).then(() => {
+    //console.info('creat invite');
+  }).then((invite) => {
+    console.info('back, invites', invite);
+    if ( invite.error ) {
+      console.error(player, message, invite);
       throw new Error("Invite Create was called incorrectly");
     } else {
-      const invite = invites[0] || { error: 'No invite found' };
+      //const invite = invites[0] || { error: 'No invite found' };
       if ( invite.error ) {
         console.info('there is an invite error', invite);
         switch ( invite.code ) {
@@ -98,7 +115,7 @@ module.exports = (player, message) => {
               player,
               key: 'error-15',
               options: [
-                number
+                invited_string
               ]
             }
           ];
@@ -115,7 +132,7 @@ module.exports = (player, message) => {
         }
       } else {
         if ( existing_user ) {
-          //console.log('invite', invite);
+          //console.info('invite', invite);
           return [
             {
               player: invite.inviter_player,
@@ -153,8 +170,7 @@ module.exports = (player, message) => {
       }
     }
   }).catch(() => {
-    //console.error('err', err);
-    // Invite already exists
+    // Problem parsing phone number or email
     return [
       {
         player,

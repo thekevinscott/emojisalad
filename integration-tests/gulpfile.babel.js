@@ -172,9 +172,13 @@ gulp.task('test', () => {
   const log_level = util.env.LOG_LEVEL || 'warning';
   let servers = [];
   const killServers = () => {
+    //console.log('kill teh servers');
     return Promise.all(servers.map((server) => {
       return server.slaughter();
-    }));
+    })).then((servers) => {
+      //console.log('all servers killed');
+      return servers;
+    });
   };
   return seed().then(() => {
     return startServers(process.env.DEBUG, log_level);

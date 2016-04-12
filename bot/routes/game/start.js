@@ -26,7 +26,7 @@ module.exports = (user) => {
           });
         });
       } else {
-        console.info('create game');
+        console.info('create game', user);
         resolve(Game.create([user]));
       }
     }).then((game) => {

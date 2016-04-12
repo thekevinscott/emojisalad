@@ -20,9 +20,9 @@ const Message = {
                   .from('messages')
                   .where('`key` IN ?',key);
 
-    let messages = yield db.query(query);
+    const messages = yield db.query(query);
     if ( messages.length ) {
-      // expects an options argument 
+      // expects an options argument
       // that is an object containing keys
       // that correspond to a message's key.
       //
@@ -31,7 +31,7 @@ const Message = {
       //    '8604601234'
       //  ]
       // }
-      return messages.map(function(obj) {
+      return messages.map((obj) => {
         if ( obj.message ) {
           // this is coming from an old database
           obj.body = obj.message;
@@ -59,15 +59,15 @@ const Message = {
   }),
   parse: Promise.coroutine(function* (responses, original_message = {}) {
     if ( responses && responses.length ) {
-      let messages = {};
-      let options = {};
-      responses.map(function(response) {
+      const messages = {};
+      const options = {};
+      responses.map((response) => {
         if ( response.options ) {
           options[response.key] = response.options;
         }
       });
 
-      let rows = yield Message.get(responses.map((response) => {
+      const rows = yield Message.get(responses.map((response) => {
         if ( ! response.key ) {
           throw new Error("Every response must have a key: " + JSON.stringify(response));
         }
@@ -79,7 +79,6 @@ const Message = {
       });
 
       return responses.map((response) => {
-        let to;
         let from;
 
         console.info('response player', response);
@@ -88,7 +87,7 @@ const Message = {
         } else if ( response.player.user.from ) {
           from = response.player.user.from;
         }
-        to = response.player.to;
+        const to = response.player.to;
 
         if ( ! to ) {
           console.error(response);
@@ -108,7 +107,7 @@ const Message = {
           body: messages[response.key],
           to: from,
           from: to,
-          protocol: original_message.protocol,
+          protocol: response.player.protocol || original_message.protocol,
           initiated_id: original_message.id
         }, response);
       });

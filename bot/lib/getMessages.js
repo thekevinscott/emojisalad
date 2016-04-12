@@ -12,7 +12,7 @@ const getMessages = (ids, protocols, options = {}) => {
     throw "You must provide ids";
   }
 
-  console.info('the protocols', protocols);
+  //console.info('the protocols', protocols);
 
   return Promise.all(protocols.map((protocol) => {
     //if ( queue_registrys[protocol] ) {

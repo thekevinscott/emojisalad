@@ -14,11 +14,11 @@ const Player = {
       Game = require('./game');
     }
     if ( ! params.from && ! params.user_id ) {
-      throw "you must provide a from or user_id field";
+      throw new Error("you must provide a from or user_id field");
     }
 
     if ( ! params.game_id) {
-      throw "you must provide a game_id field";
+      throw new Error("you must provide a game_id field");
     }
 
     let user_params = {};
@@ -30,7 +30,7 @@ const Player = {
 
     return User.findOne(user_params).then((user) => {
       if ( ! user || !user.id ) {
-        throw 'you must provide a valid from or user_id field';
+        throw new Error('you must provide a valid from or user_id field');
       } else {
         return user;
       }
@@ -72,7 +72,7 @@ const Player = {
 
         //if ( !numbers_rows.length ) {
           //console.error(number_query.toString());
-          //throw "No game number found";
+          //throw new Error("No game number found");
         //} else {
           //return {
             //to : numbers_rows[0].id,
@@ -86,7 +86,7 @@ const Player = {
       //console.log('the player params, with sender id', player_params);
       return Game.findOne(params.game_id).then((game) => {
         if ( ! game || !game.id ) {
-          throw 'You must provide a valid game_id';
+          throw new Error('You must provide a valid game_id');
         } else {
           return {
             game_id: game.id,
@@ -96,6 +96,9 @@ const Player = {
         }
       });
     }).then((player_params) => {
+      if ( player_params.to === 0 ) {
+        throw new Error('Invalid to provided', player_params);
+      }
       //console.log('**** player params', player_params);
       const query = squel
                     .insert({ autoQuoteFieldNames: true })
@@ -214,6 +217,7 @@ const Player = {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 
+    //console.info('query', query.toString());
     return db.query(query);
   },
   /*
@@ -263,7 +267,7 @@ const Player = {
       if ( rows && rows.affectedRows ) {
         return {};
       } else {
-        throw "Player was not deleted: " + player_id;
+        throw new Error("Player was not deleted: " + player_id);
       }
     });
   }

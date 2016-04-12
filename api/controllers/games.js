@@ -48,7 +48,7 @@ module.exports = [
 function create(req) {
   const users = req.body.users;
   if ( ! users || !_.isArray(users) ) {
-    throw "You must provide an array of users";
+    throw new Error("You must provide an array of users");
   }
   return Game.create(users);
 }
@@ -58,9 +58,9 @@ function find(req) {
 function findOne(req) {
   const game_id = req.params.game_id;
   if ( ! game_id ) {
-    throw "No game ID provided, how is that possible?";
+    throw new Error("No game ID provided, how is that possible?");
   } else if ( !parseInt(game_id) ) {
-    throw "Invalid game ID provided";
+    throw new Error("Invalid game ID provided");
   }
   return Game.findOne(game_id);
 }
@@ -68,22 +68,22 @@ function add(req) {
   //console.debug('game add!!');
   const game_id = req.params.game_id;
   if ( ! game_id ) {
-    throw "No game ID provided, how is that possible?";
+    throw new Error("No game ID provided, how is that possible?");
   } else if ( !parseInt(game_id) ) {
-    throw "Invalid game ID provided";
+    throw new Error("Invalid game ID provided");
   }
   const users = req.body.users;
   if ( ! users || !_.isArray(users) ) {
-    throw "You must provide an array of users";
+    throw new Error("You must provide an array of users");
   }
   return Game.add(game_id, users);
 }
 function messages(req) {
   const game_id = req.params.game_id;
   if ( ! game_id ) {
-    throw "No game ID provided, how is that possible?";
+    throw new Error("No game ID provided, how is that possible?");
   } else if ( !parseInt(game_id) ) {
-    throw "Invalid game ID provided";
+    throw new Error("Invalid game ID provided");
   }
   return new Promise((resolve) => {
     if ( ! sms ) {

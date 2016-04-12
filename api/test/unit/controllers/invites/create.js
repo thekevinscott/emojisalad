@@ -1,36 +1,37 @@
 const post = require('test/support/request').post;
 
+const proxyquire = require('proxyquire');
 const User = require('models/user');
-const Invite = require('models/invite');
 const Game = require('models/game');
 const game_number = '+15559999999';
-let game_numbers = [
+const game_numbers = [
   '+15551111111',
   '+15552222222',
   '+15553333333',
   '+15554444444',
-  '+15559999999',
+  '+15559999999'
 ];
-describe('Create', function() {
+const protocol = 1;
+describe('Create', () => {
   const from = Math.random();
   let game;
   let inviter;
 
   before(() => {
-    return User.create({ from: from }).then((user) => {
-      const payload = { users: [{ id: user.id }] };
+    return User.create({ from, protocol }).then((user) => {
+      const payload = { users: [{ id: user.id, to: 1 }] };
       return post({
         url: '/games',
         data: payload
-      })
+      });
     }).then((res) => {
       game = res.body;
       inviter = game.players[0];
     });
   });
 
-  describe('Invalid', function() {
-    it('should reject without an inviter_id', function() {
+  describe('Invalid', () => {
+    it('should reject without an inviter_id', () => {
       return post({
         url: `/games/${game.id}/invite`,
         data: { foo: 'bar' }
@@ -40,7 +41,7 @@ describe('Create', function() {
       });
     });
 
-    it('should reject with an invalid inviter_id', function() {
+    it('should reject with an invalid inviter_id', () => {
       return post({
         url: `/games/${game.id}/invite`,
         data: { inviter_id: 'bar', invites: ['foo'] }
@@ -50,7 +51,7 @@ describe('Create', function() {
       });
     });
 
-    it('should reject with a non existent user id', function() {
+    it('should reject with a non existent user id', () => {
       return post({
         url: `/games/${game.id}/invite`,
         data: { inviter_id: 999999, invites: ['foo'] }
@@ -60,7 +61,7 @@ describe('Create', function() {
       });
     });
 
-    it('should reject without invites', function() {
+    it('should reject without invites', () => {
       return post({
         url: `/games/${game.id}/invite`,
         data: { inviter_id: inviter.id }
@@ -70,7 +71,7 @@ describe('Create', function() {
       });
     });
 
-    it('should reject without valid invites', function() {
+    it('should reject without valid invites', () => {
       return post({
         url: `/games/${game.id}/invite`,
         data: { inviter_id: inviter.id, invites: 'foo' }
@@ -85,16 +86,16 @@ describe('Create', function() {
 
     const createInvite = (inviter_id, invites) => {
       const payload = {
-        inviter_id: inviter_id,
-        invites: invites
+        inviter_id,
+        invites
       };
       return post({
         url: `/games/${game.id}/invite`,
         data: payload
       });
-    }
+    };
 
-    it('should create an invite', () => {
+    it.only('should create an invite', () => {
       const invited = 'foo'+Math.random();
       return createInvite(inviter.id, [ invited ]).then((res) => {
         res.statusCode.should.equal(200);
@@ -110,30 +111,6 @@ describe('Create', function() {
         res.body[0].game.should.have.property('id');
       });
     });
-
-    /*
-    it.only('should create an invite on a new game number for a user already in a single game', () => {
-      let user_in_game = {
-        from: Math.random()
-      };
-      return User.create({ from: user_in_game.from }).then((user) => {
-        user_in_game.id = user.id
-        const payload = { users: [{ id: user.id }] };
-        return post({
-          url: '/games',
-          data: payload
-        });
-      }).then(() => {
-        return createInvite(inviter.id, [ user_in_game.from ]).then((res) => {
-          console.log(res.body[0].invited_user);
-          res.statusCode.should.equal(200);
-          res.body.length.should.be.above(0);
-          res.body[0].should.have.property('id');
-          res.body[0].invited_user.should.have.property('players', 2);
-        });
-      });
-    });
-    */
 
     it('should not create multiple invites for the same game for the same user', () => {
       const invited = 'foo'+Math.random();
@@ -175,7 +152,7 @@ describe('Create', function() {
         return Game.add(game, [ user ]).then(() => {
           const payload = {
             inviter_id: inviter.id,
-            invites: [ new_user ] 
+            invites: [ new_user ]
           };
           return post({
             url: `/games/${game.id}/invite`,
@@ -211,9 +188,9 @@ describe('Create', function() {
       return User.create({ from: invited }).then((user) => {
         return User.update(user, { maximum_games: 2 });
       }).then((user) => {
-        let promises = [];
+        const promises = [];
         for (let i = 0; i < user.maximum_games; i++) {
-          let player = {
+          const player = {
             id: user.id,
             to: game_numbers[i]
           };
@@ -245,7 +222,7 @@ describe('Create', function() {
       it('should be able to invite two people at once', () => {
         const invites = [
           'foo'+Math.random(),
-          'foo'+Math.random(),
+          'foo'+Math.random()
         ];
         return createInvite(inviter.id, invites).then((res) => {
           res.statusCode.should.equal(200);
@@ -266,9 +243,9 @@ describe('Create', function() {
       });
 
       it('should be able to invite one person successfully and one blacklisted person unsuccessfully', () => {
-        let invites = [
+        const invites = [
           'foo'+Math.random(),
-          'foo'+Math.random(),
+          'foo'+Math.random()
         ];
         return User.create({ from: invites[1] }).then((user) => {
           return User.update(user, { blacklist: 1 });
@@ -292,9 +269,9 @@ describe('Create', function() {
       });
 
       it('should be able to invite one person successfully and one already invited person unsuccessfully', () => {
-        let invites = [
+        const invites = [
           'foo'+Math.random(),
-          'foo'+Math.random(),
+          'foo'+Math.random()
         ];
         return createInvite(inviter.id, [ invites[0] ]).then(() => {
           return createInvite(inviter.id, invites);
@@ -317,9 +294,9 @@ describe('Create', function() {
       });
 
       it('should be able to invite one person successfully and one already playing person unsuccessfully', () => {
-        let invites = [
+        const invites = [
           'foo'+Math.random(),
-          'foo'+Math.random(),
+          'foo'+Math.random()
         ];
         return User.create({ from: invites[0] }).then((user) => {
           return Game.add(game, [ user ]);

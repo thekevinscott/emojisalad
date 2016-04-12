@@ -58,6 +58,7 @@ const setup = (arr) => {
         from: player.number || player.from
       };
 
+      //console.log(message);
       const url = `http://localhost:${port}/receive`;
 
       return request({
@@ -119,7 +120,7 @@ const getAssociatedMessages = (initiated_id, expected = false) => {
     // only ping the server if we are expecting messages
     if ( expected ) {
       ping = setInterval(() => {
-        console.log('*** get associated messages', initiated_id);
+        //console.log('*** get associated messages', initiated_id);
         requestAssociatedMessages(initiated_id, res, expected);
       }, ping_length);
     }

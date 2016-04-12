@@ -14,15 +14,112 @@ const Round = require('./round');
 // number of guesses a player gets per round
 //const default_guesses = 2;
 //const default_clues_allowed = 1;
+const registry = require('microservice-registry');
+const request = Promise.promisify(require('request'));
 
 squel.registerValueHandler(Date, (date) => {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
 
 const Game = {
+  create: (users) => {
+    console.info('create a game with these users', users);
+    function getValidUsers(users) {
+      return users.filter(user => parseInt(user.id));
+    }
+    if ( !_.isArray(users) ) {
+      throw new Error("You must provide an array of users");
+    } else if ( getValidUsers(users).length !== users.length ) {
+      // check to see if every user has a valid ID
+      //console.error('invalid parsed ids');
+      throw new Error("You must provide a valid user");
+    } else {
+      console.info('users that we will now check', users);
+      // check that every user is valid
+      return Promise.all(users.map((user) => {
+        console.info('check that this user is valid', user);
+        return User.findOne(user.id).then((result) => {
+
+          return new Promise((resolve, reject) => {
+            if ( user.to ) {
+              console.info('a to exists');
+              resolve(user.to);
+            } else {
+              console.info('user players', user);
+              const player_sender_ids = result.players.map((player) => {
+                return player.to;
+              });
+              const service = registry.get(result.protocol);
+              const options = {
+                url: service.api.senders.get.endpoint,
+                method: service.api.senders.get.method,
+                qs: {
+                  exclude: player_sender_ids.join(',')
+                }
+              };
+
+              return request(options).then((response) => {
+                //console.info('response', response);
+                try {
+                  return JSON.parse(response.body);
+                } catch(err) {
+                  console.error('error parsing json response', response.body);
+                  reject(new Error('Error getting sender'));
+                }
+              }).then((body) => {
+                resolve(body.id);
+              });
+            }
+          }).then((sender) => {
+            return Object.assign({}, result, {
+              to: sender
+            });
+          });
+        });
+      })).then((rows) => {
+        console.info('users that have been checked', rows);
+        if ( getValidUsers(rows).length !== users.length ) {
+          console.error('invalid queried ids');
+          throw new Error("You must provide a valid user");
+        } else {
+          console.info('the rows', rows);
+          rows.map((user) => {
+            user.players.map((player) => {
+              if ( player.to === user.to ) {
+                throw new Error("A player already exists for this game number");
+              }
+            });
+          });
+          return rows;
+        }
+      }).then((valid_users) => {
+        console.info('the valid users', valid_users);
+        const query = squel
+                      .insert()
+                      .into('games', 'g')
+                      .setFields({
+                        //clues_allowed: default_clues_allowed,
+                        created: squel.fval('NOW(3)'),
+                        last_activity: squel.fval('NOW(3)')
+                      });
+
+        return db.create(query).then((game) => {
+          if ( ! game || ! game.insertId ) {
+            //console.error(query.toString());
+            throw new Error("There was an error inserting game");
+          } else {
+            console.info('now add users ot game', valid_users, game);
+            return Game.add({
+              id: game.insertId
+            }, valid_users);
+          }
+        });
+      });
+    }
+  },
   getNextSubmitter: (game_params) => {
-    console.info('get next submitter!');
-    console.info('parameters', game_params);
+    //console.info('get next submitter!');
+    console.info('get next submitter', game_params);
     return Promise.join(
       Round.findOne({ game_id: game_params.id, most_recent: true }),
       Game.findOne(game_params),
@@ -118,22 +215,25 @@ const Game = {
         return Game.findOne(game.id);
       }
     }).then((game) => {
-      console.info('found teh game', game, users);
+      //console.info('found teh game', game, users);
       return Promise.all(users.map((user) => {
+        if ( !user.to ) {
+          console.error(user);
+          throw new Error('Why is there no user `to` here');
+        }
         const player_params = {
           game_id: game.id,
-          user_id: user.id
+          user_id: user.id,
+          to: user.to
         };
-        if ( user.to ) {
-          player_params.to = user.to;
-        }
-        console.info('prepare to create player');
+        console.info('prepare to create player', player_params);
         return Player.create(player_params).catch((err) => {
           console.info('did not create player', err);
+          throw new Error('Did not create player', player_params);
           return null;
         });
       })).then((players) => {
-        console.info('players created', players);
+        //console.info('players created', players);
         game.players = game.players.concat(players.filter(player => player));
         return game;
       });
@@ -151,7 +251,7 @@ const Game = {
     });
   },
   findOne: (params) => {
-    console.info('prepare to find a single game', params);
+    //console.info('prepare to find a single game', params);
     if (parseInt(params)) {
       params = { id: params };
     }
@@ -164,7 +264,7 @@ const Game = {
     });
   },
   find: (params = {}) => {
-    console.info('find game');
+    //console.info('find game');
     const rounds = squel
                    .select()
                    .from('rounds')
@@ -184,7 +284,7 @@ const Game = {
     if ( params.id ) {
       query = query.where('g.id=?',params.id);
     }
-    console.info('find game 2');
+    //console.info('find game 2');
 
     if ( params.player_id ) {
       query = query
@@ -210,17 +310,17 @@ const Game = {
       }, {});
     };
 
-    console.log('api query', query.toString());
+    //console.info('api query', query.toString());
 
     return db.query(query).then((games) => {
-      console.info('return from games');
+      //console.info('return from games');
       if ( games && games.length ) {
         const game_ids = games.map(game => game.id);
         return Promise.join(
           Player.find({ game_ids }).then(getByGameID),
           Round.find({ game_ids, most_recent: true }).then(getByGameID),
           (players = {}, rounds = {}) => {
-            console.info('found games');
+            //console.info('found games');
             return games.map((game) => {
               const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
               return {
@@ -237,61 +337,6 @@ const Game = {
         return [];
       }
     });
-  },
-  create: (users) => {
-    function getValidUsers(users) {
-      return users.filter(user => parseInt(user.id));
-    }
-    if ( !_.isArray(users) ) {
-      throw "You must provide an array of users";
-    } else if ( getValidUsers(users).length !== users.length ) {
-      // check to see if every user has a valid ID
-      //console.error('invalid parsed ids');
-      throw "You must provide a valid user";
-    } else {
-      // check that every user is valid
-      return Promise.all(users.map((user) => {
-        return User.findOne(user.id).then((result) => {
-          result.to = user.to;
-          return result;
-        });
-      })).then((rows) => {
-        if ( getValidUsers(rows).length !== users.length ) {
-          //console.error('invalid queried ids');
-          throw "You must provide a valid user";
-        } else {
-          return rows.map((user) => {
-            return user.players.map((player) => {
-              if ( player.to === user.to ) {
-                throw "A player already exists for this game number";
-              }
-            });
-          });
-        }
-      }).then(() => {
-        const query = squel
-                      .insert()
-                      .into('games', 'g')
-                      .setFields({
-                        //clues_allowed: default_clues_allowed,
-                        created: squel.fval('NOW(3)'),
-                        last_activity: squel.fval('NOW(3)')
-                      });
-
-        return db.create(query);
-      }).then((result) => {
-        if ( ! result || ! result.insertId ) {
-          //console.error(query.toString());
-          throw "There was an error inserting game";
-        } else {
-          return {
-            id: result.insertId
-          };
-        }
-      }).then((game) => {
-        return Game.add(game, users);
-      });
-    }
   }
 };
 

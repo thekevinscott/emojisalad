@@ -23,7 +23,7 @@ module.exports = (params) => {
   }).then((response) => {
     return JSON.parse(response.body);
   }).then((message) => {
-    return { data: JSON.stringify(message) };
+    return { status: 2, mailgun_id: message.id };
   }).catch((err) => {
     console.error('error', err);
   });

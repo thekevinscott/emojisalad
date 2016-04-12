@@ -4,15 +4,16 @@ const User = require('models/user');
 //const Player = require('models/player');
 const Game = require('models/game');
 //const game_number = '+15559999999';
+const protocol = 1;
 
-describe('Add', function() {
+describe('Add', () => {
   let game;
   let user;
-  let from = 'foo' + Math.random();
+  const from = 'foo' + Math.random();
   before(() => {
-    return User.create({ from: from }).then((res) => {
+    return User.create({ from, protocol }).then((res) => {
       user = res;
-      return Game.create([{ id: user.id }]);
+      return Game.create([{ id: user.id, to: 1 }]);
     }).then((res) => {
       game = res;
     });
@@ -49,25 +50,26 @@ describe('Add', function() {
     });
   });
 
-  it('should return a game without a particular user if user does not exist', () => {
-    return post({
-      url: `/games/${game.id}/players`,
-      data: { users: [{ id: 99999, from: 'foo' }] }
-    }).then((res) => {
-      res.statusCode.should.equal(200);
-      res.body.should.have.property('id');
-      res.body.should.have.property('players');
-      res.body.players.length.should.equal(1);
-    });
-  });
+  //it.only('should return a game without a particular user if user does not exist', () => {
+    //return post({
+      //url: `/games/${game.id}/players`,
+      //data: { users: [{ id: 99999, from: 'foo' }] }
+    //}).then((res) => {
+      //res.statusCode.should.equal(200);
+      //res.body.should.have.property('id');
+      //res.body.should.have.property('players');
+      //res.body.players.length.should.equal(1);
+    //});
+  //});
 
   it('should add a user to a game', () => {
     const from = 'foo' + Math.random();
     const from2 = 'foo' + Math.random();
 
-    return User.create({ from: from }).then((res) => {
-      return Game.create([{ id: res.id }]).then((game) => {
-        return User.create({ from: from2 }).then((new_user) => {
+    return User.create({ from, protocol }).then((res) => {
+      return Game.create([{ id: res.id, to: 1 }]).then((game) => {
+        return User.create({ from: from2, protocol }).then((new_user) => {
+          new_user.to = 1;
           return post({
             url: `/games/${game.id}/players`,
             data: { users: [ new_user ] }
@@ -91,15 +93,19 @@ describe('Add', function() {
     const from2 = 'foo' + Math.random();
     const from3 = 'foo' + Math.random();
 
-    return User.create({ from: from }).then((res) => {
-      return Game.create([{ id: res.id }]).then((game) => {
+    return User.create({ from, protocol }).then((res) => {
+      return Game.create([{ id: res.id, to: 1 }]).then((game) => {
         return Promise.all([
-          User.create({ from: from2 }),
-          User.create({ from: from3 })
+          User.create({ from: from2, protocol }),
+          User.create({ from: from3, protocol })
         ]).then((users) => {
+          users = users.map((user) => {
+            user.to = 1;
+            return user;
+          });
           return post({
             url: `/games/${game.id}/players`,
-            data: { users: users }
+            data: { users }
           }).then((res) => {
             res.statusCode.should.equal(200);
             res.body.should.have.property('id');
@@ -118,19 +124,20 @@ describe('Add', function() {
     const from = 'foo' + Math.random();
     const from2 = 'foo' + Math.random();
 
-    return User.create({ from: from }).then((res) => {
-      return Game.create([{ id: res.id }]).then((game) => {
-        return User.create({ from: from2 }).then((user) => {
+    return User.create({ from, protocol }).then((res) => {
+      return Game.create([{ id: res.id, to: 1 }]).then((game) => {
+        return User.create({ from: from2, protocol }).then((user) => {
+          user.to = 1;
           return post({
             url: `/games/${game.id}/players`,
-            data: { users: [ user, { id: 99999 } ] }
+            data: { users: [ user, { id: 99999, to: 1 } ] }
           }).then((res) => {
-            res.statusCode.should.equal(200);
-            res.body.should.have.property('id');
-            res.body.should.have.property('players');
-            res.body.players.length.should.equal(2);
-            res.body.players[0].should.have.property('from', from);
-            res.body.players[1].should.have.property('from', from2);
+            res.statusCode.should.equal(400);
+            //res.body.should.have.property('id');
+            //res.body.should.have.property('players');
+            //res.body.players.length.should.equal(2);
+            //res.body.players[0].should.have.property('from', from);
+            //res.body.players[1].should.have.property('from', from2);
           });
         });
       });

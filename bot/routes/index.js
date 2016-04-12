@@ -28,7 +28,7 @@ const Router = (from, message, to, protocol) => {
     } else {
       // this means we are either brand new,
       // or being onboarded
-      console.info(`prepare to get users by from, ${from}`);
+      console.info(`prepare to get users by from, ${from}, ${protocol}`);
       return User.get({
         from,
         protocol

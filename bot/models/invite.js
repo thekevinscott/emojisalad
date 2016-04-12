@@ -9,17 +9,17 @@
 const api = require('../service')('api');
 
 const Invite = {
-  create: (inviter, invites) => {
+  create: (inviter, invitee) => {
     console.info('invite create payload', {
       inviter_id: inviter.id,
-      invites
+      invitee
     }, {
       game_id: inviter.game_id
     });
     //console.debug('create time!');
     return api('invites', 'create', {
       inviter_id: inviter.id,
-      invites
+      invitee
     }, {
       game_id: inviter.game_id
     });

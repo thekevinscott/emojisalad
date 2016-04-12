@@ -87,9 +87,9 @@ module.exports = function(name) {
 
       //console.debug('data', data);
 
-      //console.info('request', data);
+      console.info('request', data);
       return request(data).then((res) => {
-        //console.info('response back:', res);
+        console.info('response back:', res);
         return res;
       });
     });

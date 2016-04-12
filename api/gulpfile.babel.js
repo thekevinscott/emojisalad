@@ -136,7 +136,7 @@ gulp.task('seed', (cb) => {
 gulp.task('server', () => {
   const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
   if ( ! util.env.ENVIRONMENT ) {
-    throw 'You must provide an environment';
+    throw new Error('You must provide an environment');
   }
   const ENVIRONMENT = util.env.ENVIRONMENT;
   return shared.server({ LOG_LEVEL, ENVIRONMENT })();

@@ -6,7 +6,7 @@ module.exports = [
   {
     path: '/',
     method: 'get',
-    fn: find 
+    fn: find
   },
   //{
     //path: '/',
@@ -17,7 +17,7 @@ module.exports = [
     path: '/:player_id',
     method: 'get',
     fn: findOne
-  },
+  }
   //{
     //path: '/:player_id',
     //method: 'put',
@@ -26,7 +26,7 @@ module.exports = [
   //{
     //path: '/:player_id',
     //method: 'delete',
-    //fn: remove 
+    //fn: remove
   //},
 ];
 
@@ -42,9 +42,9 @@ function find(req) {
 function findOne(req) {
   const player_id = req.params.player_id;
   if ( ! player_id ) {
-    throw "No player ID provided, how is that possible?";
+    throw new Error("No player ID provided, how is that possible?");
   } else if ( !parseInt(player_id) ) {
-    throw "Invalid player ID provided";
+    throw new Error("Invalid player ID provided");
   }
   return Player.findOne(player_id);
 }
@@ -57,7 +57,7 @@ function findOne(req) {
 //function remove(req) {
   //const player_id = req.params.player_id;
   //if ( ! player_id ) {
-    //throw "No player ID provided, how is that possible?";
+    //throw new Error("No player ID provided, how is that possible?");
   //} else if ( !parseInt(player_id) ) {
     //throw "Invalid player ID provided";
   //}

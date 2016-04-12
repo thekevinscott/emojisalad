@@ -13,12 +13,12 @@ const app = queue({
   parse: require('lib/parse'),
   send: require('lib/send'),
   api: {
-    phone: {
-      parse: {
-        endpoint: `${base_url}phone`,
-        method: 'GET'
-      }
-    },
+    //phone: {
+      //parse: {
+        //endpoint: `${base_url}phone`,
+        //method: 'GET'
+      //}
+    //},
     senders: {
       getID: {
         endpoint: `${base_url}senders/:sender`,

@@ -5,23 +5,24 @@ const get = require('test/support/request').get;
 const Player = require('models/player');
 let game_number;
 let user_id;
+const protocol = 1;
 const from = ''+Math.random();
 const nickname = ''+Math.random();
 
-describe('Find', function() {
-  before(function() {
-    game_number = '+15551111111';
-    return post({ url: '/users', data: { from: from, nickname: nickname }}).then((res) => {
+describe('Find', () => {
+  before(() => {
+    game_number = 1;
+    return post({ url: '/users', data: { from, nickname, protocol }}).then((res) => {
       user_id = res.body.id;
-      const payload = { users: [{ id: user_id }] };
+      const payload = { users: [{ id: user_id, to: game_number }] };
       return post({
         url: '/games',
         data: payload
-      })
+      });
     });
   });
 
-  it('should return a list of all players', function() {
+  it('should return a list of all players', () => {
     return get({ url: '/players' }).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.be.above(0);
@@ -38,8 +39,8 @@ describe('Find', function() {
     });
   });
 
-  it('should return a list of all players matching a from', function() {
-    return get({ url: '/players', data: { from: from }}).then((res) => {
+  it('should return a list of all players matching a from', () => {
+    return get({ url: '/players', data: { from }}).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.equal(1);
       res.body[0].should.have.property('id');
@@ -47,8 +48,8 @@ describe('Find', function() {
     });
   });
 
-  it('should return a list of all players matching a nickname', function() {
-    return get({ url: '/players', data: { from: from }}).then((res) => {
+  it('should return a list of all players matching a nickname', () => {
+    return get({ url: '/players', data: { from }}).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.equal(1);
       res.body[0].should.have.property('id');
@@ -56,23 +57,23 @@ describe('Find', function() {
     });
   });
 
-  describe('findOne', function() {
-    it('should only accept numeric IDs', function() {
+  describe('findOne', () => {
+    it('should only accept numeric IDs', () => {
       return get({ url: `/players/foo` }).then((res) => {
         res.statusCode.should.equal(400);
       });
     });
 
-    it('should return blank for a player not found', function() {
+    it('should return blank for a player not found', () => {
       return get({ url: `/players/999999999` }).then((res) => {
         res.statusCode.should.equal(200);
         res.body.should.not.have.property('id');
       });
     });
 
-    it('should return a single player', function() {
+    it('should return a single player', () => {
       return Player.find().then((players) => {
-        let player = players[0];
+        const player = players[0];
         return get({ url: `/players/${player.id}` }).then((res) => {
           res.statusCode.should.equal(200);
           res.body.id.should.equal(player.id);

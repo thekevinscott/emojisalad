@@ -7,6 +7,7 @@ module.exports = function(app) {
     'games',
     'users',
     'emoji',
+    'email',
     'players',
     'invites',
     'rounds',
@@ -19,21 +20,17 @@ module.exports = function(app) {
           //const data = ( route.method === 'get' ) ? req.query : req.body;
           try {
             route.fn(req).then((results) => {
-              console.info('request successful', route, results);
+              console.info('request successful', key, route, results);
               res.status(200).json(results);
             }).catch((err) => {
-              console.info('request unsuccessful', route, err);
-              res.status(400).json({ error: err });
-              //console.info('error', err.stack);
+              catchErr(err, res);
             });
           } catch(err) {
-            console.info('request unsuccessful', route, err);
-            res.status(400).json({ error: err });
-            //console.info('error', err.stack);
-          }
+            catchErr(err, res);
+          };
         });
       } catch(err) {
-        console.error('err', err, route);
+        //console.error('err', err, route);
         throw new Error('There was an error setting up router');
       }
     });
@@ -45,3 +42,11 @@ module.exports = function(app) {
     res.send('hello world');
   });
 };
+
+function catchErr(err, res) {
+  if ( err.message ) {
+    res.status(400).json({ error: err.message });
+  } else {
+    res.status(400).json({ error: err });
+  }
+}

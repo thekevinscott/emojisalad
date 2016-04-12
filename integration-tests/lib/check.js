@@ -186,8 +186,8 @@ const checkBody = (action, expected) => {
         throw new Error();
       };
     } catch(err) {
-      //console.error('***** error found *****');
-      //console.error(action, expected);
+      console.error('***** error found *****');
+      console.error(action, expected);
       // this will fail but we'll get a nice
       // error message out of it
       action_body.should.equal(expected.body);

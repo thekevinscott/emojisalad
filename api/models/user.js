@@ -11,10 +11,10 @@ const User = {
   create: (params) => {
     console.info('API: User create', params);
     if ( ! params.from ) {
-      throw "You must provide a from field for a user";
+      throw new Error("You must provide a from field for a user");
     }
     if ( ! params.protocol ) {
-      throw "You must provide a protocol id for a user";
+      throw new Error("You must provide a protocol id for a user");
     }
 
     let nickname = '';
@@ -71,7 +71,7 @@ const User = {
     });
 
     if ( ! valid_query ) {
-      throw "You must provide a valid key to update";
+      throw new Error("You must provide a valid key to update");
     }
 
     return db.query(query).then((rows) => {
@@ -196,7 +196,7 @@ const User = {
       if ( rows && rows.affectedRows ) {
         return {};
       } else {
-        throw "User was not deleted: " + user_id;
+        throw new Error("User was not deleted: " + user_id);
       }
     });
   }

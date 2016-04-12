@@ -31,15 +31,14 @@ module.exports = [
 ];
 
 function find(req) {
-  console.info('I am from the API');
   return User.find(req.query);
 }
 function findOne(req) {
   const user_id = req.params.user_id;
   if ( ! user_id ) {
-    throw "No user ID provided, how is that possible?";
+    throw new Error("No user ID provided, how is that possible?");
   } else if ( !parseInt(user_id) ) {
-    throw "Invalid user ID provided";
+    throw new Error("Invalid user ID provided");
   }
   return User.findOne(user_id);
 }
@@ -57,9 +56,9 @@ function update(req) {
 function remove(req) {
   const user_id = req.params.user_id;
   if ( ! user_id ) {
-    throw "No user ID provided, how is that possible?";
+    throw new Error("No user ID provided, how is that possible?");
   } else if ( !parseInt(user_id) ) {
-    throw "Invalid user ID provided";
+    throw new Error("Invalid user ID provided");
   }
   return User.remove(user_id);
 }

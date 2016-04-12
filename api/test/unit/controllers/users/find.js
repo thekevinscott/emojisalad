@@ -61,7 +61,7 @@ describe('Find', () => {
     });
   });
 
-  it.only('should return associated players with each user', () => {
+  it('should return associated players with each user', () => {
     const nickname = 'foobar';
     return createUser(nickname).then((user) => {
       return createUser(nickname);
@@ -77,11 +77,6 @@ describe('Find', () => {
       const second_player = res.body[1].players[0];
       first_player.should.have.property('to');
       second_player.should.have.property('to');
-      first_player.to.should.be.a('string');
-      second_player.to.should.be.a('string');
-      // tos should be actual numbers
-      first_player.to.substring(0,1).should.equal('+');
-      second_player.to.substring(0,1).should.equal('+');
     });
   });
 
@@ -134,7 +129,7 @@ function createUser(nickname) {
     const user = res.body;
     return post({
       url: '/games',
-      data: { users: [{ id: user.id }] }
+      data: { users: [{ id: user.id, to: 1 }] }
     }).then(() => {
       return user;
     });

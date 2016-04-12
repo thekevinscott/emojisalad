@@ -7,6 +7,12 @@ const getManifest = (port) => {
   const base_url = 'http://localhost:' + port + '/';
 
   const manifest = {
+    email: {
+      parse: {
+        endpoint: `${base_url}email/:email`,
+        method: 'GET'
+      }
+    },
     emoji: {
       get: {
         endpoint: `${base_url}emoji`,

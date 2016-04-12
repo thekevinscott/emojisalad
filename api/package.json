@@ -19,6 +19,7 @@
     "body-parser": "^1.13.3",
     "chalk": "^1.1.1",
     "dateformat": "^1.0.12",
+    "email-validator": "^1.0.4",
     "emoji-data": "^0.2.0",
     "emoji-exists": "^0.0.8",
     "express": "^4.13.4",

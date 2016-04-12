@@ -426,7 +426,7 @@ const Round = {
   */
   update: (params, data = {}) => {
     if ( ! params.id ) {
-      throw "You must provide a round id to update by";
+      throw new Error("You must provide a round id to update by");
     }
     return new Promise((resolve) => {
       if ( params.game_id ) {

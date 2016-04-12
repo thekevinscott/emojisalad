@@ -4,28 +4,29 @@ const post = require('test/support/request').post;
 const User = require('models/user');
 const Player = require('models/player');
 const Game = require('models/game');
-const game_number = '+15559999999';
-describe('Find', function() {
+const game_number = 2;
+const protocol = 1;
+describe('Find', () => {
   const from = Math.random();
   let player_id;
-  before(function() {
-    return User.create({ from: from }).then((user) => {
-      const payload = { users: [{ id: user.id }] };
+  before(() => {
+    return User.create({ from, protocol }).then((user) => {
+      const payload = { users: [{ id: user.id, to: 1 }] };
       return post({
         url: '/games',
         data: payload
-      })
+      });
     }).then((res) => {
       player_id = res.body.players[0].id;
     });
   });
 
   /*
-  describe('Valid', function() {
-    it('should create a game', function() {
+     describe('Valid', () => {
+     it('should create a game', () => {
       const from = Math.random();
 
-      return User.create({ from: from }).then((user) => {
+      return User.create({ from, protocol }).then((user) => {
         const payload = [{ id: user.id }];
 
         return Game.find().then((games) => {
@@ -43,10 +44,10 @@ describe('Find', function() {
       });
     });
 
-    it('should create a new player for a game', function() {
+    it('should create a new player for a game', () => {
       const from = Math.random();
 
-      return User.create({ from: from }).then((user) => {
+      return User.create({ from, protocol }).then((user) => {
         const payload = [{ id: user.id }];
 
         return Player.find().then((players) => {
@@ -64,9 +65,9 @@ describe('Find', function() {
       });
     });
 
-    it('should create a new player with a default to if none is provided', function() {
+    it('should create a new player with a default to if none is provided', () => {
       const from = Math.random();
-      return User.create({ from: from }).then((user) => {
+      return User.create({ from, protocol }).then((user) => {
         const payload = [{ id: user.id }];
 
         return Player.find().then((players) => {
@@ -89,9 +90,9 @@ describe('Find', function() {
       });
     });
 
-    it('should create a new player with a provided to if one is provided', function() {
+    it('should create a new player with a provided to if one is provided', () => {
       const from = Math.random();
-      return User.create({ from: from }).then((user) => {
+      return User.create({ from, protocol }).then((user) => {
         const payload = [{ id: user.id, to: game_number }];
 
         return Player.find().then((players) => {
@@ -114,10 +115,10 @@ describe('Find', function() {
       });
     });
 
-    it('should not create a new player with a pre existing to', function() {
+it('should not create a new player with a pre existing to', () => {
       const from = Math.random();
 
-      return User.create({ from: from }).then((user) => {
+      return User.create({ from, protocol }).then((user) => {
         const payload = [{ id: user.id, to: game_number }];
 
         return post({
@@ -142,7 +143,7 @@ describe('Find', function() {
     });
   });
 */
-  it('should return a list of all games', function() {
+  it('should return a list of all games', () => {
     return get({ url: '/games' }).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.be.above(0);
@@ -157,13 +158,13 @@ describe('Find', function() {
     });
   });
 
-  it('should return a game based off of a player id', function() {
+  it('should return a game based off of a player id', () => {
 
-    return Game.find({ player_id: player_id }).then((games) => {
-      let game = games[0];
-      return get({ url: `/games/`, data: { player_id: player_id }}).then((res) => {
+    return Game.find({ player_id }).then((games) => {
+      const game = games[0];
+      return get({ url: `/games/`, data: { player_id }}).then((res) => {
         res.statusCode.should.equal(200);
-        let body = res.body[0];
+        const body = res.body[0];
         body.id.should.equal(game.id);
         body.players[0].id.should.equal(game.players[0].id);
         //body.rounds[0].should.equal(game.rounds[0]);
@@ -172,23 +173,23 @@ describe('Find', function() {
     });
   });
 
-  describe('findOne', function() {
-    it('should only accept numeric IDs', function() {
+  describe('findOne', () => {
+    it('should only accept numeric IDs', () => {
       return get({ url: `/games/foo` }).then((res) => {
         res.statusCode.should.equal(400);
       });
     });
 
-    it('should return blank for a game not found', function() {
+    it('should return blank for a game not found', () => {
       return get({ url: `/games/999999999` }).then((res) => {
         res.statusCode.should.equal(200);
         res.body.should.not.have.property('id');
       });
     });
 
-    it('should return a single game', function() {
+    it('should return a single game', () => {
       return Game.find().then((games) => {
-        let game = games[0];
+        const game = games[0];
         return get({ url: `/games/${game.id}` }).then((res) => {
           res.statusCode.should.equal(200);
           res.body.id.should.equal(game.id);

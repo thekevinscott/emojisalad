@@ -23,9 +23,10 @@ function spawn(command, args, stdout, stderr, close) {
 
   child.slaughter = () => {
     return new Promise((resolve) => {
-      //console.log(child.pid);
+      const pid = child.pid;
+      //console.log(pid);
       child.on('close', (code, signal) => {
-        //console.log('IVE BEEN CLOSED', code, signal);
+        //console.log('IVE BEEN CLOSED', code, signal, pid, args);
         if ( close ) {
           close(code, signal);
         }
@@ -133,15 +134,15 @@ function pullDB(config, tmp, tables) {
       //console.log(dumpSchemas.join(' '));
       return exec(dumpSchemas.join(' '));
     }
-  }).then(function() {
+  }).then(() => {
     if ( tables_with_data.length ) {
       console.log('dumping data');
       return exec(dumpData.join(' '));
     }
-  }).then(function() {
+  }).then(() => {
     console.log('gunzipping');
     return exec('gunzip '+tmp+zippedFile);
-  }).then(function() {
+  }).then(() => {
     console.log(tmp+file);
     return tmp+file;
   }).catch((err) => {
@@ -152,14 +153,14 @@ function pullDB(config, tmp, tables) {
 
 function importDB(config, file) {
   //console.log('got file', file);
-  let importDB = [
+  const importDB = [
     'mysql',
     getConnectionString(config),
     '<',
     file
   ];
   //console.log(importDB.join(' '));
-  return exec(importDB.join(' ')).catch(function(e) {
+  return exec(importDB.join(' ')).catch((e) => {
     console.error('error', e);
   });
 }
@@ -182,33 +183,33 @@ const server = (options) => {
     const args = [
       `ENVIRONMENT=${ENVIRONMENT}`,
       `DEBUG=${DEBUG}`,
-      `PORT=${PORT}`,
-    ].concat(Object.keys(options).map(function(key) {
+      `PORT=${PORT}`
+    ].concat(Object.keys(options).map((key) => {
       return `${key.toUpperCase()}=${options[key]}`;
     }));
 
     const child = spawn('env', args.concat([
       cmd,
-      'index.js',
+      'index.js'
     ]), (data) => {
-      let color = 'yellow';
+      const color = 'yellow';
       //console.log(chalk.green('heyo'));
       console.log(chalk[color](`${data}`));
     }, (err) => {
       console.error(`${err}`);
     });
 
-    //console.log('CHILD PID', child.pid);
+    //console.log('CHILD PID', child.pid, options);
     process.on('exit', () => {
-      //console.log('WHOAA HORSEY');
+      //console.log('WHOAA HORSEY kill that child', child.pid, options);
       child.stdin.pause();
       child.kill('SIGKILL');
     });
 
     //console.log('return a child for', options);
     return child;
-  }
-}
+  };
+};
 
 module.exports.exec = exec;
 module.exports.getConnectionString = getConnectionString;

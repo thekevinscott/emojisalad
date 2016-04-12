@@ -11,13 +11,14 @@ const playGame = require('flows/playGame');
 const check = require('lib/check');
 const setup = require('lib/setup');
 const rule = require('config/rule');
+const parseSenderIDs = require('lib/parseSenderIDs');
 //const Game = require('models/game');
 //const Player = require('models/player');
 //const Round = require('models/round');
 //const Message = require('models/Message');
 
 const EMOJI = '😀';
-const game_numbers = require('config/numbers');
+const game_numbers = require('../../../../testqueue/config/numbers');
 
 describe('Play', () => {
   describe('Existing Player', () => {
@@ -105,15 +106,17 @@ describe('Play', () => {
     return startGames(players, number_of_games).then((games) => {
       return Promise.all(games.map((game) => {
         game.round.should.have.property('submission', null);
-        const game_guesser = game.players[0];
+        const game_players = parseSenderIDs(game.players);
+        const game_guesser = game_players[0];
+
         return check(
           { player: game_guesser, msg: EMOJI },
           [
-            { key: 'game-submission-sent', to: game.players[0] },
-            { key: 'emojis', options: [game_guesser.nickname, game_guesser.avatar, EMOJI], to: game.players[1] },
-            { key: 'emojis', options: [game_guesser.nickname, game_guesser.avatar, EMOJI], to: game.players[2] },
-            { key: 'guessing-instructions', to: game.players[1] },
-            { key: 'guessing-instructions', to: game.players[2] }
+            { key: 'game-submission-sent', to: game_players[0] },
+            { key: 'emojis', options: [game_guesser.nickname, game_guesser.avatar, EMOJI], to: game_players[1] },
+            { key: 'emojis', options: [game_guesser.nickname, game_guesser.avatar, EMOJI], to: game_players[2] },
+            { key: 'guessing-instructions', to: game_players[1] },
+            { key: 'guessing-instructions', to: game_players[2] }
           ]
         );
       })).then((results) => {
@@ -128,12 +131,13 @@ describe('Play', () => {
     return playGames(players, number_of_games).then((games) => {
       return Promise.all(games.map((game) => {
         const msg = 'foo';
-        const game_guesser = game.players[1];
+        const game_players = parseSenderIDs(game.players);
+        const game_guesser = game_players[1];
         return check(
           { player: game_guesser, msg: rule('guess').example()+msg },
           [
-            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[0] },
-            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[2] }
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game_players[0] },
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game_players[2] }
           ]
         );
       })).then((results) => {
@@ -148,18 +152,19 @@ describe('Play', () => {
     return playGames(players, number_of_games).then((games) => {
       return Promise.all(games.map((game) => {
         const msg = game.round.phrase;
-        const game_guesser = game.players[1];
+        const game_players = parseSenderIDs(game.players);
+        const game_guesser = game_players[1];
         return check(
           { player: game_guesser, msg: rule('guess').example()+msg },
           [
-            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[0] },
-            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game.players[2] },
-            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[0] },
-            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[1] },
-            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[2] },
-            { key: 'game-next-round', options: [game_guesser.nickname, game_guesser.avatar], to: game.players[0] },
-            { key: 'game-next-round-suggestion', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[1] },
-            { key: 'game-next-round', options: [game_guesser.nickname, game_guesser.avatar], to: game.players[2] }
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game_players[0] },
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('guess').example() + msg], to: game_players[2] },
+            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[0] },
+            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[1] },
+            { key: 'correct-guess', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[2] },
+            { key: 'game-next-round', options: [game_guesser.nickname, game_guesser.avatar], to: game_players[0] },
+            { key: 'game-next-round-suggestion', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[1] },
+            { key: 'game-next-round', options: [game_guesser.nickname, game_guesser.avatar], to: game_players[2] }
           ]
         );
       })).then((results) => {
@@ -173,15 +178,16 @@ describe('Play', () => {
     const number_of_games = 2;
     return playGames(players, number_of_games).then((games) => {
       return Promise.all(games.map((game) => {
-        const game_guesser = game.round.players[0];
+        const game_players = parseSenderIDs(game.players);
+        const game_guesser = game_players[1];
         return check(
           { player: game_guesser, msg: rule('clue').example() },
           [
-            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game.players[0] },
-            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game.players[2] },
-            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[0] },
-            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[1] },
-            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game.players[2] }
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game_players[0] },
+            { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game_players[2] },
+            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[0] },
+            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[1] },
+            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[2] }
           ]
         );
       })).then((results) => {
@@ -202,10 +208,12 @@ describe('Play', () => {
             }
           }
         };
+        const game_players = parseSenderIDs(game.players);
+        const helper = game_players[1];
         return check(
-          { player: game.players[1], msg: rule('help').example() },
+          { player: helper, msg: rule('help').example() },
           [
-            { key: 'help-player-guessing', options, to: game.players[1] }
+            { key: 'help-player-guessing', options, to: game_players[1] }
           ]
         );
       })).then((results) => {

@@ -12,6 +12,7 @@ function getSenders(req, res) {
                 .where('id NOT IN ?', exclude)
                 .limit(1);
 
+  console.log(query.toString());
   db.query(query).then((rows) => {
     if ( rows && rows.length ) {
       res.json( rows[0] );
@@ -29,6 +30,7 @@ function getSenderID(req, res) {
                 .from('senders')
                 .where('sender=?', sender);
 
+  console.log(query.toString());
   db.query(query).then((rows) => {
     if ( rows && rows.length ) {
       res.json({ id: rows[0].id });

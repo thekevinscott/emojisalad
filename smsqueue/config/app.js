@@ -1,5 +1,5 @@
 module.exports = {
-  port: 5009,
+  port: process.env.PORT || 5010,
   name: 'sms',
   log_level: 'info'
-}
+};

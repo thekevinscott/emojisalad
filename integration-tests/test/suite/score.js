@@ -4,6 +4,7 @@
  *
  */
 
+/*
 const Game = require('../../../models/game');
 //const Player = require('../../../models/player');
 const getPlayers = require('../lib/getPlayers');
@@ -132,3 +133,4 @@ describe('Score', function() {
     });
   });
 });
+*/

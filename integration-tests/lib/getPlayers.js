@@ -2,13 +2,8 @@
 const _ = require('lodash');
 const faker = require('faker');
 const getRandomPhone = require('./getRandomPhone');
-const game_numbers = [
-  '+15551111111',
-  '+15552222222',
-  '+15553333333',
-  '+15554444444',
-  '+15559999999'
-];
+
+const game_numbers = require('../../testqueue/config/numbers');
 const EMOJIS = [
   '🐳',
   '🌟',
