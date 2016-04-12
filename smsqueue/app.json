@@ -1,5 +1,9 @@
 [{
-  "name"      : "sms",
+  "name"      : "bot",
   "script"    : "./index.js",
-  "args"      : "['--LOG_LEVEL' ,'info', '--PORT', '5009', '--ENVIRONMENT', 'production']"
+  "env": {
+    "LOG_LEVEL": "info",
+    "PORT": "5009",
+    "ENVIRONMENT": "production"
+  }
 }]
