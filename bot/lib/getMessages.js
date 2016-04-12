@@ -48,6 +48,7 @@ const getMessages = (ids, protocols, options = {}) => {
       throw err;
     });
   })).then((responses) => {
+    console.info('response back', responses);
     return [].concat(...responses);
     //return [].concat.apply([], responses);
   }).then((responses) => {
