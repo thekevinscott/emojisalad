@@ -1,5 +1,5 @@
 [{
-  "name" : "email",
+  "name" : "mail",
   "script" : "./index.js",
   "env": {
     "LOG_LEVEL": "info",
