@@ -46,7 +46,7 @@ app.listen(port, () => {
   });
 
   registry.ready(() => {
-    console.info(`EmojinaryFriend Bot: ${port}`);
+    console.info(`EmojinaryFriend Bot: ${port} ${PROTOCOLS}`);
 
     // Incoming requests take one of two forms
     // Bot will either reach out to grab messages from the queue,
