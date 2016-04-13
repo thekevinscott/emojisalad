@@ -1,6 +1,7 @@
 const db = require('../db');
 const squel = require('squel');
 const config = require('../config/mailgun');
+const createSender = require('./createSender');
 
 function getSenders(req, res) {
   console.log('get senders!');
@@ -19,18 +20,8 @@ function getSenders(req, res) {
     if ( rows && rows.length ) {
       res.json( rows[0] );
     } else {
-      console.log('add a sender!', config);
-      const game_name = `game${exclude.length + 1}`;
-      const sender = `${game_name}@${config.domain}`;
-      const insert = squel
-                     .insert()
-                     .into('senders')
-                     .setFields({
-                       sender
-                     });
-      console.log(insert.toString());
-      db.query(insert).then((result) => {
-        if ( result && result.insertId ) {
+      createSender(exclude).then((sender_id) => {
+        if (sender_id) {
           getSenders(req, res);
         } else {
           res.json({});
