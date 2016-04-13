@@ -30,16 +30,14 @@
 
 module.exports = function parse(params) {
   console.log('params', JSON.stringify(params, null, 4));
-  const object = params.object;
-  const messaging_events = params.entry[0].messaging;
-  //const entry = params.entry.pop();
-  //const messaging = entry.messaging.pop();
-  if (! object || ! messaging_events ) {
+  if (!params.object || !params.entry) {
     console.error('Potentially malicious error, invalid params', params);
     throw new Error('Incorrect parameters provided');
   } else {
+    const object = params.object;
+    const messaging_events = params.entry[0].messaging;
     console.log('messaging', messaging_events.length, messaging_events);
-    for (var i=0;i<messaging_events.length;i++) {
+    for (let i=0;i<messaging_events.length;i++) {
       const event = messaging_events[i];
       //console.log('event', event);
       if (event.message && event.message.text) {
