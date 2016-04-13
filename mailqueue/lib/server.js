@@ -57,5 +57,8 @@ const app = queue({
   //});
 //});
 
+app.get('/', (req, res) => {
+  res.send('root mail');
+});
 app.get('/senders', require('./senders'));
 app.get('/senders/:sender', require('./senders').getSenderID);
