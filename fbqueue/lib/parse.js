@@ -37,7 +37,7 @@ module.exports = function parse(params) {
     const object = params.object;
     const messaging_events = params.entry[0].messaging;
     console.log('messaging', messaging_events.length, messaging_events);
-    for (let i=0;i<messaging_events.length;i++) {
+    for (var i=0;i<messaging_events.length;i++) {
       const event = messaging_events[i];
       //console.log('event', event);
       if (event.message && event.message.text) {
