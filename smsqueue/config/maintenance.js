@@ -1,4 +1,4 @@
-const DOWN_FOR_MAINTENANCE = true;
+const DOWN_FOR_MAINTENANCE = false;
 
 const whitelist = [
   '+18604608183', // kevin
