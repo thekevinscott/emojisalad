@@ -21,6 +21,7 @@ module.exports = (game, player, input) => {
       console.error('error with new round', resulting_round);
       throw new Error(resulting_round.error);
     }
+    console.info('resulting round', resulting_round);
     return require('./say')(game, player, input).then((messages) => {
       if ( resulting_round.winner && resulting_round.winner.id ) {
         return Round.create(game).then((round) => {

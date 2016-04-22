@@ -19,8 +19,9 @@ module.exports = (player, message) => {
   console.info('invitee', invited_string);
 
   return Phone.parse(invited_string).then((response) => {
-    console.info('response', response);
+    console.info('response from attempting to parse the phone response', response);
     if ( ! response || ! response.phone ) {
+      console.info('not a valid phone');
       // this means its not a valid phone. is it a valid email?
       return Email.parse(invited_string).then((response) => {
         console.info('email parse response', response);
@@ -37,8 +38,9 @@ module.exports = (player, message) => {
         }
       });
     } else {
+      console.info('it is a valid phone');
       return {
-        protocol: 'sms',
+        protocol: player.protocol || 'sms',
         from: response.phone
       };
     }
@@ -62,111 +64,106 @@ module.exports = (player, message) => {
   }).then((invite) => {
     console.info('back, invites', invite);
     if ( invite.error ) {
-      console.error(player, message, invite);
-      throw new Error("Invite Create was called incorrectly");
+      //console.error('invite error is found', player, message, invite);
+      console.info('there is an invite error', invite);
+      switch ( invite.code ) {
+      case 1200:
+        // Invite already exists
+        return [
+          {
+            player,
+            key: 'error-2',
+            options: [invited_string]
+          }
+        ];
+        break;
+      case 1202:
+        // Invite already exists
+        return [
+          {
+            player,
+            key: 'error-3',
+            options: [invited_string]
+          }
+        ];
+        break;
+      case 1203:
+        // Cannot invite yourself
+        return [
+          {
+            player,
+            key: 'error-16',
+            options: []
+          }
+        ];
+        break;
+      case 1204:
+        // Invited user playing maximum games
+        return [
+          {
+            player,
+            key: 'error-12'
+          }
+        ];
+        break;
+      case 1205:
+        // Invited user is already in the game
+        return [
+          {
+            player,
+            key: 'error-15',
+            options: [
+              invited_string
+            ]
+          }
+        ];
+        break;
+      default:
+        return [
+          {
+            player,
+            key: 'error-4',
+            options: [invited_string]
+          }
+        ];
+        break;
+      }
     } else {
-      //const invite = invites[0] || { error: 'No invite found' };
-      if ( invite.error ) {
-        console.info('there is an invite error', invite);
-        switch ( invite.code ) {
-        case 1200:
-          // Invite already exists
-          return [
-            {
-              player,
-              key: 'error-2',
-              options: [invited_string]
-            }
-          ];
-          break;
-        case 1202:
-          // Invite already exists
-          return [
-            {
-              player,
-              key: 'error-3',
-              options: [invited_string]
-            }
-          ];
-          break;
-        case 1203:
-          // Cannot invite yourself
-          return [
-            {
-              player,
-              key: 'error-16',
-              options: []
-            }
-          ];
-          break;
-        case 1204:
-          // Invited user playing maximum games
-          return [
-            {
-              player,
-              key: 'error-12'
-            }
-          ];
-          break;
-        case 1205:
-          // Invited user is already in the game
-          return [
-            {
-              player,
-              key: 'error-15',
-              options: [
-                invited_string
-              ]
-            }
-          ];
-          break;
-        default:
-          return [
-            {
-              player,
-              key: 'error-4',
-              options: [invited_string]
-            }
-          ];
-          break;
-        }
+      if ( existing_user ) {
+        //console.info('invite', invite);
+        return [
+          {
+            player: invite.inviter_player,
+            key: 'intro_existing_player',
+            options: [invited_string]
+          },
+          {
+            key: 'invite_existing_player',
+            options: [
+              existing_user.nickname,
+              existing_user.avatar,
+              invite.inviter_player.nickname,
+              invite.inviter_player.avatar
+            ],
+            player: invite.invited_user
+          }
+        ];
       } else {
-        if ( existing_user ) {
-          //console.info('invite', invite);
-          return [
-            {
-              player: invite.inviter_player,
-              key: 'intro_existing_player',
-              options: [invited_string]
-            },
-            {
-              key: 'invite_existing_player',
-              options: [
-                existing_user.nickname,
-                existing_user.avatar,
-                invite.inviter_player.nickname,
-                invite.inviter_player.avatar
-              ],
-              player: invite.invited_user
-            }
-          ];
-        } else {
-          return [
-            {
-              player: invite.inviter_player,
-              key: 'intro_5',
-              options: [invited_string]
-            },
-            {
-              key: 'invite',
-              options: [
-                invite.inviter_player.nickname,
-                invite.inviter_player.avatar
-              ],
-              player: invite.invited_user
-            }
-          ];
-        }
+        return [
+          {
+            player: invite.inviter_player,
+            key: 'intro_5',
+            options: [invited_string]
+          },
+          {
+            key: 'invite',
+            options: [
+              invite.inviter_player.nickname,
+              invite.inviter_player.avatar
+            ],
+            player: invite.invited_user
+          }
+        ];
       }
     }
   }).catch(() => {

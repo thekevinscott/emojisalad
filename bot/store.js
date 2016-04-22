@@ -14,7 +14,7 @@ const store = (key, value) => {
                     value,
                     key
                   }).onDupUpdate('value', value);
-                  console.log(query.toString());
+                  //console.log(query.toString());
     return db.query(query);
   } else {
     const query = squel

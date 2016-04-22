@@ -75,57 +75,76 @@ const Round = {
     return distance <= 0.31;
   },
   guess: (round, player, original_guess) => {
+    console.info('get ready to guess');
     return Round.findOne(round).then((round) => {
+      console.info('the round guessing on', round);
       const phrase = Round.parsePhrase(round.phrase);
       const guess = Round.parsePhrase(original_guess);
+      console.info('phrase and guess', phrase, guess);
 
-      return new Promise((resolve) => {
-        if ( Round.checkPhrase(phrase, guess) ) {
-          resolve(true);
-        } else {
-          // could also check bing here
-          //
-          // finally, ping google and see what they say about this phrase
-          // only check the first result though.
-          resolve(autosuggest(guess).then((suggested_results) => {
-            if ( suggested_results.length ) {
-              const top_result = Round.parsePhrase(suggested_results[0].result);
-              return Round.checkPhrase(phrase, top_result);
-            } else {
-              return false;
-            }
-          }).catch(() => {
-            // swallow this silently
+      if ( Round.checkPhrase(phrase, guess) ) {
+        return true;
+      } else {
+        console.info('round check phrase, failed, next check', autosuggest, guess);
+        const autosuggest_timeout_length = (process.env.ENVIRONMENT === 'test') ? 5 : 1000;
+        // could also check bing here
+        //
+        // finally, ping google and see what they say about this phrase
+        // only check the first result though.
+        return autosuggest(guess).then((suggested_results) => {
+          console.info('suggested results', suggested_results);
+          if ( suggested_results.length ) {
+            const top_result = Round.parsePhrase(suggested_results[0].result);
+            return Round.checkPhrase(phrase, top_result);
+          } else {
             return false;
-          }));
-        }
-      }).then((result) => {
-        const promises = [];
-        // we save the guess
-        const guess_query = squel
-                           .insert()
-                           .into('guesses')
-                           .setFields({
-                             player_id: player.id,
-                             round_id: round.id,
-                             correct: result,
-                             guess: original_guess
-                           });
-        promises.push(db.query(guess_query));
-
-        if ( result ) {
-          const update_rounds_query = squel
-                                      .update()
-                                      .table('rounds')
-                                      .set('winner_id',player.id)
-                                      .where('id=?',round.id);
-          promises.push(db.query(update_rounds_query));
-        }
-
-        return Promise.all(promises).then(() => {
-          return Round.findOne(round);
+          }
+        }).timeout(autosuggest_timeout_length).then((result) => {
+          console.info('the final result of our guess', result);
+          return result;
+        }).catch(Promise.TimeoutError, () => {
+          console.info(`timed out at auto suggest at ${autosuggest_timeout_length} milliseconds`);
+          return false;
+        }).catch((err) => {
+          console.info('some other issue with autosuggest', err);
+          // swallow this silently
+          return false;
         });
+      }
+    }).then((result) => {
+      console.info('result of the guess', result);
+      const promises = [];
+      // we save the guess
+      const guess_query = squel
+                         .insert()
+                         .into('guesses')
+                         .setFields({
+                           player_id: player.id,
+                           round_id: round.id,
+                           correct: result,
+                           guess: original_guess
+                         });
+      promises.push(db.query(guess_query));
+
+      if ( result ) {
+        const update_rounds_query = squel
+                                    .update()
+                                    .table('rounds')
+                                    .set('winner_id',player.id)
+                                    .where('id=?',round.id);
+        promises.push(db.query(update_rounds_query));
+      }
+
+      return Promise.all(promises).then(() => {
+        console.info('promises done, find round');
+        return Round.findOne(round);
       });
+    }).then((round) => {
+      console.info('returning the round at the end of a guess', round);
+      return round;
+    }).catch((err) => {
+      console.error('err', err);
+      console.log('what the hell is causing this');
     });
   },
   /*
@@ -315,7 +334,9 @@ const Round = {
               .where('r.game_id IN ?',params.game_ids);
     }
 
+    console.info('round find query', query.toString());
     return db.query(query).then((rounds) => {
+      console.info('found rounds', rounds);
       if ( rounds.length ) {
         if ( params.most_recent ) {
           const rounds_by_game_id = rounds.reduce((obj, round) => {
@@ -389,6 +410,9 @@ const Round = {
               );
             })
           );
+        }).then((rounds) => {
+          console.info('final rounds payload', rounds);
+          return rounds;
         });
       } else {
         return [];

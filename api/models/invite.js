@@ -92,6 +92,9 @@ const Invite = {
                 });
 
                 const service = registry.get(invited_user.protocol);
+                if (!service) {
+                  throw new Error(`No service provided for protocol ${invited_user.protocol}`);
+                }
                 console.info('service', invited_user.protocol, JSON.stringify(service.api));
                 const options = {
                   url: service.api.senders.get.endpoint,
@@ -146,13 +149,17 @@ const Invite = {
           }
           //}));
         });
-      }).then((result) => {
+      //}).then((result) => {
+        //return result;
+        /*
         console.info('result', result);
         if ( result && result.id ) {
           return result;
         } else {
+          console.error('result', result);
           throw new Error("There was an error inserting invite");
         }
+        */
       });
     }).catch((err) => {
       console.error(err);
