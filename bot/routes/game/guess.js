@@ -47,7 +47,10 @@ module.exports = (game, player, input) => {
             return {
               player: game_player,
               key: 'cron',
-              options: [input],
+              options: [
+                game.round.submission,
+                input
+              ],
               protocol: 'sms'
             };
           }), 30 * 60 * 1000); // 30 minutes
