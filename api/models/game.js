@@ -170,39 +170,40 @@ const Game = {
       return 'text';
     }
   },
-  getPhrase: (game) => {
-    const game_phrases = squel
-                         .select()
-                         .field('phrase_id')
-                         .from('game_phrases')
-                         .where('game_id=?', game.id);
-    const query = squel
-                  .select()
-                  .from('phrases', 'p')
-                  .field('p.phrase')
-                  .field('p.id')
-                  .where('p.id NOT IN ?', game_phrases)
-                  .order('p.id')
-                  .limit(1);
+  //getPhrase: (game) => {
+    //console.log('time to GET THAT PHRASE');
+    //const game_phrases = squel
+                         //.select()
+                         //.field('phrase_id')
+                         //.from('game_phrases')
+                         //.where('game_id=?', game.id);
+    //const query = squel
+                  //.select()
+                  //.from('phrases', 'p')
+                  //.field('p.phrase')
+                  //.field('p.id')
+                  //.where('p.id NOT IN ?', game_phrases)
+                  //.order('p.id')
+                  //.limit(1);
 
-    return db.query(query).then((rows) => {
-      if ( rows ) {
-        const phrase = rows[0];
-        // mark this phrase as used
-        const markPhrase = squel
-                           .insert()
-                           .into('game_phrases')
-                           .setFields({
-                             game_id: game.id,
-                             phrase_id: phrase.id
-                           });
-        db.query(markPhrase);
-        return phrase;
-      } else {
-        console.error('Uh oh, out of phrases');
-      }
-    });
-  },
+    //console.log(query.toString());
+    //return db.query(query).then((rows) => {
+      //if ( rows ) {
+        //const phrase = rows[0];
+        //const markPhrase = squel
+                           //.insert()
+                           //.into('game_phrases')
+                           //.setFields({
+                             //game_id: game.id,
+                             //phrase_id: phrase.id
+                           //});
+        //db.query(markPhrase);
+        //return phrase;
+      //} else {
+        //console.error('Uh oh, out of phrases');
+      //}
+    //});
+  //},
   add: (game, users) => {
     console.info('get ready to add users to game', game, users);
     //console.debug('huzzah add');

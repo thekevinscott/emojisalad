@@ -14,9 +14,10 @@ const check = require('lib/check');
 const rule = require('../../config/rule');
 const guess = rule('guess').example();
 const EMOJI = '😀';
+const db = require('db');
+const squel = require('squel');
 
 describe('Game', () => {
-
   it('should initiate the game with the person who started it', () => {
     const players = getPlayers(2);
 
@@ -262,7 +263,90 @@ describe('Game', () => {
     });
   });
 
-  //it('should gracefully handle running out of new phrases', () => {
-    //throw '1';
-  //});
+  describe('Running out of phrases', () => {
+    let original_phrases;
+    before(() => {
+      const select_phrases = squel
+                             .select()
+                             .from('phrases');
+      return db.api.query(select_phrases).then((rows) => {
+        original_phrases = rows;
+        const delete_phrases = squel
+                               .delete()
+                               .from('phrases');
+        return db.api.query(delete_phrases);
+      }).then(() => {
+        const insert_phrases = squel
+                               .insert()
+                               .into('phrases')
+                               .setFieldsRows([
+                                 { id: 1, phrase: 'First Phrase' },
+                                 { id: 2, phrase: 'Second Phrase' },
+                                 { id: 3, phrase: 'Third Phrase' },
+                                 { id: 4, phrase: 'Fourth Phrase' }
+                               ]);
+        return db.api.query(insert_phrases);
+      });
+    });
+
+    after(() => {
+      const insert_phrases = squel
+                             .insert()
+                             .into('phrases')
+                             .setFieldsRows(original_phrases.map((phrase) => {
+                               return {
+                                 id: phrase.id,
+                                 phrase: phrase.phrase,
+                                 admin_id: phrase.admin_id,
+                                 category_id: phrase.category_id
+                               };
+                             }));
+      return db.api.query(insert_phrases);
+    });
+
+    it('should refresh phrases before it runs out of phrases', () => {
+      const players = getPlayers(3);
+      const phrases = [];
+      let current_submitter = 0;
+
+      function submitAndGuess(messages) {
+        let game_phrase;
+        if (typeof messages === 'string') {
+          game_phrase = messages;
+        } else {
+          game_phrase = getPhrase(messages);
+        }
+        phrases.push(game_phrase);
+        const submitter = players[current_submitter];
+        const guesser = players[(current_submitter + 1) >= players.length ? 0 : current_submitter + 1];
+        if (current_submitter >= players.length - 1) {
+          current_submitter = 0;
+        } else {
+          current_submitter++;
+        }
+        return setup([
+          { player: submitter, msg: EMOJI },
+          { player: guesser, msg: guess + game_phrase, get_response: true }
+        ]);
+      }
+
+      return startGame(players, true)
+      .then(submitAndGuess)
+      .then(submitAndGuess)
+      .then(submitAndGuess)
+      .then((messages) => {
+        const game_phrase = getPhrase(messages);
+        phrases.indexOf(game_phrase).should.equal(-1);
+        return submitAndGuess(game_phrase);
+      }).then((messages) => {
+        const game_phrase = getPhrase(messages);
+        phrases.indexOf(game_phrase).should.equal(0);
+        return submitAndGuess(game_phrase);
+      }).then((messages) => {
+        const game_phrase = getPhrase(messages);
+        phrases.indexOf(game_phrase).should.equal(1);
+        return submitAndGuess(game_phrase);
+      });
+    });
+  });
 });

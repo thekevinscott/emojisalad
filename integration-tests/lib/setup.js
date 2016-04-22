@@ -37,9 +37,13 @@ const setup = (arr) => {
     const msg = a.msg;
     const get_response = a.get_response;
     const expect_response = (a.expect_response === false) ? false : true;
-    if ( ! player.to && ! a.to ) {
-      console.error('a', a, 'i', i);
-      throw "Now you must provide an explicit to";
+    try {
+      if ( ! player.to && ! a.to ) {
+        console.error('a', a, 'i', i);
+        throw "Now you must provide an explicit to";
+      }
+    } catch(err) {
+      console.error('error with player', err, a);
     }
     //const to = a.to || game_numbers[0];
     const to = a.to || player.to;

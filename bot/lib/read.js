@@ -130,7 +130,7 @@ const runRead = () => {
           return message;
         }).then((processed_messages) => {
           //console.log('run read 6');
-          console.info('processed messages', processed_messages.length, processed_messages);
+          //console.info('processed messages', processed_messages.length, processed_messages);
           return sendMessages(processed_messages);
         });
       });

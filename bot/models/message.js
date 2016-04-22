@@ -81,7 +81,7 @@ const Message = {
       return responses.map((response) => {
         let from;
 
-        console.info('response player', response);
+        //console.info('response player', response);
         if ( response.player.from ) {
           from = response.player.from;
         } else if ( response.player.user.from ) {

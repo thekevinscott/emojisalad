@@ -29,7 +29,7 @@ const sendMessages = (messages, options = {}) => {
     return obj;
   }, {});
 
-  console.info('messages_by_protocol', messages_by_protocol);
+  //console.info('messages_by_protocol', messages_by_protocol);
   //console.log('send 2');
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
     //console.log('send 3', protocol);

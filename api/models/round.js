@@ -144,7 +144,7 @@ const Round = {
       return round;
     }).catch((err) => {
       console.error('err', err);
-      console.log('what the hell is causing this');
+      console.error('what the hell is causing this');
     });
   },
   /*
@@ -182,29 +182,48 @@ const Round = {
   }),
   */
   getPhrase: (game) => {
-    const game_phrases = squel
-                         .select()
-                         .field('phrase_id')
-                         .from('game_phrases')
-                         .where('game_id=?', game.id);
+    const get_total_number_of_phrases = squel
+                                        .select()
+                                        .field('count(1) as total')
+                                        .from('phrases');
 
-    const order = 'RAND()';
+    return db.query(get_total_number_of_phrases).then((rows) => {
+      return rows[0].total;
+    }).then((total_number_of_phrases) => {
+      const phrases_to_limit = parseInt(total_number_of_phrases * 0.75, 10);
+      const get_game_phrases = squel
+                               .select()
+                               .field('phrase_id')
+                               .from('game_phrases')
+                               .where('game_id=?', game.id)
+                               .order('id', false)
+                               .limit(phrases_to_limit);
+      return db.query(get_game_phrases).then((game_phrases) => {
+        return game_phrases.map((phrase) => {
+          return phrase.phrase_id;
+        }).join(',');
+      });
+    }).then((game_phrases) => {
+      const order = 'RAND()';
 
-    const query = squel
-                  .select()
-                  .field('p.id')
-                  .field('p.phrase')
-                  .field('c.clue')
-                  .from('phrases', 'p')
-                  .left_join('clues', 'c', 'c.phrase_id=p.id')
-                  .field('p.phrase')
-                  .field('p.id')
-                  .where('p.id NOT IN ?', game_phrases)
-                  .order(order)
-                  .limit(1);
+      let get_next_game_phrase = squel
+                                 .select()
+                                 .field('p.id')
+                                 .field('p.phrase')
+                                 .field('c.clue')
+                                 .from('phrases', 'p')
+                                 .left_join('clues', 'c', 'c.phrase_id=p.id')
+                                 .field('p.phrase')
+                                 .field('p.id')
+                                 .order(order)
+                                 .limit(1);
 
-    console.info('get phrase 1');
-    return db.query(query).then((rows) => {
+      if (game_phrases) {
+        get_next_game_phrase = get_next_game_phrase.where(`p.id NOT IN (${game_phrases})`);
+      }
+      console.info('get phrase 1');
+      return db.query(get_next_game_phrase);
+    }).then((rows) => {
       console.info('get phrase 2');
       if ( rows ) {
         console.info('get phrase 3');
@@ -219,11 +238,12 @@ const Round = {
                            });
         console.info('get phrase 4');
         return db.query(markPhrase).then(() => {
-          console.info('get phrase 5');
+          console.info('get phrase 5', phrase);
           return phrase;
         });
       } else {
-        console.error('Uh oh, out of phrases');
+        console.error('Uh oh, out of phrases - this should never happen');
+        throw new Error('Out of phrases');
       }
     });
   },
