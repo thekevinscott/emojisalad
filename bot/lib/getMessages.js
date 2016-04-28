@@ -50,7 +50,6 @@ const getMessages = (ids, protocols, options = {}) => {
   })).then((responses) => {
     console.info('response back', responses);
     return [].concat(...responses);
-    //return [].concat.apply([], responses);
   }).then((responses) => {
     if ( options.trip && responses.length >= options.trip ) {
       sendAlert(responses, 'tripped', 'get');

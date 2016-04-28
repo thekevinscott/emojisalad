@@ -106,7 +106,7 @@ const getInviteAcceptedMessages = (game, invite, player, invited_key) => {
     if ( player.id === invited.id ) {
       message = {
         key: invited_key,
-        options: [invited.nickname, invited.avatar, inviter.nickname, inviter.avatar]
+        options: [invited.nickname, invited.avatar, game.round.submitter.nickname, game.round.submitter.avatar]
       };
     } else if ( player.id === inviter.id ) {
       message = {

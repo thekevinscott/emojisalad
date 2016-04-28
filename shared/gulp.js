@@ -131,7 +131,7 @@ function pullDB(config, tmp, tables) {
   }).then(() => {
     if ( tables_without_data.length ) {
       console.log('dumping schemas');
-      //console.log(dumpSchemas.join(' '));
+      console.log(dumpSchemas.join(' '));
       return exec(dumpSchemas.join(' '));
     }
   }).then(() => {

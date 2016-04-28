@@ -39,6 +39,34 @@ describe('Game', () => {
     });
   });
 
+  it('should let allow a third user to join before emojis have been submitted', () => {
+    const players = getPlayers(3);
+
+    return signup(players[0]).then(() => {
+      return setup([
+        { player: players[0], msg: 'invite '+players[1].number},
+        { player: players[1], msg: 'yes'},
+        { player: players[1], msg: players[1].nickname },
+        { player: players[1], msg: players[1].avatar },
+        { player: players[1], msg: 'invite '+players[2].number},
+        { player: players[2], msg: 'yes'},
+        { player: players[2], msg: players[2].nickname }
+      ]);
+    }).then(() => {
+      return check(
+        { player: players[2], msg: players[2].avatar },
+        [
+          // this alerts the submitter that player 2, invited by player 1, has joined the game
+          { to: players[0], key: 'join-game', options: [players[2].nickname, players[2].avatar] },
+          // this alerts player 1 that player 2, whom they invited, has joined the game.
+          { to: players[1], key: 'accepted-invited', options: [players[2].nickname, players[2].avatar] },
+          // this alert players 2 that they've joined the game and player 0 is starting.
+          { to: players[2], key: 'accepted-inviter', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar ] }
+        ]
+      );
+    });
+  });
+
   it('should allow players to cross talk', () => {
     const players = getPlayers(3);
 
