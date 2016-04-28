@@ -1,12 +1,10 @@
 'use strict';
-//const Promise = require('bluebird');
-//const Player = require('models/player');
-//const Game = require('models/game');
 const Round = require('models/round');
 const _ = require('lodash');
-//const rule = require('config/rule');
+const setTimer = require('lib/setTimer');
 
 module.exports = (game, submitter, input) => {
+  setTimer.clear(game, 'submission');
   return Round.update(game.round, {
     submission: input
   }).then((round) => {

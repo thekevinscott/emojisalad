@@ -1,8 +1,8 @@
 'use strict';
-//const Round = require('models/round');
 const _ = require('lodash');
+const setTimer = require('lib/setTimer');
 
-const new_round = (game, round) => {
+const newRound = (game, round) => {
   return game.players.map((game_player) => {
     const message = {
       player: game_player
@@ -14,7 +14,21 @@ const new_round = (game, round) => {
     if ( ! round.submitter ) {
       console.error('Why is there no roudn submitter', round);
     }
+
     if ( game_player.id === round.submitter.id ) {
+      if (game_player.protocol === 'sms') {
+        const cron_msg = [{
+          player: game_player,
+          key: 'cron-waiting-for-submission',
+          options: [
+            round.submitter.nickname,
+            round.submitter.avatar,
+            round.phrase
+          ],
+          protocol: 'sms'
+        }];
+        setTimer(game, 'submission', cron_msg, 24 * 60 * 60 * 1000); // 24 hours
+      }
       return _.assign({
         key: 'game-next-round-suggestion',
         options: [round.submitter.nickname, round.submitter.avatar, round.phrase]
@@ -25,12 +39,7 @@ const new_round = (game, round) => {
         options: [round.submitter.nickname, round.submitter.avatar]
       }, message);
     }
-    return {
-      player: game_player,
-      key: 'correct-guess',
-      options: [round.submitter.nickname, round.submitter.avatar, input],
-    };
   });
 };
 
-module.exports = new_round;
+module.exports = newRound;

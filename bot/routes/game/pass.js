@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 const _ = require('lodash');
 const rule = require('config/rule');
 const Round = require('models/round');
-const new_round = require('./new_round');
+const newRound = require('./new_round');
 const Game = require('models/game');
 
 module.exports = (game, player, input) => {
@@ -14,9 +14,9 @@ module.exports = (game, player, input) => {
         return {
           player: game_player,
           key: 'pass',
-          options: [player.nickname, player.avatar, input],
+          options: [player.nickname, player.avatar, input]
         };
-      })).concat(new_round(game, round));
+      })).concat(newRound(game, round));
     });
   });
 };

@@ -14,16 +14,16 @@ module.exports = (player, input) => {
       if ( !game.round.submission ) {
         // they are asking how to submit a submission
         return [{
-          player: player,
+          player,
           key: 'help-submitter-waiting-for-submission',
-          options : { game: game }
+          options : { game }
         }];
       } else {
         // they are asking what to do now that they've submitted
         return [{
-          player: player,
+          player,
           key: 'help-submitter-submitted',
-          options : { game: game }
+          options : { game }
         }];
       }
     } else {
@@ -32,16 +32,16 @@ module.exports = (player, input) => {
         // a player is asking what to do before the submission
         // has been delivered. soothe their aching souls.
         return [{
-          player: player,
+          player,
           key: 'help-player-guessing',
-          options : { game: game }
+          options : { game }
         }];
       } else {
         // a player is asking how to play an active round
         return [{
-          player: player,
+          player,
           key: 'help-player-ready-for-game',
-          options : { game: game }
+          options : { game }
         }];
       }
     }
