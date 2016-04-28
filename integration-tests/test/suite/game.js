@@ -157,7 +157,9 @@ describe('Game', () => {
             [
               { to: players[0], key: 'accepted-invited', options: [players[2].nickname, players[2].avatar] },
               { to: players[1], key: 'join-game', options: [players[2].nickname, players[2].avatar] },
-              { to: players[2], key: 'accepted-inviter-in-progress', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar] }
+              { to: players[2], key: 'accepted-inviter-in-progress', options: [players[2].nickname, players[2].avatar, players[0].nickname, players[0].avatar] },
+              { to: players[2], key: 'emojis', options: [players[0].nickname, players[0].avatar, EMOJI] },
+              { to: players[2], key: 'guessing-instructions', options: [] }
             ]
           );
         });
