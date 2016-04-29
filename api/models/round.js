@@ -62,8 +62,21 @@ const Round = {
       'for',
       'and'
     ];
+
+    const translate_words = {
+      'dr': 'doctor',
+      'mr': 'mister',
+      'mrs': 'missus',
+      'ms': 'miss'
+    };
     return phrase.toLowerCase().replace(/[^\w\s]|_/g, '').split(' ').filter((word) => {
       return ignored_words.indexOf(word.toLowerCase()) === -1 && word;
+    }).map((word) => {
+      if (translate_words[word]) {
+        return translate_words[word];
+      } else {
+        return word;
+      }
     }).join(' ');
   },
   checkPhrase: (phrase, guess) => {

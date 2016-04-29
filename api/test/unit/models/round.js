@@ -154,5 +154,10 @@ describe('Round Model', () => {
         result.guesses.length.should.equal(1);
       });
     });
+
+    it('should be able to parse doctor', () => {
+      const the_guess = 'Dr who';
+      return guess(the_guess, phrases['DOCTOR WHO'], true);
+    });
   });
 });
