@@ -4,15 +4,16 @@ const proxyquire = require('proxyquire');
 const User = require('models/user');
 const Game = require('models/game');
 const Invite = require('models/invite');
-const game_number = '+15559999999';
+const game_number = '1';
 const game_numbers = [
-  '+15551111111',
-  '+15552222222',
-  '+15553333333',
-  '+15554444444',
-  '+15559999999'
+  '1',
+  '2',
+  '3',
+  '4',
+  '5'
 ];
-const protocol = 1;
+const protocol = 'testqueue';
+const to = game_number;
 describe('Create', () => {
   const from = Math.random();
   let game;
@@ -83,7 +84,7 @@ describe('Create', () => {
     });
   });
 
-  describe.only('Valid', () => {
+  describe('Valid', () => {
 
     const createInvite = (inviter_id, invitee) => {
       const payload = {
@@ -102,7 +103,6 @@ describe('Create', () => {
     it('should create an invite', () => {
       const invitee = 'foo'+Math.random();
       return createInvite(inviter.id, invitee).then((res) => {
-        console.log('res', res.body);
         res.statusCode.should.equal(200);
         res.body.should.have.property('id');
         res.body.should.have.property('game');
@@ -122,41 +122,45 @@ describe('Create', () => {
         return createInvite(inviter.id, invitee);
       }).then((res) => {
         res.statusCode.should.equal(200);
-        res.body.length.should.be.above(0);
-        res.body[0].should.have.property('error');
-        res.body[0].error.should.contain('Invite already exists for');
-        res.body[0].should.have.property('code', 1200);
+        //res.body.length.should.be.above(0);
+        res.body.should.have.property('error');
+        res.body.error.should.contain('Invite already exists for');
+        res.body.should.have.property('code', 1200);
       });
     });
 
     it('should create multiple invites for the same game for the same user, so long as the previous ones have all been used and the user is not in a game', () => {
-      const invited = 'foo'+Math.random();
-      return createInvite(inviter.id, [ invited ]).then((res) => {
-        return Invite.use(res.body[0].id);
+      const invitee = 'foo'+Math.random();
+      return createInvite(inviter.id, invitee).then((res) => {
+        return Invite.use(res.body.id);
       }).then(() => {
-        return createInvite(inviter.id, [ invited ]);
+        return createInvite(inviter.id, invitee);
       }).then((res) => {
         res.statusCode.should.equal(200);
-        res.body.length.should.be.above(0);
-        res.body[0].should.have.property('id');
-        res.body[0].should.have.property('game');
-        res.body[0].should.have.property('inviter_player');
-        res.body[0].should.have.property('invited_user');
-        res.body[0].inviter_player.should.have.property('id', inviter.id);
-        res.body[0].invited_user.should.have.property('id');
-        res.body[0].invited_user.should.have.property('from', invited);
-        res.body[0].game.should.have.property('id');
+        //res.body.length.should.be.above(0);
+        res.body.should.have.property('id');
+        res.body.should.have.property('game');
+        res.body.should.have.property('inviter_player');
+        res.body.should.have.property('invited_user');
+        res.body.inviter_player.should.have.property('id', inviter.id);
+        res.body.invited_user.should.have.property('id');
+        res.body.invited_user.should.have.property('from', invitee);
+        res.body.game.should.have.property('id');
       });
     });
 
     it('should not create an invite for someone already in a game', () => {
       const new_user = 'foo'+Math.random();
 
-      return User.create({ from: new_user }).then((user) => {
+      return User.create({ from: new_user, protocol }).then((user) => {
+        user.to = to;
         return Game.add(game, [ user ]).then(() => {
           const payload = {
             inviter_id: inviter.id,
-            invites: [ new_user ]
+            invitee: {
+              from: new_user,
+              protocol
+            }
           };
           return post({
             url: `/games/${game.id}/invite`,
@@ -165,31 +169,31 @@ describe('Create', () => {
         });
       }).then((res) => {
         res.statusCode.should.equal(200);
-        res.body.length.should.equal(1);
-        res.body[0].should.have.property('error');
-        res.body[0].error.should.contain('already playing game');
-        res.body[0].should.have.property('code', 1203);
+        //res.body.length.should.equal(1);
+        res.body.should.have.property('error');
+        res.body.error.should.contain('already in game');
+        res.body.should.have.property('code', 1205);
       });
     });
 
     it('should not create an invite for a blacklisted user', () => {
-      const invited = 'foo'+Math.random();
-      return User.create({ from: invited }).then((user) => {
+      const invitee = 'foo'+Math.random();
+      return User.create({ from: invitee, protocol }).then((user) => {
         return User.update(user, { blacklist: 1 });
       }).then(() => {
-        return createInvite(inviter.id, [ invited ]);
+        return createInvite(inviter.id, invitee);
       }).then((res) => {
         res.statusCode.should.equal(200);
-        res.body.length.should.be.above(0);
-        res.body[0].should.have.property('error');
-        res.body[0].error.should.contain('User has asked not to be contacted');
-        res.body[0].should.have.property('code', 1202);
+        //res.body.length.should.be.above(0);
+        res.body.should.have.property('error');
+        res.body.error.should.contain('User has asked not to be contacted');
+        res.body.should.have.property('code', 1202);
       });
     });
 
     it('should not create an invite for a user playing the maximum number of games', () => {
-      const invited = 'foo'+Math.random();
-      return User.create({ from: invited }).then((user) => {
+      const invitee = 'foo'+Math.random();
+      return User.create({ from: invitee, protocol }).then((user) => {
         return User.update(user, { maximum_games: 2 });
       }).then((user) => {
         const promises = [];
@@ -202,26 +206,27 @@ describe('Create', () => {
         }
         return Promise.all(promises);
       }).then(() => {
-        return createInvite(inviter.id, [ invited ]);
+        return createInvite(inviter.id, invitee);
       }).then((res) => {
         res.statusCode.should.equal(200);
-        res.body.length.should.be.above(0);
-        res.body[0].should.have.property('error');
-        res.body[0].error.should.contain('User is playing the maximum');
-        res.body[0].should.have.property('code', 1204);
+        //res.body.length.should.be.above(0);
+        res.body.should.have.property('error');
+        res.body.error.should.contain('User is playing the maximum');
+        res.body.should.have.property('code', 1204);
       });
     });
 
     it('should not be able to invite yourself', () => {
       return createInvite(inviter.id, [ inviter.from ]).then((res) => {
         res.statusCode.should.equal(200);
-        res.body.length.should.be.above(0);
-        res.body[0].should.have.property('error');
-        res.body[0].error.should.contain('You can\'t invite yourself');
-        res.body[0].should.have.property('code', 1203);
+        //res.body.length.should.be.above(0);
+        res.body.should.have.property('error');
+        res.body.error.should.contain('You can\'t invite yourself');
+        res.body.should.have.property('code', 1203);
       });
     });
 
+    /*
     describe('Multiple invites at once', () => {
       it('should be able to invite two people at once', () => {
         const invites = [
@@ -344,5 +349,6 @@ describe('Create', () => {
         });
       });
     });
+    */
   });
 });

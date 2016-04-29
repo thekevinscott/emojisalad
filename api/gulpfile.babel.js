@@ -221,8 +221,8 @@ function startTestQueue() {
 
 function stopTestQueue(testqueue) {
   return new Promise((resolve) => {
-    return testqueue.slaughter().then(() => {
-      resolve();
-    });
-  });;
+    //return testqueue.slaughter().then(() => {
+    resolve();
+    //});
+  });
 }

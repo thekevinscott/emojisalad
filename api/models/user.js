@@ -13,6 +13,7 @@ const User = {
     if ( ! params.from ) {
       throw new Error("You must provide a from field for a user");
     }
+
     if ( ! params.protocol ) {
       throw new Error("You must provide a protocol id for a user");
     }

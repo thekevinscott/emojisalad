@@ -5,13 +5,14 @@ const User = require('models/user');
 const Invite = require('models/invite');
 const Game = require('models/game');
 
-describe('Use', function() {
+describe('Use', () => {
   const from = Math.random();
+  const protocol = 'testqueue';
   let game;
   let inviter;
 
   before(() => {
-    return User.create({ from: from }).then((user) => {
+    return User.create({ from, protocol }).then((user) => {
       const payload = [{ id: user.id }];
       return Game.create(payload);
     }).then((res) => {
@@ -22,12 +23,11 @@ describe('Use', function() {
 
   it('should be able to use an invite', () => {
     const from = 'foo' + Math.random();
-    return Invite.create({ inviter_id: inviter.id, invites: [ from ] }).then((invites) => {
-      const invite = invites[0];
+    return Invite.create({ inviter_id: inviter.id, invitee: { from, protocol } }).then((invite) => {
       const url = `/games/${game.id}/invites/${invite.id}/use`;
       return post({
-        url: url
-      })
+        url
+      });
     }).then((res) => {
       res.statusCode.should.equal(200);
       res.body.should.have.property('id');

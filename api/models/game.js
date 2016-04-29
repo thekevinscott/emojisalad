@@ -216,7 +216,7 @@ const Game = {
         return Game.findOne(game.id);
       }
     }).then((game) => {
-      //console.info('found teh game', game, users);
+      console.info('found teh game', game, users);
       return Promise.all(users.map((user) => {
         if ( !user.to ) {
           console.error(user);

@@ -6,9 +6,9 @@ const app = require('express')();
 const registry = require('microservice-registry');
 
 const port = process.env.PORT || 1338;
-console.log('port', port);
 
 registry.register('api',{
+  //services: ['testqueue'],
   api: require('./manifest')(port)
 });
 
@@ -26,11 +26,12 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-app.listen(app.get('port'), () => {
-  console.info(`EmojinaryFriend API: ${process.env.ENVIRONMENT}`);
-  registry.ready();
-});
-
 app.use(pmx.expressErrorHandler());
 
 require('./controllers')(app);
+
+module.exports = registry.ready(() => {
+  app.listen(app.get('port'), () => {
+    console.info(`EmojinaryFriend API: ${process.env.ENVIRONMENT}`);
+  });
+});

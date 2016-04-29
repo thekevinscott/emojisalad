@@ -5,27 +5,28 @@ const User = require('models/user');
 const Invite = require('models/invite');
 const Game = require('models/game');
 
-describe('Find', function() {
+describe('Find', () => {
   let game;
   let inviter;
   const from = 'foo' + Math.random();
+  const protocol = 'testqueue';
 
   before(() => {
-    return User.create({ from: Math.random() }).then((user) => {
+    return User.create({ from: Math.random(), protocol }).then((user) => {
       return Game.create([{ id: user.id }]);
     }).then((res) => {
       game = res;
       inviter = game.players[0];
       return Invite.create({
         inviter_id: inviter.id,
-        invites: [ from ]
+        invitee: { from, protocol }
       });
     }).then(() => {
       return Invite.create({
         inviter_id: inviter.id,
-        invites: [ Math.random() ]
+        invitee: { from: Math.random(), protocol }
       }).then((invites) => {
-        return Invite.use(invites[0].id);
+        return Invite.use(invites.id);
       });
     });
   });
@@ -84,21 +85,21 @@ describe('Find', function() {
     });
   });
 
-  describe('findOne', function() {
-    it('should only accept numeric IDs', function() {
+  describe('findOne', () => {
+    it('should only accept numeric IDs', () => {
       return get({ url: `/invites/foo` }).then((res) => {
         res.statusCode.should.equal(400);
       });
     });
 
-    it('should return blank for an invite not found', function() {
+    it('should return blank for an invite not found', () => {
       return get({ url: `/invites/999999999` }).then((res) => {
         res.statusCode.should.equal(200);
         res.body.should.not.have.property('id');
       });
     });
 
-    it('should return a single player', function() {
+    it('should return a single player', () => {
       //const number = 'foo' + Math.random();
       return Invite.findOne().then((invite) => {
         return get({ url: `/invites/${invite.id}` }).then((res) => {
