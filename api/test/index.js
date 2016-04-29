@@ -1,8 +1,7 @@
-'use strict';
-let chai = require('chai');
+const chai = require('chai');
 chai.should();
 chai.use(require('chai-datetime'));
-let expect = chai.expect;
+const expect = chai.expect;
 chai.use(require('chai-datetime'));
 
 require('../../shared/scaffolding');

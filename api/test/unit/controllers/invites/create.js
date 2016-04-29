@@ -3,6 +3,7 @@ const post = require('test/support/request').post;
 const proxyquire = require('proxyquire');
 const User = require('models/user');
 const Game = require('models/game');
+const Invite = require('models/invite');
 const game_number = '+15559999999';
 const game_numbers = [
   '+15551111111',
@@ -54,7 +55,7 @@ describe('Create', () => {
     it('should reject with a non existent user id', () => {
       return post({
         url: `/games/${game.id}/invite`,
-        data: { inviter_id: 999999, invites: ['foo'] }
+        data: { inviter_id: 999999, invitee: 'foo' }
       }).then((res) => {
         res.statusCode.should.equal(400);
         res.error.text.should.contain('You must provide a valid inviter_id');
@@ -74,20 +75,23 @@ describe('Create', () => {
     it('should reject without valid invites', () => {
       return post({
         url: `/games/${game.id}/invite`,
-        data: { inviter_id: inviter.id, invites: 'foo' }
+        data: { inviter_id: inviter.id, invites: '' }
       }).then((res) => {
         res.statusCode.should.equal(400);
-        res.error.text.should.contain('You must provide valid invites');
+        res.error.text.should.contain('You must provide a valid invitee');
       });
     });
   });
 
-  describe('Valid', () => {
+  describe.only('Valid', () => {
 
-    const createInvite = (inviter_id, invites) => {
+    const createInvite = (inviter_id, invitee) => {
       const payload = {
         inviter_id,
-        invites
+        invitee: {
+          from: invitee,
+          protocol: 'testqueue'
+        }
       };
       return post({
         url: `/games/${game.id}/invite`,
@@ -95,27 +99,27 @@ describe('Create', () => {
       });
     };
 
-    it.only('should create an invite', () => {
-      const invited = 'foo'+Math.random();
-      return createInvite(inviter.id, [ invited ]).then((res) => {
+    it('should create an invite', () => {
+      const invitee = 'foo'+Math.random();
+      return createInvite(inviter.id, invitee).then((res) => {
+        console.log('res', res.body);
         res.statusCode.should.equal(200);
-        res.body.length.should.be.above(0);
-        res.body[0].should.have.property('id');
-        res.body[0].should.have.property('game');
-        res.body[0].should.have.property('inviter_player');
-        res.body[0].should.have.property('invited_user');
-        res.body[0].inviter_player.should.have.property('id', inviter.id);
-        res.body[0].invited_user.should.have.property('id');
-        res.body[0].invited_user.should.have.property('from', invited);
-        res.body[0].invited_user.should.have.property('to', inviter.to);
-        res.body[0].game.should.have.property('id');
+        res.body.should.have.property('id');
+        res.body.should.have.property('game');
+        res.body.should.have.property('inviter_player');
+        res.body.should.have.property('invited_user');
+        res.body.inviter_player.should.have.property('id', inviter.id);
+        res.body.invited_user.should.have.property('id');
+        res.body.invited_user.should.have.property('from', invitee);
+        res.body.invited_user.should.have.property('to', inviter.to);
+        res.body.game.should.have.property('id');
       });
     });
 
     it('should not create multiple invites for the same game for the same user', () => {
-      const invited = 'foo'+Math.random();
-      return createInvite(inviter.id, [ invited ]).then(() => {
-        return createInvite(inviter.id, [ invited ]);
+      const invitee = 'foo'+Math.random();
+      return createInvite(inviter.id, invitee).then(() => {
+        return createInvite(inviter.id, invitee);
       }).then((res) => {
         res.statusCode.should.equal(200);
         res.body.length.should.be.above(0);

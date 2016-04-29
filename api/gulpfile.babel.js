@@ -4,8 +4,11 @@
 require('app-module-path').addPath(__dirname);
 require('babel-polyfill');
 //require('app-module-path').addPath(__dirname);
+const chalk = require('chalk');
 const gulp = require('gulp');
 const util = require('gulp-util');
+const d = require('node-discover')();
+const lzw = require('node-lzw');
 const Promise = require('bluebird');
 //const argv = require('yargs').argv;
 const mocha = require('gulp-mocha');
@@ -100,25 +103,38 @@ gulp.task('update-fixtures', (cb) => {
  * and some seed commands in here, then run the test suite
  */
 gulp.task('test', (cb) => {
-  return seed().then(() => {
+  startTestQueue().then((testqueue) => {
+    return seed().then(() => {
+      return testqueue;
+    });
+  }).then((testqueue) => {
     process.env.LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
     process.env.ENVIRONMENT = 'test';
     process.env.PORT = 1331;
-    return gulp.src(['test/index.js'], { read: false })
-    .pipe(mocha({
-      timeout: 3000,
-      slow: 500,
-      bail: true
-    }))
-    .on('error', (data) => {
-      console.error(data.message);
-      process.exit(1);
-    })
-    .once('end', () => {
-      process.exit();
+
+    return new Promise((resolve, reject) => {
+      gulp.src(['./test/index.js'], { read: false })
+      .pipe(mocha({
+        timeout: 3000,
+        slow: 500,
+        bail: util.env.BAIL || false
+      }))
+      .on('error', (data) => {
+        //console.log('mocha caught error', data.message);
+        return stopTestQueue(testqueue).then(() => {
+          reject(data.message);
+        });
+      })
+      .once('end', () => {
+        //console.log('mocha is done');
+        return stopTestQueue(testqueue).then(() => {
+          resolve();
+        });
+      });
     });
+  }).then(() => {
+    process.exit();
   }).catch((err) => {
-    console.error(err);
     process.exit(1);
   }).done(() => {
     cb();
@@ -148,3 +164,65 @@ gulp.task('default', () => {
   console.log('* seed - Reimports the local database file and seeds with data');
   console.log('* server - Spins up the server with default arguments');
 });
+
+function startTestQueue() {
+  const cmd = {
+    chdir: '../testqueue',
+    name: 'testqueue',
+    color: 'green',
+    port: '1596',
+    args: [
+      '--CALLBACK_PORT',
+      '3999',
+      '--LOG_LEVEL',
+      'info'
+    ]
+  };
+  return new Promise((resolve) => {
+    let begin_talking = false;
+    process.chdir(cmd.chdir);
+    const command = 'gulp';
+    const args = [
+      'server',
+      '--ENVIRONMENT',
+      'test',
+      '--LOG_LEVEL',
+      'warning',
+      '--PORT',
+      cmd.port
+    ].concat(cmd.args || []);
+
+    const child = shared.spawn(command, args);
+    d.on('added', (obj) => {
+      if ( obj.advertisement ) {
+        const service = JSON.parse(lzw.decode(obj.advertisement));
+        if ( service.available ) {
+          begin_talking = true;
+
+          process.chdir('../api');
+          resolve(child);
+        }
+      }
+    });
+
+    child.stdout.on('data', (data) => {
+      if ( process.env.DEBUG && begin_talking ) {
+        if ( child.options.color ) {
+          console.log(chalk.bold(child.options.name), chalk[child.options.color](`${data}`));
+        } else {
+          console.log(child.options.name, `${data}`);
+        }
+      }
+    });
+    child.options = cmd;
+
+  });
+}
+
+function stopTestQueue(testqueue) {
+  return new Promise((resolve) => {
+    return testqueue.slaughter().then(() => {
+      resolve();
+    });
+  });;
+}

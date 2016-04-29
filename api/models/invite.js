@@ -20,32 +20,24 @@ const Invite = {
   create: (params) => {
     console.info('invite create 1', params);
     return Player.findOne(params.inviter_id).then((player) => {
-      console.info('create 2', player);
+      console.info('the player found, who is the inviter', player);
       if ( player && player.id ) {
         return player;
       } else {
         throw new Error("You must provide a valid inviter_id");
       }
     }).then((inviter_player) => {
-      console.info('inviter stuff', inviter_player);
-      console.info('create 3', params.invitee);
-      const invitee = params.invitee;
-      return User.findOne(invitee).then((user) => {
+      console.info('the invitee string', params.invitee);
+      return User.findOne(params.invitee).then((user) => {
         if ( user && user.id ) {
+          console.info('user exists and is', user);
           return user;
         } else {
-          return User.create(invitee);
+          console.info('user does not exist, create it');
+          return User.create(params.invitee);
         }
       }).then((invited_user) => {
-      //return Promise.all(params.invites.map((invite) => {
-        //return User.findOne({ from: invite, protocol: 'foo' }).then((user) => {
-          //if ( user && user.id ) {
-            //return user;
-          //} else {
-            //return User.create({ from: invite, protocol: inviter_player.protocol });
-          //}
-        //});
-      //})).then((invited_users) => {
+        console.info('the invited user', invited_user);
         return Game.findOne({ player_id: params.inviter_id }).then((game) => {
           const players = game.players.map((player) => {
             return player.from;
@@ -107,7 +99,6 @@ const Invite = {
                 console.info('service options', options);
 
                 return request(options).then((response) => {
-                  console.info('response', response);
                   try {
                     return JSON.parse(response.body);
                   } catch(err) {
