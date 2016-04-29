@@ -21,7 +21,7 @@ squel.registerValueHandler(Date, (date) => {
 
 const Game = {
   add: (game, users) => {
-    return api('games', 'add', { users: users }, {
+    return api('games', 'add', { users }, {
       game_id: game.id
     });
   },
