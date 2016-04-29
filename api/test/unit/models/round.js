@@ -6,6 +6,7 @@ const proxyquire = require('proxyquire');
 const User = require('models/User');
 const post = require('test/support/request').post;
 const Promise = require('bluebird');
+const protocol = 'testqueue';
 const Round = proxyquire('models/Round', {
   autosuggest: () => {
     return new Promise((resolve) => {
@@ -52,7 +53,8 @@ describe('Round Model', () => {
 
       return Promise.all(users.map((user) => {
         return User.create({
-          from: user
+          from: user,
+          protocol
         });
       })).then((users) => {
         const payload = { users };

@@ -7,10 +7,11 @@ const User = require('models/user');
 const Round = require('models/round');
 const Player = require('models/player');
 const Game = require('models/game');
-const game_number = '+15559999999';
+const game_number = '1';
+const protocol = 'testqueue';
 
 describe('Update', () => {
-  let froms = [
+  const froms = [
     Math.random(),
     Math.random()
   ];
@@ -19,9 +20,9 @@ describe('Update', () => {
 
   before(() => {
     return Promise.all(froms.map((from) => {
-      return User.create({ from: from });
+      return User.create({ from, protocol });
     })).then((users) => {
-      const payload = { users: users };
+      const payload = { users };
       return post({
         url: '/games',
         data: payload
@@ -75,7 +76,7 @@ describe('Update', () => {
       res.body.should.have.property('created');
     });
   });
-  
+
   it('should update a round with a game in the URL', () => {
     const EMOJI = '👍';
     return put({ url: `/games/${game.id}/rounds/${round.id}`, data: {

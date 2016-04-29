@@ -1,11 +1,9 @@
 'use strict';
-//const squel = require('squel');
-//const db = require('db');
 const proxyquire = require('proxyquire');
 const User = require('models/user');
 const Round = require('models/round');
-//const post = require('test/support/request').post;
 const Promise = require('bluebird');
+const protocol = 'testqueue';
 //const EMOJI = '👍';
 
 describe('Game', () => {
@@ -28,14 +26,20 @@ describe('Game', () => {
     const createGame = (numbers, round = null) => {
 
       return Promise.reduce(numbers, (arr, number) => {
-        return User.create({ from: number }).then((user) => {
+        return User.create({ from: number, protocol }).then((user) => {
           return arr.concat(user);
         });
       }, []).then((users) => {
         const Game = getGame(round);
-        return Game.create([users[0]]).then((game) => {
+        const user_to_add = users[0];
+        user_to_add.to = 1;
+        return Game.create([user_to_add]).then((game) => {
           if ( users.length > 1 ) {
-            return Game.add(game, users.slice(1)).then((game) => {
+            const users_to_add = users.slice(1).map((u) => {
+              u.to = 1;
+              return u;
+            });
+            return Game.add(game, users_to_add).then((game) => {
               return {
                 Game,
                 game

@@ -6,9 +6,10 @@ const User = require('models/user');
 const Round = require('models/round');
 const Player = require('models/player');
 const Game = require('models/game');
-const game_number = '+15559999999';
+const game_number = '1';
+const protocol = 'testqueue';
 describe('Find', () => {
-  let froms = [[
+  const froms = [[
     ''+Math.random(),
     ''+Math.random()
   ], [
@@ -18,14 +19,14 @@ describe('Find', () => {
     ''+Math.random(),
     ''+Math.random()
   ]];
-  let games = [];
+  const games = [];
 
   before(() => {
     return Promise.all(froms.map((from_array) => {
       return Promise.all(from_array.map((from) => {
-        return User.create({ from: from });
+        return User.create({ from, protocol });
       })).then((users) => {
-        const payload = { users: users };
+        const payload = { users };
         return post({
           url: '/games',
           data: payload

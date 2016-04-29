@@ -1,14 +1,11 @@
 'use strict';
-//const get = require('test/support/request').get;
 const post = require('test/support/request').post;
 const put = require('test/support/request').put;
 
 const User = require('models/user');
 const Round = require('models/round');
-//const Player = require('models/player');
-//const Game = require('models/game');
-//const game_number = '+15559999999';
 const EMOJI = '👍';
+const protocol = 'testqueue';
 
 describe('Guess', () => {
   const froms = [
@@ -20,7 +17,7 @@ describe('Guess', () => {
 
   before(() => {
     return Promise.all(froms.map((from) => {
-      return User.create({ from });
+      return User.create({ from, protocol });
     })).then((users) => {
       const payload = { users };
       return post({
