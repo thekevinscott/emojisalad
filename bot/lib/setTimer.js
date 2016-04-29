@@ -11,7 +11,10 @@ const setTimer = (game, key, messages, timeout) => {
   if (! timers[key]) {
     timers[key] = {};
   }
+
+  console.info(`set timer for ${key}:${game.id}`, messages, timeout);
   timers[key][game.id] = setTimeout(() => {
+    console.info(`execute timer for ${key}:${game.id}`);
     const messages_with_protocol = messages.filter((message) => {
       return registry.get(message.protocol);
     });
@@ -22,6 +25,7 @@ const setTimer = (game, key, messages, timeout) => {
 };
 
 const clear = (game, key) => {
+  console.info(`clear timer for ${key}:${game.id}`);
   if (timers[key] && timers[key][game.id]) {
     clearTimeout(timers[key][game.id]);
   }

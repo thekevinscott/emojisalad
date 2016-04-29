@@ -48,9 +48,11 @@ const getMessages = (ids, protocols, options = {}) => {
       throw err;
     });
   })).then((responses) => {
-    console.info('response back', responses);
     return [].concat(...responses);
   }).then((responses) => {
+    if (responses.length) {
+      console.info('response back', responses);
+    }
     if ( options.trip && responses.length >= options.trip ) {
       sendAlert(responses, 'tripped', 'get');
       throw "Tripwire tripped on get, too many messages";
