@@ -107,7 +107,8 @@ const parseExpecteds = (expected, messages) => {
   if ( expected.length ) {
     expecteds = expected.map((expected_message) => {
       const expected_obj = {
-        body : messages[expected_message.key].body
+        //body: messages[expected_message.key].body,
+        variants: messages[expected_message.key].variants
       };
       if ( expected_message.to ) {
         expected_obj.recipient = expected_message.to.from || expected_message.to.number;
@@ -121,9 +122,16 @@ const parseExpecteds = (expected, messages) => {
   const concatenated_by_recipient = expecteds.reduce((obj, expected) => {
     const recipient = expected.recipient;
     if ( !obj[recipient] ) {
-      obj[recipient] = { game_number: expected.game_number, body: [] };
+      //obj[recipient] = { game_number: expected.game_number, body: [], variants: {} };
+      obj[recipient] = { game_number: expected.game_number, variants: {} };
     }
-    obj[recipient].body.push(expected.body);
+    //obj[recipient].body.push(expected.body);
+    expected.variants.map((variant, index) => {
+      if ( !obj[recipient].variants[index]) {
+        obj[recipient].variants[index] = [];
+      }
+      obj[recipient].variants[index].push(variant);
+    });
     return obj;
   }, {});
 
@@ -134,12 +142,16 @@ const parseExpecteds = (expected, messages) => {
       return e.recipient;
     }
   }).filter(e => e).map((recipient) => {
-    const expected_bodies = concatenated_by_recipient[recipient].body;
+    //const expected_bodies = concatenated_by_recipient[recipient].body;
+    const expected_variants = concatenated_by_recipient[recipient].variants;
     const game_number = concatenated_by_recipient[recipient].game_number;
     return {
       recipient,
       game_number,
-      body: expected_bodies.join('\n\n')
+      //body: expected_bodies.join('\n\n'),
+      variants: Object.keys(expected_variants).map((key) => {
+        return expected_variants[key].join('\n\n');
+      })
     };
   });
 };
@@ -162,7 +174,8 @@ const inlineCheck = (actions, expecteds) => {
     delete action.body;
     return action;
   }).should.deep.equal(expecteds.map((expected) => {
-    delete expected.body;
+    //delete expected.body;
+    delete expected.variants;
     return expected;
   }));
 };
@@ -175,22 +188,30 @@ const escapeRegExp = (str) => {
             .replace(/\(/g,'\\(');
 };
 
+// Checks the action body against the expected variants
 const checkBody = (action, expected) => {
-  if ( expected && expected.body ) {
-    const expected_body = escapeRegExp(expected.body).replace(/\*/g,'(.*)');
-    const re = new RegExp(expected_body);
+  if ( expected && expected.variants ) {
     const action_body = action.body;
-
     try {
-      if ( ! re.test(action_body) ) {
+      let match = false;
+
+      expected.variants.map((variant) => {
+        const expected_variant = escapeRegExp(variant).replace(/\*/g,'(.*)');
+        const re = new RegExp(expected_variant);
+
+        if ( re.test(action_body) ) {
+          match = true;
+        };
+      });
+      if ( ! match ) {
         throw new Error();
-      };
+      }
     } catch(err) {
       console.error('***** error found *****');
       console.error(action, expected);
       // this will fail but we'll get a nice
       // error message out of it
-      action_body.should.equal(expected.body);
+      action_body.should.equal(expected.variants);
     }
   } else {
     // this indicates that we expect no response. Not sure

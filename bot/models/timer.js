@@ -65,9 +65,11 @@ const Timer = {
                         });
 
       return Timer.get([key], [game_id]).then((timers) => {
-        if (timers.length === 0) {
-          return db.query(set_query);
-        }
+        const timer_keys = _.uniq(timers.map(timer => timer.key));
+        const timer_game_ids = _.uniq(timers.map(timer => timer.game_id));
+        return Timer.clear(timer_keys, timer_game_ids);
+      }).then(() => {
+        return db.query(set_query);
       });
     });
   },
