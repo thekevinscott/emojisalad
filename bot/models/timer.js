@@ -8,13 +8,21 @@ const db = require('db');
 const registry = require('microservice-registry');
 
 const Timer = {
-  get: () => {
-    const query = squel
-                  .select()
-                  .from('timers')
-                  .where('execution_time < NOW()')
-                  .where('active=1')
-                  .where('cleared=0');
+  get: (keys = [], game_ids = []) => {
+    let query = squel
+                .select()
+                .from('timers')
+                .where('execution_time < NOW()')
+                .where('active=1')
+                .where('cleared=0');
+
+    if (keys.length) {
+      query = query.where('`key` IN (?)', keys.join(','));
+    }
+    if (game_ids.length) {
+      query = query.where('`game_id` IN (?)', game_ids.join(','));
+    }
+
     return db.query(query).then((timers) => {
       console.info('timers found and need to be filtered to ari, kevin, and schloo', timers);
       return timers.map((timer) => {
@@ -40,7 +48,7 @@ const Timer = {
       return registry.get(message.protocol) || process.env.ENVIRONMENT === 'test';
     });
 
-    timeout_length = timeout_length / 30 / 60;
+    //timeout_length = timeout_length / 30 / 60;
 
     const execution_time = parseInt((new Date()).getTime() / 1000, 10) + timeout_length;
 
@@ -55,7 +63,12 @@ const Timer = {
                           timeout_length,
                           execution_time: squel.fval( `FROM_UNIXTIME(${execution_time})`)
                         });
-      return db.query(set_query);
+
+      return Timer.get([key], [game_id]).then((timers) => {
+        if (timers.length === 0) {
+          return db.query(set_query);
+        }
+      });
     });
   },
   clear: (keys, game_ids) => {
