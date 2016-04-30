@@ -40,9 +40,9 @@ const Timer = {
       return registry.get(message.protocol) || process.env.ENVIRONMENT === 'test';
     });
 
-    timeout_length = timeout_length / 30;
+    timeout_length = timeout_length / 30 / 60;
 
-    const execution_time = parseInt(((new Date()).getTime() + timeout_length), 10);
+    const execution_time = parseInt((new Date()).getTime() / 1000, 10) + timeout_length;
 
     return Message.parse(messages_with_protocol).then((parsed_messages) => {
       const set_query = squel
