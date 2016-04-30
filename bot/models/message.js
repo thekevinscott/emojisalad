@@ -39,7 +39,7 @@ const Message = {
           }
           if ( options[obj.key] ) {
             if ( _.isArray(options[obj.key]) ) {
-              obj.body = sprintf.apply(null, [obj.body].concat(options[obj.key]));
+              obj.body = sprintf(obj.body, ...options[obj.key]);
             } else {
               //let old = { game: { round: {submitter: {nickname: 'foobar'} } } };
               obj.body = sprintf(obj.body, options[obj.key]);
