@@ -15,10 +15,26 @@ const Message = {
       key = [key];
     }
 
+    const variants = squel
+                     .select()
+                     .from(
+                       squel
+                       .select()
+                       .from('message_variants')
+                       .order('rand()'), 'v2'
+                     );
+                     //.group('message_id');
+
     const query = squel
                   .select()
-                  .from('messages')
-                  .where('`key` IN ?',key);
+                  .field('m.id')
+                  //.field('m.message', 'body')
+                  .field('IFNULL(v.message, m.message)', 'body')
+                  .field('m.`key`')
+                  .from('messages', 'm')
+                  .left_join(variants, 'v', 'm.id=v.message_id')
+                  .where('`key` IN ?',key)
+                  .order('RAND()');
 
     return db.query(query).then((messages) => {
       if ( messages.length ) {
@@ -31,7 +47,7 @@ const Message = {
         //    '8604601234'
         //  ]
         // }
-        return messages.map((obj) => {
+        const messages_by_id = messages.reduce((reducedObj, obj) => {
           if ( obj.message ) {
             // this is coming from an old database
             obj.body = obj.message;
@@ -45,16 +61,26 @@ const Message = {
               obj.body = sprintf(obj.body, options[obj.key]);
             }
           }
-          return {
-            id: obj.id,
-            key: obj.key,
-            //name: obj.name
-            body: obj.body
-          };
-        });
 
+          if (! reducedObj[obj.id]) {
+            reducedObj[obj.id] = {
+              id: obj.id,
+              key: obj.key,
+              //name: obj.name
+              body: obj.body,
+              variants: [obj.body]
+            };
+          } else {
+            reducedObj[obj.id].variants.push(obj.body);
+          }
+          return reducedObj;
+        }, {});
+
+        const messages_array = Object.keys(messages_by_id).map(message_id =>  messages_by_id[message_id]);
+
+        return messages_array;
       } else {
-        throw "No messages found for key " + key;
+        throw "No messages found for keys " + key;
       }
     });
   },
