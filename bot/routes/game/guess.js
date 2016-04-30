@@ -7,10 +7,12 @@ const Round = require('models/round');
 //const rule = require('config/rule');
 const newRound = require('./new_round');
 //const sendMessages = require('lib/sendMessages');
-const setTimer = require('lib/setTimer');
+//const setTimer = require('lib/setTimer');
+const Timer = require('models/timer');
 
 module.exports = (game, player, input) => {
-  setTimer.clear(game, 'guess');
+  //setTimer.clear(game, 'guess');
+  Timer.clear('guess', game.id);
   const original_phrase = game.round.phrase;
   // game is in progress
   return Round.guess(game.round, {
@@ -43,19 +45,20 @@ module.exports = (game, player, input) => {
         // if a game is in progress, set a timeout to say the guess
         // was incorrect
         if ( resulting_round.submission ) {
-          setTimer(game, 'guess', game.players.map((game_player) => {
-            if (game_player.protocol === 'sms') {
-              return {
-                player: game_player,
-                key: 'cron',
-                options: [
-                  game.round.submission,
-                  input
-                ],
-                protocol: 'sms'
-              };
-            }
-          }).filter(message => message), 30 * 60 * 1000); // 30 minutes
+          const nudge_messages = game.players.map((game_player) => {
+            //if (game_player.protocol === 'sms') {
+            return {
+              player: game_player,
+              key: 'cron',
+              options: [
+                game.round.submission,
+                input
+              ],
+              protocol: game_player.protocol
+            };
+          }).filter(message => message);
+          Timer.set('guess', game.id, nudge_messages, 30 * 60);
+          //setTimer(game, 'guess', nudge_messages, 30 * 60 * 1000); // 30 minutes
         }
 
         // else, incorrect guess

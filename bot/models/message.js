@@ -140,7 +140,9 @@ const Message = {
         });
       });
     } else {
-      return [];
+      return new Promise((resolve) => {
+        resolve([]);
+      });
     }
   }
 };

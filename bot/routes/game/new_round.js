@@ -1,6 +1,7 @@
 'use strict';
 const _ = require('lodash');
-const setTimer = require('lib/setTimer');
+//const setTimer = require('lib/setTimer');
+const Timer = require('models/timer');
 
 const newRound = (game, round) => {
   return game.players.map((game_player) => {
@@ -25,9 +26,10 @@ const newRound = (game, round) => {
             round.submitter.avatar,
             round.phrase
           ],
-          protocol: 'sms'
+          protocol: game_player.protocol
         }];
-        setTimer(game, 'submission', cron_msg, 24 * 60 * 60 * 1000); // 24 hours
+        Timer.set('submission', game.id, cron_msg, 24 * 60 * 60);
+        //setTimer(game, 'submission', cron_msg, 24 * 60 * 60 * 1000); // 24 hours
       }
       return _.assign({
         key: 'game-next-round-suggestion',

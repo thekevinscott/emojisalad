@@ -30,6 +30,27 @@ CREATE TABLE `attributes` (
   UNIQUE KEY `key` (`key`)
 ) ENGINE=InnoDB AUTO_INCREMENT=128537 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `timers`
+--
+
+DROP TABLE IF EXISTS `timers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `timers` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `game_id` int(11) DEFAULT NULL,
+  `payload` text COLLATE utf8mb4_unicode_ci,
+  `execution_time` timestamp(6) NULL DEFAULT NULL,
+  `timeout_length` int(11) DEFAULT NULL,
+  `active` tinyint(1) unsigned DEFAULT '1',
+  `cleared` tinyint(1) DEFAULT '0',
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -40,7 +61,7 @@ CREATE TABLE `attributes` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-30 18:17:44
+-- Dump completed on 2016-04-30 19:04:17
 -- MySQL dump 10.13  Distrib 5.6.29, for osx10.11 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -99,7 +120,7 @@ CREATE TABLE `message_variants` (
   `message` text COLLATE utf8mb4_unicode_ci,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,7 +129,7 @@ CREATE TABLE `message_variants` (
 
 LOCK TABLES `message_variants` WRITE;
 /*!40000 ALTER TABLE `message_variants` DISABLE KEYS */;
-INSERT INTO `message_variants` VALUES (99,29,'? What a wonderful set of emoji! You are smart, and good looking. I sent your emoji phrase to the group. Let the round begin!','2016-04-30 21:31:35'),(100,29,'? Fantastic set of emoji! I sent your emoji phrase to the group. Let\'s play!','2016-04-30 21:34:27'),(101,31,'Text OPTIONS if you get stuck, and don\'t forget to ask for a CLUE if you get stuck!','2016-04-30 22:17:07'),(102,31,'Text OPTIONS if you get stuck. You can also ask for a CLUE!','2016-04-30 22:17:21');
+INSERT INTO `message_variants` VALUES (99,29,'? What a wonderful set of emoji! You are smart, and good looking. I sent your emoji phrase to the group. Let the round begin!','2016-04-30 21:31:35'),(100,29,'? Fantastic set of emoji! I sent your emoji phrase to the group. Let\'s play!','2016-04-30 21:34:27'),(101,31,'Text OPTIONS if you get stuck, and don\'t forget to ask for a CLUE if you get stuck!','2016-04-30 22:17:07'),(102,31,'Text OPTIONS if you get stuck. You can also ask for a CLUE!','2016-04-30 22:17:21'),(103,31,'? Wow, that\'s an awesome emoji set! Let\'s start the round!','2016-04-30 22:25:23'),(104,31,'? Gosh, those are great. Let\'s get started!','2016-04-30 22:25:38'),(105,31,'? Great emoji, I sent along to the group. Let\'s get going!','2016-04-30 22:25:53');
 /*!40000 ALTER TABLE `message_variants` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -121,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-04-30 18:17:45
+-- Dump completed on 2016-04-30 19:04:18

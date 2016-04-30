@@ -1,10 +1,12 @@
 'use strict';
 const Round = require('models/round');
 const _ = require('lodash');
-const setTimer = require('lib/setTimer');
+//const setTimer = require('lib/setTimer');
+const Timer = require('models/timer');
 
 module.exports = (game, submitter, input) => {
-  setTimer.clear(game, 'submission');
+  //setTimer.clear(game, 'submission');
+  Timer.clear('submission', game.id);
   return Round.update(game.round, {
     submission: input
   }).then((round) => {

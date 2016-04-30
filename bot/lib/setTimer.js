@@ -1,3 +1,4 @@
+/*
 const sendMessages = require('lib/sendMessages');
 const Message = require('models/message');
 const registry = require('microservice-registry');
@@ -13,15 +14,17 @@ const setTimer = (game, key, messages, timeout) => {
   }
 
   console.info(`set timer for ${key}:${game.id}`, messages, timeout);
-  timers[key][game.id] = setTimeout(() => {
-    console.info(`execute timer for ${key}:${game.id}`);
-    const messages_with_protocol = messages.filter((message) => {
-      return registry.get(message.protocol);
-    });
-    return Message.parse(messages_with_protocol).then((parsed_messages) => {
+  const messages_with_protocol = messages.filter((message) => {
+    return registry.get(message.protocol);
+  });
+
+  return Message.parse(messages_with_protocol).then((parsed_messages) => {
+    timers[key][game.id] = setTimeout(() => {
+      console.info(`execute timer for ${key}:${game.id}`);
       return sendMessages(parsed_messages);
-    });
-  }, timeout);
+    }, timeout);
+  });
+
 };
 
 const clear = (game, key) => {
@@ -34,3 +37,4 @@ const clear = (game, key) => {
 module.exports = setTimer;
 
 module.exports.clear = clear;
+*/

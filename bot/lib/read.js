@@ -1,9 +1,11 @@
 'use strict';
 const pmx = require('pmx');
 const Promise = require('bluebird');
+const _ = require('lodash');
 
 const runTime = 5;
 
+const Timer = require('models/timer');
 const getMessages = require('lib/getMessages');
 const processMessage = require('lib/processMessage');
 const sendMessages = require('lib/sendMessages');
@@ -138,8 +140,26 @@ const runRead = () => {
       //console.log('run read 4b');
     }
   }).then(() => {
-    //console.log('run read 7 - everything is done!');
+    //console.info('read the timers now');
+    // process any outstanding timers
+    return Timer.get().then((timers) => {
+      if (timers.length) {
+        console.info('timers to process', timers);
+      }
+      const timer_messages = timers.reduce((messages, timer) => {
+        return messages.concat(timer.messages);
+      }, []);
+
+      return sendMessages(timer_messages).then(() => {
+        return timers;
+      });
+    }).then((timers) => {
+      const timer_keys = _.uniq(timers.map(timer => timer.key));
+      const timer_game_ids = _.uniq(timers.map(timer => timer.game_id));
+      return Timer.use(timer_keys, timer_game_ids);
+    });
   });
+    //console.log('run read 7 - everything is done!');
 };
 
 module.exports = read;
