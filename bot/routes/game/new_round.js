@@ -17,20 +17,18 @@ const newRound = (game, round) => {
     }
 
     if ( game_player.id === round.submitter.id ) {
-      if (game_player.protocol === 'sms') {
-        const cron_msg = [{
-          player: game_player,
-          key: 'cron-waiting-for-submission',
-          options: [
-            round.submitter.nickname,
-            round.submitter.avatar,
-            round.phrase
-          ],
-          protocol: game_player.protocol
-        }];
-        Timer.set('submission', game.id, cron_msg, 24 * 60 * 60);
-        //setTimer(game, 'submission', cron_msg, 24 * 60 * 60 * 1000); // 24 hours
-      }
+      const cron_msg = [{
+        player: game_player,
+        key: 'cron-waiting-for-submission',
+        options: [
+          round.submitter.nickname,
+          round.submitter.avatar,
+          round.phrase
+        ],
+        protocol: game_player.protocol
+      }];
+      Timer.set('submission', game.id, cron_msg, 24 * 60 * 60);
+
       return _.assign({
         key: 'game-next-round-suggestion',
         options: [round.submitter.nickname, round.submitter.avatar, round.phrase]
