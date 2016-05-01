@@ -29,6 +29,7 @@ const Timer = {
         timer.messages = JSON.parse(timer.payload);
         delete timer.payload;
         return timer;
+        /*
       }).map((timer) => {
         //console.info('timer to evaluate', timer);
         return Object.assign({}, timer, {
@@ -40,6 +41,7 @@ const Timer = {
             ].indexOf(message.player.nickname) !== -1;
           })
         });
+        */
       });
     });
   },
