@@ -84,6 +84,7 @@ const Timer = {
                               .update()
                               .table('timers')
                               .set('cleared', 1)
+                              .set('active', 0)
                               .where('`key` IN (?)', keys.join(','))
                               .where('game_id IN (?)', game_ids.join(','));
 
