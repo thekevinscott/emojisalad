@@ -15,9 +15,7 @@ module.exports = function(app, io) {
             ctime: info.ctime
           };
         }).sort((a, b) => {
-          const aDate = new Date(a.mtime);
-          const bDate = new Date(b.mtime);
-          return aDate < bDate;
+          return new Date(b.mtime) - new Date(a.mtime);
         })
       });
     });
