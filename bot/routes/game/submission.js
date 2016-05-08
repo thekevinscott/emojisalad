@@ -7,6 +7,8 @@ const Timer = require('models/timer');
 module.exports = (game, submitter, input) => {
   //setTimer.clear(game, 'submission');
   Timer.clear('submission', game.id);
+  Timer.clear('submission-2', game.id);
+  //Timer.clear('submission-timeout', game.id);
   return Round.update(game.round, {
     submission: input
   }).then((round) => {

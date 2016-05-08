@@ -27,7 +27,21 @@ const newRound = (game, round) => {
         ],
         protocol: game_player.protocol
       }];
-      Timer.set('submission', game.id, cron_msg, 24 * 60 * 60);
+      const cron_msg_longer = [{
+        player: game_player,
+        key: 'cron-waiting-for-submission-2',
+        options: [
+          round.submitter.nickname,
+          round.submitter.avatar,
+          round.phrase
+        ],
+        protocol: game_player.protocol
+      }];
+      const one_day = 24 * 60 * 60;
+      Timer.set('submission', game.id, cron_msg, 1 * one_day);
+      Timer.set('submission-2', game.id, cron_msg_longer, 2 * one_day);
+      //Timer.set('submission-timeout', game.id, () => {
+      //}, 3 * one_day);
 
       return _.assign({
         key: 'game-next-round-suggestion',
