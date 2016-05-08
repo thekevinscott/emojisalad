@@ -56,8 +56,10 @@ const sendMessages = (messages, options = {}) => {
       console.info('error sending response', err);
     });
   })).then((response) => {
-    //console.log('send 6');
-    console.info('messages are sent! within sendMessages');
+    if (messages.length > 0) {
+      //console.log('send 6');
+      console.info('messages are sent! within sendMessages');
+    }
     return response;
   });
 };
