@@ -110,6 +110,21 @@ iframe {
 iframe:last-child {
   margin-right: 0;
 }
+.add-phrase {
+  float: right;
+}
+.log {
+  height: 100%;
+  display: flex;
+}
+.log .logfile {
+  flex: 1;
+  background: #fff;
+  font-family: monospace;
+  overflow: scroll;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
 .admin header {
   padding: 10px;
   background: #ddd;

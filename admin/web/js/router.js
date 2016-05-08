@@ -1,22 +1,23 @@
+/* globals window */
 // router.js
 'use strict';
 
-var _router;
+let _router;
 
-export var RouterContainer = {
-    get: function() {
-        return _router;
-    },
+export const RouterContainer = {
+  get: function() {
+    return _router;
+  },
 
-    set: function(router) {
-        _router = router;
-    },
+  set: function(router) {
+    _router = router;
+  },
 
-    transition: function(path) {
-      if ( _router ) {
-        _router.transitionTo(path);
-      } else {
-        window.location = '/#' + path;
-      }
+  transition: function(path) {
+    if ( _router ) {
+      _router.transitionTo(path);
+    } else {
+      window.location = '/#' + path;
     }
+  }
 };

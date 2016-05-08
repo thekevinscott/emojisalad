@@ -9,12 +9,13 @@ import { Game, Games } from './games';
 import { User, Users } from './users';
 import { Messages } from './messages';
 import { Phrases } from './phrases';
+import { Log, Logs } from './logs';
 
-var DefaultRoute = Router.DefaultRoute;
-var NotFoundRoute = Router.NotFoundRoute;
+const DefaultRoute = Router.DefaultRoute;
+const NotFoundRoute = Router.NotFoundRoute;
 
-var Link = Router.Link;
-var Route = Router.Route;
+const Link = Router.Link;
+const Route = Router.Route;
 
 import { auth } from './auth';
 
@@ -29,6 +30,8 @@ export const routes = (
     <Route name="user" path="/users/:user_id" handler={User}/>
     <Route handler={Messages} name="messages" />
     <Route handler={Phrases} name="phrases" />
+    <Route handler={Logs} name="logs" />
+    <Route name="log" path="/logs/:log" handler={Log}/>
     <NotFoundRoute handler={NotFound} />
   </Route>
 );

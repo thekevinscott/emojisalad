@@ -4,6 +4,8 @@
   "env": {
     "LOG_LEVEL": "info",
     "PORT" : "5001",
-    "ENVIRONMENT": "production"
+    "SOCKET_PORT" : "5101",
+    "ENVIRONMENT": "production",
+    "LOG_FILES": "/home/deploy/.pm2/logs"
   }
 }]

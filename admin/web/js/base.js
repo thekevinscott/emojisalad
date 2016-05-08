@@ -4,7 +4,7 @@ import reqwest from 'reqwest';
 
 import { auth } from './auth';
 
-export var Base = {
+export const Base = {
   statics: {
     willTransitionTo: function (transition, params, query) {
       auth.isLoggedIn(transition);
@@ -17,10 +17,11 @@ export var Base = {
     };
   },
   componentDidMount: function() {
+    let url;
     if ( typeof this.url === 'string' ) {
-      var url = this.url;
+      url = this.url;
     } else {
-      var url = this.url();
+      url = this.url();
     }
     reqwest({
       url: url,
@@ -42,6 +43,9 @@ export var Base = {
           loading: false,
           data: resp
         });
+        if (this.receiveData) {
+          this.receiveData(resp);
+        }
       }
     }.bind(this));
   }
