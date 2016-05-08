@@ -1,4 +1,4 @@
-/* globals io, SOCKET_PORT, window */
+/* globals io, SOCKET_PORT, SOCKET_HOST, window */
 import * as React from 'react';
 import * as Router from 'react-router';
 import { Header } from './header';
@@ -20,4 +20,4 @@ export class App extends React.Component {
   }
 }
 
-window.socket = io.connect(`http://127.0.0.1:${SOCKET_PORT}`);
+window.socket = io.connect(`//${SOCKET_HOST}:${SOCKET_PORT}`);

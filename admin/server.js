@@ -9,6 +9,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const SOCKET_PORT = process.env.SOCKET_PORT || 5101;
+const SOCKET_HOST = process.env.SOCKET_HOST || '127.0.0.1';
 server.listen(SOCKET_PORT);
 
 const registry = require('microservice-registry');
@@ -77,7 +78,7 @@ app.post('/api/phrases', (req, res) => {
 
 // bootstrap our web app
 app.get('*', (req, res) => {
-  res.render('app', { SOCKET_PORT });
+  res.render('app', { SOCKET_PORT, SOCKET_HOST });
 });
 
 const getFetch = (route, method, res, body) => {
