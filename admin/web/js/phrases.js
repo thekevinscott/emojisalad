@@ -59,12 +59,16 @@ export const Phrases = React.createClass({
             </tr>
           );
         } else {
-          const categories = this.state.data.reduce((categories, phrase) => {
+          const categories = this.state.data.reduce(function(categories, phrase) {
             if (phrase.category_id) {
-              categories[phrase.category_id] = phrase.category;
+              categories[phrase.category_id] = {
+                category: phrase.category,
+                latest: false
+              };
             }
             return categories;
-          }, {});
+          }.bind(this), {});
+          categories[this.state.data[1].category_id].latest = true;
           const disabled = this.state.addingPhrase;
           // this means we're adding a new phrase
           return (
@@ -77,7 +81,7 @@ export const Phrases = React.createClass({
                   {Object.keys(categories).map(category_id => {
                     const category = categories[category_id];
                     return (
-                      <option value={category_id}>{category}</option>
+                      <option value={category_id} selected={category.latest}>{category.category}</option>
                     );
                   })}
                 </select>
