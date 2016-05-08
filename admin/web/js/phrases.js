@@ -19,8 +19,8 @@ export const Phrases = React.createClass({
     }
   },
   addPhrase: function() {
-    const clue = this.refs.clue.getDOMNode();
-    const phrase = this.refs.phrase.getDOMNode();
+    const clue = document.getElementsByName('clue')[0];
+    const phrase = document.getElementsByName('phrase')[0];
     const category_id = this.refs.category.getDOMNode();
     this.setState({
       addingPhrase: true
@@ -80,7 +80,14 @@ export const Phrases = React.createClass({
             <tr>
               <td></td>
               <td>
-                <input disabled={disabled} ref="phrase" type="text" name="phrase" onKeyDown={this.keyDown} />
+                <input disabled={disabled}
+                  ref={function(input) {
+                    if (input != null) {
+                      input.getDOMNode().focus();
+                    }
+                    return 'phrase';
+                  }}
+                  type="text" name="phrase" onKeyDown={this.keyDown} />
               </td>
               <td>
                 <input disabled={disabled} ref="clue" type="text" name="clue" onKeyDown={this.keyDown} />
