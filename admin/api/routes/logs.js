@@ -40,8 +40,6 @@ module.exports = function(app, io) {
   });
 
   io.on('connection', function(client) {
-    console.log('Connection to client established');
-
     // Success!  Now listen to messages to be received
     client.on('message',function(event) {
       if (event.type === 'subscribe') {
