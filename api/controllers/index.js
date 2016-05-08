@@ -18,10 +18,9 @@ module.exports = function(app) {
     require(`./${key}`).map((route) => {
       try {
         router.route(route.path)[route.method]((req, res) => {
-          console.log('got route back');
           //const data = ( route.method === 'get' ) ? req.query : req.body;
           try {
-            console.log('try 1');
+            //console.log('try 1');
             route.fn(req).then((results) => {
               //console.log('request successful', results);
               //console.info('request successful', key, route, results);
