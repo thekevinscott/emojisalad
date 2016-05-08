@@ -11,21 +11,27 @@ module.exports = function(app) {
     'players',
     'invites',
     'rounds',
-    'phones'
+    'phones',
+    'phrases'
   ].map((key) => {
     const router = express.Router({ mergeParams: true });
     require(`./${key}`).map((route) => {
       try {
         router.route(route.path)[route.method]((req, res) => {
+          console.log('got route back');
           //const data = ( route.method === 'get' ) ? req.query : req.body;
           try {
+            console.log('try 1');
             route.fn(req).then((results) => {
-              console.info('request successful', key, route, results);
+              //console.log('request successful', results);
+              //console.info('request successful', key, route, results);
               res.status(200).json(results);
             }).catch((err) => {
+              console.error('err 1');
               catchErr(err, res);
             });
           } catch(err) {
+            console.error('err 2');
             catchErr(err, res);
           };
         });
@@ -44,6 +50,7 @@ module.exports = function(app) {
 };
 
 function catchErr(err, res) {
+  console.error('error', err);
   if ( err.message ) {
     res.status(400).json({ error: err.message });
   } else {

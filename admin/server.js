@@ -36,7 +36,6 @@ app.use(expressSession({secret: 'ssdffdsfsfsfsffo $$$!!!!#@@@ fodis230eorwdfiklj
 require('./api/passport')(app);
 app.set('port', (process.env.PORT || 5001));
 
-console.log('Waiting for API to load');
 registry.ready(() => {
   app.listen(app.get('port'), () => {
     console.log("Node app is running at localhost:" + app.get('port'));
@@ -49,7 +48,7 @@ require('./api/routes/account')(app);
 //require('./api/routes/messages')(app);
 //require('./api/routes/games')(app);
 //require('./api/routes/scores')(app);
-require('./api/routes/phrases')(app);
+//require('./api/routes/phrases')(app);
 
 app.get('/api/games', (req, res) => {
   getFetch('games', 'get', res);
@@ -63,19 +62,30 @@ app.get('/api/users', (req, res) => {
 app.get('/api/users/:user_id', (req, res) => {
   getFetch(`users/${req.params.user_id}`, 'get', res);
 });
+app.get('/api/phrases', (req, res) => {
+  getFetch(`phrases/`, 'get', res);
+});
+app.post('/api/phrases', (req, res) => {
+  getFetch(`phrases/`, 'post', res, req.body);
+});
 
 // bootstrap our web app
 app.get('*', (req, res) => {
   res.render('app');
 });
 
-const getFetch = (route, method, res) => {
+const getFetch = (route, method, res, body) => {
   const manifest = registry.get('api').api;
   const endpoint = manifest.games.get.endpoint.substring(0, 22);
   route = `${endpoint}${route}`;
 
   fetch(route, {
-    method
+    method,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
   }).then((response) => {
     return response.json();
   }).then((response) => {
