@@ -24,25 +24,16 @@ const Timer = {
     }
 
     return db.query(query).then((timers) => {
-      console.info('timers found and need to be filtered to ari, kevin, and schloo', timers);
-      return timers.map((timer) => {
-        timer.messages = JSON.parse(timer.payload);
-        delete timer.payload;
-        return timer;
-        /*
-      }).map((timer) => {
-        //console.info('timer to evaluate', timer);
-        return Object.assign({}, timer, {
-          messages: timer.messages.filter((message) => {
-            return [
-              'kevin',
-              'Ari',
-              'Schloo'
-            ].indexOf(message.player.nickname) !== -1;
-          })
+      if (timers.length) {
+        console.info('timers found and need to be filtered to ari, kevin, and schloo', timers);
+        return timers.map((timer) => {
+          timer.messages = JSON.parse(timer.payload);
+          delete timer.payload;
+          return timer;
         });
-        */
-      });
+      } else {
+        return [];
+      }
     });
   },
   set: (key, game_id, messages, timeout_length) => {
