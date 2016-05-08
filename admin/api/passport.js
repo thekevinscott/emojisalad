@@ -1,14 +1,14 @@
 'use strict';
-var bcrypt = require('bcrypt');
-var passport = require('passport');
+const bcrypt = require('bcrypt');
+const passport = require('passport');
 
-var LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 
-var squel = require('squel');
+const squel = require('squel');
 
-var db = require('../db');
+const db = require('../db');
 
-var table = 'admins';
+const table = 'admins';
 
 module.exports = function(app) {
   app.use(passport.initialize());
@@ -21,10 +21,10 @@ module.exports = function(app) {
   // used to deserialize the user
   passport.deserializeUser(function(id, done) {
 
-    var query = squel
-                .select()
-                .from(table)
-                .where('id=?', id);
+    const query = squel
+                  .select()
+                  .from(table)
+                  .where('id=?', id);
 
     db.query(query).then(function(rows) {
       return done(null, rows[0]);
@@ -35,7 +35,7 @@ module.exports = function(app) {
 
 
   function isAuthenticated(req, res, next) {
-    // CHECK THE USER STORED IN SESSION FOR A CUSTOM VARIABLE
+    // CHECK THE USER STORED IN SESSION FOR A CUSTOM CONSTIABLE
     if (req.user) {
       return next();
     }
@@ -62,13 +62,12 @@ module.exports = function(app) {
     // find a user whose username is the same as the forms username
     // we are checking to see if the user trying to login already exists
     //
-    var query = squel
-                .select()
-                .from(table)
-                .where('username=?', username);
+    const query = squel
+                  .select()
+                  .from(table)
+                  .where('username=?', username);
 
-                
-    let user = {
+    const user = {
       username: username,
       password: password,
       salt: bcrypt.genSaltSync(10)
@@ -79,10 +78,10 @@ module.exports = function(app) {
     db.query(query.toString()).then(function(rows) {
       if (rows && rows.length) {
         console.log('rows', rows);
-        let msg = 'That username is already taken.';
+        const msg = 'That username is already taken.';
         return done(msg);
       } else {
-        var query = squel
+        const query = squel
                     .insert()
                     .into(table)
                     .setFields(user);
@@ -90,10 +89,10 @@ module.exports = function(app) {
           user.id = data.insertId;
           return done(null, {
             username: user.username,
-            id: user.id 
+            id: user.id
           });
         });
-      }	
+      }
     }).catch(function(err) {
       console.error('err', err);
       return done('There was an unknown error; please try again later.');
@@ -114,12 +113,12 @@ module.exports = function(app) {
     passReqToCallback : true // allows us to pass back the entire request to the callback
   },
   function(req, username, password, done) {
-    var query = squel
-                .select()
-                .from(table)
-                .where('username=?', username);
+    const query = squel
+                  .select()
+                  .from(table)
+                  .where('username=?', username);
 
-    var error_message = 'There was an error logging in. Please try again.';
+    const error_message = 'There was an error logging in. Please try again.';
 
     db.query(query).then(function(rows) {
       if (!rows.length) {
@@ -128,7 +127,7 @@ module.exports = function(app) {
         return done(error_message);
       } else {
         // all is well, return successful user
-        return done(null, rows[0]);			
+        return done(null, rows[0]);
       }
     }, function(err) {
       console.error(err);

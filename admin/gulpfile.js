@@ -14,7 +14,7 @@ gulp.task('webserver', () => {
   nodemon({
     script: 'index.js',
     ext: 'js html',
-    env: { 'ENVIRONMENT': 'production' }
+    env: { 'ENVIRONMENT': process.env.ENVIRONMENT || 'development' }
   });
 });
 
@@ -23,7 +23,6 @@ gulp.task('webserver', () => {
 
 // Read Javascript, run Browserfy, Babel and Uglify (one day...)
 gulp.task('js', () => {
-  console.log('JS');
   const b = browserify({
     debug: true
   });

@@ -18,13 +18,20 @@ export class Form extends React.Component {
   }
   handleError(error) {
     this.setState({
-      error: error 
+      error: error
     });
   }
   handleSubmit(e) {
+    this.setState({
+      error: null
+    });
     e.preventDefault();
     const username = React.findDOMNode(this.refs.username).value.trim();
     const password = React.findDOMNode(this.refs.password).value.trim();
+    let token;
+    if (this.refs.token) {
+      token = React.findDOMNode(this.refs.token).value.trim();
+    }
 
     if (!username) {
       this.handleError('You must provide a username');
@@ -36,8 +43,9 @@ export class Form extends React.Component {
       url: this.url,
       method: 'post',
       data: {
-        username: username,
-        password: password
+        username,
+        password,
+        token
       }
     })
     .then(function (resp) {
@@ -56,23 +64,25 @@ export class Form extends React.Component {
     return;
   }
   render() {
+    const token = (this.renderToken) ? this.renderToken() : null;
     return (
-            <form onSubmit={this.handleSubmit}>
-                <div className="error">
-                    {this.state.error}
-                </div>
-                <div>
-                    <label>Username:</label>
-                    <input type="text" name="username" ref="username"/>
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" name="password" ref="password"/>
-                </div>
-                <div>
-                    <input type="submit" value={this.submitValue} />
-                </div>
-                </form>
+      <form onSubmit={this.handleSubmit}>
+        <div className="error">
+          {this.state.error}
+        </div>
+        <div>
+          <label>Username:</label>
+          <input type="text" name="username" ref="username"/>
+        </div>
+        <div>
+          <label>Password:</label>
+          <input type="password" name="password" ref="password"/>
+        </div>
+        {token}
+        <div>
+          <input type="submit" value={this.submitValue} />
+        </div>
+      </form>
     );
   }
 }
