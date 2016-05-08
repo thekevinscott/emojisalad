@@ -8,7 +8,7 @@ const Phrase = {
                   .insert()
                   .into('phrases')
                   .setFields({
-                    phrase: params.phrase,
+                    phrase: params.phrase.toUpperCase(),
                     category_id: params.category_id
                   });
     return db.query(query).then(result => {
@@ -18,7 +18,7 @@ const Phrase = {
                             .insert()
                             .into('clues')
                             .setFields({
-                              clue: params.clue,
+                              clue: params.clue.toUpperCase(),
                               phrase_id
                             });
         return db.query(insert_clue).then(() => {
