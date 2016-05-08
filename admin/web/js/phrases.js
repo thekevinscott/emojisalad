@@ -13,7 +13,12 @@ export const Phrases = React.createClass({
       });
     }
   },
-  addPhrase: function(e) {
+  keyDown: function(e) {
+    if (e.keyCode === 13) {
+      this.addPhrase();
+    }
+  },
+  addPhrase: function() {
     const clue = this.refs.clue.getDOMNode();
     const phrase = this.refs.phrase.getDOMNode();
     const category_id = this.refs.category.getDOMNode();
@@ -74,8 +79,12 @@ export const Phrases = React.createClass({
           return (
             <tr>
               <td></td>
-              <td><input disabled={disabled} ref="phrase" type="text" name="phrase"/></td>
-              <td><input disabled={disabled} ref="clue" type="text" name="clue"/></td>
+              <td>
+                <input disabled={disabled} ref="phrase" type="text" name="phrase" onKeyDown={this.keyDown} />
+              </td>
+              <td>
+                <input disabled={disabled} ref="clue" type="text" name="clue" onKeyDown={this.keyDown} />
+              </td>
               <td>
                 <select disabled={disabled} ref="category">
                   {Object.keys(categories).map(category_id => {
