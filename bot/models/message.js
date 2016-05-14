@@ -111,7 +111,7 @@ const Message = {
           //console.info('response player', response);
           if ( response.player.from ) {
             from = response.player.from;
-          } else if ( response.player.user.from ) {
+          } else if ( response.player.user && response.player.user.from ) {
             from = response.player.user.from;
           }
           const to = response.player.to;
