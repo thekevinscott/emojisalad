@@ -1,6 +1,7 @@
 'use strict';
 
 const port = process.env.PORT;
+const ENVIRONMENT = process.env.ENVIRONMENT || 'development';
 
 const endpoint = "http://localhost:" + require('config/app').port + "/";
 
@@ -8,7 +9,7 @@ console.info('endpoint for sms queue', endpoint);
 
 const options = {
   port: require('config/app').port,
-  db: require('config/db'),
+  db: require(`config/database/${ENVIRONMENT}`),
   maintenance: require('config/maintenance')
 };
 

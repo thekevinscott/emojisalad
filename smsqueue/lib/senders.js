@@ -12,7 +12,7 @@ function getSenders(req, res) {
                 .where('id NOT IN ?', exclude)
                 .limit(1);
 
-  console.log(query.toString());
+  //console.log(query.toString());
   db.query(query).then((rows) => {
     if ( rows && rows.length ) {
       res.json( rows[0] );
