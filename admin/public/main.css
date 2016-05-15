@@ -72,6 +72,9 @@ table td textarea {
 }
 .stats {
   display: flex;
+  min-height: 80px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
 }
 .round-stats {
   padding-left: 20px;
@@ -84,22 +87,47 @@ table td textarea {
   flex: 1;
   padding-top: 20px;
 }
+.phone-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+.phone-container:last-child {
+  margin-right: 0;
+}
+.phone-header {
+  display: flex;
+  margin-bottom: 10px;
+  padding-bottom: 15px;
+  flex: 0;
+}
+.phone-header p {
+  flex: 1;
+}
 .phone {
   background: #fff;
   flex: 1;
   border: 1px solid #ccc;
-  margin-right: 20px;
-  padding: 20px;
   overflow: scroll;
+  padding: 20px;
 }
-.phone .message {
+.phone .message-container {
   padding-bottom: 10px;
+  border-radius: 15px;
+  padding: 8px 15px;
+  margin-bottom: 5px;
+  display: inline-block;
+  clear: both;
 }
-.phone .message.sent {
-  text-align: right;
+.phone .message-container.sent {
+  float: left;
+  background: #ccc;
 }
-.phone:last-child {
-  margin-right: 0;
+.phone .message-container.received {
+  float: right;
+  background: #1ec34b;
+  color: #fff;
 }
 iframe {
   background: #fff;
@@ -109,6 +137,9 @@ iframe {
 }
 iframe:last-child {
   margin-right: 0;
+}
+.clear {
+  clear: both;
 }
 .add-phrase {
   float: right;

@@ -2,7 +2,6 @@
 // set require path
 require('app-module-path').addPath(__dirname);
 
-const fetch = require('isomorphic-fetch');
 const express = require('express');
 const app = express();
 
@@ -42,9 +41,13 @@ app.use(expressSession({secret: 'ssdffdsfsfsfsffo $$$!!!!#@@@ fodis230eorwdfiklj
 require('./api/passport')(app);
 app.set('port', (process.env.PORT || 5001));
 
+const timer = setTimeout(() => {
+  console.log('Still waiting for API to be ready...');
+}, 3000);
 registry.ready(() => {
+  clearTimeout(timer);
   app.listen(app.get('port'), () => {
-    console.log("Node app is running at localhost:" + app.get('port'));
+    console.log("Admin is running on " + app.get('port'));
   });
 });
 
@@ -75,27 +78,17 @@ app.get('/api/phrases', (req, res) => {
 app.post('/api/phrases', (req, res) => {
   getFetch(`phrases/`, 'post', res, req.body);
 });
+const getMessages = require('api/getMessages');
+app.get('/api/games/:game_id/messages', getMessages);
 
 // bootstrap our web app
 app.get('*', (req, res) => {
   res.render('app', { SOCKET_PORT, SOCKET_HOST });
 });
 
+const fetch = require('./fetch');
 const getFetch = (route, method, res, body) => {
-  const manifest = registry.get('api').api;
-  const endpoint = manifest.games.get.endpoint.substring(0, 22);
-  route = `${endpoint}${route}`;
-
-  fetch(route, {
-    method,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  }).then((response) => {
-    return response.json();
-  }).then((response) => {
+  fetch(route, method, body).then((response) => {
     res.json(response);
   }).catch((err) => {
     res.json({ err: err.message });
