@@ -1,5 +1,5 @@
 [{
-  "name" : "web",
+  "name" : "webapp",
   "script" : "./server.js",
   "env": {
     "LOG_LEVEL": "info",
