@@ -1,11 +1,11 @@
 'use strict';
 const squel = require('squel').useFlavour('mysql');
+const db = require('db');
 const Promise = require('bluebird');
 const _ = require('lodash');
 const emojiExists = require('emoji-exists');
 const EmojiData = require('emoji-data');
 
-const db = require('db');
 const Player = require('./player');
 const User = require('./user');
 const Round = require('./round');

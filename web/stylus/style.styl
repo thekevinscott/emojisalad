@@ -1,12 +1,43 @@
-@import 'fonts'
+.emojisalad {
+}
 
-//Helpers (vendor stuff, etc.)
-@import 'flex'
-@import 'animation-vendor'
+.masthead {
+  background: #999;
+  height: 350px;
+  display: flex;
+  padding: 40px;
+}
 
-//Core style stuff
-@import 'colors'
+.title {
+  flex: 1;
+}
 
-//Actual style stuff
-@import 'core'
-@import 'chat'
+.demo {
+  flex: 0;
+  width: 400px;
+}
+
+.explanation {
+  h2 {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  input[type="submit"] {
+    font-size: 30px;
+    padding: 30px;
+  }
+}
+
+.invite {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.phone {
+  padding: 20px;
+  font-size: 24px;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}

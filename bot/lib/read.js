@@ -7,7 +7,9 @@ const runTime = 5;
 
 const Timer = require('models/timer');
 const getMessages = require('lib/getMessages');
+const getWebSubmissions = require('lib/getWebSubmissions');
 const processMessage = require('lib/processMessage');
+const processWebMessage = require('lib/processWebMessage');
 const sendMessages = require('lib/sendMessages');
 const store = require('store');
 const setStore = require('lib/setStore');
@@ -16,7 +18,7 @@ const setStore = require('lib/setStore');
 let timer;
 //let queued_read_action = false;
 let processing = false;
-const allowed_protocols = process.env.PROTOCOLS.split(',');
+const PROTOCOLS = process.env.PROTOCOLS.split(',');
 const tripwire_settings = {
   // if 10 or more messages are gotten or sent,
   // send us an email to let us know
@@ -91,7 +93,7 @@ const read = () => {
   }
 };
 
-const getLastProtocolMessageIDs = () => {
+const getLastProtocolMessageIDs = (allowed_protocols) => {
   const last_protocol_message_ids = {};
   return Promise.all(allowed_protocols.map((protocol) => {
     return store(`${protocol}_queue_id`).then((id) => {
@@ -107,9 +109,9 @@ const getLastProtocolMessageIDs = () => {
 
 const runRead = () => {
   //console.log('run read 1');
-  return getLastProtocolMessageIDs().then((last_protocol_message_ids) => {
+  return getLastProtocolMessageIDs(PROTOCOLS).then((last_protocol_message_ids) => {
     //console.log('run read 2');
-    return getMessages(last_protocol_message_ids, allowed_protocols, tripwire_settings);
+    return getMessages(last_protocol_message_ids, PROTOCOLS, tripwire_settings);
   }).then((messages) => {
     //console.log('run read 3');
     if ( messages.length ) {
@@ -158,8 +160,33 @@ const runRead = () => {
       const timer_game_ids = _.uniq(timers.map(timer => timer.game_id));
       return Timer.use(timer_keys, timer_game_ids);
     });
+  }).then(() => {
+    return getLastProtocolMessageIDs(['web']).then(last_protocol_message_ids => {
+      return getWebSubmissions(last_protocol_message_ids);
+    }).then(responses => {
+      if (responses && responses.length > 0) {
+        //console.log('responses', responses);
+        const key = 'web_queue_id';
+        const message_id = responses[responses.length - 1].id;
+        return store(key, message_id).then(() => {
+          return Promise.all(responses.reduce((messages, response) => {
+            return processWebMessage(response).then(output => {
+              if (output) {
+                return messages.concat(output);
+              } else {
+                return messages;
+              }
+            });
+          }, []));
+        }).then(messages => {
+          console.info('messages', messages);
+          return sendMessages(messages);
+        });
+      }
+    });
+  }).then(() => {
+    console.info('all done');
   });
-    //console.log('run read 7 - everything is done!');
 };
 
 module.exports = read;

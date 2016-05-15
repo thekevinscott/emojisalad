@@ -1,0 +1,9 @@
+[{
+  "name" : "web",
+  "script" : "./server.js",
+  "env": {
+    "LOG_LEVEL": "info",
+    "PORT" : "80",
+    "ENVIRONMENT": "production"
+  }
+}]
