@@ -1,7 +1,5 @@
 const api = require('../service')('api');
 const web = require('../service')('web');
-const squel = require('squel').useFlavour('mysql');
-const db = require('../db');
 
 module.exports = (req, res) => {
   const phone = req.body.phone;

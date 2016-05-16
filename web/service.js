@@ -1,4 +1,3 @@
-
 'use strict';
 
 const registry = require('microservice-registry');
