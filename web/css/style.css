@@ -1,8 +1,41 @@
+@import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700|Sigmar+One|Luckiest+Guy|Alegreya+Sans+SC:900|Paytone+One|Fascinate");
+body {
+  background-color: #ff7c81;
+  text-align: center;
+}
+h2 {
+  font: 900 1.75rem/1.75rem 'Paytone One', 'Arial Black', Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fff;
+}
+p {
+  font: 400 1.125rem/1.125rem Inconsolata, Courier, 'Courier New', serif;
+  color: #000;
+}
+.emojisalad,
 .masthead {
-  background: #999;
   height: 350px;
   display: flex;
   padding: 40px;
+  background-image: radial-gradient(#ff5f5f 15%, transparent 16%), radial-gradient(#ff5f5f 15%, transparent 16%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  text-align: left;
+}
+.emojisalad h1,
+.masthead h1 {
+  font: 5rem/5rem 'Paytone One', 'Arial Black', Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fff;
+  -webkit-text-stroke: 1px #000;
+  text-shadow: 7px 7px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000;
+}
+.emojisalad p,
+.masthead p {
+  font: 400 1.75rem/1.75rem Inconsolata, Courier, 'Courier New', serif;
+  color: #000;
 }
 .title {
   flex: 1;
@@ -10,23 +43,39 @@
 .demo {
   flex: 0;
   width: 400px;
+  text-align: left;
 }
-.explanation h2 {
-  font-size: 24px;
+input[type='text'] {
+  display: inline-block;
+  top: 0;
+  padding: 10px 0 13px 0;
+  border: 4px solid #000;
+  border-radius: 3px;
+  -webkit-appearance: none;
+  appearance: none;
+  font: 400 1.75rem/1.75rem Inconsolata, Courier, 'Courier New', serif;
   text-align: center;
 }
-.explanation input[type="submit"] {
-  font-size: 30px;
-  padding: 30px;
+input[type='text']:focus {
+  border-color: #ff5f5f;
+}
+input[type='submit'] {
+  display: inline-block;
+  top: 0;
+  margin-left: 10px;
+  padding: 15px 20px 17px 20px;
+  background-color: #fcf979;
+  border: 4px solid #000;
+  border-radius: 3px;
+  -webkit-appearance: none;
+  appearance: none;
+  font: 400 1.125rem/1.125rem 'Paytone One', 'Arial Black', Arial, sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+}
+input[type='submit']:focus {
+  border-color: #ff5f5f;
 }
 .invite {
-  text-align: center;
   margin: 20px 0;
-}
-.phone {
-  padding: 20px;
-  font-size: 24px;
-  display: block;
-  margin: 0 auto;
-  text-align: center;
 }
