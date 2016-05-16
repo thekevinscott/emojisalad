@@ -24,6 +24,7 @@
     "squel": "^5.1.0"
   },
   "devDependencies": {
+    "gulp-connect": "^4.0.0",
     "gulp-nodemon": "^2.0.7",
     "gulp-stylus": "^2.3.1"
   }
