@@ -1,42 +1,99 @@
-'use strict';
 //const Promise = require('bluebird');
 //const Player = require('models/player');
 //const _ = require('lodash');
 //const rule = require('config/rule');
 const Game = require('models/game');
 
-module.exports = (player, input) => {
-  return Game.get({ player_id: player.id }).then((games) => {
-    const game = games[0];
+import getService from 'lib/getService';
 
-    if ( !game.round.submission ) {
-      if ( player.id === game.round.submitter.id ) {
-        return [{
-          player,
-          key: 'no-clue-before-submission-for-submitter',
-          options: []
-        }];
+import parse, {
+  REQUEST,
+  BOOL,
+  MAP,
+  RESPOND
+} from 'lib/parse';
+
+module.exports = (player, input) => {
+  return getService('api').then(service => {
+    return Game.get({ player_id: player.id }).then((games) => {
+      const game = games[0];
+
+      if ( !game.round.submission ) {
+        return parse([{
+          type: BOOL,
+          params: {
+            fn: () => {
+              return player.id === game.round.submitter.id;
+            },
+            resolve: [{
+              type: RESPOND,
+              params: {
+                message: {
+                  key: 'no-clue-before-submission-for-submitter'
+                },
+                player
+              }
+            }],
+            reject: [{
+              type: RESPOND,
+              params: {
+                message: {
+                  key: 'no-clue-before-submission-for-guesser'
+                },
+                player
+              }
+            }]
+
+          }
+        }]);
       } else {
-        return [{
-          player,
-          key: 'no-clue-before-submission-for-guesser',
-          options: []
-        }];
+
+        return parse([{
+          type: MAP,
+          params: {
+            iterator: game.players
+          },
+          callback: [{
+            type: BOOL,
+            params: {
+              fn: iteratee => player.id !== iteratee.id,
+              resolve: [{
+                type: RESPOND,
+                params: {
+                  message: {
+                    key: 'says_b',
+                    options: {
+                      nickname: player.nickname,
+                      avatar: player.avatar,
+                      input
+                    }
+                  },
+                  player: 'props'
+                }
+              }]
+            }
+          }]
+        }, {
+          type: MAP,
+          params: {
+            iterator: game.players
+          },
+          callback: [{
+            type: RESPOND,
+            params: {
+              message: {
+                key: 'clue_b',
+                options: {
+                  nickname: player.nickname,
+                  avatar: player.avatar,
+                  game
+                }
+              },
+              player: 'props'
+            }
+          }]
+        }]);
       }
-    } else {
-      return require('./say')(game, player, input).then((messages) => {
-        return messages.concat(game.players.map((game_player) => {
-          return {
-            player: game_player,
-            key: 'clue',
-            options: [
-              player.nickname,
-              player.avatar,
-              game.round.clue
-            ]
-          };
-        }));
-      });
-    }
+    });
   });
 };

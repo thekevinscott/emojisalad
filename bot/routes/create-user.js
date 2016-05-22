@@ -1,23 +1,39 @@
-'use strict';
 //const Promise = require('bluebird');
 //const Player = require('models/player');
 const User = require('models/user');
 const _ = require('lodash');
 
+import getService from 'lib/getService';
+
+import parse, {
+  REQUEST,
+  BOOL,
+  MAP,
+  RESPOND
+} from 'lib/parse';
+
 module.exports = (from, input, to, protocol) => {
-  console.info('lets create that user');
-  return User.create({ from, protocol }).then((response) => {
-    if ( response.error ) {
-      console.error('Error creating user', response);
-      throw new Error('Error creating user');
-    } else {
-      const user = response;
-      console.info('created user', user);
-      const player = _.extend(user, { to });
-      return [{
-        key: 'intro',
-        player
-      }];
-    }
+  return getService('api').then(service => {
+    return parse([{
+      type: REQUEST,
+      params: {
+        url: `${service.base_url}users/`,
+        method: 'post',
+        body: {
+          from,
+          protocol,
+          to
+        }
+      },
+      callback: [{
+        type: RESPOND,
+        params: {
+          message: {
+            key: 'intro'
+          },
+          player: 'props' // TEMPORARY; this will be removed because it sucks, and we should get the props from the top level Respond object.
+        }
+      }]
+    }]);
   });
 };

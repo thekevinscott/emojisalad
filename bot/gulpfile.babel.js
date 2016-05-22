@@ -64,7 +64,7 @@ gulp.task('update-fixtures', (cb) => {
     },
     {
       table: 'message_variants',
-      data: true
+      data: false
     },
     {
       table: 'attributes',

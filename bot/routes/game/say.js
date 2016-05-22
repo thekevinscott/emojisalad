@@ -5,25 +5,42 @@ const Game = require('models/game');
 const _ = require('lodash');
 const rule = require('config/rule');
 
-module.exports = (game, player, input) => {
-  return new Promise((resolve) => {
-    const message = {
-      key: 'says',
-      options: [
-        player.nickname,
-        player.avatar,
-        input 
-      ]
-    };
+import getService from 'lib/getService';
 
-    resolve(game.players.map((game_player) => {
-      if ( game_player.id !== player.id ) {
-        return _.assign({
-          //number: player.number,
-          player: game_player
-        },
-        message);
-      }
-    }).filter((el) => el));
+import parse, {
+  REQUEST,
+  BOOL,
+  MAP,
+  RESPOND
+} from 'lib/parse';
+
+module.exports = (game, player, input) => {
+  return getService('api').then(service => {
+    return parse([{
+      type: MAP,
+      params: {
+        iterator: game.players
+      },
+      callback: [{
+        type: BOOL,
+        params: {
+          fn: iteratee => player.id !== iteratee.id,
+          resolve: [{
+            type: RESPOND,
+            params: {
+              message: {
+                key: 'says_b',
+                options: {
+                  nickname: player.nickname,
+                  avatar: player.avatar,
+                  input
+                }
+              },
+              player: 'props'
+            }
+          }]
+        }
+      }]
+    }]);
   });
 };

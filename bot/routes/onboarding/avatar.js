@@ -30,9 +30,11 @@ module.exports = (user, input) => {
       });
     }
   }).then((updated_user) => {
-    updated_user.to = to;
     console.info('**** START THE GAME');
-    return require('../game/start')(updated_user, input);
+    return require('../game/start')({
+      ...updated_user,
+      to
+    }, input);
   }).catch((err) => {
     if ( err !== 'error-14' ) {
       console.error('err', err);
