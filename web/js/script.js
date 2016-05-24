@@ -21,4 +21,12 @@ $(document).ready(function() {
       }
     });
   });
+  $('.test-container').slick({
+    // http://kenwheeler.github.io/slick/
+    // autoplay: true,
+    arrows: false,
+    dots: true,
+    pauseOnFocus: false,
+    pauseOnHover: false
+  });
 });

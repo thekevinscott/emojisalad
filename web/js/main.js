@@ -35,6 +35,7 @@ $(document).ready(function(){
 
   // start chat animation
   loopChat();
+
 });
 
 function submitPhoneNumber(phoneNum) {

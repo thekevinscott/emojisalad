@@ -23,10 +23,10 @@ h3 {
   color: #fff;
 }
 p {
-  font: 400 1.125rem/1.125rem Inconsolata, Courier, 'Courier New', serif;
+  font: 400 1.125rem/1.4rem Inconsolata, Courier, 'Courier New', serif;
 }
 form,
-.card {
+.test-container {
   margin-top: 20px;
 }
 .module {
@@ -40,14 +40,36 @@ form,
 .bg-dark {
   background-color: #ff5f5f;
 }
-.card-white {
+.bg-dark:before,
+.bg-dark:after {
+  content: "";
+  position: relative;
+  display: block;
+  height: 20px;
+  left: 0;
+  right: 0;
+  background: linear-gradient(45deg, transparent 33.333%, #ff5f5f 33.333%, #ff5f5f 66.667%, transparent 66.667%), linear-gradient(-45deg, transparent 33.333%, #ff5f5f 33.333%, #ff5f5f 66.667%, transparent 66.667%);
+  background-size: 20px 40px; /* toothSize doubleHeight */
+}
+.bg-dark:before {
+  top: -70px;
+  background-position: 10px 0; /* horizontalOffset -height */
+}
+.bg-dark:after {
+  bottom: -70px;
+  background-position: 10px -20px; /* horizontalOffset -height */
+}
+.bg-dark-grey {
+  background-color: #95a8b2;
+}
+.bg-white {
   background-color: #fff;
   border: 4px solid #000;
   border-radius: 3px;
   -webkit-appearance: none;
   appearance: none;
 }
-.card-yellow {
+.bg-yellow {
   background-color: #fcf979;
   border: 4px solid #000;
   border-radius: 3px;
@@ -87,4 +109,24 @@ input[type='submit'] {
 }
 input[type='submit']:focus {
   border-color: #ff5f5f;
+}
+.test-container {
+  padding-left: 200px;
+  height: 220px;
+}
+.test-container .card {
+  width: 600px;
+  height: 200px;
+  line-height: 200px;
+  position: relative;
+  z-index: 2;
+}
+.test-container .card p {
+  display: inline-block;
+  vertical-align: middle;
+}
+.test-container .card:nth-child(2) {
+  top: -194px;
+  left: 15px;
+  z-index: 1;
 }

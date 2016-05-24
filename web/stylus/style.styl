@@ -9,6 +9,7 @@ dark-accent = rgb(255,95,95)
 light-accent = rgb(255,141,144)
 focus-accent = rgb(252,249,121)
 accent-yellow = rgb(252,249,121)
+dark-grey = rgb(149, 168, 178)
 
 // global styles
 
@@ -36,10 +37,9 @@ h3
   color white
 
 p
-  // margin-bottom 20px
-  font 400 1.125rem/1.125rem body-font
+  font 400 1.125rem/1.4rem body-font
 
-form, .card
+form, .test-container
   margin-top 20px
 
 .module
@@ -50,17 +50,37 @@ form, .card
   background-size 20px 20px
   background-position 0 0, 10px 10px
 
-.bg-dark
+.bg-dark // including jagged edges
   background-color dark-accent
+  &:before, &:after /* TODO Add browser prefixes */
+    content ""
+    position relative
+    display block
+    height 20px
+    left 0
+    right 0
+    background:
+      linear-gradient(45deg, transparent 33.333%, dark-accent 33.333%, dark-accent 66.667%, transparent 66.667%),
+      linear-gradient(-45deg, transparent 33.333%, dark-accent 33.333%, dark-accent 66.667%, transparent 66.667%)
+    background-size 20px 40px; /* toothSize doubleHeight */
+  &:before
+    top -70px // -(height + parent module padding)
+    background-position 10px 0; /* horizontalOffset -height */
+  &:after
+    bottom -70px // -(height + parent module padding)
+    background-position 10px -20px; /* horizontalOffset -height */
 
-.card-white
+.bg-dark-grey
+  background-color dark-grey
+
+.bg-white
   background-color white
   border 4px solid black
   border-radius 3px
   -webkit-appearance none
   appearance none
   
-.card-yellow
+.bg-yellow
   background-color accent-yellow
   border 4px solid black
   border-radius 3px
@@ -98,6 +118,25 @@ input[type='submit']
   text-transform uppercase
   &:focus
     border-color dark-accent
+
+.test-container
+  padding-left 200px
+  height 220px
+  // .test
+  //   display inline-block
+  .card
+    width 600px
+    height 200px
+    line-height 200px
+    position relative
+    z-index 2
+    p
+      display inline-block
+      vertical-align middle
+  .card:nth-child(2)
+    top -194px
+    left: 15px
+    z-index 1
 
 // .phone
 //   padding 20px

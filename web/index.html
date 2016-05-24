@@ -26,10 +26,16 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/twemoji-awesome.css">
+    <link rel="stylesheet" type="text/css" href="slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="slick/slick-theme.css"/>
 
     <script src="//code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
     <script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="slick/slick.min.js"></script>
     <script src="/js/script.js"></script>
+        
   </head>
   <body>
     <div class="emoji-salad">
@@ -42,36 +48,91 @@
           Demo goes here
         </div>
       </div>
-      <div class="module signup">
+      <div class="module signup bg-dark">
         <h3>Ready to play?</h3>
         <p>Ask Emojibot to start a new game<br>with you and your friends</p>
         <form>
-          <input type="text" class="phone card-white" placeholder="(555) 555-5555" />
-          <input type="submit" class="card-yellow" value="Text Me" />
-          <p class="message"></p>
+          <input type="text" class="phone bg-white" placeholder="(555) 555-5555" />
+          <input type="submit" class="bg-yellow" value="Text Me" title="In Russia, emojibot invite YOU"/>
         </form>
       </div>
-      <div class="module testimonials bg-dark">
+      <div class="module explainer">
+        <h3>What is Emoji Salad?</h3>
+        <p>Some cute copy that explains the game<br>and lightly references salad</p>
+      </div>
+      <div class="module testimonials bg-dotted">
         <h3>People Laughing Alone with Emoji Salad</h3>
-        <p>Ask Emojibot to start a new game with you and your friends</p>
-        <div class="card card-white">
-          <p>Emojibot really gets me.
-            <br>Also Emoji Salad has ruined
-            <br>my relationship with my parents.
-          </p>
+        <div class="test-container">
+          <div class="test">
+            <div class="card bg-white">
+              <p>Emojibot really gets me.
+                <br>Also Emoji Salad has ruined
+                <br>my relationship with my parents.
+                <br>
+                <br>- XTRACHEDDAR462
+              </p>
+            </div>
+            <div class="card bg-yellow">
+            </div>
+          </div>
+          <div class="test">
+            <div class="card bg-white">
+              <p>I would gladly pay over $600
+                <br>for Emoji Salad.
+                <br>
+                <br>- Troller McTrollerson
+              </p>
+            </div>
+            <div class="card bg-yellow">
+            </div>
+          </div>
+          <div class="test">
+            <div class="card bg-white">
+              <p>True leadership is true. Emoji Salad is true.
+                <br>
+                <br>- TheKevinScott
+              </p>
+            </div>
+            <div class="card bg-yellow">
+            </div>
+          </div>
+          <div class="test">
+            <div class="card bg-white">
+              <p>Emoji Salad is the biggest innovation in
+                <br>gaming since the Power Glove.
+                <br>
+                <br>- SteveJobson
+              </p>
+            </div>
+            <div class="card bg-yellow">
+            </div>
+          </div>
+          <div class="test">
+            <div class="card bg-white">
+              <p>SHOE
+                <br>
+                <br>- Seaver48
+              </p>
+            </div>
+            <div class="card bg-yellow">
+            </div>
+          </div>
         </div>
       </div>
-      <div class="module submit-clues">
+      <div class="module submit-clues bg-dark">
         <h3>Submit Clues</h3>
         <p>Save some kittens and make the world a better<br>place by suggesting your own new clues</p>
         <form>
-          <input type="text" class="card-white" placeholder="e.g. The Wizard of Oz" />
-          <input type="submit" class="card-yellow" value="Submit" />
+          <input type="text" class="bg-white" placeholder="e.g. The Wizard of Oz" />
+          <input type="submit" class="bg-yellow" value="Submit" />
           <p class="message"></p>
         </form>
       </div>
     </div>
-    <p>In Russia, emojibot invite YOU</p>
+    <div class="module footer bg-dark-grey">
+      <p>Lovingly made by the SIBlings in NYC</p>
+    </div>
+
 
     <script>
       !function(e,m,o,j,i){e.GoogleAnalyticsObject=o;e[o]||(e[o]=function(){
