@@ -44,7 +44,10 @@ const User = {
                     });
       return db.create(query).then((result) => {
         return User.findOne(result.insertId).then((user) => {
-          return user;
+          return {
+            ...user,
+            to: params.to
+          };
         });
       });
     });

@@ -7,6 +7,7 @@ const getManifest = (port) => {
   const base_url = 'http://localhost:' + port + '/';
 
   const manifest = {
+    base_url,
     email: {
       parse: {
         endpoint: `${base_url}email/:email`,

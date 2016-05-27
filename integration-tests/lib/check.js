@@ -208,7 +208,9 @@ const checkBody = (action, expected) => {
       }
     } catch(err) {
       console.error('***** error found *****');
-      console.error(action, expected);
+      console.error('action', action);
+      console.error('expected', expected);
+      console.error('***********************');
       // this will fail but we'll get a nice
       // error message out of it
       action_body.should.equal(expected.variants);

@@ -12,6 +12,7 @@
     "autosuggest": "git+ssh://git@bitbucket.org/thekevinscott/autosuggest.git",
     "babel": "^5.8.23",
     "babel-core": "^6.4.5",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-polyfill": "^6.5.0",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.4.3",
