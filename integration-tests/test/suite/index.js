@@ -28,3 +28,9 @@ require('./multiple');
 
 // tests that passing works correctly
 require('./pass');
+
+// tests that leaving works correctly
+//require('./leave');
+
+// tests that pausing works correctly
+//require('./pause');
