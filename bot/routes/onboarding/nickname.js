@@ -1,25 +1,42 @@
 'use strict';
-const Promise = require('bluebird');
-const rule = require('config/rule');
-const Player = require('models/player');
-const User = require('models/user');
-const Game = require('models/game');
-const Invite = require('models/invite');
+
+import getService from 'lib/getService';
+
+import parse, {
+  REQUEST,
+  MAP,
+  RESPOND
+} from 'lib/parse';
 
 module.exports = (user, nickname) => {
-  const to = user.to;
-  return User.update(user, {
-    nickname: nickname,
-  }).then((user) => {
-    user.to = to;
-    return [{
-      key: 'intro_3',
-      player: user,
-      options: [
-        user.nickname,
-        user.avatar
-      ]
-    }];
+  return getService('api').then(service => {
+    const to = user.to;
+    return parse([{
+      type: REQUEST,
+      params: {
+        url: `${service.base_url}users/${user.id}`,
+        method: 'put',
+        body: {
+          nickname
+        }
+      },
+      callback: [{
+        type: RESPOND,
+        params: {
+          meta: { to: user.to },
+          message: {
+            key: 'intro_3_b',
+            options: {
+              nickname,
+              avatar: user.avatar
+            }
+          },
+          player: {
+            ...user,
+            to
+          }
+        }
+      }]
+    }]);
   });
 };
-

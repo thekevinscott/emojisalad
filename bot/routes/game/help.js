@@ -1,6 +1,4 @@
-'use strict';
 const Promise = require('bluebird');
-//const Player = require('models/player');
 const _ = require('lodash');
 const rule = require('config/rule');
 const Game = require('models/game');
