@@ -1,22 +1,25 @@
 @import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700|Sigmar+One|Luckiest+Guy|Alegreya+Sans+SC:900|Paytone+One|Fascinate");
 body {
-  background-color: #ff7c81;
+  background-color: #ff8782;
   text-align: center;
-  color: #000;
+  color: #333331;
 }
 h1 {
   font: 5rem/5rem 'Paytone One', 'Arial Black', Arial, sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: #fff;
-  -webkit-text-stroke: 1px #000;
+  -webkit-text-stroke: 1px #333331;
   text-shadow: 7px 7px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000;
+  margin-top: 30px;
 }
 h2 {
   font: 400 1.75rem/1.75rem Inconsolata, Courier, 'Courier New', serif;
+  padding-bottom: 20px;
 }
 h3 {
-  margin-bottom: 20px;
+  padding-top: 30px;
+  padding-bottom: 20px;
   font: 900 1.75rem/1.75rem 'Paytone One', 'Arial Black', Arial, sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -25,109 +28,148 @@ h3 {
 p {
   font: 400 1.125rem/1.4rem Inconsolata, Courier, 'Courier New', serif;
 }
-form,
-.test-container {
+form {
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 .module {
-  padding: 50px 0 50px 0;
-}
-.bg-dotted {
-  background-image: radial-gradient(#ff5f5f 15%, transparent 16%), radial-gradient(#ff5f5f 15%, transparent 16%);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
+  padding: 0 10%;
 }
 .bg-dark {
-  background-color: #ff5f5f;
+  background-color: #fa6964;
 }
-.bg-dark:before,
-.bg-dark:after {
-  z-index: 10;
-  content: "";
-  position: relative;
-  display: block;
-  height: 20px;
-  left: 0;
-  right: 0;
-  background: linear-gradient(45deg, transparent 33.333%, #ff5f5f 33.333%, #ff5f5f 66.667%, transparent 66.667%), linear-gradient(-45deg, transparent 33.333%, #ff5f5f 33.333%, #ff5f5f 66.667%, transparent 66.667%);
-  background-size: 20px 40px; /* toothSize doubleHeight */
-}
-.bg-dark:before {
-  top: -70px;
-  background-position: 10px 0; /* horizontalOffset -height */
-}
-.bg-dark:after {
-  bottom: -70px;
-  background-position: 10px -20px; /* horizontalOffset -height */
+.bg-light {
+  background-color: #fa6964;
 }
 .bg-dark-grey {
-  background-color: #95a8b2;
+  background-color: #333331;
 }
 .bg-white {
   background-color: #fff;
-  border: 4px solid #000;
+}
+.bg-white h3 {
+  color: #fa6964;
+}
+.bg-gradient {
+  background: -webkit-linear-gradient(left, #fa6964, #fa6964 40%, #fff 41%);
+}
+.bg-pattern {
+  background-image: url("../img/emojisalad-pattern-wide2.png");
+  background-size: 200px 200px;
+  background-repeat: repeat;
+}
+.bg-dotted {
+  background-image: radial-gradient(#fa6964 15%, transparent 16%), radial-gradient(#fa6964 15%, transparent 16%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+.box-white {
+  background-color: #fff;
+  border: 4px solid #333331;
   border-radius: 3px;
   -webkit-appearance: none;
   appearance: none;
 }
-.bg-yellow {
-  background-color: #fcf979;
-  border: 4px solid #000;
+.box-yellow {
+  background-color: #ffd464;
+  border: 4px solid #333331;
   border-radius: 3px;
   -webkit-appearance: none;
   appearance: none;
 }
 .masthead {
-  height: 320px;
+  height: 400px;
   display: flex;
-  padding: 40px;
   text-align: left;
 }
 .title {
   flex: 1;
+  margin-right: 5%;
 }
 .demo {
   flex: 2;
   width: 400px;
   text-align: left;
+}
+.cta {
+  height: 320px;
+  display: flex;
+  text-align: left;
+}
+.explainer {
+  flex: 1.8;
+}
+.explainer > * {
+  width: 90%;
+}
+.bg-arrow {
+  flex: 0.2;
+  width: 0;
+  height: 0;
+  border-top: 160px solid transparent;
+  border-bottom: 160px solid transparent;
+  border-left: 80px solid #fa6964;
+}
+.signup {
+  flex: 1;
   position: relative;
   padding-left: 200px;
   transition-duration: 0.4s;
 }
 input[type='text'] {
-  display: inline-block;
   padding: 10px 0 13px 0;
   font: 400 1.75rem/1.75rem Inconsolata, Courier, 'Courier New', serif;
   text-align: center;
 }
 input[type='text']:focus {
-  border-color: #ff5f5f;
+  border-color: #fa6964;
 }
 input[type='submit'] {
-  display: inline-block;
-  margin-left: 10px;
   padding: 15px 20px 17px 20px;
   font: 400 1.125rem/1.125rem 'Paytone One', 'Arial Black', Arial, sans-serif;
   text-align: center;
   text-transform: uppercase;
 }
 input[type='submit']:focus {
-  border-color: #ff5f5f;
+  border-color: #fa6964;
 }
 .test-container {
-  padding-left: 200px;
-  height: 220px;
+  height: 250px;
+}
+.test-container .test {
+  position: absolute;
+  width: 40%;
+  min-width: 500px;
+  max-width: 600px;
+  margin-left: -20%;
+}
+.test-container .test:nth-child(1) {
+  left: 50%;
+}
+.test-container .test:nth-child(2) {
+  left: 150%;
+}
+.test-container .test:nth-child(3) {
+  left: 250%;
+}
+.test-container .test:nth-child(4) {
+  left: 350%;
+}
+.test-container .test:nth-child(5) {
+  left: 450%;
 }
 .test-container .card {
-  width: 600px;
   height: 200px;
-  line-height: 200px;
   position: relative;
   z-index: 2;
+  line-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .test-container .card p {
-  display: inline-block;
-  vertical-align: middle;
+  flex: none;
+  max-width: 50%;
 }
 .test-container .card:nth-child(2) {
   top: -194px;
@@ -163,10 +205,10 @@ input[type='submit']:focus {
   width: 200px;
   height: 100px;
 }
-.message .bg-white {
+.message .card-white {
   z-index: 2;
 }
-.message .bg-yellow {
+.message .card-yellow {
   top: 15px;
   left: 15px;
   z-index: 1;
@@ -222,9 +264,9 @@ input[type='submit']:focus {
 }
 .bg-yellow .bg-arrow,
 .bg-yellow .inner-arrow {
-  border-color: #fcf979 transparent transparent #fcf979;
+  border-color: #ffd464 transparent transparent #ffd464;
 }
 .right .bg-yellow .bg-arrow,
 .right .bg-yellow .inner-arrow {
-  border-color: #fcf979 #fcf979 transparent transparent;
+  border-color: #ffd464 #ffd464 transparent transparent;
 }
