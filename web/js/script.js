@@ -1,6 +1,6 @@
 /* globals $, document */
 $(document).ready(function() {
-  var message = $('.invite .message');
+  var message = $('.signup .alert');
   $('form').submit(function(e) {
     e.preventDefault();
     var body = {
