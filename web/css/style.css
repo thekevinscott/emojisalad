@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700|Sigmar+One|Luckiest+Guy|Alegreya+Sans+SC:900|Paytone+One|Fascinate");
 body {
   background-color: #ff8782;
-  text-align: center;
+  text-align: left;
   color: #333331;
 }
 h1 {
-  font: 5rem/5rem 'Paytone One', 'Arial Black', Arial, sans-serif;
+  font: 6rem/6rem 'Paytone One', 'Arial Black', Arial, sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: #fff;
@@ -25,8 +25,16 @@ h3 {
   letter-spacing: 2px;
   color: #fff;
 }
-p {
+p,
+ul {
   font: 400 1.125rem/1.4rem Inconsolata, Courier, 'Courier New', serif;
+}
+a {
+  text-decoration: none;
+  display: inline-block;
+  color: #ffd464;
+  padding-bottom: 2px;
+  border-bottom: 1px dashed #ffd464;
 }
 form {
   margin-top: 20px;
@@ -43,6 +51,7 @@ form {
 }
 .bg-dark-grey {
   background-color: #333331;
+  color: #fff;
 }
 .bg-white {
   background-color: #fff;
@@ -78,9 +87,8 @@ form {
   appearance: none;
 }
 .masthead {
-  height: 400px;
+  height: 440px;
   display: flex;
-  text-align: left;
 }
 .title {
   flex: 1;
@@ -89,13 +97,11 @@ form {
 .demo {
   flex: 2;
   width: 400px;
-  text-align: left;
   transition-duration: 0.4s;
 }
 .cta {
-  height: 320px;
+  height: 280px;
   display: flex;
-  text-align: left;
 }
 .explainer {
   flex: 1.8;
@@ -107,17 +113,30 @@ form {
   flex: 0.2;
   width: 0;
   height: 0;
-  border-top: 160px solid transparent;
-  border-bottom: 160px solid transparent;
+  border-top: 140px solid transparent;
+  border-bottom: 140px solid transparent;
   border-left: 80px solid #fa6964;
 }
 .signup {
   flex: 1;
   position: relative;
-  padding-left: 200px;
   transition-duration: 0.4s;
+  margin-left: -30px;
+}
+.footer {
+  height: 300px;
+  display: flex;
+}
+.siblings {
+  flex: 2;
+  margin-right: 20%;
+}
+.submit-clues {
+  flex: 1.25;
 }
 input[type='text'] {
+  display: inline-block;
+  width: 230px;
   padding: 10px 0 13px 0;
   font: 400 1.75rem/1.75rem Inconsolata, Courier, 'Courier New', serif;
   text-align: center;
@@ -126,7 +145,8 @@ input[type='text']:focus {
   border-color: #fa6964;
 }
 input[type='submit'] {
-  padding: 15px 20px 17px 20px;
+  display: inline-block;
+  padding: 15px 10px 17px 10px;
   font: 400 1.125rem/1.125rem 'Paytone One', 'Arial Black', Arial, sans-serif;
   text-align: center;
   text-transform: uppercase;

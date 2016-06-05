@@ -22,11 +22,11 @@ dark-grey = rgb(51,51,49)
 
 body
   background-color bg-color
-  text-align center
+  text-align left
   color blk-color
 
 h1
-  font 5rem/5rem sans-font
+  font 6rem/6rem sans-font
   text-transform uppercase
   letter-spacing 2px
   color white
@@ -46,8 +46,15 @@ h3
   letter-spacing 2px
   color white
 
-p
+p, ul
   font 400 1.125rem/1.4rem body-font    
+
+a
+  text-decoration none
+  display inline-block
+  color accent-yellow
+  padding-bottom 2px
+  border-bottom 1px dashed accent-yellow
 
 form
   margin-top 20px
@@ -62,6 +69,7 @@ form
   background-color light-accent
 .bg-dark-grey
   background-color dark-grey
+  color white
 .bg-white
   background-color white
   h3  
@@ -91,22 +99,19 @@ form
   appearance none
 
 .masthead
-  height 400px
+  height 440px
   display flex
-  text-align left    
 .title
   flex 1
   margin-right 5%
 .demo
   flex 2
   width 400px
-  text-align left
   transition-duration duration
   
 .cta
-  height 320px
-  display flex
-  text-align left   
+  height 280px
+  display flex  
 .explainer
   flex 1.8
   & > *
@@ -115,16 +120,27 @@ form
   flex 0.2
   width 0
   height 0
-  border-top 160px solid transparent
-  border-bottom 160px solid transparent
+  border-top 140px solid transparent
+  border-bottom 140px solid transparent
   border-left 80px solid dark-accent
 .signup
   flex 1
   position relative
-  padding-left 200px
   transition-duration: duration
+  margin-left -30px
+  
+.footer
+  height 300px
+  display flex
+.siblings
+  flex 2
+  margin-right 20%
+.submit-clues
+  flex 1.25
 
 input[type='text']
+  display inline-block
+  width 230px
   padding 10px 0 13px 0
   font 400 1.75rem/1.75rem body-font
   text-align center
@@ -132,7 +148,8 @@ input[type='text']
     border-color dark-accent
 
 input[type='submit']
-  padding 15px 20px 17px 20px
+  display inline-block
+  padding 15px 10px 17px 10px
   font 400 1.125rem/1.125rem sans-font
   text-align center
   text-transform uppercase
