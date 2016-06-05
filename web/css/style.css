@@ -90,6 +90,7 @@ form {
   flex: 2;
   width: 400px;
   text-align: left;
+  transition-duration: 0.4s;
 }
 .cta {
   height: 320px;
@@ -201,18 +202,19 @@ input[type='submit']:focus {
   padding: 20px;
 }
 .message .card {
+  border: 4px solid #000;
   position: relative;
   width: 200px;
   height: 100px;
 }
-.message .card-white {
+.message .bg-white {
   z-index: 2;
 }
-.message .card-yellow {
+.message .bg-yellow {
+  background: #ffd464;
   top: 15px;
   left: 15px;
   z-index: 1;
-  position: relative;
   position: absolute;
 }
 .message .arrow {
