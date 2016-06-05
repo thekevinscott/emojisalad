@@ -51,6 +51,7 @@ $(document).ready(function() {
         return height + el.getHeight();
       }, 0);
       $el.css({ top: totalHeight});
+      $messages.css({ height: totalHeight + demoHeight });
       var demoMarginTop = (demoHeight  - offset < totalHeight) ? demoHeight - totalHeight - offset: 0;
       $demo.css({ marginTop: demoMarginTop });
     }
