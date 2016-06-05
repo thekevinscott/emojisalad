@@ -4,12 +4,13 @@ const port = process.env.PORT;
 
 const endpoint = "http://localhost:" + require('config/app').port + "/";
 
+require('./subscribe')(require('config/facebook'));
+
 console.info('endpoint for fb queue', endpoint);
 
 const options = {
   port: require('config/app').port,
-  db: require('config/db'),
-  maintenance: require('config/maintenance')
+  db: require('config/db')
 };
 
 const app = require('queue')({
@@ -17,7 +18,6 @@ const app = require('queue')({
   options,
   parse: require('lib/parse'),
   send: require('lib/send'),
-  maintenance: require('lib/maintenance'),
   api: {
     senders: {
       getID: {

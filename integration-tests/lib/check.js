@@ -213,7 +213,7 @@ const checkBody = (action, expected) => {
       console.error('***********************');
       // this will fail but we'll get a nice
       // error message out of it
-      action_body.should.equal(expected.variants);
+      action_body.should.equal(expected.variants[0]);
     }
   } else {
     // this indicates that we expect no response. Not sure
