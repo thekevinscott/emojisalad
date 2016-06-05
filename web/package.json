@@ -19,6 +19,7 @@
     "bluebird": "^3.3.5",
     "body-parser": "^1.15.1",
     "express": "^4.13.3",
+    "lodash": "^4.13.1",
     "microservice-registry": "https://github.com/scottlabs/microservice-registry.git",
     "request": "^2.72.0",
     "squel": "^5.1.0"

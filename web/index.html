@@ -34,7 +34,8 @@
     <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="slick/slick.min.js"></script>
-    <script src="/js/script.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/demo.js"></script>
         
   </head>
   <body>
@@ -45,7 +46,7 @@
           <h2>a text msg pictionary party</h2>
         </div>
         <div class="demo">
-          Demo goes here
+          <div class="messages"></div>
         </div>
       </div>
       <div class="module signup bg-dark">
@@ -133,6 +134,17 @@
       <p>Lovingly made by the SIBlings in NYC</p>
     </div>
 
+    <div style="display: none;">
+      <div class="message card">
+        <div class="card bg-white">
+          <div class="main"></div>
+          <div class="arrow main-arrow"><div class="inner-arrow arrow"></div><div class="bg-arrow arrow"></div></div>
+        </div>
+        <div class="card bg-yellow">
+          <div class="arrow main-arrow"><div class="inner-arrow arrow"></div><div class="bg-arrow arrow"></div></div>
+        </div>
+      </div>
+    </div>
 
     <script>
       !function(e,m,o,j,i){e.GoogleAnalyticsObject=o;e[o]||(e[o]=function(){

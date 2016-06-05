@@ -3,6 +3,7 @@
 sans-font = 'Paytone One', 'Arial Black', Arial, sans-serif
 // sans-font = 'Sigmar One', 'Arial Black', Arial, sans-serif
 body-font = Inconsolata, Courier, 'Courier New', serif
+duration = 0.4s
 
 bg-color = rgb(255,124,129)
 dark-accent = rgb(255,95,95)
@@ -53,6 +54,7 @@ form, .test-container
 .bg-dark // including jagged edges
   background-color dark-accent
   &:before, &:after /* TODO Add browser prefixes */
+    z-index 10
     content ""
     position relative
     display block
@@ -100,6 +102,10 @@ form, .test-container
   flex 2
   width 400px
   text-align left
+  position relative
+  padding-left 200px
+  transition-duration: duration
+
 
 input[type='text']
   display inline-block
@@ -143,3 +149,104 @@ input[type='submit']
 //   font-size 24px
 //   display block
 //   margin 0 auto
+
+border-size = 4px
+message-width = 200px
+message-height = 100px
+offset = 15px
+
+.messages
+  width 500px
+  overflow hidden
+  height 112%
+  position relative
+
+.message
+  position: absolute
+  width: message-width + (border-size * 2) + offset
+  top 110%
+  clear both
+  margin-bottom 60px
+  transition-duration duration; 
+
+  &.left
+    float: left
+
+  &.right
+    float: right
+    right 0
+
+  p
+    padding: 20px;
+
+  .card
+    position relative
+    width: message-width 
+    height: message-height
+
+  .bg-white
+    z-index 2
+
+  .bg-yellow 
+    top: offset;
+    left: offset 
+    z-index 1
+    position: relative;
+    position absolute
+
+  .arrow
+    position absolute
+    border: 25px solid;
+    border-color: black transparent transparent black;
+    width: 0;
+    height: 0;
+    bottom -(50 + (border-size))px
+    left 0
+    z-index 2
+    
+  .inner-arrow
+    border: 18px solid;
+    border-color: white transparent transparent white;
+    top -(25 - border-size)px
+    left -(25 - border-size)px
+    z-index 3
+
+  .bg-arrow
+    border-color: white transparent transparent white;
+    left: -21px;
+    top: -35px;
+
+  .main-arrow
+    left: 20px
+
+  &.right
+    .arrow
+      left auto
+      position absolute
+      border-color: black black transparent transparent ;
+      right 0
+      
+    .inner-arrow
+      border-color: white white transparent transparent;
+      right -(25 - border-size)px
+
+    .bg-arrow
+      border-color: white white transparent transparent;
+      right: -21px;
+
+    .main-arrow
+      left auto
+      right: 20px
+
+.bg-white
+  .bg-arrow, .inner-arrow
+    border-color: white transparent transparent white;
+
+.bg-yellow
+  .bg-arrow, .inner-arrow
+    border-color: accent-yellow transparent transparent accent-yellow;
+
+.right
+  .bg-yellow
+    .bg-arrow, .inner-arrow
+      border-color: accent-yellow accent-yellow transparent transparent;
