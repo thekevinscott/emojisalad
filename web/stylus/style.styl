@@ -3,6 +3,7 @@
 sans-font = 'Paytone One', 'Arial Black', Arial, sans-serif
 // sans-font = 'Sigmar One', 'Arial Black', Arial, sans-serif
 body-font = Inconsolata, Courier, 'Courier New', serif
+duration = 0.4s
 
 // bg-color = rgb(255,124,129)
 // dark-accent = rgb(255,95,95)
@@ -92,7 +93,6 @@ form
 .masthead
   height 400px
   display flex
-  // padding 40px
   text-align left    
 .title
   flex 1
@@ -110,16 +110,18 @@ form
   flex 1.8
   & > *
     width 90%
-.arrow
+.bg-arrow
   flex 0.2
   width 0
   height 0
   border-top 160px solid transparent
   border-bottom 160px solid transparent
   border-left 80px solid dark-accent
-
 .signup
   flex 1
+  position relative
+  padding-left 200px
+  transition-duration: duration
 
 input[type='text']
   padding 10px 0 13px 0
@@ -135,12 +137,6 @@ input[type='submit']
   text-transform uppercase
   &:focus
     border-color dark-accent
-
-// .explainer > *
-//   width 40%
-//   margin-left 30%
-//   margin-right 30%
-//   margin-bottom 20px
 
 .test-container
   height 250px
@@ -175,3 +171,104 @@ input[type='submit']
     top -194px
     left: 15px
     z-index 1
+
+border-size = 4px
+message-width = 200px
+message-height = 100px
+offset = 15px
+
+.messages
+  width 500px
+  overflow hidden
+  height 112%
+  position relative
+
+.message
+  position: absolute
+  width: message-width + (border-size * 2) + offset
+  top 110%
+  clear both
+  margin-bottom 60px
+  transition-duration duration; 
+
+  &.left
+    float: left
+
+  &.right
+    float: right
+    right 0
+
+  p
+    padding: 20px;
+
+  .card
+    position relative
+    width: message-width 
+    height: message-height
+
+  .card-white
+    z-index 2
+
+  .card-yellow 
+    top: offset;
+    left: offset 
+    z-index 1
+    position: relative;
+    position absolute
+
+  .arrow
+    position absolute
+    border: 25px solid;
+    border-color: black transparent transparent black;
+    width: 0;
+    height: 0;
+    bottom -(50 + (border-size))px
+    left 0
+    z-index 2
+    
+  .inner-arrow
+    border: 18px solid;
+    border-color: white transparent transparent white;
+    top -(25 - border-size)px
+    left -(25 - border-size)px
+    z-index 3
+
+  .bg-arrow
+    border-color: white transparent transparent white;
+    left: -21px;
+    top: -35px;
+
+  .main-arrow
+    left: 20px
+
+  &.right
+    .arrow
+      left auto
+      position absolute
+      border-color: black black transparent transparent ;
+      right 0
+      
+    .inner-arrow
+      border-color: white white transparent transparent;
+      right -(25 - border-size)px
+
+    .bg-arrow
+      border-color: white white transparent transparent;
+      right: -21px;
+
+    .main-arrow
+      left auto
+      right: 20px
+
+.bg-white
+  .bg-arrow, .inner-arrow
+    border-color: white transparent transparent white;
+
+.bg-yellow
+  .bg-arrow, .inner-arrow
+    border-color: accent-yellow transparent transparent accent-yellow;
+
+.right
+  .bg-yellow
+    .bg-arrow, .inner-arrow
+      border-color: accent-yellow accent-yellow transparent transparent;

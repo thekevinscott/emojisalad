@@ -102,7 +102,7 @@ form {
 .explainer > * {
   width: 90%;
 }
-.arrow {
+.bg-arrow {
   flex: 0.2;
   width: 0;
   height: 0;
@@ -112,6 +112,9 @@ form {
 }
 .signup {
   flex: 1;
+  position: relative;
+  padding-left: 200px;
+  transition-duration: 0.4s;
 }
 input[type='text'] {
   padding: 10px 0 13px 0;
@@ -172,4 +175,98 @@ input[type='submit']:focus {
   top: -194px;
   left: 15px;
   z-index: 1;
+}
+.messages {
+  width: 500px;
+  overflow: hidden;
+  height: 112%;
+  position: relative;
+}
+.message {
+  position: absolute;
+  width: 223px;
+  top: 110%;
+  clear: both;
+  margin-bottom: 60px;
+  transition-duration: 0.4s;
+}
+.message.left {
+  float: left;
+}
+.message.right {
+  float: right;
+  right: 0;
+}
+.message p {
+  padding: 20px;
+}
+.message .card {
+  position: relative;
+  width: 200px;
+  height: 100px;
+}
+.message .card-white {
+  z-index: 2;
+}
+.message .card-yellow {
+  top: 15px;
+  left: 15px;
+  z-index: 1;
+  position: relative;
+  position: absolute;
+}
+.message .arrow {
+  position: absolute;
+  border: 25px solid;
+  border-color: #000 transparent transparent #000;
+  width: 0;
+  height: 0;
+  bottom: -54px;
+  left: 0;
+  z-index: 2;
+}
+.message .inner-arrow {
+  border: 18px solid;
+  border-color: #fff transparent transparent #fff;
+  top: -21px;
+  left: -21px;
+  z-index: 3;
+}
+.message .bg-arrow {
+  border-color: #fff transparent transparent #fff;
+  left: -21px;
+  top: -35px;
+}
+.message .main-arrow {
+  left: 20px;
+}
+.message.right .arrow {
+  left: auto;
+  position: absolute;
+  border-color: #000 #000 transparent transparent;
+  right: 0;
+}
+.message.right .inner-arrow {
+  border-color: #fff #fff transparent transparent;
+  right: -21px;
+}
+.message.right .bg-arrow {
+  border-color: #fff #fff transparent transparent;
+  right: -21px;
+}
+.message.right .main-arrow {
+  left: auto;
+  right: 20px;
+}
+.bg-white .bg-arrow,
+.bg-white .inner-arrow {
+  border-color: #fff transparent transparent #fff;
+}
+.bg-yellow .bg-arrow,
+.bg-yellow .inner-arrow {
+  border-color: #ffd464 transparent transparent #ffd464;
+}
+.right .bg-yellow .bg-arrow,
+.right .bg-yellow .inner-arrow {
+  border-color: #ffd464 #ffd464 transparent transparent;
 }
