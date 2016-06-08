@@ -24,7 +24,7 @@ var messages = [
   },
   {
     message: 'Hey great job yo!',
-    message: '👾 🎉WAHOO 🕶 Roger Dodger wins the round! 🎉 The phrase was WOLF OF WALL STREET 👾 ',
+    message: '<i class="twa twa-space-invader"> 🎉WAHOO 🕶 Roger Dodger wins the round! 🎉 The phrase was WOLF OF WALL STREET 👾 ',
     position: 'left',
     time: 10000,
     typing_time: 0
