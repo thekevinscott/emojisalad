@@ -53,6 +53,7 @@ registry.ready(() => {
 
 // routes
 require('./api/routes/account')(app);
+require('./api/routes/dashboard')(app);
 require('./api/routes/logs')(app, io);
 //require('./api/routes/players')(app);
 //require('./api/routes/messages')(app);

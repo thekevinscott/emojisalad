@@ -1,9 +1,9 @@
 'use strict';
-var squel = require('squel');
-var db = require('db');
+const squel = require('squel');
+const db = require('db');
 module.exports = function(app) {
   app.get('/api/games', function(req, res) {
-    var query = squel
+    const query = squel
                 .select()
                 .from('games');
     db.query(query).then(function(rows) {
@@ -14,14 +14,14 @@ module.exports = function(app) {
   });
 
   app.get('/api/games/:game_id', function(req, res) {
-    var rounds = squel
+    const rounds = squel
                  .select()
                  .field('game_id')
                  .field('COUNT(1) as round_count')
                  .from('rounds')
                  .group('game_id');
 
-    var query = squel
+    const query = squel
         .select()
         .field('g.created')
         .field('s.state')
@@ -35,7 +35,7 @@ module.exports = function(app) {
         .where('g.id=?',req.params.game_id);
     db.query(query.toString()).then(function(rows) {
       if ( rows.length ) {
-        let game = {
+        const game = {
           id: req.params.game_id,
           state: rows[0].state,
           created: new Date(rows[0].created),
@@ -46,23 +46,7 @@ module.exports = function(app) {
             };
           })
         };
-        let getScores = squel
-                        .select()
-                        .from('game_scores')
-                        .where('game_id=?',game.id);
-                        console.log(getScores.toString());
-        db.query(getScores.toString()).then(function(rows) {
-          let scores = {};
-          rows.map(function(row) {
-            scores[row.key] = {
-              score: row.score,
-              updated: row.updated,
-              created: row.created
-            };
-          });
-          game.scores = scores;
-          res.json(game);
-        });
+        res.json(game);
       } else {
         res.json({});
       }
