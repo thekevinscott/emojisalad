@@ -33,14 +33,26 @@ export const Dashboard = React.createClass({
   },
   renderDashboard() {
     return (
-      <div className="row">
-        <div className="box">
-          <h2>{this.state.data.games}</h2>
-          <p>Games</p>
+      <div>
+        <div className="row">
+          <div className="box">
+            <h2>{this.state.data.games}</h2>
+            <p>Total Games</p>
+          </div>
+          <div className="box">
+            <h2>{this.state.data.users}</h2>
+            <p>Total Users</p>
+          </div>
+          <div className="box">
+            <h2>{this.state.data.rounds}</h2>
+            <p>Total Rounds</p>
+          </div>
         </div>
-        <div className="box">
-          <h2>{this.state.data.users}</h2>
-          <p>Users</p>
+        <div className="row">
+          <div className="box">
+            <h2>{this.state.data.average_players_in_game}</h2>
+            <p>Average number of players in a game</p>
+          </div>
         </div>
       </div>
     );
