@@ -4,23 +4,39 @@ import reqwest from 'reqwest';
 
 import { auth } from '../auth';
 
-var Link = Router.Link;
+const Link = Router.Link;
 
-export var Dashboard = React.createClass({
+export const Dashboard = React.createClass({
   statics: {
     willTransitionTo: function (transition, params, query) {
       auth.isLoggedIn(transition);
     }
   },
   render: function () {
-    console.log('redner dashboard 2');
     return (
       <div className="dashboard page">
-        <h1>This is a Dashboard page</h1>
-        <ul>
-          <li><Link to="games">Games</Link></li>
-          <li><Link to="users">Users</Link></li>
-        </ul>
+        <div className="row">
+          <div className="box">
+            <h2>62</h2>
+            <p>Active Games</p>
+          </div>
+          <div className="box">
+            <h2>82</h2>
+            <p>Active Users</p>
+          </div>
+        </div>
+        <div className="row">
+          <div className="box">
+            <div className="container">
+              <h2>82</h2>
+              <p>Total Games</p>
+            </div>
+          </div>
+          <div className="box">
+            <h2>82</h2>
+            <p>Total Users</p>
+          </div>
+        </div>
       </div>
     );
   }

@@ -172,3 +172,25 @@ iframe:last-child {
   text-decoration: none;
   color: #000;
 }
+.dashboard .row {
+  display: flex;
+}
+.box {
+  background: #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  flex: 1;
+  min-height: 120px;
+  text-align: center;
+  margin: 0 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.box h2 {
+  margin-top: 20px;
+  font-size: 48px;
+}
+.box:last-child {
+  margin-right: 0;
+}
