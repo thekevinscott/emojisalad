@@ -6,21 +6,38 @@ const passport = require('passport');
 const fetch = require('../../fetch');
 
 function getGames() {
-  return fetch('games', 'get').then(result => result.length);
+  const query = squel.select().from('games');
+  return db.query(query).then(result => result.length);
 }
+
 function getUsers() {
-  return fetch('users', 'get').then(result => result.length);
+  const query = squel.select().from('users');
+  return db.query(query).then(result => result.length);
 }
+
 function getRounds() {
-  return fetch('rounds', 'get').then(result => result.length);
+  const query = squel.select().from('rounds').where('created > DATE( DATE_SUB( NOW() , INTERVAL 1 DAY ) )');
+  return db.query(query).then(result => result.length);
 }
+
 function getAveragePlayersInGame() {
-  return fetch('games', 'get').then(result => {
-    const games = result.filter(game => game.players > 1);
-    const total_number_of_players = games.reduce((total, game) => {
-      return total + game.players.length;
+  const query = squel.select().from('players', 'p').left_join('games', 'g', 'g.id=p.game_id');
+  return db.query(query).then(result => {
+    const games_obj = result.reduce((obj, player) => {
+      if ( !obj[player.game_id] ) { obj[player.game_id] = []; }
+      obj[player.game_id].push(player);
+      return obj;
+    }, {});
+
+    const games = Object.keys(games_obj).map(game_id => {
+      return games_obj[game_id];
+    }).filter(game => game.length > 1);
+
+    const total_players = games.reduce((total, game) => {
+      return total + game.length;
     }, 0);
-    return (total_number_of_players / games.length || 0).toFixed(2);
+
+    return total_players / games.length;
   });
 }
 

@@ -45,7 +45,7 @@ export const Dashboard = React.createClass({
           </div>
           <div className="box">
             <h2>{this.state.data.rounds}</h2>
-            <p>Total Rounds</p>
+            <p>Total Rounds Today</p>
           </div>
         </div>
         <div className="row">
