@@ -37,7 +37,7 @@ function getAveragePlayersInGame() {
       return total + game.length;
     }, 0);
 
-    return total_players / games.length;
+    return Math.round(total_players / games.length * 100) / 100;
   });
 }
 

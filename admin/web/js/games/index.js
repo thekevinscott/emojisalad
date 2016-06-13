@@ -41,7 +41,7 @@ export const Game = React.createClass({
   url: function() {
     return `/api/games/${this.props.params.game_id}`;
   },
-  componentWillMount: function() {
+  getMessages: function() {
     reqwest({
       url: `/api/games/${this.props.params.game_id}/messages`,
       method: 'get'
@@ -59,6 +59,20 @@ export const Game = React.createClass({
         }, {}))
       });
     }.bind(this));
+  },
+  getScore: function() {
+    reqwest({
+      url: `/api/games/${this.props.params.game_id}/score`,
+      method: 'get'
+    }).then(function(score) {
+      this.setState({
+        score
+      });
+    }.bind(this));
+  },
+  componentWillMount: function() {
+    this.getMessages();
+    this.getScore();
   },
   render: function() {
     let content;
@@ -113,6 +127,42 @@ export const Game = React.createClass({
           </div>
         );
       }
+      let score_stats;
+      if (this.state.score) {
+        //score_stats = (
+          //<table className="score-stats">
+            //<thead><tr><td>Player</td><td>Wins</td></tr></thead>
+            //<tbody>
+              //{this.state.score.map(row => {
+                //return (
+                  //<tr>
+                    //<td>{row.player}</td>
+                    //<td>{row.wins}</td>
+                  //</tr>
+                //);
+              //})}
+            //</tbody>
+          //</table>
+        //);
+        score_stats = (
+          <table className="score-stats">
+            <tbody>
+              <tr>
+                <td >Player</td>
+                {this.state.score.map(row => (
+                  <td>{row.player}</td>
+                ))}
+              </tr>
+              <tr>
+                <td >Wins</td>
+                {this.state.score.map(row => (
+                  <td>{row.wins}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        );
+      }
       content = (
         <div className="game-container">
           <div className="stats">
@@ -121,6 +171,7 @@ export const Game = React.createClass({
               <p>Players: {this.state.data.players.length}</p>
             </div>
             {round_stats}
+            {score_stats}
           </div>
           <div className="messages">
             {phones}

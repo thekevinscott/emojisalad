@@ -79,6 +79,16 @@ table td textarea {
 .round-stats {
   padding-left: 20px;
 }
+.score-stats {
+  margin-left: 20px;
+  width: auto;
+}
+.score-stats thead {
+  font-weight: bold;
+}
+.score-stats tbody td:first-child {
+  font-weight: bold;
+}
 .game-stats {
   margin-bottom: 20px;
 }

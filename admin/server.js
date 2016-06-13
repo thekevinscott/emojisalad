@@ -55,11 +55,7 @@ registry.ready(() => {
 require('./api/routes/account')(app);
 require('./api/routes/dashboard')(app);
 require('./api/routes/logs')(app, io);
-//require('./api/routes/players')(app);
-//require('./api/routes/messages')(app);
-//require('./api/routes/games')(app);
-//require('./api/routes/scores')(app);
-//require('./api/routes/phrases')(app);
+require('./api/routes/games')(app, io);
 
 app.get('/api/games', (req, res) => {
   getFetch('games', 'get', res);
