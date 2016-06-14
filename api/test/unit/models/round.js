@@ -130,6 +130,10 @@ describe('Round Model', () => {
       return guess('SILENCE !@#$%^&*()-=_+~`,./?><\'";:[]{}|\ LAMBS', phrases['SILENCE OF THE LAMBS'] );
     });
 
+    it('should work regardless of spaces', () => {
+      return guess('SILENCEOFTHELAMBS', phrases['SILENCE OF THE LAMBS'] );
+    });
+
     it('should not pass for absurdly short phrases', () => {
       return guess('m', phrases['MAD MEN'], false);
     });

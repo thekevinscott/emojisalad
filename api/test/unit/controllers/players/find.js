@@ -11,7 +11,7 @@ const nickname = ''+Math.random();
 
 describe('Find', () => {
   before(() => {
-    game_number = 1;
+    game_number = 2;
     return post({ url: '/users', data: { from, nickname, protocol }}).then((res) => {
       user_id = res.body.id;
       const payload = { users: [{ id: user_id, to: game_number }] };
@@ -71,7 +71,7 @@ describe('Find', () => {
       });
     });
 
-    it('should return a single player', () => {
+    it.only('should return a single player', () => {
       return Player.find().then((players) => {
         const player = players[0];
         return get({ url: `/players/${player.id}` }).then((res) => {

@@ -80,6 +80,7 @@ const Round = {
     }).join(' ');
   },
   checkPhrase: (phrase, guess) => {
+    console.info('phrase and guess', phrase, guess);
     // check distance of phrase
     //const levenshtein_distance = levenshtein(phrase, guess);
     const distance = levenshtein(phrase, guess) / phrase.length;
@@ -93,9 +94,10 @@ const Round = {
       console.info('the round guessing on', round);
       const phrase = Round.parsePhrase(round.phrase);
       const guess = Round.parsePhrase(original_guess);
-      console.info('phrase and guess', phrase, guess);
 
       if ( Round.checkPhrase(phrase, guess) ) {
+        return true;
+      } else if ( Round.checkPhrase(round.phrase.split(' ').join('').toLowerCase(), guess) ) {
         return true;
       } else {
         console.info('round check phrase, failed, next check', autosuggest, guess);
@@ -365,6 +367,9 @@ const Round = {
     } else if ( params.game_ids ) {
       query = query
               .where('r.game_id IN ?',params.game_ids);
+    } else if ( params.created ) {
+      query = query
+              .where('r.created > ?',params.created);
     }
 
     console.info('round find query', query.toString());
