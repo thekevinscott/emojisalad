@@ -1,6 +1,15 @@
-@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700|Sigmar+One|Luckiest+Guy|Alegreya+Sans+SC:900|Paytone+One|Fascinate')
+@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700')
+@import url('https://fonts.googleapis.com/css?family=Paytone+One|Candal')
+// @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:900|Alegreya+Sans:900|Bungee|Candal|Changa+One|Changa:800|Fredoka+One|Galindo|Podkova:700|Slackey')
+@import url('https://fonts.googleapis.com/css?family=Fredoka+One|Luckiest+Guy|Galindo|Slackey|Fascinate|Sigmar+One')
 
-sans-font = 'Paytone One', 'Arial Black', Arial, sans-serif
+// sans-font = 'Paytone One', 'Arial Black', Arial, sans-serif
+sans-font = 'Candal', 'Arial Black', Arial, sans-serif
+// sans-font = 'Fredoka One', 'Arial Black', Arial, sans-serif
+// sans-font = 'Luckiest Guy', 'Arial Black', Arial, sans-serif
+// sans-font = 'Galindo', 'Arial Black', Arial, sans-serif
+// sans-font = 'Slackey', 'Arial Black', Arial, sans-serif
+// sans-font = 'Fascinate', 'Arial Black', Arial, sans-serif
 // sans-font = 'Sigmar One', 'Arial Black', Arial, sans-serif
 body-font = Inconsolata, Courier, 'Courier New', serif
 duration = 0.4s
@@ -16,7 +25,8 @@ bg-color = rgb(255,135,130)
 dark-accent = rgb(250,105,100)
 light-accent = rgb(250,105,100,.2)
 accent-yellow = rgb(255,212,100)
-dark-grey = rgb(151,151,149)
+// dark-grey = rgb(151,151,149)
+dark-grey = #67a9cf
 
 // global styles
 
@@ -26,25 +36,24 @@ body
   color blk-color
 
 h1
-  font 5rem/5rem sans-font
+  font 8rem/8rem sans-font
   text-transform uppercase
   letter-spacing 2px
   color white
-  -webkit-text-stroke 1px blk-color
-  text-shadow 7px 7px 0 #000, -3px -3px 0 #000,  3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000
-  margin-top 30px
+  text-shadow 8px 8px 0 #000, -4px -4px 0 #000,  4px -4px 0 #000, -4px 4px 0 #000, 4px 4px 0 #000
+  margin-top 150px
 
 h2
-  font 400 1.5rem/1.5rem body-font
-  padding-bottom 20px
-  color white
-
-h3
   padding-top 30px
   padding-bottom 20px
   font 900 1.75rem/1.75rem sans-font
   text-transform uppercase
   letter-spacing 2px
+  color white
+
+h3
+  font 400 1.5rem/1.5rem body-font
+  padding-bottom 20px
   color white
 
 p, ul
@@ -73,7 +82,7 @@ form
   color white
 .bg-white
   background-color white
-  h3  
+  h2
     color dark-accent    
 .bg-gradient
   background -webkit-linear-gradient(left, dark-accent, dark-accent 40%, white 41%)

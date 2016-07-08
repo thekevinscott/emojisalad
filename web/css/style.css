@@ -1,29 +1,30 @@
-@import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700|Sigmar+One|Luckiest+Guy|Alegreya+Sans+SC:900|Paytone+One|Fascinate");
+@import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700");
+@import url("https://fonts.googleapis.com/css?family=Paytone+One|Candal");
+@import url("https://fonts.googleapis.com/css?family=Fredoka+One|Luckiest+Guy|Galindo|Slackey|Fascinate|Sigmar+One");
 body {
   background-color: #ff8782;
   text-align: left;
   color: #333331;
 }
 h1 {
-  font: 5rem/5rem 'Paytone One', 'Arial Black', Arial, sans-serif;
+  font: 8rem/8rem 'Candal', 'Arial Black', Arial, sans-serif;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: #fff;
-  -webkit-text-stroke: 1px #333331;
-  text-shadow: 7px 7px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000;
-  margin-top: 30px;
+  text-shadow: 8px 8px 0 #000, -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 4px 4px 0 #000;
+  margin-top: 150px;
 }
 h2 {
-  font: 400 1.5rem/1.5rem Inconsolata, Courier, 'Courier New', serif;
+  padding-top: 30px;
   padding-bottom: 20px;
+  font: 900 1.75rem/1.75rem 'Candal', 'Arial Black', Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   color: #fff;
 }
 h3 {
-  padding-top: 30px;
+  font: 400 1.5rem/1.5rem Inconsolata, Courier, 'Courier New', serif;
   padding-bottom: 20px;
-  font: 900 1.75rem/1.75rem 'Paytone One', 'Arial Black', Arial, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 2px;
   color: #fff;
 }
 p,
@@ -51,13 +52,13 @@ form {
   background-color: #fa6964;
 }
 .bg-dark-grey {
-  background-color: #979795;
+  background-color: #67a9cf;
   color: #fff;
 }
 .bg-white {
   background-color: #fff;
 }
-.bg-white h3 {
+.bg-white h2 {
   color: #fa6964;
 }
 .bg-gradient {
@@ -148,7 +149,7 @@ input[type='text']:focus {
 input[type='submit'] {
   display: inline-block;
   padding: 15px 10px 17px 10px;
-  font: 400 1.125rem/1.125rem 'Paytone One', 'Arial Black', Arial, sans-serif;
+  font: 400 1.125rem/1.125rem 'Candal', 'Arial Black', Arial, sans-serif;
   text-align: center;
   text-transform: uppercase;
 }
