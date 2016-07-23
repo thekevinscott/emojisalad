@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {
-  //AppRegistry,
   StyleSheet,
-  //Text,
-  View
+  View,
 } from 'react-native';
+
+import AppProvider from '../../redux/AppProvider';
 
 import RegisterContents from '../Register';
 const {
@@ -23,9 +23,11 @@ const styles = StyleSheet.create({
 class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Register />
-      </View>
+      <AppProvider>
+        <View style={styles.container}>
+          <Register />
+        </View>
+      </AppProvider>
     );
   }
 }
