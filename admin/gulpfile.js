@@ -58,8 +58,3 @@ gulp.task('watch', () => {
 });
 
 gulp.task('default', ['js', 'style', 'webserver', 'watch']);
-
-
-// gulp.task('default', ['stylus','babel','react']);
-
-

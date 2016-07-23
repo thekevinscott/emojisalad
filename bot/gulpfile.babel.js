@@ -139,6 +139,7 @@ gulp.task('server', () => {
     PORT = util.env.PORT;
   }
 
+  console.info('the protocols', PROTOCOLS);
   const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
   return shared.server({
     PROTOCOLS: PROTOCOLS,
