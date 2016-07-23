@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 class App extends Component {
   render() {
     return (
-      <AppProvider>
+      <AppProvider store={this.props.store}>
         <View style={styles.container}>
           <Register />
         </View>

@@ -6,15 +6,18 @@ import {
 } from 'redux';
 
 import promiseMiddleware from 'redux-promise-middleware';
+import storageMiddleware from './middlewares/storageMiddleware';
 import devTools from 'remote-redux-devtools';
 
 import reducers from './reducer';
 
 export default function configureStore(initialState = {}) {
+  console.log('initialState', initialState);
   const reducer = combineReducers(reducers);
 
   const middleware = applyMiddleware(
-    promiseMiddleware()
+    promiseMiddleware(),
+    storageMiddleware
   );
 
   const enhancer = compose(

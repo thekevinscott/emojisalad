@@ -1,6 +1,4 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
  * @flow
  */
 
@@ -65,7 +63,7 @@ class Register extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.error && nextProps.error !== this.props.error) {
-      //this.textInput.focus();
+      this.textInput.focus();
     }
   }
 

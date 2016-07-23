@@ -1,6 +1,7 @@
 import App from './App';
+import reducer from './reducer';
 
-const fo = {
+export default {
   App,
+  reducer,
 };
-export default fo;
