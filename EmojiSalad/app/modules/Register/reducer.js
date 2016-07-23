@@ -13,13 +13,27 @@ const initialState = {
 };
 
 export default typeToReducer({
-  [SUBMIT_CLAIM]: (state) => {
-    console.log('submit claim!');
-    return {
-      ...state,
-      error: '',
-      claiming: true,
-    };
+  [SUBMIT_CLAIM]: {
+    PENDING: (state) => {
+      return {
+        ...state,
+        error: '',
+        claiming: true,
+      };
+    },
+    FULFILLED: (state, action) => {
+      return {
+        ...state,
+        claiming: false,
+      };
+    },
+    REJECTED: (state, action) => {
+      return {
+        ...state,
+        error: action.payload.message,
+        claiming: false,
+      };
+    },
   },
   [UPDATE_TEXT]: (state, action) => {
     console.log('update text');

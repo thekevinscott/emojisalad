@@ -49,11 +49,9 @@ function mapDispatchToProps(dispatch, props) {
         return dispatch(updateText(text));
       },
       submitClaim: () => {
-        setTimeout(() => {
-          dispatch(updateError('Error communicating with the server'));
-        }, 1000);
-
-        return dispatch(submitClaim(props.text));
+        return dispatch(submitClaim(props.text)).catch(err => {
+          // swallow error
+        });
       },
     },
   };

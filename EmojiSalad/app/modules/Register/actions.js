@@ -1,3 +1,5 @@
+import Api from '../../utils/Api';
+
 import {
   SUBMIT_CLAIM,
   UPDATE_TEXT,
@@ -8,6 +10,7 @@ export function submitClaim(text) {
   return {
     type: SUBMIT_CLAIM,
     text,
+    payload: Api.fetch('claim'),
   };
 }
 
