@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 
 import { Provider } from 'react-redux';
 
-import store from './store';
+import configureStore from './configureStore';
+
+console.log('wtf', configureStore);
+
+const store = configureStore();
 
 export default class AppProvider extends Component {
   render() {

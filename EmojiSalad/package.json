@@ -16,6 +16,7 @@
     "react-native-button": "^1.6.0",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
+    "remote-redux-devtools": "^0.3.4",
     "type-to-reducer": "^1.0.1"
   }
 }

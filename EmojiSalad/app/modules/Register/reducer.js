@@ -3,7 +3,6 @@ import typeToReducer from 'type-to-reducer';
 import {
   SUBMIT_CLAIM,
   UPDATE_TEXT,
-  UPDATE_ERROR,
 } from './types';
 
 const initialState = {
@@ -22,12 +21,14 @@ export default typeToReducer({
       };
     },
     FULFILLED: (state, action) => {
+      console.log('wussup', action.payload);
       return {
         ...state,
         claiming: false,
       };
     },
     REJECTED: (state, action) => {
+      console.log('rejected');
       return {
         ...state,
         error: action.payload.message,
@@ -36,19 +37,10 @@ export default typeToReducer({
     },
   },
   [UPDATE_TEXT]: (state, action) => {
-    console.log('update text');
     return {
       ...state,
       error: '',
       text: action.text,
-    };
-  },
-  [UPDATE_ERROR]: (state, action) => {
-    console.log('update error', action);
-    return {
-      ...state,
-      claiming: false,
-      error: action.error,
     };
   },
 }, initialState);
