@@ -1,5 +1,6 @@
 import App from './App';
 
-export default {
+const fo = {
   App,
-}
+};
+export default fo;
