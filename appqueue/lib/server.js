@@ -3,7 +3,7 @@
 
 const server = require('http').createServer();
 const WebSocketServer = require('ws').Server;
-const wss = new WebSocketServer({ server: server });
+const wss = new WebSocketServer({ server });
 const WebSocket = require('ws');
 const url = require('url');
 const _ = require('lodash');
@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 const service = require('microservice-registry');
 const config = require('config/app');
 
-const endpoint = "http://localhost:" + config.port + "/";
+const endpoint = `http://localhost:${config.port}/`;
 
 app.use(pmx.expressErrorHandler());
 
@@ -27,40 +27,40 @@ const name = require('config/app').name || 'queue';
 
 const api = _.assign({
   send: {
-    endpoint: endpoint + 'send',
+    endpoint: `${endpoint}send`,
     method: 'POST',
-    description: 'An endpoint for sending messages through a particular queue'
+    description: 'An endpoint for sending messages through a particular queue',
   },
   sent: {
-    endpoint: endpoint + 'sent',
+    endpoint: `${endpoint}sent`,
     method: 'GET',
-    description: 'An endpoint for getting messages from a particular queue'
+    description: 'An endpoint for getting messages from a particular queue',
   },
   received: {
-    endpoint: endpoint + 'received',
+    endpoint: `${endpoint}received`,
     method: 'GET',
-    description: 'An endpoint for getting all received messages from a particular timestamp'
+    description: 'An endpoint for getting all received messages from a particular timestamp',
   },
   senders: {
     getID: {
       endpoint: `${endpoint}senders/:sender`,
-      method: 'GET'
+      method: 'GET',
     },
     get: {
       endpoint: `${endpoint}senders`,
-      method: 'GET'
-    }
-  }
+      method: 'GET',
+    },
+  },
 });
 
 service.register(name, {
-  api: api
+  api,
 });
 
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-})); 
+  extended: true,
+}));
 
 server.on('request', app);
 server.listen(config.port, () => {
@@ -74,7 +74,12 @@ app.get('/senders/:sender', require('./senders').getSenderID);
 app.get('/', (req, res) => {
   res.send('app queue root');
 });
+app.get('/test', (req, res) => {
+  res.json({ foo: 'bar' });
+});
+app.post('/claim', require('./claim'));
 
+/*
 wss.on('connection', function connection(ws) {
   var location = url.parse(ws.upgradeReq.url, true);
   // you might use location.query.access_token to authenticate or share sessions
@@ -87,6 +92,7 @@ wss.on('connection', function connection(ws) {
 
   ws.send('something');
 });
+*/
 
 // send saves it; if we have a connection, send it along
-app.post('/send', require('./send')(ws));
+//app.post('/send', require('./send')(ws));

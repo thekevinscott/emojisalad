@@ -18,7 +18,7 @@ const app = require('config/app');
 gulp.task('server', (opts) => {
   const PORT = util.env.PORT || app.port;
   const LOG_LEVEL = util.env.LOG_LEVEL || app.log_level;
-  return shared.server({ LOG_LEVEL: LOG_LEVEL, PORT: PORT })();
+  return shared.server({ LOG_LEVEL, PORT })();
 });
 
 /**
@@ -31,18 +31,18 @@ gulp.task('test', (cb) => {
   .pipe(mocha({
     timeout: 10000,
     slow: 500,
-    bail: true
+    bail: true,
   }))
-  .on('error', function(data) {
+  .on('error', (data) => {
     console.error(data.message);
     process.exit(1);
   })
-  .once('end', function() {
+  .once('end', () => {
     process.exit();
   });
 });
 
 gulp.task('default', () => {
   console.log('* server - Spins up the server with default arguments');
-  console.log('* test - Run tests for SMS Queue');
+  console.log('* test - Run tests for App Queue');
 });
