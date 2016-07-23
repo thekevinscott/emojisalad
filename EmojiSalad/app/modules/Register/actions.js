@@ -9,7 +9,12 @@ export function submitClaim(text) {
   return {
     type: SUBMIT_CLAIM,
     text,
-    payload: Api.fetch('claim'),
+    payload: Api.fetch('claim', {
+      method: 'post',
+      body: {
+        text,
+      },
+    }),
   };
 }
 

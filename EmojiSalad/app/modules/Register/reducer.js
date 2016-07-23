@@ -28,7 +28,7 @@ export default typeToReducer({
       };
     },
     REJECTED: (state, action) => {
-      console.log('rejected');
+      console.log('rejected', action.payload);
       return {
         ...state,
         error: action.payload.message,

@@ -39,7 +39,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch, props) {
+function mapDispatchToProps(dispatch) {
   return {
     actions: {
       updateError: (error) => {
@@ -48,8 +48,8 @@ function mapDispatchToProps(dispatch, props) {
       updateText: (text) => {
         return dispatch(updateText(text));
       },
-      submitClaim: () => {
-        return dispatch(submitClaim(props.text)).catch(err => {
+      submitClaim: (text) => {
+        return dispatch(submitClaim(text)).catch(err => {
           // swallow error
         });
       },
@@ -58,10 +58,19 @@ function mapDispatchToProps(dispatch, props) {
 }
 
 class Register extends Component {
+  constructor(props) {
+    super(props);
+    this.submitClaim = this.submitClaim.bind(this);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.error && nextProps.error !== this.props.error) {
-      this.textInput.focus();
+      //this.textInput.focus();
     }
+  }
+
+  submitClaim() {
+    return this.props.actions.submitClaim(this.props.text);
   }
 
   render() {
@@ -82,7 +91,7 @@ class Register extends Component {
           blurOnSubmit={true}
           enablesReturnKeyAutomatically={true}
           keyboardType="phone-pad"
-          onSubmitEditing={this.props.actions.submitClaim}
+          onSubmitEditing={this.submitClaim}
           returnKeyType="go"
           onChangeText={this.props.actions.updateText}
           editable={!this.props.claiming}
@@ -95,7 +104,7 @@ class Register extends Component {
         </Text>
         <Button
           style={styles.button}
-          onPress={this.props.actions.submitClaim}
+          onPress={this.submitClaim}
           disabled={this.props.claiming || !this.props.text}
         >
           Claim your number

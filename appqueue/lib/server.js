@@ -1,6 +1,6 @@
 'use strict';
 
-
+const registry = require('microservice-registry');
 const server = require('http').createServer();
 const WebSocketServer = require('ws').Server;
 const wss = new WebSocketServer({ server });
@@ -53,20 +53,10 @@ const api = _.assign({
   },
 });
 
-service.register(name, {
-  api,
-});
-
-app.use(bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
   extended: true,
 }));
-
-server.on('request', app);
-server.listen(config.port, () => {
-  console.info(config.name, config.port);
-  service.ready();
-});
 
 app.get('/received', require('./received'));
 app.get('/senders', require('./senders'));
@@ -96,3 +86,22 @@ wss.on('connection', function connection(ws) {
 
 // send saves it; if we have a connection, send it along
 //app.post('/send', require('./send')(ws));
+//
+
+registry.register(name, {
+  api,
+  services: [
+    'sms',
+  ],
+});
+
+console.info('Waiting for SMS queue');
+registry.ready(() => {
+  console.info(`Starting up EmojinaryFriend App Queue: ${config.port}`);
+  server.on('request', app);
+  server.listen(config.port, () => {
+    console.info(config.name, config.port);
+    service.ready();
+  });
+});
+
