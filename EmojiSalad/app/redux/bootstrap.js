@@ -15,6 +15,10 @@ const {
   Loading,
 } = AppContents;
 
+const style = {
+  flex: 1,
+};
+
 class EmojiSalad extends Component {
   componentWillMount() {
     this.setState({
@@ -49,7 +53,7 @@ class EmojiSalad extends Component {
 
   render() {
     return (
-      <View>
+      <View style={style}>
         {this.renderApp()}
       </View>
     );

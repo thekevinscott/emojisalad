@@ -1,6 +1,8 @@
 import Api from '../../utils/Api';
 import { Actions } from 'react-native-router-flux';
 
+import device from '../../utils/device';
+
 import {
   SUBMIT_CLAIM,
   UPDATE_TEXT,
@@ -14,6 +16,7 @@ export function submitClaim(text) {
       method: 'post',
       body: {
         text,
+        device,
       },
     }).then(response => {
       Actions.games();

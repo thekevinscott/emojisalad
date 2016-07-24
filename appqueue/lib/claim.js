@@ -52,8 +52,26 @@ const updateUser = (user) => {
   });
 };
 
+function saveUser(user, device) {
+  const stringifiedDevice = JSON.stringify(device);
+
+  const insertQuery = squel
+  .insert()
+  .into('users')
+  .setFields({
+    number: user.from,
+    user_id: user.id,
+    device: stringifiedDevice,
+    created: squel.fval('NOW(3)'),
+  })
+  .onDupUpdate('device', stringifiedDevice);
+
+  return db.query(insertQuery.toString());
+}
+
 function route(req, res) {
   const text = req.body.text;
+  const device = req.body.device;
 
   return parsePhone(text).then(phone => {
     if (!phone) {
@@ -71,6 +89,7 @@ function route(req, res) {
       }
       return updateUser(response.shift()).then(user => {
         res.json(user);
+        saveUser(user, device);
       });
     });
   }).catch(err => {
