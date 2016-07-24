@@ -1,0 +1,25 @@
+{
+  "name": "EmojiSalad",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "react-native start"
+  },
+  "dependencies": {
+    "axios": "^0.13.1",
+    "eslint": "^3.1.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.11.1",
+    "eslint-plugin-react": "^5.2.2",
+    "react": "15.2.1",
+    "react-native": "^0.30.0",
+    "react-native-button": "^1.6.0",
+    "react-native-device-info": "^0.9.3",
+    "react-native-gifted-messenger": "^0.1.4",
+    "react-native-router-flux": "^3.32.0",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "remote-redux-devtools": "^0.3.4",
+    "type-to-reducer": "^1.0.1"
+  }
+}

@@ -9,13 +9,13 @@ function spawn(command, args, stdout, stderr, close) {
   // Run `gulp` command
   const child = childSpawn(command, args);
 
-  if ( stdout ) {
+  if (stdout) {
     child.stdout.on('data', (data) => {
       stdout(data, command, args);
     });
   }
 
-  if ( stderr ) {
+  if (stderr) {
     child.stderr.on('data', (data) => {
       stderr(data, command, args);
     });
@@ -27,7 +27,7 @@ function spawn(command, args, stdout, stderr, close) {
       //console.log(pid);
       child.on('close', (code, signal) => {
         //console.log('IVE BEEN CLOSED', code, signal, pid, args);
-        if ( close ) {
+        if (close) {
           close(code, signal);
         }
         resolve();
@@ -41,25 +41,25 @@ function spawn(command, args, stdout, stderr, close) {
 }
 
 function exec(command, callbacks) {
-  if ( ! callbacks ) {
+  if (! callbacks) {
     callbacks = {};
   }
   return new Promise((resolve, reject) => {
     //console.log('starting', command);
     return childExec(command, (error, stdout, stderr) => {
       //console.log('back, for', command);
-      if ( error ) {
-        if ( callbacks.error ) {
+      if (error) {
+        if (callbacks.error) {
           callbacks.error(error);
         }
         reject(error);
-      } else if ( stderr && stderr.indexOf('Warning') === -1 ) {
-        if ( callbacks.stderr ) {
+      } else if (stderr && stderr.indexOf('Warning') === -1) {
+        if (callbacks.stderr) {
           callbacks.stderr(stderr);
         }
         reject(stderr);
       } else {
-        if ( callbacks.stdout ) {
+        if (callbacks.stdout) {
           callbacks.stdout(stdout);
         }
         resolve(stdout);
@@ -70,26 +70,26 @@ function exec(command, callbacks) {
 
 function getConnectionString(config) {
   return [
-    "-u",
+    '-u',
     config.user,
-    "-p'" + config.password+"'",
-    "-h",
+    `-p'${config.password}'`,
+    '-h',
     config.host,
-    config.database
-  ].join(" ");
+    config.database,
+  ].join(' ');
 }
 
 function pullDB(config, tmp, tables) {
   const file = 'db_backup.sql';
   const zippedFile = 'db_backup.sql.gz';
 
-  if ( ! tables ) {
+  if (! tables) {
     tables = [];
   }
 
-  const parsed_tables = tables.reduce((obj, table) => {
+  const parsedTables = tables.reduce((obj, table) => {
     console.log('table', table);
-    if ( table.data === false ) {
+    if (table.data === false) {
       obj['tables_without_data'].push(table.table);
     } else {
       if ( table.table ) {
@@ -100,8 +100,8 @@ function pullDB(config, tmp, tables) {
     }
     return obj;
   }, { tables_without_data: [], tables_with_data: [] });
-  const tables_without_data = parsed_tables['tables_without_data'];
-  const tables_with_data = parsed_tables['tables_with_data'];
+  const tables_without_data = parsedTables['tables_without_data'];
+  const tables_with_data = parsedTables['tables_with_data'];
 
   console.log('tables with data', tables_with_data);
   console.log('tables without data', tables_without_data);
@@ -177,13 +177,16 @@ const server = (options) => {
 
     let cmd = 'node';
     if (util.env.WATCH) {
+      console.log('we should be watching');
       cmd = 'supervisor';
+    } else {
+      console.log('we should not be watching');
     }
 
     const args = [
       `ENVIRONMENT=${ENVIRONMENT}`,
       `DEBUG=${DEBUG}`,
-      `PORT=${PORT}`
+      `PORT=${PORT}`,
     ].concat(Object.keys(options).map((key) => {
       return `${key.toUpperCase()}=${options[key]}`;
     }));
