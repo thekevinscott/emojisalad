@@ -1,5 +1,5 @@
 [{
-  "name"      : "app",
+  "name"      : "appqueue",
   "script"    : "./index.js",
   "env": {
     "LOG_LEVEL": "info",
