@@ -9,8 +9,7 @@ const EMOJI = '😀';
 
 describe('Inviting', () => {
   describe('Valid numbers', () => {
-    const players = getPlayers(2);
-    const inviter = players[0];
+    const inviter = getPlayers(1)[0];
     before(() => {
       return signup(inviter);
     });

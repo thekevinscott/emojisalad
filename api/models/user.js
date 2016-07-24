@@ -7,6 +7,17 @@ const Emoji = require('models/emoji');
 let Player;
 const default_maximum_games = 4;
 
+function arrayToObj(arr, key, callback) {
+  return arr.reduce((obj, el) => {
+    if ( ! obj[el[key]] ) {
+      obj[el[key]] = [];
+    }
+
+    obj[el[key]].push(callback(el));
+    return obj;
+  }, {});
+}
+
 const User = {
   create: (params) => {
     console.info('API: User create', params);
@@ -27,7 +38,7 @@ const User = {
     return Emoji.getRandom().then((result) => {
       console.info('create user 2', result);
       const avatar = result.emoji;
-      console.info('create user 3');
+      console.info('create user 3', params);
       const number = params.from;
       console.info('parsed the number', number);
       const query = squel
@@ -42,8 +53,8 @@ const User = {
                       protocol: params.protocol,
                       maximum_games: default_maximum_games
                     });
-      return db.create(query).then((result) => {
-        return User.findOne(result.insertId).then((user) => {
+      return db.create(query).then((queryResult) => {
+        return User.findOne(queryResult.insertId).then((user) => {
           return {
             ...user,
             to: params.to
@@ -80,9 +91,7 @@ const User = {
 
     return db.query(query).then((rows) => {
       if ( rows && rows.changedRows ) {
-        return User.findOne(user.id).then((user) => {
-          return user;
-        });
+        return User.findOne(user.id);
       } else {
         return null;
       }
@@ -169,8 +178,6 @@ const User = {
             user.players = players_by_id[user.id] || [];
             return user;
           });
-        }).then((users) => {
-          return users;
         });
       } else {
         return [];
@@ -221,16 +228,5 @@ const User = {
     //return obj;
   //}, {});
 //}
-
-function arrayToObj(arr, key, callback) {
-  return arr.reduce((obj, el) => {
-    if ( ! obj[el[key]] ) {
-      obj[el[key]] = [];
-    }
-
-    obj[el[key]].push(callback(el));
-    return obj;
-  }, {});
-}
 
 module.exports = User;
