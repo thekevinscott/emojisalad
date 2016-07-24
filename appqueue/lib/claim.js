@@ -106,6 +106,7 @@ function route(req, res) {
 }
 
 module.exports = function claim(req, res) {
+  console.info('this is the claim route');
   try {
     return route(req, res);
   } catch (err) {
