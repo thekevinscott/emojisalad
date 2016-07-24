@@ -15,6 +15,7 @@ const handleError = (res, msg) => {
 };
 
 const getGames = (userId) => {
+  console.log('get games', userId);
   const service = registry.get('api');
 
   const payload = {
