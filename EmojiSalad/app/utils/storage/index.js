@@ -3,7 +3,12 @@ const {
   AsyncStorage,
 } = React;
 
-const KEY = '@EmojiSalad';
+import {
+  KEY,
+} from './config';
+
+// TODO: Fix this import
+import getStore2 from './getStore';
 
 let storing = false;
 let nextStore = null;
@@ -26,11 +31,7 @@ export function setStore(item) {
   }
 }
 
-export function getStore() {
-  return AsyncStorage.getItem(KEY).then(savedStorage => {
-    return JSON.parse(savedStorage || '{}');
-  });
-}
-
 import reducers from './reducers';
 export const WHITELISTED_REDUCERS = reducers;
+
+export const getStore = getStore2;
