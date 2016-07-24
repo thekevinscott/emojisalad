@@ -3,7 +3,7 @@ const TIMEOUT = 5000;
 export default function newFetch(url, options = {}) {
   const parsedOptions = {
     ...options,
-    method: options.method.toUpperCase(),
+    method: (options.method || 'get').toUpperCase(),
     body: (options.body) ? JSON.stringify(options.body) : null,
     headers: {
       Accept: 'application/json',
@@ -13,6 +13,7 @@ export default function newFetch(url, options = {}) {
   };
 
   const getErrorMessage = (response) => {
+    console.log('response status', response.status);
     if (response.status === 404) {
       console.log(`Error: URL not found: ${url}`);
     } else if (response.status === 500) {
@@ -42,13 +43,17 @@ export default function newFetch(url, options = {}) {
   };
 
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       console.log('error: timeout', url);
       reject(new Error('fetch timed out'));
     }, TIMEOUT);
 
     fetch(url, parsedOptions)
     .then(handleErrors)
+    .then(response => {
+      clearTimeout(timeout);
+      return response;
+    })
     .then(resolve, reject);
   });
 }

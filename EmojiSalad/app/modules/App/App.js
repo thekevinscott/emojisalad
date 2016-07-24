@@ -1,32 +1,25 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+//import {
+  //View,
+  //Text,
+  //Navigator,
+  //TouchableHighlight,
+//} from 'react-native';
 
 import AppProvider from '../../redux/AppProvider';
-
-import RegisterContents from '../Register';
-const {
-  Register,
-} = RegisterContents;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
-});
+import AppRouter from './AppRouter';
 
 class App extends Component {
   render() {
+    const {
+      app,
+    } = this.props.store.getState();
+
+    const me = ((app || {}).data || {}).me;
+
     return (
       <AppProvider store={this.props.store}>
-        <View style={styles.container}>
-          <Register />
-        </View>
+        <AppRouter me={me} />
       </AppProvider>
     );
   }

@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from 'react-native-button';
 import {
-  StyleSheet,
   Text,
   TextInput,
   View,

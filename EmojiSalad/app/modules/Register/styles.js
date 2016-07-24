@@ -8,6 +8,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    padding: 0,
+    margin: 0,
   },
   welcome: {
     fontSize: 20,

@@ -1,4 +1,5 @@
 import Api from '../../utils/Api';
+import { Actions } from 'react-native-router-flux';
 
 import {
   SUBMIT_CLAIM,
@@ -14,6 +15,9 @@ export function submitClaim(text) {
       body: {
         text,
       },
+    }).then(response => {
+      Actions.games();
+      return response;
     }),
   };
 }

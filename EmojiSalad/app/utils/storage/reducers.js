@@ -1,6 +1,8 @@
 const WHITELISTED_REDUCERS = [
-  //'register',
   'app',
+  'games',
+  'users',
+  'players',
 ];
 
 export default WHITELISTED_REDUCERS;

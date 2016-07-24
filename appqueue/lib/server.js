@@ -68,6 +68,7 @@ app.get('/test', (req, res) => {
   res.json({ foo: 'bar' });
 });
 app.post('/claim', require('./claim'));
+app.get('/games', require('./games'));
 
 /*
 wss.on('connection', function connection(ws) {
@@ -91,11 +92,12 @@ wss.on('connection', function connection(ws) {
 registry.register(name, {
   api,
   services: [
+    'api',
     'sms',
   ],
 });
 
-console.info('Waiting for SMS queue');
+console.info('Waiting for SMS queue and API');
 registry.ready(() => {
   console.info(`Starting up EmojinaryFriend App Queue: ${config.port}`);
   server.on('request', app);

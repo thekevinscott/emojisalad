@@ -297,6 +297,12 @@ const Game = {
               .field('p.id','player_id')
               .left_join('players', 'p', 'p.game_id=g.id')
               .where('p.id IN ?',params.player_ids);
+    } else if (params.user_id) {
+      query = query
+              .field('p.id','player_id')
+              .left_join('players', 'p', 'p.game_id=g.id')
+              .left_join('users', 'u', 'u.id=p.user_id')
+              .where('u.id=?',params.user_id);
     }
 
     const getByGameID = (arr) => {
@@ -311,7 +317,7 @@ const Game = {
       }, {});
     };
 
-    //console.info('api query', query.toString());
+    console.info('api query', query.toString());
 
     return db.query(query).then((games) => {
       //console.info('return from games');

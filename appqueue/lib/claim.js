@@ -56,11 +56,14 @@ function route(req, res) {
   const text = req.body.text;
 
   return parsePhone(text).then(phone => {
+    if (!phone) {
+      return handleError(res, 'Invalid phone number');
+    }
+
     const query = squel
     .select()
     .from('users')
     .where('`from`=?', phone);
-
 
     return api.query(query).then(response => {
       if (response.length === 0) {

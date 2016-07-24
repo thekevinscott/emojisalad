@@ -10,7 +10,6 @@ let nextStore = null;
 
 export function setStore(item) {
   if (!storing) {
-    console.log('setting store', item);
     storing = true;
     AsyncStorage.setItem(KEY, item).then(result => {
       storing = false;
