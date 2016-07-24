@@ -1,3 +1,8 @@
+import {
+  //compose,
+  combineReducers,
+} from 'redux';
+
 import RegisterContents from '../modules/Register';
 const {
   reducer: register,
@@ -28,8 +33,8 @@ const mapReducers = (reducers) => {
 };
 
 export default {
-  register,
-  app,
-  ...mapReducers(gamesReducers),
-  ...mapReducers(gameReducers),
+  ui: combineReducers({
+    register,
+    app,
+  }),
 };

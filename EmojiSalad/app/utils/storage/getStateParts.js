@@ -1,7 +1,7 @@
 import {
   setStore,
   WHITELISTED_REDUCERS,
-} from './storage';
+} from './';
 
 function getComponentStatePart(state, topKey) {
   // topKey is a top level key on the store, so either ui or data

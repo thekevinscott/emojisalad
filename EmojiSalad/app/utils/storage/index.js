@@ -28,9 +28,14 @@ export function setStore(item) {
 
 export function getStore() {
   return AsyncStorage.getItem(KEY).then(savedStorage => {
-    return JSON.parse(savedStorage || '{}');
+    return {};
+    //return JSON.parse(savedStorage || '{}');
   });
 }
 
 import reducers from './reducers';
 export const WHITELISTED_REDUCERS = reducers;
+
+// TODO Fix this import / output
+import getStateParts2 from './getStateParts';
+export const getStateParts = getStateParts2;
