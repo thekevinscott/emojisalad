@@ -1,9 +1,13 @@
-const WHITELISTED_REDUCERS = [
-  'app',
-  'games',
-  'users',
-  'players',
-  'messages',
-];
+const WHITELISTED_REDUCERS = {
+  ui: [
+    'App',
+  ],
+  data: [
+    'games',
+    'users',
+    'players',
+    'messages',
+  ],
+};
 
 export default WHITELISTED_REDUCERS;
