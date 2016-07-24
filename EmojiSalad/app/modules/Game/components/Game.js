@@ -12,15 +12,19 @@ import {
 
 import GiftedMessenger from 'react-native-gifted-messenger';
 
-import * as styles from './styles';
+import * as styles from '../styles';
 
 import {
   fetchMessages,
-} from './actions';
+} from '../actions';
 
 import {
   selectMessages,
-} from './selectors';
+} from '../selectors';
+
+import {
+  selectMe,
+} from '../../App/selectors';
 
 function mapStateToProps(state, ownProps) {
   const game = ownProps.game;
@@ -28,6 +32,7 @@ function mapStateToProps(state, ownProps) {
   return {
     game,
     messages: selectMessages(state, game.id),
+    me: selectMe(state),
   };
 }
 

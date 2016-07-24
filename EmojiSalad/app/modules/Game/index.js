@@ -1,4 +1,4 @@
-import Game from './Game';
+import Game from './components/Game';
 import reducer from './reducer';
 import * as actions from './actions';
 import * as types from './types';
