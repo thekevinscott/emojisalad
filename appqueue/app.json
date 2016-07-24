@@ -3,7 +3,7 @@
   "script"    : "./index.js",
   "env": {
     "LOG_LEVEL": "info",
-    "PORT": "5011",
+    "PORT": "5012",
     "ENVIRONMENT": "production"
   }
 }]
