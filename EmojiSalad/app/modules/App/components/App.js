@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 //import {
   //View,
   //Text,
@@ -6,16 +7,16 @@ import React, { Component } from 'react';
   //TouchableHighlight,
 //} from 'react-native';
 
-import AppProvider from '../../redux/AppProvider';
+import AppProvider from '../../../redux/AppProvider';
 import AppRouter from './AppRouter';
+import {
+  selectMe,
+} from '../selectors';
 
-class App extends Component {
+export default class App extends Component {
   render() {
-    const {
-      app,
-    } = this.props.store.getState();
-
-    const me = ((app || {}).data || {}).me;
+    const state = this.props.store.getState();
+    const me = selectMe(state);
 
     return (
       <AppProvider store={this.props.store}>
@@ -24,5 +25,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;

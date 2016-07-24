@@ -4,8 +4,9 @@ import {
 } from './';
 
 function getComponentStatePart(state, topKey) {
+  const reducers = WHITELISTED_REDUCERS[topKey];
   // topKey is a top level key on the store, so either ui or data
-  return WHITELISTED_REDUCERS[topKey].map((obj, key) => ({
+  return reducers.reduce((obj, key) => ({
     ...obj,
     [key]: state[topKey][key],
   }), {});

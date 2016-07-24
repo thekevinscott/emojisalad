@@ -1,9 +1,12 @@
 import {
+  API_PORT,
+  API_HOST,
+} from './config';
+
+import {
   Alert,
 } from 'react-native';
 
-const API_HOST = 'localhost';
-const API_PORT = '5008';
 const ws = new WebSocket(`ws://${API_HOST}:${API_PORT}/`);
 
 let isOpen = false;

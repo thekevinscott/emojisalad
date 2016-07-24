@@ -14,25 +14,21 @@ import {
 import styles, {
   inputStyle,
   errorStyle,
-} from './styles';
+} from '../styles';
 
 import {
   submitClaim,
   updateText,
   updateError,
-} from './actions';
+} from '../actions';
+
+import {
+  selectRegisterSlice,
+} from '../selectors';
 
 function mapStateToProps(state) {
-  const {
-    text,
-    claiming,
-    error,
-  } = state.register;
-
   return {
-    text,
-    claiming,
-    error,
+    ...selectRegisterSlice(state),
   };
 }
 

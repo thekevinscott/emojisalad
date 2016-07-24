@@ -1,40 +1,30 @@
 import {
-  //compose,
   combineReducers,
 } from 'redux';
 
-import RegisterContents from '../modules/Register';
-const {
-  reducer: register,
-} = RegisterContents;
+import Register from '../modules/Register/reducer';
+import App from '../modules/App/reducer';
+import Games from '../modules/Games/reducer';
+import Game from '../modules/Game/reducer';
 
-import AppContents from '../modules/App';
-const {
-  reducer: app,
-} = AppContents;
+import games from '../reducers/games';
+import messages from '../reducers/messages';
+import players from '../reducers/players';
+import users from '../reducers/users';
+import me from '../reducers/me';
 
-import * as GamesContents from '../modules/Games';
-const {
-  reducers: gamesReducersOrig,
-} = GamesContents.default;
-const gamesReducers = gamesReducersOrig.default;
-
-import * as GameContents from '../modules/Game';
-const {
-  reducers: gameReducersOrig,
-} = GameContents.default;
-const gameReducers = gameReducersOrig.default;
-
-const mapReducers = (reducers) => {
-  return Object.keys(reducers).reduce((obj, key) => ({
-    ...obj,
-    [key]: reducers[key],
-  }), {});
-};
-
-export default {
+export default combineReducers({
   ui: combineReducers({
-    register,
-    app,
+    Register,
+    App,
+    Games,
+    Game,
   }),
-};
+  data: combineReducers({
+    games,
+    messages,
+    players,
+    users,
+    me,
+  }),
+});

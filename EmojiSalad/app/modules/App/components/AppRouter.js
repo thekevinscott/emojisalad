@@ -7,41 +7,42 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
-import * as styles from './styles';
+import * as styles from '../styles';
 
 import { Router, Scene } from 'react-native-router-flux';
 
-import RegisterContents from '../Register';
+import RegisterContents from '../../Register';
 const {
   Register,
 } = RegisterContents;
 
-import GamesContents from '../Games';
+import GamesContents from '../../Games';
 const {
   Games,
 } = GamesContents;
 
-import GameContents from '../Game';
+import GameContents from '../../Game';
 const {
   Game,
 } = GameContents;
 
 export default class AppRouter extends Component {
   render() {
+    const iExist = !!this.props.me.id;
     return (
       <Router>
         <Scene key="root">
           <Scene
             key="register"
             component={Register}
-            initial={this.props.me.id === null}
+            initial={!iExist}
             navigationBarStyle={{
             }}
           />
           <Scene
             key="games"
             component={Games}
-            initial={this.props.me.id !== null}
+            initial={iExist}
             title="Games"
 
             me={this.props.me}

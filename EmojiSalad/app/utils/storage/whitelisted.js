@@ -3,6 +3,7 @@ const WHITELISTED_REDUCERS = {
     'App',
   ],
   data: [
+    'me',
     'games',
     'users',
     'players',

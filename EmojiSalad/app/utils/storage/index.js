@@ -28,12 +28,11 @@ export function setStore(item) {
 
 export function getStore() {
   return AsyncStorage.getItem(KEY).then(savedStorage => {
-    return {};
-    //return JSON.parse(savedStorage || '{}');
+    return JSON.parse(savedStorage || '{}');
   });
 }
 
-import reducers from './reducers';
+import reducers from './whitelisted';
 export const WHITELISTED_REDUCERS = reducers;
 
 // TODO Fix this import / output

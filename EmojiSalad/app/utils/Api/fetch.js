@@ -1,4 +1,6 @@
-const TIMEOUT = 5000;
+import {
+  NETWORK_TIMEOUT,
+} from './config';
 
 export default function newFetch(url, options = {}) {
   const parsedOptions = {
@@ -46,7 +48,7 @@ export default function newFetch(url, options = {}) {
     const timeout = setTimeout(() => {
       console.log('error: timeout', url);
       reject(new Error('fetch timed out'));
-    }, TIMEOUT);
+    }, NETWORK_TIMEOUT);
 
     fetch(url, parsedOptions)
     .then(handleErrors)

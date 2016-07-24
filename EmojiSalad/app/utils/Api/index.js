@@ -1,5 +1,7 @@
-const API_HOST = 'localhost';
-const API_PORT = '5008';
+import {
+  API_PORT,
+  API_HOST,
+} from './config';
 
 import fetch from './fetch';
 import {

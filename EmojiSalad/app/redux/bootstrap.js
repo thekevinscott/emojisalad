@@ -23,4 +23,6 @@ getStore().then(initialState => {
   }
 
   AppRegistry.registerComponent('EmojiSalad', () => EmojiSalad);
+}).catch(err => {
+  console.error('There was an error with the app', err);
 });
