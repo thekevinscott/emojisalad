@@ -1,5 +1,5 @@
 module.exports = {
-  port: process.env.PORT || 5011,
-  name: 'app',
+  port: process.env.PORT || 5012,
+  name: 'appqueue',
   log_level: 'info',
 };
