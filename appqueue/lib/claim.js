@@ -44,7 +44,7 @@ const updateUser = (user) => {
   })
   .where('id=?', user.id);
 
-  return api.query(updateQuery).then(response => {
+  return api.query(updateQuery).then(() => {
     // update was successful
     return Object.assign({}, user, {
       protocol: 'appqueue',
@@ -70,10 +70,13 @@ function saveUser(user, device) {
 }
 
 function route(req, res) {
+  console.info('begin to claim');
   const text = req.body.text;
   const device = req.body.device;
+  console.info(text, device);
 
   return parsePhone(text).then(phone => {
+    console.info('phone parsed', phone);
     if (!phone) {
       return handleError(res, 'Invalid phone number');
     }
@@ -83,11 +86,15 @@ function route(req, res) {
     .from('users')
     .where('`from`=?', phone);
 
+    console.info(query.toString());
     return api.query(query).then(response => {
+      console.info('users back', response);
       if (response.length === 0) {
         return handleError(res, `No users found for ${text}`);
       }
+
       return updateUser(response.shift()).then(user => {
+        console.info('user upated');
         res.json(user);
         saveUser(user, device);
       });
