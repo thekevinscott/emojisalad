@@ -16,38 +16,59 @@ const {
 
 /*
 getStore().then(initialState => {
-  console.log('got initial state', initialState);
   const store = configureStore(initialState);
   class EmojiSalad extends Component {
     render() {
       return (
-        <View>
-          <Text>Foo</Text>
-        </View>
+        <App store={store} />
       );
     }
   }
 
   AppRegistry.registerComponent('EmojiSalad', () => EmojiSalad);
-}).catch(err => {
-  console.error('There was an error with the app', err);
 });
 */
 
 class EmojiSalad extends Component {
   componentWillMount() {
-    getStore().then(initialState => {
+    this.setState({
+      store: null,
+    });
+
+    this.getStore();
+  }
+
+  getStore() {
+    return getStore().then(initialState => {
       this.setState({
-        foo: 'bar',
+        store: configureStore(initialState),
       });
+    }).catch(err => {
+      this.setState({
+        store: configureStore({}),
+      });
+      console.log('Error getting initial state', err);
     });
   }
 
+  renderApp() {
+    if (this.state.store) {
+      return (
+        <App store={this.state.store} />
+      );
+    }
+
+    return (
+      <View style={{ paddingTop: 40 }}>
+        <Text>Loading</Text>
+      </View>
+    );
+  }
+
   render() {
-    console.log('STATE', this.state);
     return (
       <View>
-        <Text>Foo</Text>
+        {this.renderApp()}
       </View>
     );
   }
