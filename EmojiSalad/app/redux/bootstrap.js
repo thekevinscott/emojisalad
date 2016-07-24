@@ -12,22 +12,8 @@ import configureStore from './configureStore';
 import AppContents from '../modules/App';
 const {
   App,
+  Loading,
 } = AppContents;
-
-/*
-getStore().then(initialState => {
-  const store = configureStore(initialState);
-  class EmojiSalad extends Component {
-    render() {
-      return (
-        <App store={store} />
-      );
-    }
-  }
-
-  AppRegistry.registerComponent('EmojiSalad', () => EmojiSalad);
-});
-*/
 
 class EmojiSalad extends Component {
   componentWillMount() {
@@ -58,11 +44,7 @@ class EmojiSalad extends Component {
       );
     }
 
-    return (
-      <View style={{ paddingTop: 40 }}>
-        <Text>Loading</Text>
-      </View>
-    );
+    return (<Loading />);
   }
 
   render() {
