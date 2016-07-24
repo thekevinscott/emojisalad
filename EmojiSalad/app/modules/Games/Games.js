@@ -19,6 +19,10 @@ import {
 } from './actions';
 
 import {
+  fetchMessages,
+} from '../Game/actions';
+
+import {
   selectGames,
 } from './selectors';
 
@@ -34,6 +38,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       fetchGames: () => {
         return dispatch(fetchGames(ownProps.me));
       },
+      fetchMessages: (userId) => {
+        return dispatch(fetchMessages(userId));
+      },
     },
   };
 }
@@ -45,10 +52,11 @@ const ds = new ListView.DataSource({
 class Games extends Component {
   componentWillMount() {
     this.props.actions.fetchGames();
+    this.props.actions.fetchMessages(this.props.me.id);
   }
 
   _renderRow(game, sectionId, rowId, highlightRow) {
-    const players = game.players.map(player => player.nickname).join(', ');
+    const players = game.players.map(player => `${player.avatar} ${player.nickname}`).join(', ');
 
     return (
       <TouchableHighlight

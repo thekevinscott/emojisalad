@@ -3,6 +3,7 @@ const WHITELISTED_REDUCERS = [
   'games',
   'users',
   'players',
+  'messages',
 ];
 
 export default WHITELISTED_REDUCERS;

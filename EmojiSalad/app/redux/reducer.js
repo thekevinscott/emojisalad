@@ -14,11 +14,22 @@ const {
 } = GamesContents.default;
 const gamesReducers = gamesReducersOrig.default;
 
+import * as GameContents from '../modules/Game';
+const {
+  reducers: gameReducersOrig,
+} = GameContents.default;
+const gameReducers = gameReducersOrig.default;
+
+const mapReducers = (reducers) => {
+  return Object.keys(reducers).reduce((obj, key) => ({
+    ...obj,
+    [key]: reducers[key],
+  }), {});
+};
+
 export default {
   register,
   app,
-  ...Object.keys(gamesReducers).reduce((obj, key) => ({
-    ...obj,
-    [key]: gamesReducers[key],
-  }), {}),
+  ...mapReducers(gamesReducers),
+  ...mapReducers(gameReducers),
 };

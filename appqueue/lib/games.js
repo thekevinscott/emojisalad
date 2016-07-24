@@ -25,9 +25,7 @@ const getGames = (userId) => {
     },
   };
 
-  console.log('1', payload);
   return request(payload).then(response => {
-    console.log('2', response.body);
     if (! response || ! response.body) {
       throw response;
     }
@@ -45,7 +43,6 @@ function route(req, res) {
   }
 
   return getGames(userId).then(games => {
-    console.log('games', games);
     res.json(games);
   }).catch(err => {
     console.error('err', err);

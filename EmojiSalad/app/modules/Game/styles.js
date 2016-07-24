@@ -1,5 +1,6 @@
 export const container = {
   paddingTop: 64,
+  backgroundColor: '#CCC',
 };
 
 export const row = {
@@ -13,5 +14,5 @@ export const rowText = {
 
 export const rowSeparator = (adjacentRowHighlighted) => ({
   height: adjacentRowHighlighted ? 4 : 1,
-  backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+  backgroundColor: adjacentRowHighlighted ? '#AAA' : '#333',
 });

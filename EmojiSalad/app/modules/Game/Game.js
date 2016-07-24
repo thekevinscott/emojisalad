@@ -10,34 +10,71 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
+import GiftedMessenger from 'react-native-gifted-messenger';
+
 import * as styles from './styles';
 
-//import {
-//} from './actions';
+import {
+  fetchMessages,
+} from './actions';
 
-function mapStateToProps(state) {
-  //const {
-  //} = state.games;
+import {
+  selectMessages,
+} from './selectors';
 
-  return {};
+function mapStateToProps(state, ownProps) {
+  const game = ownProps.game;
+
+  return {
+    game,
+    messages: selectMessages(state, game.id),
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: {},
+    actions: {
+      fetchMessages: (userId) => {
+        return dispatch(fetchMessages(userId));
+      },
+    },
   };
 }
 
 class Game extends Component {
+  componentWillMount() {
+    this.props.actions.fetchMessages(this.props.me.id);
+  }
+
   render() {
     const {
       game,
     } = this.props;
+    //console.log('this props', this.props.messages);
     return (
-      <View style={{ marginTop: 200 }}>
-        <Text>
-          This is game: {game.id}
-        </Text>
+      <View
+        style={styles.container}
+      >
+        <GiftedMessenger
+          styles={{
+            bubbleRight: {
+              marginLeft: 70,
+              backgroundColor: '#007aff',
+            },
+          }}
+
+          autoFocus={false}
+          messages={this.props.messages.map(message => ({
+            text: message.body,
+            uniqueId: message.id,
+            name: 'React-Bot',
+            image: (message.type === 'received') ? null : {
+              uri: 'https://facebook.github.io/react/img/logo_og.png',
+            },
+            position: (message.type === 'received') ? 'right' : 'left',
+          }))}
+          parseText={true}
+        />
       </View>
     );
   }

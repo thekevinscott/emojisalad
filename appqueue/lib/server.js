@@ -18,11 +18,6 @@ const endpoint = `http://localhost:${config.port}/`;
 
 app.use(pmx.expressErrorHandler());
 
-console.info('endpoint for fb queue', endpoint);
-
-const receive = require('./receive');
-
-
 const name = require('config/app').name || 'queue';
 
 const api = _.assign({
@@ -58,32 +53,47 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
+const receive = require('./receive');
+
 app.get('/received', require('./received'));
 app.get('/senders', require('./senders'));
 app.get('/senders/:sender', require('./senders').getSenderID);
 app.get('/', (req, res) => {
   res.send('app queue root');
 });
-app.get('/test', (req, res) => {
-  res.json({ foo: 'bar' });
-});
 app.post('/claim', require('./claim'));
 app.get('/games', require('./games'));
 
-/*
-wss.on('connection', function connection(ws) {
-  var location = url.parse(ws.upgradeReq.url, true);
+const getMessages = require('../utils/getMessages');
+wss.on('connection', (ws) => {
+  const wsSend = (payload) => {
+    ws.send(JSON.stringify(payload));
+  };
+  const location = url.parse(ws.upgradeReq.url, true);
   // you might use location.query.access_token to authenticate or share sessions
   // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 
-  ws.on('message', function incoming(message) {
-    //console.log('received', JSON.parse(message));
-    receive(message);
+  ws.on('message', message => {
+    const payload = JSON.parse(message);
+    console.log('clients', wss.clients.length);
+    switch (payload.type) {
+    case 'FETCH_MESSAGES':
+      [
+        'received',
+        'sent',
+      ].forEach(type => {
+        getMessages(payload.userId, type).then(messages => {
+          wsSend({
+            type: 'FETCH_MESSAGES_FULFILLED',
+            payload: messages,
+          });
+        });
+      });
+      break;
+    default: break;
+    }
   });
-
-  ws.send('something');
 });
-*/
 
 // send saves it; if we have a connection, send it along
 //app.post('/send', require('./send')(ws));
@@ -101,6 +111,7 @@ console.info('Waiting for SMS queue and API');
 registry.ready(() => {
   console.info(`Starting up EmojinaryFriend App Queue: ${config.port}`);
   server.on('request', app);
+
   server.listen(config.port, () => {
     console.info(config.name, config.port);
     service.ready();
