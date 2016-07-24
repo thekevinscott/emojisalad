@@ -3,7 +3,12 @@ const {
   AsyncStorage,
 } = React;
 
-const KEY = '@EmojiSalad';
+import {
+  KEY,
+} from './config';
+
+// TODO: Fix this import
+import getStore2 from './getStore';
 
 let storing = false;
 let nextStore = null;
@@ -26,15 +31,11 @@ export function setStore(item) {
   }
 }
 
-export function getStore() {
-  return AsyncStorage.getItem(KEY).then(savedStorage => {
-    return JSON.parse(savedStorage || '{}');
-  });
-}
-
 import reducers from './whitelisted';
 export const WHITELISTED_REDUCERS = reducers;
 
 // TODO Fix this import / output
 import getStateParts2 from './getStateParts';
 export const getStateParts = getStateParts2;
+
+export const getStore = getStore2;

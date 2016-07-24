@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {
   AppRegistry,
+  View,
+  Text,
 } from 'react-native';
 import {
   getStore,
@@ -12,12 +14,16 @@ const {
   App,
 } = AppContents;
 
+/*
 getStore().then(initialState => {
+  console.log('got initial state', initialState);
   const store = configureStore(initialState);
   class EmojiSalad extends Component {
     render() {
       return (
-        <App store={store} />
+        <View>
+          <Text>Foo</Text>
+        </View>
       );
     }
   }
@@ -26,3 +32,25 @@ getStore().then(initialState => {
 }).catch(err => {
   console.error('There was an error with the app', err);
 });
+*/
+
+class EmojiSalad extends Component {
+  componentWillMount() {
+    getStore().then(initialState => {
+      this.setState({
+        foo: 'bar',
+      });
+    });
+  }
+
+  render() {
+    console.log('STATE', this.state);
+    return (
+      <View>
+        <Text>Foo</Text>
+      </View>
+    );
+  }
+}
+
+AppRegistry.registerComponent('EmojiSalad', () => EmojiSalad);
