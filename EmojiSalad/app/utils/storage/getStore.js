@@ -9,8 +9,8 @@ import {
 
 export default function getStore() {
   return AsyncStorage.getItem(KEY).then(savedStorage => {
-    return {};
-    //return JSON.parse(savedStorage || '{}');
+    //return {};
+    return JSON.parse(savedStorage || '{}');
   });
 }
 
