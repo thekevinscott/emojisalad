@@ -28,10 +28,10 @@ export default typeToReducer({
       };
     },
     REJECTED: (state, action) => {
-      //console.log('rejected', action.payload);
+      console.log('rejected', action.data.message);
       return {
         ...state,
-        error: action.payload.message,
+        error: action.data.message,
         claiming: false,
       };
     },

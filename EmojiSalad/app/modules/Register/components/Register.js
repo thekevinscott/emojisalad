@@ -48,9 +48,7 @@ function mapDispatchToProps(dispatch) {
         return dispatch(updateText(text));
       },
       submitClaim: (text) => {
-        return dispatch(submitClaim(text)).catch(err => {
-          // swallow error
-        });
+        return dispatch(submitClaim(text));
       },
       goToGames: () => {
         return goToGames();

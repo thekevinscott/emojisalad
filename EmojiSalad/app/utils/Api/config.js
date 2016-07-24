@@ -1,5 +1,5 @@
 export const NETWORK_TIMEOUT = 5000;
-const ENVIRONMENT = 'production';
+const ENVIRONMENT = 'development';
 
 function getAPI(environment) {
   if (environment === 'production') {

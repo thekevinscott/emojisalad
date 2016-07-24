@@ -7,16 +7,45 @@ import {
   Alert,
 } from 'react-native';
 
+import {
+  SUBMIT_CLAIM,
+} from '../../modules/Register/types';
+
 const ws = new WebSocket(`ws://${API_HOST}:${API_PORT}/`);
 
 let isOpen = false;
 const messages = [];
 
-export function socketSend(payload) {
+// TODO: How to keep this up to date with the server?
+const TYPES = {
+  [SUBMIT_CLAIM]: 'CLAIM',
+  [`${SUBMIT_CLAIM}_REJECTED`]: 'CLAIM_REJECTED',
+};
+const API_TYPES = Object.keys(TYPES).reduce((obj, key) => {
+  const val = TYPES[key];
+  return Object.assign({}, obj, {
+    [val]: key,
+  });
+}, {});
+
+const getType = (type) => {
+  return TYPES[type] || type;
+};
+
+const toType = (type) => {
+  return API_TYPES[type] || type;
+};
+
+export function sendMessage(type, payload) {
   console.log('socket sending time');
   if (isOpen) {
-    console.log('send the socket');
-    ws.send(JSON.stringify(payload));
+    console.log('send the socket', payload);
+    const packet = JSON.stringify({
+      type: getType(type),
+      payload,
+    });
+    console.log(packet);
+    ws.send(packet);
   } else {
     console.log('queue payload for later');
     messages.push(payload);
@@ -27,7 +56,7 @@ function sendAnyMessages() {
   console.log('send ', messages.length, 'messages');
   while (messages.length > 0) {
     const message = messages.shift();
-    socketSend(message);
+    sendMessage(message);
   }
 }
 
@@ -56,15 +85,22 @@ ws.onclose = (e) => {
 export function configureWebsocket(store) {
   console.log('configure websocket');
   ws.onmessage = (e) => {
-    const data = JSON.parse(e.data);
-    const payload = data.payload;
-    if (!data.type) {
-      console.log('no type for payload', Object.keys(data));
-    } else {
-      store.dispatch({
-        type: data.type,
-        payload,
-      });
+    try {
+      console.log('got a message back', e);
+      const payload = JSON.parse(e.data);
+      console.log('data', payload);
+      const data = JSON.parse(payload.data);
+      const type = payload.type;
+      if (!type) {
+        console.log('no type for payload', Object.keys(payload));
+      } else {
+        store.dispatch({
+          type: toType(type),
+          data,
+        });
+      }
+    } catch (err) {
+      console.error('payload could not be parsed', e.data, err);
     }
   };
 }

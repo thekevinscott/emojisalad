@@ -10,16 +10,13 @@ import {
 } from './types';
 
 export function submitClaim(text) {
+  console.log('1');
   return {
     type: SUBMIT_CLAIM,
-    text,
-    payload: Api.fetch('claim', {
-      method: 'post',
-      body: {
-        text,
-        device,
-      },
-    }),
+    payload: {
+      text,
+      device,
+    },
   };
 }
 

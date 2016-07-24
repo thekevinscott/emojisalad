@@ -1,29 +1,24 @@
+import Api from '../../utils/Api';
+
 export default function websocketMiddleware({ dispatch, getState }) {
   return next => action => {
-    return next(action);
-    /*
+    //return next(action);
     const {
-      socket,
+      payload,
       type,
       ...rest,
     } = action;
 
-    if (!socket) {
+    console.log('2');
+    if (!payload) {
       return next(action);
     }
+    console.log('3');
 
-    const PENDING = `${type}_PENDING`;
-    const FULFILLED = `${type}_FULFILLED`;
-    const REJECTED = `${type}_REJECTED`;
+    Api.sendMessage(type, payload);
 
+    console.log('4');
     // continue on through the middleware stack
-    next({ ...rest, type: PENDING });
-
-    return promise().then(response => {
-      next({ ...rest, response, type: FULFILLED });
-    }).catch(error => {
-      next({ ...rest, error, type: REJECTED });
-    });
-    */
+    return next({ ...rest, type });
   };
 }

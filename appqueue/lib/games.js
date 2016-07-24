@@ -44,6 +44,7 @@ function route(req, res) {
   }
 
   return getGames(userId).then(games => {
+    console.info('games', games);
     res.json(games);
   }).catch(err => {
     console.error('err', err);

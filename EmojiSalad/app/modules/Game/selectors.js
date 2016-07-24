@@ -27,4 +27,5 @@ export function selectMessages(state, gameId) {
   ].sort((a, b) => {
     return new Date(a.timestamp) - new Date(b.timestamp);
   });
+  //}).slice(0, 10);
 }

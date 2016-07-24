@@ -4,7 +4,7 @@ const registry = require('microservice-registry');
 const server = require('http').createServer();
 const WebSocketServer = require('ws').Server;
 const wss = new WebSocketServer({ server });
-const WebSocket = require('ws');
+// const WebSocket = require('ws');
 const url = require('url');
 const _ = require('lodash');
 const pmx = require('pmx');
@@ -67,34 +67,22 @@ app.get('/test', (req, res) => {
   res.json({ foo: 'bar' });
 });
 
+const routes = require('../routes');
+
 const getMessages = require('../utils/getMessages');
 wss.on('connection', (ws) => {
   const wsSend = (payload) => {
-    ws.send(JSON.stringify(payload));
+    const parsedPayload = JSON.stringify(payload);
+    console.log('parsed payload', parsedPayload);
+    ws.send(parsedPayload);
   };
   const location = url.parse(ws.upgradeReq.url, true);
   // you might use location.query.access_token to authenticate or share sessions
   // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 
   ws.on('message', message => {
-    const payload = JSON.parse(message);
     console.log('clients', wss.clients.length);
-    switch (payload.type) {
-    case 'FETCH_MESSAGES':
-      [
-        'received',
-        'sent',
-      ].forEach(type => {
-        getMessages(payload.userId, type).then(messages => {
-          wsSend({
-            type: 'FETCH_MESSAGES_FULFILLED',
-            payload: messages,
-          });
-        });
-      });
-      break;
-    default: break;
-    }
+    routes(message).then(wsSend).catch(wsSend);
   });
 });
 
