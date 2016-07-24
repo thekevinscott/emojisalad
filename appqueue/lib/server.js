@@ -63,6 +63,9 @@ app.get('/', (req, res) => {
 });
 app.post('/claim', require('./claim'));
 app.get('/games', require('./games'));
+app.get('/test', (req, res) => {
+  res.json({ foo: 'bar' });
+});
 
 const getMessages = require('../utils/getMessages');
 wss.on('connection', (ws) => {
