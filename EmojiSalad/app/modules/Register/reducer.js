@@ -21,14 +21,14 @@ export default typeToReducer({
       };
     },
     FULFILLED: (state, action) => {
-      console.log('wussup', action.payload);
+      //console.log('wussup', action.payload);
       return {
         ...state,
         claiming: false,
       };
     },
     REJECTED: (state, action) => {
-      console.log('rejected', action.payload);
+      //console.log('rejected', action.payload);
       return {
         ...state,
         error: action.payload.message,

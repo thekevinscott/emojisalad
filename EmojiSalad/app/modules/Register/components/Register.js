@@ -20,15 +20,21 @@ import {
   submitClaim,
   updateText,
   updateError,
+  goToGames,
 } from '../actions';
 
 import {
   selectRegisterSlice,
 } from '../selectors';
 
+import {
+  selectMe,
+} from '../../App/selectors';
+
 function mapStateToProps(state) {
   return {
     ...selectRegisterSlice(state),
+    me: selectMe(state),
   };
 }
 
@@ -46,6 +52,9 @@ function mapDispatchToProps(dispatch) {
           // swallow error
         });
       },
+      goToGames: () => {
+        return goToGames();
+      },
     },
   };
 }
@@ -59,6 +68,10 @@ class Register extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.error && nextProps.error !== this.props.error) {
       this.textInput.focus();
+    }
+
+    if (nextProps.me && nextProps.me.id) {
+      this.props.actions.goToGames();
     }
   }
 

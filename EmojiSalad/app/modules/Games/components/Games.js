@@ -26,17 +26,22 @@ import {
   selectGames,
 } from '../selectors';
 
+import {
+  selectMe,
+} from '../../App/selectors';
+
 function mapStateToProps(state) {
   return {
     games: selectGames(state),
+    me: selectMe(state),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     actions: {
-      fetchGames: () => {
-        return dispatch(fetchGames(ownProps.me));
+      fetchGames: (userId) => {
+        return dispatch(fetchGames(userId));
       },
       fetchMessages: (userId) => {
         return dispatch(fetchMessages(userId));
@@ -51,7 +56,7 @@ const ds = new ListView.DataSource({
 
 class Games extends Component {
   componentWillMount() {
-    this.props.actions.fetchGames();
+    this.props.actions.fetchGames(this.props.me.id);
     this.props.actions.fetchMessages(this.props.me.id);
   }
 

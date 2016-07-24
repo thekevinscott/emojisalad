@@ -44,8 +44,6 @@ export default class AppRouter extends Component {
             component={Games}
             initial={iExist}
             title="Games"
-
-            me={this.props.me}
           />
           <Scene
             key="game"
@@ -55,8 +53,6 @@ export default class AppRouter extends Component {
             onLeft={() => {
               Actions.games();
             }}
-
-            me={this.props.me}
           />
         </Scene>
       </Router>

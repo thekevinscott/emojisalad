@@ -1,2 +1,3 @@
 export const SUBMIT_CLAIM = 'SUBMIT_CLAIM';
 export const UPDATE_TEXT = 'UPDATE_TEXT';
+export const TRANSITION_TO_GAMES = 'TRANSITION_TO_GAMES';
