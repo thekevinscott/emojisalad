@@ -12,19 +12,19 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
-import * as styles from './styles';
+import * as styles from '../styles';
 
 import {
   fetchGames,
-} from './actions';
+} from '../actions';
 
 import {
   fetchMessages,
-} from '../Game/actions';
+} from '../../Game/actions';
 
 import {
   selectGames,
-} from './selectors';
+} from '../selectors';
 
 function mapStateToProps(state) {
   return {
