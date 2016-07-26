@@ -9,15 +9,12 @@ export default function websocketMiddleware({ dispatch, getState }) {
       ...rest,
     } = action;
 
-    console.log('2');
     if (!payload) {
       return next(action);
     }
-    console.log('3');
 
     Api.sendMessage(type, payload);
 
-    console.log('4');
     // continue on through the middleware stack
     return next({ ...rest, type });
   };
