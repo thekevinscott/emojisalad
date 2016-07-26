@@ -1,17 +1,10 @@
-const registry = require('microservice-registry');
-const squel = require('squel').useFlavour('mysql');
-const db = require('db');
+import registry from 'microservice-registry';
 
-const parsePhone = require('../utils/parsePhone');
-const getUsers = require('../utils/getUsers');
+import parsePhone from '../phones/parsePhone';
+import getUsers from '../users/getUsers';
+import handleError from '../lib/handleError';
 
-const handleError = (message) => {
-  console.log('error message', message);
-  return new Error(JSON.stringify({
-    type: 'CLAIM_REJECTED',
-    message,
-  }));
-};
+const REJECTED = 'CLAIM_REJECTED';
 
 module.exports = function claim(payload) {
   console.info('claim it!');
@@ -22,7 +15,7 @@ module.exports = function claim(payload) {
   return parsePhone(text).then(phone => {
     console.info('phone parsed', phone);
     if (!phone) {
-      throw handleError('Invalid phone number');
+      throw handleError(REJECTED, 'Invalid phone number');
     }
 
     return getUsers(phone);
@@ -30,7 +23,7 @@ module.exports = function claim(payload) {
     console.info('users back', users);
 
     if (users.length === 0) {
-      throw handleError(`No users found for ${text}`);
+      throw handleError(REJECTED, `No users found for ${text}`);
     }
     return users.shift();
   }).then(user => {

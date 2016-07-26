@@ -1,20 +1,21 @@
-'use strict';
-const registry = require('microservice-registry');
-const request = require('./request');
+import registry from 'microservice-registry';
+import fetch from '../lib/fetch';
 
+export default function fetchFromService(service
 module.exports = (from) => {
   const service = registry.get('api');
 
+  const url = service.api.users.endpoint;
   const payload = {
-    url: service.api.users.get.endpoint,
     method: service.api.users.get.method,
     qs: {
       from,
     },
   };
 
-  return request(payload).then(users => {
+  return fetch(url, payload).then(users => {
     console.log('users', users);
     return users;
   });
 };
+

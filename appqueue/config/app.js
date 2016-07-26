@@ -1,5 +1,9 @@
 module.exports = {
-  port: process.env.PORT || 5012,
-  name: 'appqueue',
-  log_level: 'info',
+  PORT: process.env.PORT || 5012,
+  NAME: 'appqueue',
+  LOG_LEVEL: 'info',
+  REQUIRED_SERVICES: [
+    'api',
+    'sms',
+  ],
 };
