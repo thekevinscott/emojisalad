@@ -1,11 +1,6 @@
-const CLAIM = 'CLAIM';
-
 const PARSE_ERROR = 'PARSE_ERROR';
-const claim = require('./users/claim');
+import ROUTES from './routes';
 
-const ROUTES = {
-  [CLAIM]: claim,
-};
 function RouteException(type, message) {
   this.data = {
     message,
