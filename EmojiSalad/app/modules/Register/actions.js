@@ -1,4 +1,3 @@
-import Api from '../../utils/Api';
 import { Actions } from 'react-native-router-flux';
 
 import device from '../../utils/device';

@@ -1,35 +1,6 @@
 'use strict';
 const User = require('models/user');
 
-module.exports = [
-  {
-    path: '/',
-    method: 'get',
-    fn: find
-  },
-  {
-    path: '/',
-    method: 'post',
-    fn: create
-  },
-  {
-    path: '/:user_id',
-    method: 'get',
-    fn: findOne
-  },
-  {
-    path: '/:user_id',
-    method: 'put',
-    fn: update
-  },
-  {
-    path: '/:user_id',
-    method: 'delete',
-    fn: remove
-  }
-
-];
-
 function find(req) {
   return User.find(req.query);
 }
@@ -62,3 +33,32 @@ function remove(req) {
   }
   return User.remove(user_id);
 }
+
+module.exports = [
+  {
+    path: '/',
+    method: 'get',
+    fn: find
+  },
+  {
+    path: '/',
+    method: 'post',
+    fn: create
+  },
+  {
+    path: '/:user_id',
+    method: 'get',
+    fn: findOne
+  },
+  {
+    path: '/:user_id',
+    method: 'put',
+    fn: update
+  },
+  {
+    path: '/:user_id',
+    method: 'delete',
+    fn: remove
+  }
+
+];

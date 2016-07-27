@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  Navigator,
-  TouchableHighlight,
-} from 'react-native';
+//import {
+  //View,
+  //Text,
+  //Navigator,
+  //TouchableHighlight,
+//} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
-import * as styles from '../styles';
+//import * as styles from '../styles';
 
 import { Router, Scene } from 'react-native-router-flux';
 
@@ -36,7 +36,9 @@ export default class AppRouter extends Component {
             key="register"
             component={Register}
             initial={!iExist}
+            title="User Registration"
             navigationBarStyle={{
+              backgroundColor: '#fafafa',
             }}
           />
           <Scene

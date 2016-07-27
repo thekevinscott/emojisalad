@@ -7,10 +7,10 @@ const API_TYPES = Object.keys(TYPES).reduce((obj, key) => {
   });
 }, {});
 
-export const toType = (type) => {
+export const fromApiToType = (type) => {
   return API_TYPES[type] || type;
 };
 
-export const getType = (type) => {
+export const fromTypeToApi = (type) => {
   return TYPES[type] || type;
 };

@@ -1,21 +1,52 @@
 import registry from 'microservice-registry';
 import fetch from '../lib/fetch';
 
-export default function fetchFromService(service
-module.exports = (from) => {
-  const service = registry.get('api');
+function getApi(service, route) {
+  if (route.length) {
+    return getApi(service[route[0]], route.slice(1));
+  }
+  return service;
+}
 
-  const url = service.api.users.endpoint;
+function parseEndpoint(url, params = {}) {
+  let parsedUrl = url;
+
+  Object.keys(params).forEach(k => {
+    const key = `:${k}`;
+    parsedUrl = parsedUrl.split(key).join(params[k]);
+  });
+
+  return parsedUrl;
+}
+
+function getRequestedRoute(service, route, routeParams) {
+  const serviceEndpoint = registry.get(service).api;
+  const {
+    endpoint,
+    method,
+  } = getApi(serviceEndpoint, route.split('.'));
+
+  return {
+    url: parseEndpoint(endpoint, routeParams),
+    method,
+  };
+}
+
+export default function fetchFromService({
+  service,
+  route,
+  routeParams,
+  options,
+}) {
+  const {
+    url,
+    method,
+  } = getRequestedRoute(service, route, routeParams);
+
   const payload = {
-    method: service.api.users.get.method,
-    qs: {
-      from,
-    },
+    method,
+    ...options,
   };
 
-  return fetch(url, payload).then(users => {
-    console.log('users', users);
-    return users;
-  });
-};
-
+  return fetch(url, payload);
+}

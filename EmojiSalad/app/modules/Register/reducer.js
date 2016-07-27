@@ -3,12 +3,15 @@ import typeToReducer from 'type-to-reducer';
 import {
   SUBMIT_CLAIM,
   UPDATE_TEXT,
+  MIGRATE_USER,
 } from './types';
 
 const initialState = {
   text: '',
   claiming: false,
   error: '',
+  success: '',
+  migration: null,
 };
 
 export default typeToReducer({
@@ -21,10 +24,11 @@ export default typeToReducer({
       };
     },
     FULFILLED: (state, action) => {
-      //console.log('wussup', action.payload);
       return {
         ...state,
+        user: action.data,
         claiming: false,
+        migration: 'pending',
       };
     },
     REJECTED: (state, action) => {
@@ -42,5 +46,13 @@ export default typeToReducer({
       error: '',
       text: action.text,
     };
+  },
+  [MIGRATE_USER]: {
+    FULFILLED: (state) => {
+      return {
+        ...state,
+        migration: 'complete',
+      };
+    },
   },
 }, initialState);

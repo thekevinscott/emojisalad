@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 //import {
   //View,
   //Text,
@@ -14,9 +14,13 @@ import {
 } from '../selectors';
 
 export default class App extends Component {
+  shouldComponentUpdate() {
+    return false;
+  }
   render() {
     const state = this.props.store.getState();
     const me = selectMe(state);
+    console.log('App render');
 
     return (
       <AppProvider store={this.props.store}>

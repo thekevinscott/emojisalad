@@ -3,19 +3,17 @@ import {
 } from 'react-native';
 
 import {
-  getType,
+  fromTypeToApi,
 } from './translate';
 
 export default function sendMessage(websocket) {
   return (type, payload) => {
-    console.log('socket sending time');
-    if (websocket.get('isOpen')) {
-      console.log('send the socket', payload);
+    if (websocket.isOpen) {
       const packet = JSON.stringify({
-        type: getType(type),
+        type: fromTypeToApi(type),
         payload,
       });
-      console.log(packet);
+      console.log('sending', packet);
       websocket.get('websocket').send(packet);
     } else {
       Alert.alert(

@@ -6,37 +6,23 @@ const claim = require('./users/claim');
 const ROUTES = {
   [CLAIM]: claim,
 };
+function RouteException(type, message) {
+  this.data = {
+    message,
+  };
+  this.type = type;
+}
 
-export default function receiveMessage(message) {
+function parseMessage(message) {
   return new Promise((resolve, reject) => {
     try {
       const parsedMessage = JSON.parse(message);
       const type = parsedMessage.type;
-      const FULFILLED = `${type}_FULFILLED`;
-      const REJECTED = `${type}_REJECTED`;
       const payload = parsedMessage.payload;
-
-      if (ROUTES[type]) {
-        ROUTES[type](payload).then(data => {
-          resolve({
-            type: FULFILLED,
-            data,
-          });
-        }).catch(data => {
-          console.log('data back', data.message);
-          reject({
-            type: REJECTED,
-            data: data.message,
-          });
-        });
-      } else {
-        reject({
-          type: REJECTED,
-          data: {
-            message: `No route found for ${type}`,
-          },
-        });
-      }
+      resolve({
+        type,
+        payload,
+      });
     } catch (err) {
       console.error('Invalid payload', message, err);
       reject({
@@ -46,16 +32,62 @@ export default function receiveMessage(message) {
         },
       });
     }
+  });
+}
 
-    /*
-       switch (payload.type) {
-         case 'FETCH_MESSAGES':
-           [
-           'received',
-           'sent',
-           ].forEach(type => {
-           getMessages(payload.userId, type).then(messages => {
-           wsSend({
+function getTypes(type) {
+  const FULFILLED = `${type}_FULFILLED`;
+  const REJECTED = `${type}_REJECTED`;
+  return {
+    FULFILLED,
+    REJECTED,
+  };
+}
+
+function processRoute(ws, type, payload) {
+  const {
+    FULFILLED,
+    REJECTED,
+  } = getTypes(type);
+
+  return ROUTES[type](ws, payload).then(data => {
+    return {
+      type: FULFILLED,
+      data,
+    };
+  }).catch(data => {
+    console.log('data back from rejection', data.message, data.stack);
+    throw new RouteException(
+      REJECTED,
+      data.message,
+    );
+  });
+}
+
+export default function receiveMessage(ws, message) {
+  return parseMessage(message).then(({ type, payload }) => {
+    const {
+      REJECTED,
+    } = getTypes(type);
+
+    if (!ROUTES[type]) {
+      throw new RouteException(
+        REJECTED,
+        `No route found for ${type}`
+      );
+    }
+
+    return processRoute(ws, type, payload);
+
+/*
+   switch (payload.type) {
+     case 'FETCH_MESSAGES':
+       [
+       'received',
+       'sent',
+       ].forEach(type => {
+       getMessages(payload.userId, type).then(messages => {
+       wsSend({
 type: 'FETCH_MESSAGES_FULFILLED',
 payload: messages,
 });

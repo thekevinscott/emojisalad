@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   View,
-  Text,
+  //Text,
 } from 'react-native';
 import {
   getStore,

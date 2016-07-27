@@ -64,13 +64,15 @@ const User = {
     });
   },
   update: (user, params) => {
+    console.info('user update', user, params);
     const whitelist = [
       'nickname',
       'blacklist',
       'maximum_games',
       'avatar',
       'confirmed',
-      'confirmed_avatar'
+      'confirmed_avatar',
+      'protocol',
     ];
     const query = squel
                   .update()
@@ -164,6 +166,7 @@ const User = {
     query = query.where('u.archived=?', archived);
     query = query.group('u.id');
 
+    console.info(query.toString());
     return db.query(query).then((users) => {
       if ( users.length ) {
         return Player.find({ user_ids: users.map(user => user.id ) }).then((players) => {
@@ -176,6 +179,7 @@ const User = {
           });
           return users.map((user) => {
             user.players = players_by_id[user.id] || [];
+            console.info('user', user);
             return user;
           });
         });

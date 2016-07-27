@@ -1,9 +1,9 @@
 import {
-  NAME,
+  HOST,
   PORT,
 } from 'config/app';
 
-const endpoint = `http://localhost:${PORT}/`;
+const endpoint = `http://${HOST}:${PORT}/`;
 
 const manifest = {
   send: {

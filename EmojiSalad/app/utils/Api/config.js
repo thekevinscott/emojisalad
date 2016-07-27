@@ -10,7 +10,7 @@ function getAPI(environment) {
   }
   return {
     API_HOST: 'localhost',
-    API_PORT: '5008',
+    API_PORT: '5009',
   };
 }
 const {

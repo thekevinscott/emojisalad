@@ -1,42 +1,55 @@
+//import {
+  //StyleSheet,
+//} from 'react-native';
 import {
-  StyleSheet,
-} from 'react-native';
+  constants,
+} from '../App/styles';
 
-const styles = StyleSheet.create({
+const textContainerMargin = 50;
+
+const styles = {
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
     padding: 0,
     margin: 0,
   },
-  welcome: {
+  textContainer: {
+    marginTop: 90,
+    marginLeft: textContainerMargin,
+    marginRight: textContainerMargin,
+  },
+  header: {
+    color: constants.purple,
     fontSize: 20,
+    marginBottom: 20,
     textAlign: 'center',
-    margin: 10,
+  },
+  error: {
+    backgroundColor: constants.purple,
+    alignItems: 'center',
+    padding: 20,
+    alignSelf: 'stretch',
+    height: 350,
+    textAlign: 'center',
+  },
+  body: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 15,
   },
   button: {
     fontSize: 20,
     backgroundColor: '#AAA',
     padding: 20,
   },
-});
+  input: {
+    height: 40,
+    textAlign: 'center',
+    fontSize: 20,
+    color: constants.purple,
+  },
+};
 
 export default styles;
-
-export const inputStyle = {
-  height: 40,
-  textAlign: 'center',
-  backgroundColor: '#CCC',
-  margin: 10,
-  color: '#000',
-};
-
-export const errorStyle = {
-  textAlign: 'center',
-  backgroundColor: 'red',
-  margin: 10,
-  color: '#FFF',
-  padding: 20,
-};

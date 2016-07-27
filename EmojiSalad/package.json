@@ -20,9 +20,10 @@
     "type-to-reducer": "1.0.1"
   },
   "devDependencies": {
-    "eslint": "3.1.1",
+    "babel-eslint": "^6.1.2",
+    "eslint": "^3.1.1",
     "eslint-plugin-import": "1.11.1",
     "eslint-plugin-jsx-a11y": "2.0.1",
-    "eslint-plugin-react": "5.2.2"
+    "eslint-plugin-react": "^5.2.2"
   }
 }

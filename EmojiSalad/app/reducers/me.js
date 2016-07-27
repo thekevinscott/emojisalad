@@ -45,7 +45,7 @@ export default typeToReducer({
     FULFILLED: (state, action) => {
       return {
         ...state,
-        ...translateMe(action.payload),
+        ...translateMe(action.data),
       };
     },
   },

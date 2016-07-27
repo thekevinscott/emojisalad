@@ -5,6 +5,7 @@ const LookupsClient = require('twilio').LookupsClient;
 const client = new LookupsClient(config.accountSid, config.authToken);
 
 const phone = (number) => {
+  console.info('incoming number to check', number);
   let getAsync = Promise.promisify(client.phoneNumbers(number).get);
 
   return getAsync().then((number) => {

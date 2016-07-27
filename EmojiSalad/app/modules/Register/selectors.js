@@ -3,11 +3,13 @@ export function selectRegisterSlice({ ui }) {
     text,
     claiming,
     error,
+    migration,
   } = ui.Register;
 
   return {
     text,
     claiming,
     error,
+    migration,
   };
 }
