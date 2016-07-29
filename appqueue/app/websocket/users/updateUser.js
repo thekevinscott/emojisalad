@@ -8,6 +8,7 @@ export default function updateUser(ws, user) {
     updateProtocolForUser(user),
     migrateMessages(user),
   ]).then(() => {
+    console.log('good, migrate user is fulfilled');
     sendMessage(ws)({
       type: 'MIGRATE_USER_FULFILLED',
       data: {

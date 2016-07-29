@@ -9,7 +9,6 @@ import {
 } from './types';
 
 export function submitClaim(text) {
-  console.log('1');
   return {
     type: SUBMIT_CLAIM,
     payload: {

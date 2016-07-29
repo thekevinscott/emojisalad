@@ -57,7 +57,7 @@ const ds = new ListView.DataSource({
 class Games extends Component {
   componentWillMount() {
     this.props.actions.fetchGames(this.props.me.id);
-    this.props.actions.fetchMessages(this.props.me.id);
+    //this.props.actions.fetchMessages(this.props.me.id);
   }
 
   _renderRow(game, sectionId, rowId, highlightRow) {

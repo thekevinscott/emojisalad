@@ -92,6 +92,7 @@ class Register extends Component {
       const timePassed = new Date() - this.state.fakeMigration;
       if (timePassed < migrationTime) {
         setTimeout(() => {
+          console.log('go to next game!');
           this.props.actions.goToGames();
         }, migrationTime - timePassed);
       } else {
