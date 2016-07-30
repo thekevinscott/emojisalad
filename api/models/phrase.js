@@ -1,6 +1,7 @@
 'use strict';
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
+import setKey from 'setKey';
 
 const Phrase = {
   create: (params) => {
@@ -13,17 +14,28 @@ const Phrase = {
                   });
     return db.query(query).then(result => {
       if (result.insertId) {
-        const phrase_id = result.insertId;
-        const insert_clue = squel
-                            .insert()
-                            .into('clues')
-                            .setFields({
-                              clue: params.clue.toUpperCase(),
-                              phrase_id
-                            });
-        return db.query(insert_clue).then(() => {
-          return Phrase.find({ id: phrase_id}).then((phrases) => {
-            return phrases.pop();
+        return setKey('phrases', {
+          ...params,
+          id: result.insertId,
+        }).then(() => {
+          const phrase_id = result.insertId;
+          const insert_clue = squel
+          .insert()
+          .into('clues')
+          .setFields({
+            clue: params.clue.toUpperCase(),
+            phrase_id
+          });
+          return db.query(insert_clue).then((clueResult) => {
+            return setKey('clues', {
+              clue: params.clue,
+              phrase_id,
+              id: clueResult.insertId,
+            }).then(() => {
+              return Phrase.find({ id: phrase_id}).then((phrases) => {
+                return phrases.pop();
+              });
+            });
           });
         });
       } else {

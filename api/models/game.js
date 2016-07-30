@@ -9,6 +9,7 @@ const EmojiData = require('emoji-data');
 const Player = require('./player');
 const User = require('./user');
 const Round = require('./round');
+import setKey from 'setKey';
 //const Round = require('./round');
 
 // number of guesses a player gets per round
@@ -21,12 +22,13 @@ squel.registerValueHandler(Date, (date) => {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
 
+function getValidUsers(users) {
+  return users.filter(user => parseInt(user.id));
+}
+
 const Game = {
   create: (users) => {
     console.info('create a game with these users', users);
-    function getValidUsers(users) {
-      return users.filter(user => parseInt(user.id));
-    }
     if ( !_.isArray(users) ) {
       throw new Error("You must provide an array of users");
     } else if ( getValidUsers(users).length !== users.length ) {
@@ -62,7 +64,7 @@ const Game = {
                 //console.info('response', response);
                 try {
                   return JSON.parse(response.body);
-                } catch(err) {
+                } catch (err) {
                   console.error('error parsing json response', response.body);
                   reject(new Error('Error getting sender'));
                 }
@@ -108,10 +110,14 @@ const Game = {
             //console.error(query.toString());
             throw new Error("There was an error inserting game");
           } else {
-            console.info('now add users ot game', valid_users, game);
-            return Game.add({
-              id: game.insertId
-            }, valid_users);
+            return setKey('games', {
+              id: game.insertId,
+            }).then(() => {
+              console.info('now add users ot game', valid_users, game);
+              return Game.add({
+                id: game.insertId
+              }, valid_users);
+            });
           }
         });
       });
@@ -215,15 +221,15 @@ const Game = {
       } else {
         return Game.findOne(game.id);
       }
-    }).then((game) => {
-      console.info('found teh game', game, users);
+    }).then((foundGame) => {
+      console.info('found teh game', foundGame, users);
       return Promise.all(users.map((user) => {
         if ( !user.to ) {
           console.error(user);
           throw new Error('Why is there no user `to` here');
         }
         const player_params = {
-          game_id: game.id,
+          game_id: foundGame.id,
           user_id: user.id,
           to: user.to
         };
@@ -231,24 +237,16 @@ const Game = {
         return Player.create(player_params).catch((err) => {
           console.info('did not create player', err);
           throw new Error('Did not create player', player_params);
-          return null;
         });
       })).then((players) => {
-        //console.info('players created', players);
-        game.players = game.players.concat(players.filter(player => player));
-        return game;
+        console.info('players created', players, foundGame);
+        return Object.assign({}, foundGame, {
+          players: foundGame.players.concat(players.filter(player => player)),
+        });
+      }).then(finalGame => {
+        console.info('finalGame being returned', finalGame);
+        return finalGame;
       });
-    }).then((game) => {
-      //if ( game.players.length > 1 && game.round === null ) {
-        //return Round.create(game).then((round) => {
-          //game.round = round;
-          //game.round_count = 1;
-          //return game;
-        //});
-      //} else {
-        //return game;
-      //}
-      return game;
     });
   },
   findOne: (params) => {
@@ -266,10 +264,10 @@ const Game = {
   },
   find: (params = {}) => {
     //console.info('find game');
-    const rounds = squel
-                   .select()
-                   .from('rounds')
-                   .order('id', false);
+    const select_rounds_query = squel
+    .select()
+    .from('rounds')
+    .order('id', false);
 
     let query = squel
                 .select()
@@ -277,7 +275,7 @@ const Game = {
                 .field('g.created')
                 .field('r.id', 'round_id')
                 .field('COUNT(r.id)', 'round_count')
-                .left_join(rounds, 'r', 'r.game_id=g.id')
+                .left_join(select_rounds_query, 'r', 'r.game_id=g.id')
                 .group('g.id')
                 //.group('r.id')
                 .from('games', 'g');

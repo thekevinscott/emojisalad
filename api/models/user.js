@@ -3,7 +3,7 @@ const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
 const Emoji = require('models/emoji');
-import getKey from 'getKey';
+import setKey from 'setKey';
 
 let Player;
 const default_maximum_games = 4;
@@ -57,7 +57,7 @@ const User = {
       console.info('user create query', query.toString());
       return db.create(query.toString()).then((queryResult) => {
         console.info('query result from inserting user', queryResult);
-        return User.updateKey({
+        return setKey('users', {
           ...params,
           id: queryResult.insertId,
         }).then(() => {
@@ -219,27 +219,6 @@ const User = {
       }
     });
   },
-  updateKey: (user) => {
-    const key = getKey(user);
-    console.log('key', key);
-    return user.id;
-  },
 };
-
-//function arrayToObj(players) {
-  //return players.reduce((obj, player) => {
-    //const user_id = player.user_id;
-    //delete player.user_id;
-    //if ( ! obj[user_id] ) {
-      //obj[user_id] = [];
-    //}
-
-    //obj[user_id].push({
-      //id: player.id,
-      //to: player.to
-    //});
-    //return obj;
-  //}, {});
-//}
 
 module.exports = User;
