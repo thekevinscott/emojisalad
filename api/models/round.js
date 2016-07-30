@@ -528,7 +528,10 @@ const Round = {
         }
       });
     });
-  }
+  },
+  updateKey: (id) => {
+    return id;
+  },
 };
 
 module.exports = Round;

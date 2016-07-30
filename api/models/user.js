@@ -3,6 +3,7 @@ const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
 const Emoji = require('models/emoji');
+import getKey from 'getKey';
 
 let Player;
 const default_maximum_games = 4;
@@ -42,21 +43,26 @@ const User = {
       const number = params.from;
       console.info('parsed the number', number);
       const query = squel
-                    .insert({ autoQuoteFieldNames: true })
-                    .into('users')
-                    .setFields({
-                      created: squel.fval('NOW(3)'),
-                      last_activity: squel.fval('NOW(3)'),
-                      from: number,
-                      avatar,
-                      nickname,
-                      protocol: params.protocol,
-                      maximum_games: default_maximum_games
-                    });
+      .insert({ autoQuoteFieldNames: true })
+      .into('users')
+      .setFields({
+        created: squel.fval('NOW(3)'),
+        last_activity: squel.fval('NOW(3)'),
+        from: number,
+        avatar,
+        nickname,
+        protocol: params.protocol,
+        maximum_games: default_maximum_games
+      });
       console.info('user create query', query.toString());
       return db.create(query.toString()).then((queryResult) => {
         console.info('query result from inserting user', queryResult);
-        return User.findOne(queryResult.insertId).then((user) => {
+        return User.updateKey({
+          ...params,
+          id: queryResult.insertId,
+        }).then(() => {
+          return User.findOne(queryResult.insertId);
+        }).then((user) => {
           return {
             ...user,
             to: params.to
@@ -212,7 +218,12 @@ const User = {
         throw new Error("User was not deleted: " + user_id);
       }
     });
-  }
+  },
+  updateKey: (user) => {
+    const key = getKey(user);
+    console.log('key', key);
+    return user.id;
+  },
 };
 
 //function arrayToObj(players) {
