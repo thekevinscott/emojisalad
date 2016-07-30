@@ -63,16 +63,12 @@ const Player = {
         game_id: player_params.game_id
       });
 
-      console.log('***** I think I can remove this find');
       return Player.findOne( player_params ).then((pl) => {
-        console.log('player back', pl);
         return db.create(query.toString()).then((result) => {
-          console.log('created player', result);
           return setKey('players', {
             ...player_params,
             id: result.insertId,
           }).then(() => {
-            console.log('find the player', result.insertId);
             return Player.findOne(result.insertId);
           });
         }).catch((err) => {

@@ -53,19 +53,14 @@ const getLastProtocolMessageIDs = (allowed_protocols) => {
 };
 
 const runRead = () => {
-  console.log('run read 1');
   return getLastProtocolMessageIDs(PROTOCOLS).then((last_protocol_message_ids) => {
-    console.log('run read 2');
     return getMessages(last_protocol_message_ids, PROTOCOLS, tripwire_settings);
   }).then((messages) => {
-    console.log('run read 3');
     if ( messages.length ) {
-      console.log('run read 4');
       console.info('got messages', messages.map((message) => {
         return message;
       }));
       return setStore(messages).then(() => {
-        console.log('run read 5');
         console.info('the retrieved messages from the protocol', messages);
         return sequential(messages.map((message) => {
           return () => {
@@ -78,16 +73,12 @@ const runRead = () => {
           // as blacklisted.
           return message;
         }).then((processed_messages) => {
-          console.log('run read 6');
           console.info('processed messages', processed_messages.length, processed_messages);
           return sendMessages(processed_messages);
         });
       });
-    } else {
-      console.log('run read 4b');
     }
   }).then(() => {
-    //console.info('read the timers now');
     // process any outstanding timers
     return Timer.get().then((timers) => {
       if (timers.length) {
@@ -110,7 +101,6 @@ const runRead = () => {
       return getWebSubmissions(last_protocol_message_ids);
     }).then(responses => {
       if (responses && responses.length > 0) {
-        //console.log('responses', responses);
         const key = 'web_queue_id';
         const message_id = responses[responses.length - 1].id;
         return store(key, message_id).then(() => {
@@ -129,8 +119,6 @@ const runRead = () => {
         });
       }
     });
-  //}).then(() => {
-    //console.info('all done');
   });
 };
 

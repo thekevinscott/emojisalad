@@ -27,8 +27,8 @@ TABLES.map(table => {
     .where('`key` IS NULL');
 
     return db.query(query).then(rows => {
-      console.log('missing keys', table, rows.length);
       if (rows.length > 0) {
+        console.info('missing keys', table, rows.length);
         return rows.map(row => {
           return setKey(table, row);
         });

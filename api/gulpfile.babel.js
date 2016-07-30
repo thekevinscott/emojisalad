@@ -91,7 +91,6 @@ function seed(ENV) {
   const config = require(`./config/database/${process.env.ENVIRONMENT}`);
   const db = require('./db');
 
-  console.log('config', config, sql_file);
   return shared.importDB(config, sql_file).then(() => {
     // various deleting commands
     const seedData = require('./test/fixtures/seed') || [];

@@ -23,10 +23,10 @@ module.exports = (message) => {
 
   // responses comes back as an array of messages
   return router(message.from, message.body, message.to, message.protocol).then((responses) => {
-    console.info('responses back', responses);
+    //console.info('responses back', responses);
     if ( responses && _.isArray(responses) && responses.length ) {
       return Message.parse(responses, message).then((response) => {
-        console.info('response from router', response);
+        //console.info('response from router', response);
         return response;
       });
     }
