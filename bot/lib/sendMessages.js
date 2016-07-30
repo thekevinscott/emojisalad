@@ -7,21 +7,38 @@ const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
 
 function sequence(tasks) {
-  var current = Promise.cast();
-  for (var k = 0; k < tasks.length; ++k) {
-    current = current.then(tasks[k]);
-  }
-  return current;
+  return tasks.reduce((current, task) => {
+    return current.then(task);
+  }, Promise.cast());
 }
 
 function getGroupedMessages(messages) {
   const grouping = 5;
   const groupedMessages = [];
-  for (var i = 0; i < Math.ceil(messages.length / grouping); i++) {
+  for (let i = 0; i < Math.ceil(messages.length / grouping); i++) {
     const start = i * grouping;
     groupedMessages.push(messages.slice(start, start + grouping));
   }
   return groupedMessages;
+}
+
+function hasBodyError(options, body, byteLength) {
+  try {
+    // if its not JSON, its probably an error
+    JSON.parse(body);
+  } catch (err) {
+    if (body.indexOf('Error: request entity too large') !== -1) {
+      throw new Error('Request too large: ' + byteLength);
+    } else if (body.indexOf('PayloadTooLargeError') !== -1) {
+      console.log(options, body);
+      throw new Error('Payload Too Large Error: ' + byteLength);
+    }
+
+    console.log('unknown error', body);
+    console.error('unknown error', body);
+    throw new Error('Unknown error: ' + byteLength + ' ' + body);
+  }
+  return true;
 }
 
 const sendMessages = (messages, options = {}) => {
@@ -52,43 +69,23 @@ const sendMessages = (messages, options = {}) => {
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
     //console.log('send 3', protocol);
     //console.info('protocol', protocol);
-    const messages = messages_by_protocol[protocol];
+    const protocolMessages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
-    //console.info('the messages to send', messages);
     //console.info('service', service);
     const requestOptions = {
       url: service.api.send.endpoint,
       method: service.api.send.method,
       form: {
-        messages: JSON.stringify(messages),
+        messages: JSON.stringify(protocolMessages),
       }
     };
 
     const stringifiedOptions = JSON.stringify(requestOptions);
     const byteLength = Buffer.byteLength(stringifiedOptions, 'utf8') + " bytes";
 
-    function hasBodyError(options, body) {
-      try {
-        // if its not JSON, its probably an error
-        JSON.parse(body);
-      } catch (err) {
-        if (body.indexOf('Error: request entity too large') !== -1) {
-          throw new Error('Request too large: ' + byteLength);
-        } else if (body.indexOf('PayloadTooLargeError') !== -1) {
-          console.log(options, body);
-          throw new Error('Payload Too Large Error: ' + byteLength);
-        }
-
-        console.log('unknown error', body);
-        console.error('unknown error', body);
-        throw new Error('Unknown error: ' + byteLength + ' ' + body);
-      }
-      return true;
-    }
-
     return request(requestOptions).then((response) => {
       if (response.body) {
-        if (hasBodyError(options, response.body)) {
+        if (hasBodyError(options, response.body, byteLength)) {
           return null;
         }
       }
@@ -99,27 +96,6 @@ const sendMessages = (messages, options = {}) => {
       console.error('error sending response', err, requestOptions);
       throw new Error(err);
     });
-
-    /*
-    return sequence(groupedMessages.map(groupOfMessages => {
-      const groupOptions = Object.assign({}, options, {
-        form: {
-          messages: groupOfMessages,
-        }
-      });
-      return () => {
-        console.info('protocol options', groupOptions);
-        return request(groupOptions).then((response) => {
-          //console.log('send 5');
-          //console.info('the gotten repsonse', response);
-          return response;
-        }).catch((err) => {
-          //console.log('send 5a');
-          console.info('error sending response', err);
-        });
-      };
-    }));
-    */
   })).then((response) => {
     if (messages.length > 0) {
       //console.log('send 6');
