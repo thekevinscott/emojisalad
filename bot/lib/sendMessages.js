@@ -81,7 +81,7 @@ const sendMessages = (messages, options = {}) => {
 
         console.log('unknown error', body);
         console.error('unknown error', body);
-        throw new Error('Unknown error' + byteLength + body);
+        throw new Error('Unknown error: ' + byteLength + ' ' + body);
       }
       return true;
     }
@@ -96,7 +96,7 @@ const sendMessages = (messages, options = {}) => {
       return response;
     }).catch((err) => {
       //console.log('send 5a');
-      console.error('error sending response', err);
+      console.error('error sending response', err, requestOptions);
       throw new Error(err);
     });
 
