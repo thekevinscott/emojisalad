@@ -205,9 +205,9 @@ describe('Play', () => {
           [
             { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game_players[0] },
             { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game_players[2] },
-            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[0] },
-            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[1] },
-            { key: 'clue', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[2] }
+            { key: 'clue_b', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[0] },
+            { key: 'clue_b', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[1] },
+            { key: 'clue_b', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[2] }
           ]
         );
       })).then((results) => {
