@@ -108,6 +108,7 @@ function pullDB(config, tmp, tables) {
 
   const dumpSchemas = [
     'mysqldump',
+    '--default-character-set=utf8mb4',
     '--no-data',
     '--add-drop-table',
     getConnectionString(config),
@@ -119,6 +120,7 @@ function pullDB(config, tmp, tables) {
 
   const dumpData = [
     'mysqldump',
+    '--default-character-set=utf8mb4',
     '--opt',
     getConnectionString(config),
     tables_with_data.join(' '),

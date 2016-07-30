@@ -146,6 +146,7 @@ describe('Game', () => {
           { player: players[1], msg: guess + first_game_phrase, get_response: true },
           { player: players[1], msg: EMOJI }
         ], 8).then((messages) => {
+          //console.log('messages', messages);
           const second_game_phrase = getPhrase(messages);
           return setup([
             { player: players[0], msg: guess + second_game_phrase, get_response: true },

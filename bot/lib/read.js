@@ -73,7 +73,7 @@ const runRead = () => {
           // as blacklisted.
           return message;
         }).then((processed_messages) => {
-          console.info('processed messages', processed_messages.length, processed_messages);
+          console.info('processed messages', processed_messages.length);
           return sendMessages(processed_messages);
         });
       });

@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -28,7 +28,7 @@ CREATE TABLE `attributes` (
   `value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=135935 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=135945 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +49,7 @@ CREATE TABLE `timers` (
   `cleared` tinyint(1) NOT NULL DEFAULT '0',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4367 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4369 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -61,7 +61,7 @@ CREATE TABLE `timers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-30 19:29:28
+-- Dump completed on 2016-07-30 19:39:19
 -- MySQL dump 10.13  Distrib 5.6.29, for osx10.11 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinaryfriend
@@ -129,7 +129,7 @@ CREATE TABLE `message_variants` (
 
 LOCK TABLES `message_variants` WRITE;
 /*!40000 ALTER TABLE `message_variants` DISABLE KEYS */;
-INSERT INTO `message_variants` VALUES (99,29,'? What a wonderful set of emoji! You are smart, and good looking. I sent your emoji phrase to the group. Let the round begin!','2016-04-30 21:31:35'),(100,29,'? Fantastic set of emoji! I sent your emoji phrase to the group. Let\'s play!','2016-04-30 21:34:27'),(101,31,'Text OPTIONS if you get stuck, or ask for a CLUE!','2016-04-30 22:17:07'),(102,31,'Text OPTIONS if you get stuck. You can also ask for a CLUE!','2016-04-30 22:17:21'),(103,29,'? Wow, that\'s an awesome emoji set! Let\'s start the round!','2016-04-30 22:25:23'),(104,29,'? Gosh, those are great. Let\'s get started!','2016-04-30 22:25:38'),(105,29,'? Great emoji, I sent along to the group. Let\'s get going!','2016-04-30 22:25:53'),(106,32,'? ?Yay! %2$s %1$s got it RIGHT! ?\nThe phrase was %3$s ','2016-05-15 19:30:11'),(107,32,'? ?WAHOO %2$s %1$s wins the round! ?\nThe phrase was %3$s ','2016-05-15 19:30:31'),(108,32,'? ?KWABLAMMO %2$s %1$s is the winner! ?\nThe phrase was %3$s ','2016-05-15 19:30:43'),(109,32,'? ?HUZZAH %2$s %1$s for the win! ?\nThe phrase was %3$s ','2016-05-15 19:30:55'),(110,46,'? %2$s %1$s wants a little hint! no problem—the clue I\'ll give you is: %3$s','2016-05-16 01:37:43'),(111,46,'? %2$s %1$s has kindly requested a clue! Your clue is: %3$s','2016-05-16 01:37:51'),(112,46,'?Here\'s a clue for you, %2$s %1$s : %3$s','2016-05-16 01:38:45'),(113,90,'? Sorry, I didn\'t quite get that. Be sure to text KEEP to keep your default emoji or text a single emoji to replace it.','2016-05-16 01:40:15'),(114,33,'? It\'s time for %2$s %1$s to take a turn. You\'ll be guessing this round.','2016-05-16 01:42:38'),(115,33,'? And we continue on to %2$s %1$s. You\'ll be guessing the emoji in this round.','2016-05-16 01:43:06'),(116,34,'? Hey %2$s %1$s, this is your time to shine. Your phrase is: %3$s\n\nYour goal is to get the other players to guess the phrase using only emojis. If you get stuck you can ask for OPTIONS, or you can PASS if you give up.','2016-05-16 01:44:45'),(117,34,'? Hey %2$s %1$s, time to take your turn! Your phrase is: %3$s\n\nYour goal is to get the other players to guess the phrase using only emojis. If you get stuck you can ask for OPTIONS, or you can PASS if you give up.','2016-05-16 01:44:52'),(119,34,'? Let\'s see it, %2$s %1$s! It\'s your turn, and phrase is: %3$s\n\nYour goal is to get the other players to guess the phrase using only emojis. If you get stuck you can ask for OPTIONS, or you can PASS if you give up.','2016-05-16 01:45:44'),(120,29,'? Oh I have a good feeling about this round! I sent your emoji phrase to the group. Let the see what they guess!','2016-05-16 01:48:36'),(121,29,'? You must have picked these emoji carefully—they look great! I sent your emoji phrase to the group. Let the guessing begin!','2016-05-16 01:48:42'),(122,29,'? Thanks so much for sending over your emoji! I just sent them over to the group. Let\'s see what they guess!','2016-05-16 01:51:19'),(123,29,'? Great job this round! I just sent over your emoji phrase to the group. These guesses should be coming through in no time!','2016-05-16 01:52:05'),(124,100,'? Hey %2$s %1$s, just a friendly reminder that the group\'s waiting on you to submit some emojis. The phrase is %3$s. feel free to PASS if you don\'t want to play this round.','2016-05-16 01:54:42'),(125,94,'? Looks like no one has got it right yet! Keep trying, I know you\'ll get it! The emojis are %1$s. Don\'t forget about that CLUE if you get stuck.\n','2016-05-16 01:56:09'),(126,94,'?No correct answers quite yet. This must be a tough one! The emojis are %1$s. Don\'t forget about that CLUE if you get stuck.\n','2016-05-16 01:57:33'),(127,94,'? We\'re still waiting on that right awnser. Keep trying, you\'ll get it! The emojis are %1$s. You can always ask for a CLUE if you get stuck.\n','2016-05-16 01:57:38'),(128,46,'? %2$s %1$s asked for a clue! All right then, your clue is: %3$s','2016-07-30 23:29:16');
+INSERT INTO `message_variants` VALUES (99,29,'? What a wonderful set of emoji! You are smart, and good looking. I sent your emoji phrase to the group. Let the round begin!','2016-04-30 21:31:35'),(100,29,'? Fantastic set of emoji! I sent your emoji phrase to the group. Let\'s play!','2016-04-30 21:34:27'),(101,31,'Text OPTIONS if you get stuck, or ask for a CLUE!','2016-04-30 22:17:07'),(102,31,'Text OPTIONS if you get stuck. You can also ask for a CLUE!','2016-04-30 22:17:21'),(103,29,'? Wow, that\'s an awesome emoji set! Let\'s start the round!','2016-04-30 22:25:23'),(104,29,'? Gosh, those are great. Let\'s get started!','2016-04-30 22:25:38'),(105,29,'? Great emoji, I sent along to the group. Let\'s get going!','2016-04-30 22:25:53'),(106,32,'? ?Yay! %2$s %1$s got it RIGHT! ?\nThe phrase was %3$s ','2016-05-15 19:30:11'),(107,32,'? ?WAHOO %2$s %1$s wins the round! ?\nThe phrase was %3$s ','2016-05-15 19:30:31'),(108,32,'? ?KWABLAMMO %2$s %1$s is the winner! ?\nThe phrase was %3$s ','2016-05-15 19:30:43'),(109,32,'? ?HUZZAH %2$s %1$s for the win! ?\nThe phrase was %3$s ','2016-05-15 19:30:55'),(110,103,'? %(avatar)s %(nickname)s wants a little hint! no problem—the clue I\'ll give you is: %(game.round.clue)s','2016-05-16 01:37:43'),(111,103,'? %(avatar)s %(nickname)s has kindly requested a clue! Your clue is: %(game.round.clue)s','2016-05-16 01:37:51'),(112,103,'?Here\'s a clue for you, %(avatar)s %(nickname)s : %(game.round.clue)s','2016-05-16 01:38:45'),(113,90,'? Sorry, I didn\'t quite get that. Be sure to text KEEP to keep your default emoji or text a single emoji to replace it.','2016-05-16 01:40:15'),(114,33,'? It\'s time for %2$s %1$s to take a turn. You\'ll be guessing this round.','2016-05-16 01:42:38'),(115,33,'? And we continue on to %2$s %1$s. You\'ll be guessing the emoji in this round.','2016-05-16 01:43:06'),(116,34,'? Hey %2$s %1$s, this is your time to shine. Your phrase is: %3$s\n\nYour goal is to get the other players to guess the phrase using only emojis. If you get stuck you can ask for OPTIONS, or you can PASS if you give up.','2016-05-16 01:44:45'),(117,34,'? Hey %2$s %1$s, time to take your turn! Your phrase is: %3$s\n\nYour goal is to get the other players to guess the phrase using only emojis. If you get stuck you can ask for OPTIONS, or you can PASS if you give up.','2016-05-16 01:44:52'),(119,34,'? Let\'s see it, %2$s %1$s! It\'s your turn, and phrase is: %3$s\n\nYour goal is to get the other players to guess the phrase using only emojis. If you get stuck you can ask for OPTIONS, or you can PASS if you give up.','2016-05-16 01:45:44'),(120,29,'? Oh I have a good feeling about this round! I sent your emoji phrase to the group. Let the see what they guess!','2016-05-16 01:48:36'),(121,29,'? You must have picked these emoji carefully—they look great! I sent your emoji phrase to the group. Let the guessing begin!','2016-05-16 01:48:42'),(122,29,'? Thanks so much for sending over your emoji! I just sent them over to the group. Let\'s see what they guess!','2016-05-16 01:51:19'),(123,29,'? Great job this round! I just sent over your emoji phrase to the group. These guesses should be coming through in no time!','2016-05-16 01:52:05'),(124,100,'? Hey %2$s %1$s, just a friendly reminder that the group\'s waiting on you to submit some emojis. The phrase is %3$s. feel free to PASS if you don\'t want to play this round.','2016-05-16 01:54:42'),(125,94,'? Looks like no one has got it right yet! Keep trying, I know you\'ll get it! The emojis are %1$s. Don\'t forget about that CLUE if you get stuck.\n','2016-05-16 01:56:09'),(126,94,'?No correct answers quite yet. This must be a tough one! The emojis are %1$s. Don\'t forget about that CLUE if you get stuck.\n','2016-05-16 01:57:33'),(127,94,'? We\'re still waiting on that right awnser. Keep trying, you\'ll get it! The emojis are %1$s. You can always ask for a CLUE if you get stuck.\n','2016-05-16 01:57:38'),(128,103,'? %(avatar)s %(nickname)s asked for a clue! All right then, your clue is: %(game.round.clue)s','2016-07-30 23:29:16');
 /*!40000 ALTER TABLE `message_variants` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -142,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-30 19:29:29
+-- Dump completed on 2016-07-30 19:39:19

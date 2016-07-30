@@ -35,9 +35,9 @@ function seed(ENV) {
 
   return shared.importDB(config, sql_file).then(() => {
     // various deleting commands
-    const config = require('./test/fixtures/seed') || [];
+    const seedConfig = require('./test/fixtures/seed') || [];
     // various seeding commands
-    return Promise.all(config.map((cmd) => {
+    return Promise.all(seedConfig.map((cmd) => {
       const query = squel
                     .insert({
                       autoQuoteTableNames: true,

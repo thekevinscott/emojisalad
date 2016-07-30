@@ -96,7 +96,6 @@ const Round = {
       const phrase = Round.parsePhrase(foundRound.phrase);
       const guess = Round.parsePhrase(original_guess);
 
-      console.log('**** split 2', foundRound.phrase);
       if ( Round.checkPhrase(phrase, guess) ) {
         return true;
       } else if ( Round.checkPhrase(foundRound.phrase.split(' ').join('').toLowerCase(), guess) ) {
@@ -147,12 +146,10 @@ const Round = {
           ...guessFields,
           id: guessResult.insertId,
         };
-        console.log('payload', payload);
         return setKey('guesses', {
           ...guessFields,
           id: guessResult.insertId,
         }).then(() => {
-          console.log('back fine');
           return guessResult;
         });
       }));
