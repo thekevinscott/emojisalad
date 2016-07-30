@@ -80,7 +80,7 @@ const sendMessages = (messages, options = {}) => {
         }
 
         console.log('unknown error', body);
-        throw new Error('Unknown error' + byteLength);
+        throw new Error('Unknown error' + byteLength + body);
       }
       return true;
     }
