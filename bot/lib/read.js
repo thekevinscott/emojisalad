@@ -184,8 +184,8 @@ const runRead = () => {
         });
       }
     });
-  }).then(() => {
-    console.info('all done');
+  //}).then(() => {
+    //console.info('all done');
   });
 };
 

@@ -20,6 +20,25 @@ const parseSenderIDs = require('lib/parseSenderIDs');
 const EMOJI = '😀';
 const game_numbers = require('../../../../testqueue/config/numbers');
 
+const setupTwoGames = (players, invitee) => {
+  const inviter = players[0];
+  return playGame(players).then(() => {
+    return setup([
+      { player: inviter, msg: rule('new-game').example() }
+    ]);
+  }).then(() => {
+    if ( invitee ) {
+      return setup([
+        { player: inviter, msg: rule('invite').example()+invitee.number, to: game_numbers[1] }
+      ]);
+    } else {
+      return setup(players.slice(1).map((player) => {
+        return { player: inviter, msg: rule('invite').example()+player.number, to: game_numbers[1] };
+      }));
+    }
+  });
+};
+
 describe('Play', () => {
   describe('Existing Player', () => {
     it('should onboard an existing user to a new pending game', () => {
@@ -129,10 +148,11 @@ describe('Play', () => {
     const players = getPlayers(3);
     const number_of_games = 2;
     return playGames(players, number_of_games).then((games) => {
-      return Promise.all(games.map((game) => {
+      return Promise.all(games.map((game, index) => {
         const msg = 'foo';
         const game_players = parseSenderIDs(game.players);
         const game_guesser = game_players[1];
+        //console.log('game guesser', index, game);
         return check(
           { player: game_guesser, msg: rule('guess').example()+msg },
           [
@@ -222,22 +242,3 @@ describe('Play', () => {
     });
   });
 });
-
-const setupTwoGames = (players, invitee) => {
-  const inviter = players[0];
-  return playGame(players).then(() => {
-    return setup([
-      { player: inviter, msg: rule('new-game').example() }
-    ]);
-  }).then(() => {
-    if ( invitee ) {
-      return setup([
-        { player: inviter, msg: rule('invite').example()+invitee.number, to: game_numbers[1] }
-      ]);
-    } else {
-      return setup(players.slice(1).map((player) => {
-        return { player: inviter, msg: rule('invite').example()+player.number, to: game_numbers[1] };
-      }));
-    }
-  });
-};

@@ -32,10 +32,12 @@ module.exports = (message) => {
     //} else {
       //throw new Error('Invalid messages provided: ' + JSON.stringify(responses, null, 2));
     }
+    /*
   }).then((messages) => {
     if ( messages && messages.length ) {
       //console.info('messages back, now concatenate them', messages);
       return concatenate(messages);
     }
+    */
   });
 };

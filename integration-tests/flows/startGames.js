@@ -10,25 +10,6 @@ const newGame = require('flows/newGame');
 //const port = services.api.port;
 //const _ = require('lodash');
 
-const startGames = (players, number_of_games, options) => {
-  if ( ! options ) { options = {}; }
-
-  return startGame(players, options).then(() => {
-    number_of_games -= 1;
-    if ( number_of_games > 0) {
-      return sequence(Array.from({ length: number_of_games }).map(() => {
-        return () => {
-          return newGame(players);
-        };
-      }));
-    }
-  }).then(() => {
-    return getAssociatedGames(players[0]);
-  });
-};
-
-module.exports = startGames;
-
 const getAssociatedPlayers = (player) => {
   const url = `http://localhost:${port}/players`;
   return request({
@@ -42,7 +23,19 @@ const getAssociatedPlayers = (player) => {
   });
 };
 
-const getAssociatedGames = (requested_player) => {
+const aGameIsMissingRoundCount = games => {
+  return games.map(game => {
+    return game.round_count;
+  }).filter(count => count === 0).length;
+};
+
+const gamesAreMissingPlayers = (games, expected_players) => {
+  return games.filter(game => {
+    return game.players.length !== expected_players.length;
+  }).length;
+};
+
+const getAssociatedGames = (requested_player, expected_players) => {
   return getAssociatedPlayers(requested_player).then((players) => {
     const player_ids = players.map((player) => {
       return player.id;
@@ -57,7 +50,33 @@ const getAssociatedGames = (requested_player) => {
       }
     }).then((res) => {
       return JSON.parse(res.body);
+    }).then(games => {
+      if (aGameIsMissingRoundCount(games) || gamesAreMissingPlayers(games, expected_players)) {
+        // game hasn't been handled yet
+        return getAssociatedGames(requested_player, expected_players);
+      }
+
+      return games;
     });
   });
 };
+
+const startGames = (players, number_of_games, options) => {
+  if ( ! options ) { options = {}; }
+
+  return startGame(players, options).then(() => {
+    number_of_games -= 1;
+    if ( number_of_games > 0) {
+      return sequence(Array.from({ length: number_of_games }).map(() => {
+        return () => {
+          return newGame(players, null, 1);
+        };
+      }));
+    }
+  }).then(() => {
+    return getAssociatedGames(players[0], players);
+  });
+};
+
+module.exports = startGames;
 

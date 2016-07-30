@@ -53,7 +53,9 @@ const User = {
                       protocol: params.protocol,
                       maximum_games: default_maximum_games
                     });
-      return db.create(query).then((queryResult) => {
+      console.info('user create query', query.toString());
+      return db.create(query.toString()).then((queryResult) => {
+        console.info('query result from inserting user', queryResult);
         return User.findOne(queryResult.insertId).then((user) => {
           return {
             ...user,

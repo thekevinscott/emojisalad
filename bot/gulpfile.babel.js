@@ -60,11 +60,11 @@ gulp.task('update-fixtures', (cb) => {
   const tables = [
     {
       table: 'messages',
-      data: true
+      data: true,
     },
     {
       table: 'message_variants',
-      data: false
+      data: true,
     },
     {
       table: 'attributes',

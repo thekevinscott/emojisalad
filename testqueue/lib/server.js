@@ -10,6 +10,7 @@ const app = queue({
     port: require('config/app').port,
     db: require('config/db')
   },
+  POST_LIMIT: '30mb',
   parse: require('lib/parse'),
   send: require('lib/send'),
   api: {

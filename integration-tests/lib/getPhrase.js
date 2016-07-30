@@ -8,10 +8,10 @@ const getPhrase = (messages) => {
   // in the array with a messages object returned;
   // this would correlate to the second invite above,
   // which kicks off the game
-  const message = messages.filter((message) => {
-    return message.messages;
-  }).pop().messages.filter((message) => {
-    return regex.test(message.body);
+  const message = messages.filter(msg => {
+    return msg && msg.messages;
+  }).pop().messages.filter(msg => {
+    return regex.test(msg.body);
   }).pop();
 
   return message.body.match(regex).pop();

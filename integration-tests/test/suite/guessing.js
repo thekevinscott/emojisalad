@@ -14,7 +14,6 @@ const guess = rule('guess').example();
 const EMOJI = '😀';
 
 describe('Guessing', () => {
-
   describe('Correct', () => {
     it('should be able to successfully guess', () => {
       const players = getPlayers(3);
