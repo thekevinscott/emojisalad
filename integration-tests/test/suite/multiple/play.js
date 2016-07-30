@@ -205,9 +205,33 @@ describe('Play', () => {
           [
             { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game_players[0] },
             { key: 'says', options: [game_guesser.nickname, game_guesser.avatar, rule('clue').example()], to: game_players[2] },
-            { key: 'clue_b', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[0] },
-            { key: 'clue_b', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[1] },
-            { key: 'clue_b', options: [game_guesser.nickname, game_guesser.avatar, '*'], to: game_players[2] }
+            { key: 'clue_b', options: {
+              nickname: game_guesser.nickname,
+              avatar: game_guesser.avatar,
+              game: {
+                round: {
+                  clue: '*',
+                },
+              },
+            }, to: game_players[0] },
+            { key: 'clue_b', options: {
+              nickname: game_guesser.nickname,
+              avatar: game_guesser.avatar,
+              game: {
+                round: {
+                  clue: '*',
+                },
+              },
+            }, to: game_players[1] },
+            { key: 'clue_b', options: {
+              nickname: game_guesser.nickname,
+              avatar: game_guesser.avatar,
+              game: {
+                round: {
+                  clue: '*',
+                },
+              },
+            }, to: game_players[2] }
           ]
         );
       })).then((results) => {
