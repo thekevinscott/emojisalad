@@ -2,52 +2,40 @@ import typeToReducer from 'type-to-reducer';
 
 // TODO: Fix this import (should pull from index)
 import {
-  FETCH_MESSAGES,
-} from '../modules/Game/types';
+  FETCH_GAMES,
+} from '../modules/Games/types';
 
-const initialState = {
-  received: {},
-  sent: {},
-};
+const initialState = {};
 
-const getMessage = (message) => {
+const translateMessage = (message) => {
   return {
-    id: message.id,
     body: message.body,
-    from: message.from,
-    sender: message.sender,
-    to: message.to,
+    userKey: message.user_key,
+    gameKey: message.game_key,
     timestamp: message.timestamp,
     type: message.type,
   };
 };
 
-const getMessagesByType = (type, messages) => {
-  return messages.filter(message => {
-    return message.type === type;
-  }).map(message => {
-    return message;
-  }).reduce((obj, message) => ({
-    ...obj,
-    [message.id]: getMessage(message),
-  }), {});
-};
+function getMessagesFromGames(games) {
+  return games.reduce((arr, game) => {
+    return arr.concat(game.messages);
+  }, []);
+}
 
 export default typeToReducer({
-  [FETCH_MESSAGES]: {
+  [FETCH_GAMES]: {
     FULFILLED: (state, action) => {
-      return [
-        'sent',
-        'received',
-      ].reduce((obj, type) => {
-        return {
+      console.log(action.data);
+      const messages = getMessagesFromGames(action.data);
+      console.log('deez mess', messages);
+      return {
+        ...state,
+        ...messages.reduce((obj, message) => ({
           ...obj,
-          [type]: {
-            ...state[type],
-            ...getMessagesByType(type, action.payload),
-          },
-        };
-      }, {});
+          [message.key]: translateMessage(message),
+        }), {}),
+      };
     },
   },
 }, initialState);

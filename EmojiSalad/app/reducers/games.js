@@ -18,7 +18,7 @@ function translateRound(round = {}) {
   };
 }
 
-function translateGame(game) {
+function translateGame(currentGame, game) {
   return {
     key: game.key,
     created: game.created,
@@ -26,6 +26,9 @@ function translateGame(game) {
     round_count: game.round_count,
     players: game.players.map(player => player.user_key),
     round: translateRound(game.round || {}),
+    messages: (game.messages || []).sort((a, b) => {
+      return new Date(a.timestamp) - new Date(b.timestamp);
+    }).map(message => message.key),
   };
 }
 
@@ -34,12 +37,10 @@ export default typeToReducer({
     FULFILLED: (state, action) => {
       return {
         ...state,
-        ...action.data.reduce((obj, game) => {
-          return {
-            ...obj,
-            [game.key]: translateGame(game),
-          };
-        }, {}),
+        ...action.data.reduce((obj, game) => ({
+          ...obj,
+          [game.key]: translateGame(state[game.key], game),
+        }), {}),
       };
     },
   },

@@ -9,7 +9,6 @@ import Game from '../modules/Game/reducer';
 
 import games from '../reducers/games';
 import messages from '../reducers/messages';
-import players from '../reducers/players';
 import users from '../reducers/users';
 import me from '../reducers/me';
 
@@ -23,7 +22,6 @@ export default combineReducers({
   data: combineReducers({
     games,
     messages,
-    players,
     users,
     me,
   }),

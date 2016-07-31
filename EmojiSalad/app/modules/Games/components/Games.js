@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Text,
@@ -18,10 +19,6 @@ import * as styles from '../styles';
 import {
   fetchGames,
 } from '../actions';
-
-import {
-  fetchMessages,
-} from '../../Game/actions';
 
 import {
   selectGames,
@@ -40,14 +37,11 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch) {
   return {
     actions: {
       fetchGames: (userKey) => {
         return dispatch(fetchGames(userKey));
-      },
-      fetchMessages: (userKey) => {
-        //return dispatch(fetchMessages(userKey));
       },
     },
   };
@@ -57,15 +51,31 @@ const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
 });
 
+function getPlayerString(players) {
+  const playerString = players.map(player => `${player.nickname}`).join(', ');
+
+  const characterLimit = 30;
+
+  if (playerString.length > characterLimit) {
+    return `${playerString.substring(0, characterLimit - 3)}...`;
+  }
+  return playerString;
+}
+
+function parseTimestamp(timestamp) {
+  const date = moment(timestamp * 1000);
+  console.log('date', date);
+  return date.fromNow();
+}
+
 class Games extends Component {
   componentWillMount() {
     this.props.actions.fetchGames(this.props.me.key);
-    //this.props.actions.fetchMessages(this.props.me.key);
   }
 
   _renderRow(game, sectionId, rowId, highlightRow) {
-    const players = game.players.map(player => `${player.avatar} ${player.nickname}`).join(', ');
-
+    console.log(highlightRow);
+    const message = (game.messages[game.messages.length - 1] || {});
     return (
       <TouchableHighlight
         onPress={() => {
@@ -78,8 +88,24 @@ class Games extends Component {
         <View
           style={styles.row}
         >
-          <Text style={styles.rowText}>
-            {players}
+          <View style={styles.rowHeader}>
+            <Text
+              style={
+                styles.players
+              }
+              numberOfLines={1}
+            >
+              {getPlayerString(game.players)}
+            </Text>
+            <Text style={styles.timestamp}>
+              {parseTimestamp(message.timestamp)}
+            </Text>
+          </View>
+          <Text
+            style={styles.message}
+            numberOfLines={2}
+          >
+            {message.body}
           </Text>
         </View>
       </TouchableHighlight>
@@ -100,10 +126,10 @@ class Games extends Component {
   }
 
   render() {
-    console.log(this.props);
+    //console.log(this.props);
     return (
       <View style={{ flex: 1 }}>
-        <Spinner visible={this.props.ui.fetching} />
+        <Spinner visible={this.props.ui.fetching && !this.props.games.length} />
         <ListView
           dataSource={this.getGames()}
           renderRow={this._renderRow}
