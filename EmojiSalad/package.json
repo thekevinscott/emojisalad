@@ -7,11 +7,13 @@
   },
   "dependencies": {
     "axios": "0.13.1",
+    "babel-preset-react-native-stage-0": "^1.0.1",
     "react": "15.2.1",
     "react-native": "0.30.0",
     "react-native-button": "1.6.0",
     "react-native-device-info": "0.9.3",
     "react-native-gifted-messenger": "0.1.4",
+    "react-native-loading-spinner-overlay": "^0.2.3",
     "react-native-router-flux": "3.32.0",
     "react-redux": "4.4.5",
     "redux": "3.5.2",
@@ -21,6 +23,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
+    "babel-preset-stage-0": "^6.5.0",
     "eslint": "^3.1.1",
     "eslint-plugin-import": "1.11.1",
     "eslint-plugin-jsx-a11y": "2.0.1",

@@ -1,5 +1,4 @@
 import {
-  setStore,
   WHITELISTED_REDUCERS,
 } from './';
 

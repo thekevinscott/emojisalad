@@ -2,14 +2,12 @@ export function selectUser(state, userId) {
   return state.data.users[userId];
 }
 
-export function selectPlayers(state, playerIds) {
-  return playerIds.map(playerId => {
-    const player = state.data.players[playerId] || {};
-    //console.log(playerId, state, player);
-    return {
-      ...player,
-      ...selectUser(state, player.user_id),
-    };
+export function selectPlayers(state, userKeys) {
+  console.log('state data', state.data);
+  return userKeys.map(userKey => {
+    console.log('user key', userKey);
+    const player = state.data.users[userKey] || {};
+    return player;
   });
 }
 
@@ -21,4 +19,10 @@ export function selectGames(state) {
       players: selectPlayers(state, game.players),
     };
   });
+}
+
+export function selectUI(state) {
+  return {
+    fetching: state.ui.Games.fetching,
+  };
 }

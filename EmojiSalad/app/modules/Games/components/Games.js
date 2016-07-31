@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   Text,
   View,
@@ -24,6 +25,7 @@ import {
 
 import {
   selectGames,
+  selectUI,
 } from '../selectors';
 
 import {
@@ -34,17 +36,18 @@ function mapStateToProps(state) {
   return {
     games: selectGames(state),
     me: selectMe(state),
+    ui: selectUI(state),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     actions: {
-      fetchGames: (userId) => {
-        //return dispatch(fetchGames(userId));
+      fetchGames: (userKey) => {
+        return dispatch(fetchGames(userKey));
       },
-      fetchMessages: (userId) => {
-        //return dispatch(fetchMessages(userId));
+      fetchMessages: (userKey) => {
+        //return dispatch(fetchMessages(userKey));
       },
     },
   };
@@ -56,8 +59,8 @@ const ds = new ListView.DataSource({
 
 class Games extends Component {
   componentWillMount() {
-    this.props.actions.fetchGames(this.props.me.id);
-    //this.props.actions.fetchMessages(this.props.me.id);
+    this.props.actions.fetchGames(this.props.me.key);
+    //this.props.actions.fetchMessages(this.props.me.key);
   }
 
   _renderRow(game, sectionId, rowId, highlightRow) {
@@ -97,13 +100,17 @@ class Games extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
-      <ListView
-        dataSource={this.getGames()}
-        renderRow={this._renderRow}
-        renderSeparator={this._renderSeperator}
-        style={styles.container}
-      />
+      <View style={{ flex: 1 }}>
+        <Spinner visible={this.props.ui.fetching} />
+        <ListView
+          dataSource={this.getGames()}
+          renderRow={this._renderRow}
+          renderSeparator={this._renderSeperator}
+          style={styles.container}
+        />
+      </View>
     );
   }
 }

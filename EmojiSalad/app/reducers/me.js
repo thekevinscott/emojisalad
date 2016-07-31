@@ -9,7 +9,8 @@ const {
 } = types;
 
 const initialState = {
-  id: null,
+  //id: null,
+  key: null,
   blacklist: null,
   from: null,
   nickname: null,
@@ -25,7 +26,8 @@ const initialState = {
 
 const translateMe = (payload) => {
   return {
-    id: payload.id,
+    //id: payload.id,
+    key: payload.key,
     blacklist: payload.blacklist,
     from: payload.from,
     nickname: payload.nickname,

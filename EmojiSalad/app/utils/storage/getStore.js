@@ -5,11 +5,14 @@ const {
 
 import {
   KEY,
+  RESET,
 } from './config';
 
 export default function getStore() {
   return AsyncStorage.getItem(KEY).then(savedStorage => {
-    return {};
-    //return JSON.parse(savedStorage || '{}');
+    if (RESET) {
+      return {};
+    }
+    return JSON.parse(savedStorage || '{}');
   });
 }

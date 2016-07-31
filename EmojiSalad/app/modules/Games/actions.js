@@ -5,21 +5,11 @@ import {
   FETCH_GAMES,
 } from './types';
 
-export function fetchGames(userId) {
+export function fetchGames(userKey) {
   return {
     type: FETCH_GAMES,
     payload: {
-      userId,
+      userKey,
     },
   };
-  /*
-  return {
-    type: FETCH_GAMES,
-    payload: Api.fetch(`games?user_id=${userId}`).then(response => {
-      return response;
-    }).catch(err => {
-      console.log('swallow this');
-    }),
-  };
-  */
 }

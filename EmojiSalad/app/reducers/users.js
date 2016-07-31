@@ -7,25 +7,45 @@ import {
 
 const initialState = {};
 
+function getPlayersWithUserKeys(players) {
+  return players.filter(player => {
+    return player.user_key;
+  });
+}
+
+function getUsers(games) {
+  return games.reduce((gameObj, game) => ({
+    ...gameObj,
+    ...getPlayersWithUserKeys(game.players).reduce((playerObj, player) => ({
+      ...playerObj,
+      [player.user_key]: player,
+    }), {}),
+  }), {});
+}
+
+function translateUser(user) {
+  return {
+    //key: user.user_key,
+    nickname: user.nickname,
+    blacklist: user.blacklist,
+    avatar: user.avatar,
+    protocol: user.protocol,
+    archived: user.user_archived,
+  };
+}
+
 export default typeToReducer({
   [FETCH_GAMES]: {
     FULFILLED: (state, action) => {
+      const users = getUsers(action.data);
       return {
         ...state,
-        ...action.payload.reduce((gameObj, game) => ({
-          ...gameObj,
-          ...game.players.reduce((obj, player) => ({
+        ...Object.keys(users).reduce((obj, userKey) => {
+          return {
             ...obj,
-            [player.user_id]: {
-              id: player.user_id,
-              nickname: player.nickname,
-              blacklist: player.blacklist,
-              avatar: player.avatar,
-              protocol: player.protocol,
-              user_archived: player.user_archived,
-            },
-          }), {}),
-        }), {}),
+            [userKey]: translateUser(users[userKey]),
+          };
+        }, {}),
       };
     },
   },

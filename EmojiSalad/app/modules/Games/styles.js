@@ -3,7 +3,7 @@ export const container = {
 };
 
 export const row = {
-  backgroundColor: '#CCC',
+  backgroundColor: '#FFF',
   padding: 20,
   justifyContent: 'center',
 };

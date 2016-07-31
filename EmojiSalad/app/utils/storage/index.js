@@ -8,7 +8,7 @@ import {
 } from './config';
 
 // TODO: Fix this import
-import getStore2 from './getStore';
+export getStore from './getStore';
 
 let storing = false;
 let nextStore = null;
@@ -16,7 +16,7 @@ let nextStore = null;
 export function setStore(item) {
   if (!storing) {
     storing = true;
-    AsyncStorage.setItem(KEY, item).then(result => {
+    AsyncStorage.setItem(KEY, item).then(() => {
       storing = false;
       if (nextStore) {
         setStore(nextStore);
@@ -34,8 +34,5 @@ export function setStore(item) {
 import reducers from './whitelisted';
 export const WHITELISTED_REDUCERS = reducers;
 
-// TODO Fix this import / output
-import getStateParts2 from './getStateParts';
-export const getStateParts = getStateParts2;
-
-export const getStore = getStore2;
+export getStateParts from './getStateParts';
+//export const getStateParts = _getStateParts;

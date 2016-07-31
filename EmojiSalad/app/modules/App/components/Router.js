@@ -9,7 +9,7 @@ import { Actions } from 'react-native-router-flux';
 
 //import * as styles from '../styles';
 
-import { Router, Scene } from 'react-native-router-flux';
+import { Router as _Router, Scene } from 'react-native-router-flux';
 
 import RegisterContents from '../../Register';
 const {
@@ -26,11 +26,11 @@ const {
   Game,
 } = GameContents;
 
-export default class AppRouter extends Component {
+export default class Router extends Component {
   render() {
-    const iExist = !!this.props.me.id;
+    const iExist = !!this.props.me.key;
     return (
-      <Router>
+      <_Router>
         <Scene key="root">
           <Scene
             key="register"
@@ -57,7 +57,7 @@ export default class AppRouter extends Component {
             }}
           />
         </Scene>
-      </Router>
+      </_Router>
     );
   }
 }

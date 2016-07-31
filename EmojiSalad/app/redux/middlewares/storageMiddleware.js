@@ -3,7 +3,7 @@ import {
   getStateParts,
 } from '../../utils/storage';
 
-export default function storageMiddleware({ dispatch, getState }) {
+export default function storageMiddleware({ getState }) {
   return next => action => {
     const nextAction = next(action);
     setStore(getStateParts(getState()));
