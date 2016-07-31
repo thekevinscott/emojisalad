@@ -51,11 +51,19 @@ function processRoute(ws, type, payload) {
       data,
     };
   }).catch(data => {
-    console.log('data back from rejection', data.message, data.stack);
-    throw new RouteException(
-      REJECTED,
-      data.message,
-    );
+    if (data.message || data.stack) {
+      console.log('data back from rejection', data.message, data.stack);
+      throw new RouteException(
+        REJECTED,
+        data.message,
+      );
+    } else {
+      console.log('data back from rejection', data);
+      throw new RouteException(
+        REJECTED,
+        'Unknown error',
+      );
+    }
   });
 }
 

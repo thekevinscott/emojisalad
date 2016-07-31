@@ -108,6 +108,7 @@ const Player = {
                 //.field('n.number','to')
                 //.field('p.state_id')
                 .field('u.id', 'user_id')
+                .field('u.key', 'user_key')
                 .field('g.id', 'game_id')
                 //.field('u.blacklist')
                 .field('u.nickname')
@@ -163,42 +164,6 @@ const Player = {
     //console.info('query', query.toString());
     return db.query(query);
   },
-  /*
-  update: (player, params) => {
-    //let whitelist = [
-      //'to'
-    //];
-
-    const query = squel
-                  .update()
-                  .table('players', 'p')
-                  .where('p.id=?', player.id);
-
-    let valid_query = false;
-
-    //if ( params.to ) {
-      //valid_query = true;
-      //const game_number = squel
-                          //.select()
-                          //.field('id')
-                          //.from('game_numbers','n')
-                          //.where('number = ?', params.to);
-      //query.set('`to`', game_number);
-    //}
-
-    if ( ! valid_query ) {
-      throw "You must provide a valid key to update";
-    }
-
-    return db.query(query).then((rows) => {
-      if ( rows && rows.changedRows ) {
-        return Player.findOne(player.id);
-      } else {
-        return null;
-      }
-    });
-  },
-  */
   remove: (player_id) => {
     const query = squel
                   .update()

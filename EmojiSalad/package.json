@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native start"
+    "start": "react-native start -- --port=8081 --reset-cache"
   },
   "dependencies": {
     "axios": "0.13.1",

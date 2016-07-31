@@ -302,6 +302,12 @@ const Game = {
               .left_join('players', 'p', 'p.game_id=g.id')
               .left_join('users', 'u', 'u.id=p.user_id')
               .where('u.id=?',params.user_id);
+    } else if (params.user_key) {
+      query = query
+              .field('p.id','player_id')
+              .left_join('players', 'p', 'p.game_id=g.id')
+              .left_join('users', 'u', 'u.id=p.user_id')
+              .where('u.key=?',params.user_key);
     }
 
     const getByGameID = (arr) => {
@@ -331,6 +337,7 @@ const Game = {
               const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
               return {
                 id: game.id,
+                key: game.key,
                 created: game.created,
                 players: players[game.id] || [],
                 round_count: game.round_count,

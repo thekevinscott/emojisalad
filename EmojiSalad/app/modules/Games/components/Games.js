@@ -41,10 +41,10 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     actions: {
       fetchGames: (userId) => {
-        return dispatch(fetchGames(userId));
+        //return dispatch(fetchGames(userId));
       },
       fetchMessages: (userId) => {
-        return dispatch(fetchMessages(userId));
+        //return dispatch(fetchMessages(userId));
       },
     },
   };

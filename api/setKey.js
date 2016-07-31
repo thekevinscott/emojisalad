@@ -3,7 +3,7 @@ import db from 'db';
 //import crypto from 'crypto';
 import uuid from 'node-uuid';
 //const algorithm = 'aes-256-ctr';
-//const password = 'dd6F3Efed6F3d6F3Efeqd6F3Efd6F3Efd6F3Efeqd6F3Efe';
+//const salt = 'dd6F3Efed6F3d6F3Efeqd6F3Efd6F3Efd6F3Efeqd6F3Efe';
 
 //function encrypt(text) {
   //const payload = new Buffer(text + password).toString('base64');
@@ -20,7 +20,9 @@ export default function setKey(table, obj, where) {
   if (! obj || typeof obj !== 'object') {
     throw new Error('please provide a valid obj in setKey');
   }
-  const preHash = uuid.v4();
+  const preHash = uuid.v1({
+    //node: salt,
+  });
   //const preHash = encrypt(JSON.stringify(obj));
   let query = squel
   .update()

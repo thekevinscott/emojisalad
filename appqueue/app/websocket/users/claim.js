@@ -12,15 +12,17 @@ export default function claim(ws, payload) {
       throw new Error('Invalid phone number');
     }
 
-    return getUsers(phone);
-  }).then(users => {
-    if (users.length === 0) {
-      throw new Error(`No users found for ${text}`);
-    }
-    return users.shift();
-  }).then(user => {
-    console.log('this is the user', user);
-    updateUser(ws, user);
-    return user;
+    return getUsers(phone).then(users => {
+      if (users.length === 0) {
+        throw new Error(`No users found for ${text}`);
+      }
+      return users.shift();
+    }).then(user => {
+      updateUser(ws, user, {
+        device,
+        phone,
+      });
+      return user;
+    });
   });
 }

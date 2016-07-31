@@ -43,6 +43,9 @@ export default function fetchFromService({
     method,
   } = getRequestedRoute(service, route, routeParams);
 
+  if (!url) {
+    throw new Error('URL does not exist for route', route);
+  }
   const payload = {
     method,
     ...options,

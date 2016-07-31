@@ -1,17 +1,7 @@
-import fetchFromService from '../lib/fetchFromService';
+import getUserGames from './getUserGames';
 
 export default function fetchGames(ws, payload) {
-  const userId = payload.userId;
-
-  return fetchFromService({
-    service: 'api',
-    route: 'games',
-    options: {
-      body: {
-        user_id: userId,
-      },
-    },
-  }).then(response => {
+  return getUserGames(payload.userKey).then(response => {
     console.log('games', response);
     return response;
   });

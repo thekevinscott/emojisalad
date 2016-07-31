@@ -7,7 +7,7 @@ const sendMessage = ws => payload => {
     console.error('data must not be a string', payload);
   } else {
     const parsedPayload = JSON.stringify(payload);
-    console.log('parsed payload', parsedPayload);
+    //console.log('parsed payload', parsedPayload);
     ws.send(parsedPayload);
   }
 };
