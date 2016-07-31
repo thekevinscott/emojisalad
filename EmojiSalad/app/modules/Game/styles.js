@@ -1,9 +1,13 @@
+import {
+  Platform,
+} from 'react-native';
+
 export const container = {
-  paddingTop: 84,
-  //backgroundColor: '#CCC',
-  height: 200,
-  backgroundColor: 'blue',
-  flex: 0,
+  paddingTop: Platform.select({
+    ios: 64,
+    android: 54,
+  }),
+  flex: 1,
 };
 
 export const row = {
@@ -15,13 +19,35 @@ export const row = {
 export const rowText = {
 };
 
-export const myMessage = {
-  marginLeft: 70,
+export const receivedMessage = {
+  marginLeft: -40,
+  backgroundColor: '#d8d8d8',
+};
+
+export const sentMessage = {
   //backgroundColor: '#007aff',
   backgroundColor: '#bb27dd',
 };
 
-export const rowSeparator = (adjacentRowHighlighted) => ({
-  height: adjacentRowHighlighted ? 4 : 1,
-  backgroundColor: adjacentRowHighlighted ? '#AAA' : '#333',
-});
+export const placeholder = {
+  color: '#bbbbbb',
+};
+
+export const composer = {
+  flex: 1,
+  marginLeft: 10,
+  fontSize: 16,
+  lineHeight: 16,
+  marginTop: Platform.select({
+    ios: 6,
+    android: 0,
+  }),
+  marginBottom: Platform.select({
+    ios: 5,
+    android: 3,
+  }),
+  height: Platform.select({
+    ios: 33,
+    android: 41,
+  }), // TODO SHARE with GiftedChat.js and tests
+};

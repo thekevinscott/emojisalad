@@ -21,27 +21,33 @@ function updateKey(table, smsId, attempts = 0) {
   .where('sms_id=?', smsId);
 
   return db.query(updateQuery).then(dbResult => {
-    if (dbResult.affectedRows === 0) {
+    if (!dbResult || dbResult.affectedRows === 0) {
       console.info('uh oh, try again!', table, smsId);
       return updateKey(table, smsId, attempts + 1);
     }
+
+    return {
+      updateResult: dbResult,
+      smsId,
+    };
+    //console.info('sms id', smsId, 'updated good');
   });
 }
 
 function insertAllQueries(table, queries) {
   return queries.reduce((promise, { query, row }) => {
     return promise.then(() => {
-      //console.log('executing', query.toString());
+      console.info('executing', row.sms_id, query.toString());
       return db.query(query);
     }).then(result => {
-      //console.log('result back for row', row.sms_id, result);
+      //console.info('result back for row', row.sms_id, result);
       if (!result || !result.affectedRows) {
         console.log('error inserting', query.toString());
         throw new Error('Error inserting row');
       }
       return result;
     }).then(result => {
-      //console.log('executing update key for', row.sms_id);
+      console.info('executing update key for', row.sms_id);
       return updateKey(table, row.sms_id).then(() => {
         return result;
       });
@@ -107,7 +113,7 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
             created: squel.fval(`FROM_UNIXTIME(${row.timestamp})`),
             sms_id: row.sms_id,
             user_key: userKey,
-            game_key: row.gameKey,
+            game_key: row.gameKey || squel.fval('NULL'),
           }),
         };
       });
@@ -117,7 +123,8 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
       return insertAllQueries(table, queries).then(result => {
         console.info('result of insert', result);
         return rows.reduce((promise, row) => {
-          return promise.then(() => {
+          return promise.then((resultt) => {
+            console.info('promise has been satisfied', resultt);
             return updateKey(table, row.sms_id);
           });
         }, getPromise()).then(() => {

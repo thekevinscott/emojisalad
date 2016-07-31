@@ -1,2 +1,5 @@
-export const FETCH_MESSAGES = 'FETCH_MESSAGES';
-export const TRANSITION_TO_GAMES = 'TRANSITION_TO_GAMES';
+const KEY = '@Game';
+
+export const FETCH_MESSAGES = `${KEY}_FETCH_MESSAGES`;
+export const TRANSITION_TO_GAMES = `${KEY}_TRANSITION_TO_GAMES`;
+export const INCREMENT_PAGE = `${KEY}_INCREMENT_PAGE`;

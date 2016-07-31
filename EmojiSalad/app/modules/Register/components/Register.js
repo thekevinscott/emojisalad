@@ -164,6 +164,7 @@ class Register extends Component {
             autoFocus={true}
             autoCorrect={false}
             enablesReturnKeyAutomatically={true}
+            underlineColorAndroid="transparent"
             keyboardType="phone-pad"
             onSubmitEditing={this.submitClaim}
             returnKeyType="join"

@@ -34,7 +34,7 @@ function getQuery(where) {
 
 export default function fetchMessagesForGame(where = {}) {
   const query = getQuery(where);
-  //console.log('the query', query.toString());
+  console.log('the query', query.toString());
   return db.query(query);
 }
 

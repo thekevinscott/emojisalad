@@ -1,9 +1,12 @@
 import typeToReducer from 'type-to-reducer';
 
-// TODO: Fix this import (should pull from index)
 import {
   FETCH_GAMES,
 } from '../modules/Games/types';
+
+import {
+  FETCH_MESSAGES,
+} from '../modules/Game/types';
 
 const initialState = {};
 
@@ -23,19 +26,28 @@ function getMessagesFromGames(games) {
   }, []);
 }
 
+function buildMessageObj(state, messages) {
+  return {
+    ...state,
+    ...messages.reduce((obj, message) => ({
+      ...obj,
+      [message.key]: translateMessage(message),
+    }), {}),
+  };
+}
+
 export default typeToReducer({
+  [FETCH_MESSAGES]: {
+    FULFILLED: (state, { data }) => {
+      const messages = data.messages;
+      return buildMessageObj(state, messages);
+    },
+  },
   [FETCH_GAMES]: {
     FULFILLED: (state, action) => {
       //console.log(action.data);
       const messages = getMessagesFromGames(action.data);
-      //console.log('deez mess', messages);
-      return {
-        ...state,
-        ...messages.reduce((obj, message) => ({
-          ...obj,
-          [message.key]: translateMessage(message),
-        }), {}),
-      };
+      return buildMessageObj(state, messages);
     },
   },
 }, initialState);

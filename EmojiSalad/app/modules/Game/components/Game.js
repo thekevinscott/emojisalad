@@ -6,16 +6,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
   //Text,
+  TextInput,
   View,
 } from 'react-native';
 
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import * as styles from '../styles';
-
-import {
-  //fetchMessages,
-} from '../actions';
 
 import {
   makeMapStateToProps,
@@ -25,9 +22,11 @@ import {
 class Game extends Component {
   constructor(props) {
     super(props);
-    this.onLoadEarlier = this.onLoadEarlier.bind(this);
+    this.loadEarlier = this.loadEarlier.bind(this);
+    this.onSend = this.onSend.bind(this);
+    this.renderBubble = this.renderBubble.bind(this);
+    this.renderComposer = this.renderComposer.bind(this);
     this.state = {
-      loadEarlier: true,
     };
   }
 
@@ -35,34 +34,86 @@ class Game extends Component {
     //this.props.actions.fetchMessages(this.props.me.id);
   }
 
-  onLoadEarlier() {
-    console.log('load the earlier ones');
+  loadEarlier() {
+    this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
+    this.props.actions.incrementPage(this.props.game.key);
+  }
+
+  onSend() {
+    console.log('send!');
+  }
+
+  renderBubble(props) {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          left: styles.receivedMessage,
+          right: styles.sentMessage,
+        }}
+      />
+    );
+  }
+
+  renderComposer() {
+    return (
+      <TextInput
+        placeholder="Message"
+        placeholderTextColor={styles.placeholder.color}
+        multiline={false}
+        style={styles.composer}
+        onChange={(e) => {
+          console.log(e);
+        }}
+        enablesReturnKeyAutomatically={true}
+        underlineColorAndroid="transparent"
+      />
+    );
+  }
+
+  renderMessenger() {
+    //console.log('laod earlier', this.props.messages.length, this.props.game.totalMessages);
+    return (
+      <GiftedChat
+        styles={{
+          backgroundColor: 'blue',
+        }}
+        isAnimated={true}
+        loadEarlier={this.props.messages.length < this.props.game.totalMessages}
+        onLoadEarlier={this.loadEarlier}
+        renderBubble={this.renderBubble}
+        user={{
+          _id: 1,
+        }}
+        onSend={this.onSend}
+        renderComposer={this.renderComposer}
+        messages={this.props.messages.map((message, index) => {
+          const user = {
+            _id: (message.type === 'received') ? 1 : 2,
+          };
+          return {
+            text: message.body,
+            _id: index + 1,
+            position: (message.type === 'received') ? 'right' : 'left',
+            createdAt: new Date(message.timestamp * 1000),
+            user,
+          };
+        })}
+      />
+    );
   }
 
   render() {
+    console.log('render Game');
     return (
       <View
         style={styles.container}
       >
-        <GiftedChat
-          styles={{
-            bubbleRight: styles.myMessage,
-          }}
-          isAnimated={true}
-          loadEarlier={this.state.loadEarlier}
-          onLoadEarlier={this.onLoadEarlier}
-          messages={this.props.messages.slice(0, 1).map(message => {
-            return {
-              text: message.body,
-              uniqueId: message.key,
-              //name: 'React-Bot',
-              //image: (message.type === 'received') ? null : {
-                //uri: 'https://facebook.github.io/react/img/logo_og.png',
-              //},
-              position: (message.type === 'received') ? 'right' : 'left',
-            };
-          })}
-        />
+        <View style={{
+          flex: 1,
+        }}>
+          {this.renderMessenger()}
+        </View>
       </View>
     );
   }
