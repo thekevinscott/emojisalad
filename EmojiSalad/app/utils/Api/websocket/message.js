@@ -4,8 +4,8 @@ import {
 
 function parsePayload(e) {
   try {
-    console.log('got a message back', e);
     const payload = JSON.parse(e.data);
+    console.log('got a message back', payload);
     if (!payload.type) {
       console.log('no type for payload', Object.keys(payload));
     }

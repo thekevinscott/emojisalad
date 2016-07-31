@@ -73,7 +73,7 @@ class Register extends Component {
       this.textInput.focus();
     }
 
-    if (nextProps.me && nextProps.me.id && !this.props.me.id) {
+    if (nextProps.me && nextProps.me.key && !this.props.me.key) {
       this.setState({
         fakeMigration: new Date(),
       });
@@ -135,7 +135,7 @@ class Register extends Component {
       color: bodyColor,
     };
 
-    const success = (this.props.me && this.props.me.id) ? (
+    const success = (this.props.me && this.props.me.key) ? (
       <Animated.Text style={bodyStyle}>
         Welcome, {this.props.me.nickname}! Please wait while we migrate your games and texts over.
       </Animated.Text>
