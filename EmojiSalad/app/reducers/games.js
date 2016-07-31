@@ -18,6 +18,10 @@ function translateRound(round = {}) {
   };
 }
 
+function orderByOldest(a, b) {
+  return new Date(a.timestamp) - new Date(b.timestamp);
+}
+
 function translateGame(currentGame, game) {
   return {
     key: game.key,
@@ -26,9 +30,7 @@ function translateGame(currentGame, game) {
     round_count: game.round_count,
     players: game.players.map(player => player.user_key),
     round: translateRound(game.round || {}),
-    messages: (game.messages || []).sort((a, b) => {
-      return new Date(a.timestamp) - new Date(b.timestamp);
-    }).map(message => message.key),
+    messages: (game.messages || []).sort(orderByOldest).map(message => message.key),
   };
 }
 

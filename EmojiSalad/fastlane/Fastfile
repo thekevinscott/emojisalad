@@ -1,0 +1,45 @@
+desc "Submit a new Beta Build to Apple TestFlight"
+desc "This will also make sure the profile is up to date"
+lane :beta do
+  git_url = "git@bitbucket.org:slipper-siblings/emojisalad-match.git"
+  # UI.important "Important Message"
+  # UI.error "O NO!"
+  # UI.message "Basic blah"
+  answer = UI.select("Would you like to add a Changelog?", ["Yes", "No"])
+  changelog = ask('Type Changelog message:') if answer == "Yes"
+
+  # Do application testing here
+  # Very personal process
+
+  # always get latest certificates/provisioning profiles
+  match(type: 'appstore')
+
+  # Change build number
+  #increment_build_number(
+    #xcodeproj: "./ios/EmojiSalad.xcodeproj"
+  #)
+
+  gym(
+    scheme: "EmojiSalad",
+    project: "./ios/EmojiSalad.xcodeproj",
+    use_legacy_build_api: true
+    # hypothetically could be a workspace
+    # especially if you bring in pods!
+    # workspace: "./ios/AppName.xcworkspace"
+  )
+
+  # Sometimes itunes email is different!
+  if changelog
+    pilot(username: "kevin@scottlabsllc.com")
+  else
+    pilot(username: "kevin@scottlabsllc.com", changelog: changelog)
+  end
+
+  # Reminder of testers
+  sh "pilot list"
+
+  #slack(
+    #message: "App successfully released",
+    #channel: "#myAppChannel"
+  #)
+end
