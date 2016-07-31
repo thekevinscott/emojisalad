@@ -73,14 +73,13 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
   ].map(table => {
     console.info('insert for table', table);
     const games = getSenderForGames(gamesArray, userKey);
-    console.info('got sender for games', games);
     const rows = messages[table].map(message => {
-      console.info('the message', message);
+      //console.info('the message', message);
       const key = table === 'received' ? 'to' : 'from';
       const messageKey = message[key];
-      //console.log('message key', key, messageKey, games);
+      console.info('message key', key, messageKey);
       const gameKey = games[messageKey];
-      //console.log('game key', gameKey);
+      console.info('game key', gameKey);
       return {
         body: message.body,
         [table === 'received' ? 'from' : 'to']: userId,
