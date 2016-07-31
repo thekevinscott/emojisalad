@@ -1,6 +1,9 @@
 import fetchFromService from '../lib/fetchFromService';
 
 export default function getUserGames(userKey) {
+  if (!userKey) {
+    throw new Error('You must provide a user key');
+  }
   return fetchFromService({
     service: 'api',
     route: 'games.get',
