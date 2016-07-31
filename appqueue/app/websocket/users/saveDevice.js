@@ -1,6 +1,7 @@
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 export default function saveDevice(user, payload) {
+  console.info('save device for user');
   const userKey = user.key;
   const number = payload.phone;
   const device = payload.device;

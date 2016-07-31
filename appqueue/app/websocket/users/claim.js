@@ -25,6 +25,7 @@ export default function claim(ws, payload) {
         device,
         phone,
       });
+      console.info('return user', user);
       return user;
     });
   });
