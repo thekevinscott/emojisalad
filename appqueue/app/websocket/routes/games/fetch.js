@@ -1,5 +1,5 @@
-import getUserGames from './getUserGames';
-import fetchMessagesForGames from '../messages/fetchMessagesForGames';
+import getUserGames from '../../games/getUserGames';
+import fetchMessagesForGames from '../../messages/fetchMessagesForGames';
 
 export default function fetchGames(ws, { userKey }) {
   if (! userKey) {

@@ -1,6 +1,6 @@
-import parsePhone from '../phones/parsePhone';
-import getUsers from '../users/getUsers';
-import updateUser from '../users/updateUser';
+import parsePhone from '../../phones/parsePhone';
+import getUsers from '../../users/getUsers';
+import updateUser from '../../users/updateUser';
 
 export default function claim(ws, payload) {
   const text = payload.text;
