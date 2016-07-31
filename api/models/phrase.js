@@ -49,6 +49,7 @@ const Phrase = {
     let query = squel
                 .select()
                 .field('phrase')
+                .field('p.key')
                 .field('p.created')
                 .field('p.id')
                 .field('nickname', 'admin')
