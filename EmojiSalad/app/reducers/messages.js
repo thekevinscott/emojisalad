@@ -26,9 +26,9 @@ function getMessagesFromGames(games) {
 export default typeToReducer({
   [FETCH_GAMES]: {
     FULFILLED: (state, action) => {
-      console.log(action.data);
+      //console.log(action.data);
       const messages = getMessagesFromGames(action.data);
-      console.log('deez mess', messages);
+      //console.log('deez mess', messages);
       return {
         ...state,
         ...messages.reduce((obj, message) => ({

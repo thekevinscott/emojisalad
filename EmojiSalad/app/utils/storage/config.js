@@ -1,2 +1,2 @@
 export const KEY = '@EmojiSalad';
-export const RESET = false;
+export const RESET = true;

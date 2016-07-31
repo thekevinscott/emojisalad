@@ -13,7 +13,7 @@ import {
 //}
 
 export function selectMessages(state, messageKeys = []) {
-  console.log('select messages', state, messageKeys);
+  //console.log('select messages', state, messageKeys);
   return messageKeys.map(key => {
     return {
       key,

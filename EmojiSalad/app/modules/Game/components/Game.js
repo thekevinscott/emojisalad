@@ -28,7 +28,6 @@ class Game extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <View
         style={styles.container}
@@ -40,7 +39,7 @@ class Game extends Component {
 
           autoFocus={false}
           messages={this.props.messages.map(message => {
-            console.log(message);
+            //console.log(message);
             return {
               text: message.body,
               uniqueId: message.key,

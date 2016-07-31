@@ -619,13 +619,14 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "AppStore-siblings.emojiSalad.mobileprovision";
+				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;
 			};
 			name = Debug;
@@ -642,13 +643,14 @@
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "AppStore-siblings.emojiSalad.mobileprovision";
+				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;
 			};
 			name = Release;

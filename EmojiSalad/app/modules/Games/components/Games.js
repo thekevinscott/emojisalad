@@ -73,7 +73,7 @@ class Games extends Component {
   }
 
   _renderRow(game, sectionId, rowId, highlightRow) {
-    console.log(highlightRow);
+    //console.log(highlightRow);
     const message = (game.messages[game.messages.length - 1] || {});
     return (
       <TouchableHighlight
