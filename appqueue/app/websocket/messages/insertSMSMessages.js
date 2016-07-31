@@ -50,13 +50,13 @@ function insertAllQueries(table, queries) {
 }
 
 function getSenderForGames(games, userKey) {
-  console.info('getting sender for games', games);
+  //console.info('getting sender for games', games);
   return games.reduce((obj, game) => {
     const matchingPlayer = game.players.filter(player => {
       return player.user_key === userKey;
     }).pop();
 
-    console.info('matching player', matchingPlayer, game);
+    //console.info('matching player', matchingPlayer, game);
 
     return {
       ...obj,
