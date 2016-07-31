@@ -1,16 +1,14 @@
-'use strict';
-
 const join_string = '\n\n';
 const _ = require('lodash');
 
-const concatenate = function(messages) {
+module.exports = function preprocessSend(messages) {
   const keys = {};
   if ( ! messages.length ) {
     console.info('no messages provided');
     throw new Error("No messages provided");
   }
-  for ( let i=0; i < messages.length; i++ ) {
-    let message = messages[i];
+  for ( var i=0; i < messages.length; i++ ) {
+    var message = messages[i];
     if ( ! message.body) {
       console.info('no body');
       throw new Error("No body provided");
@@ -21,7 +19,7 @@ const concatenate = function(messages) {
     if ( ! message.from) {
       throw new Error("No from provided");
     }
-    let key = message.to+message.from;
+    var key = message.to+message.from;
     if ( !keys[key] ) {
       keys[key] = [];
     }
@@ -47,6 +45,3 @@ const concatenate = function(messages) {
 
   return joined_messages;
 };
-
-module.exports = concatenate;
-module.exports.join_string = join_string;

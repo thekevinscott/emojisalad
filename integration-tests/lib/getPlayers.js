@@ -9,8 +9,7 @@ const EMOJIS = [
   '🌟',
   '🍔',
   '🐦',
-  '🐃'
-
+  '🐃',
 ];
 
 // if a number is the argument, this is the number of players
@@ -27,10 +26,14 @@ const EMOJIS = [
   //'Dave'
 //];
 
+function getEmojis() {
+  return EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+}
+
 function getPlayers(arg) {
   let players = [];
   if ( _.isNumber(arg) ) {
-    for ( let i=0;i<arg;i++ ) {
+    for ( let i=0; i<arg; i++ ) {
       const number = getRandomPhone();
       players.push({
         number,
@@ -57,10 +60,6 @@ function getPlayers(arg) {
     });
   }
   return players;
-}
-
-function getEmojis() {
-  return EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
 }
 
 module.exports = getPlayers;

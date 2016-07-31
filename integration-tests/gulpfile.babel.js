@@ -31,20 +31,23 @@ const test_port = services.testqueue.port;
 const seed = () => {
   const commands = [
     {
-      chdir: '../api'
+      chdir: '../api',
+      seeding_command: 'seed_test',
     },
     {
-      chdir: '../testqueue'
+      chdir: '../testqueue',
+      seeding_command: 'seed',
     },
     {
-      chdir: '../bot'
+      chdir: '../bot',
+      seeding_command: 'seed_test',
     }
   ];
   return Promise.all(commands.map((command) => {
     process.chdir(command.chdir);
     const seed_command = [[
       'gulp',
-      'seed'
+      command.seeding_command,
     ].join(' ')];
     return shared.exec(seed_command);
   })).then((res) => {
@@ -175,11 +178,11 @@ gulp.task('test', () => {
     //console.log('kill teh servers');
     return Promise.all(servers.map((server) => {
       return server.slaughter();
-    })).then((servers) => {
-      //console.log('all servers killed');
-      return servers;
-    });
+    }));
   };
+  process.on('exit', () => {
+    return killServers();
+  });
   return seed().then(() => {
     return startServers(process.env.DEBUG, log_level);
   }).then((response) => {
@@ -216,9 +219,6 @@ gulp.task('test', () => {
       process.exit(1);
     });
   //}).done(() => {
-  });
-  process.on('exit', () => {
-    return killServers();
   });
 });
 

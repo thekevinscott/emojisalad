@@ -29,6 +29,12 @@ module.exports = (game, submitter, input) => {
             key: 'emojis',
             options: [submitter.nickname, submitter.avatar, input]
           }, message),
+        ];
+      })).concat(round.players.map(player => {
+        const message = {
+          player
+        };
+        return [
           _.assign({
             key: 'guessing-instructions'
           }, message)
@@ -38,7 +44,7 @@ module.exports = (game, submitter, input) => {
       }, []);
     } else {
       console.error('round', round, game);
-      throw "Round was not updated";
+      throw new Error("Round was not updated");
     }
   });
 };

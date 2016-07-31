@@ -8,6 +8,7 @@ const Game = require('./game');
 const _ = require('lodash');
 const registry = require('microservice-registry');
 const request = Promise.promisify(require('request'));
+import setKey from 'setKey';
 
 const Invite = {
   /**
@@ -42,7 +43,6 @@ const Invite = {
           const players = game.players.map((player) => {
             return player.from;
           });
-          //return Promise.all(invited_users.map((invited_user) => {
           if ( invited_user.blacklist ) {
             return {
               error: `User has asked not to be contacted`,
@@ -101,7 +101,7 @@ const Invite = {
                 return request(options).then((response) => {
                   try {
                     return JSON.parse(response.body);
-                  } catch(err) {
+                  } catch (err) {
                     console.error('error parsing json response', response.body);
                     throw new Error('Error getting sender');
                   }
@@ -111,24 +111,27 @@ const Invite = {
                     //const game_number = rows[0];
 
                     const query = squel
-                                  .insert()
-                                  .into('invites')
-                                  .set('game_id', game.id)
-                                  //.set('game_number_id', game_number.id)
-                                  .set('game_number_id', response.id)
-                                  .set('invited_id', invited_user.id)
-                                  .set('inviter_id', params.inviter_id);
+                    .insert()
+                    .into('invites')
+                    .set('game_id', game.id)
+                    .set('game_number_id', response.id)
+                    .set('invited_id', invited_user.id)
+                    .set('inviter_id', params.inviter_id);
 
                     return db.query(query.toString()).then((row) => {
-                      //invited_user.to = game_number.number;
                       invited_user.to = response.id;
 
-                      return {
+                      const finalInvite = {
                         id: row.insertId,
                         game,
                         invited_user,
                         inviter_player
                       };
+                      return setKey('invites', {
+                        ...finalInvite,
+                      }).then(() => {
+                        return finalInvite;
+                      });
                     });
                   } else {
                     console.error('No game numbers returned for', invited_user);
@@ -140,17 +143,6 @@ const Invite = {
           }
           //}));
         });
-      //}).then((result) => {
-        //return result;
-        /*
-        console.info('result', result);
-        if ( result && result.id ) {
-          return result;
-        } else {
-          console.error('result', result);
-          throw new Error("There was an error inserting invite");
-        }
-        */
       });
     }).catch((err) => {
       console.error(err);

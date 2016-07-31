@@ -122,7 +122,7 @@ describe('Game', () => {
         return setup([
           { player: players[1], msg: guess + first_game_phrase, get_response: true },
           { player: players[1], msg: EMOJI }
-        ]).then((messages) => {
+        ], 5).then((messages) => {
           const game_phrase = getPhrase(messages);
           return check(
             { player: players[0], msg: guess + game_phrase },
@@ -145,12 +145,13 @@ describe('Game', () => {
         return setup([
           { player: players[1], msg: guess + first_game_phrase, get_response: true },
           { player: players[1], msg: EMOJI }
-        ]).then((messages) => {
+        ], 8).then((messages) => {
+          //console.log('messages', messages);
           const second_game_phrase = getPhrase(messages);
           return setup([
             { player: players[0], msg: guess + second_game_phrase, get_response: true },
             { player: players[2], msg: EMOJI }
-          ]);
+          ], 8);
         }).then((messages) => {
           const game_phrase = getPhrase(messages);
           return check(
@@ -234,7 +235,7 @@ describe('Game', () => {
           { player: players[2], msg: 'y' },
           { player: players[2], msg: players[2].nickname },
           { player: players[2], msg: players[2].avatar }
-        ]).then((messages) => {
+        ], 5).then((messages) => {
           const game_phrase = getPhrase(messages);
           return check(
             { player: players[0], msg: guess + game_phrase },
@@ -260,7 +261,7 @@ describe('Game', () => {
           { player: players[0], msg: EMOJI },
           { player: players[1], msg: guess + first_game_phrase, get_response: true },
           { player: players[1], msg: EMOJI }
-        ]).then((messages) => {
+        ], 8).then((messages) => {
           const game_phrase = getPhrase(messages);
           return setup([
             { player: players[0], msg: guess + game_phrase, get_response: true },
@@ -269,7 +270,7 @@ describe('Game', () => {
             { player: players[3], msg: 'y' },
             { player: players[3], msg: players[3].nickname },
             { player: players[3], msg: players[3].avatar }
-          ]);
+          ], 8);
         }).then((messages) => {
           const game_phrase = getPhrase(messages);
           return check(
@@ -357,7 +358,7 @@ describe('Game', () => {
         return setup([
           { player: submitter, msg: EMOJI },
           { player: guesser, msg: guess + game_phrase, get_response: true }
-        ]);
+        ], 8);
       }
 
       return startGame(players, true)

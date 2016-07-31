@@ -66,13 +66,13 @@ describe('Submissions', () => {
     const players = getPlayers(3);
 
     return startGame(players).then(() => {
-      const msg = EMOJI + 'foo' + EMOJI ;
+      const msg = EMOJI + 'foo' + EMOJI;
       return check(
         { player: players[0], msg },
         [
           { key: 'game-submission-sent', to: players[0] },
-          { key: 'emojis', options: [players[0].nickname, players[0].avatar,  msg ], to: players[1] },
-          { key: 'emojis', options: [players[0].nickname, players[0].avatar,  msg ], to: players[2] },
+          { key: 'emojis', options: [players[0].nickname, players[0].avatar, msg ], to: players[1] },
+          { key: 'emojis', options: [players[0].nickname, players[0].avatar, msg ], to: players[2] },
           { key: 'guessing-instructions', to: players[1] },
           { key: 'guessing-instructions', to: players[2] }
         ]

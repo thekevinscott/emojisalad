@@ -12,12 +12,14 @@ const endpoint = 'http://localhost:' + port + '/';
 
 const PROTOCOLS = process.env.PROTOCOLS;
 if ( ! PROTOCOLS ) {
-  throw "You must provide comma separated PROTOCOLS";
+  throw new Error("You must provide comma separated PROTOCOLS");
 }
+
+const requiredServices = PROTOCOLS.split(',').concat([
+  'api'
+]);
 registry.register('bot', {
-  services: PROTOCOLS.split(',').concat([
-    'api'
-  ]),
+  services: requiredServices,
   api: {
     ping: {
       endpoint: endpoint + 'ping',
@@ -41,11 +43,15 @@ let ping = (req, res) => {
   res.end();
 };
 app.listen(port, () => {
+  const listener = setTimeout(() => {
+    console.info('Still waiting for', requiredServices);
+  }, 5000);
   app.get('/ping', (req, res) => {
     ping(req, res);
   });
 
   registry.ready(() => {
+    clearTimeout(listener);
     console.info(`EmojinaryFriend Bot: ${port} ${PROTOCOLS}`);
 
     // Incoming requests take one of two forms

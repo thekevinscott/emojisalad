@@ -41,7 +41,7 @@ describe('New Game', () => {
             { player: players[0], msg: rule('invite').example() + new_player.number, to: game_numbers[1] },
             [
               { key: 'intro_5', options: [new_player.number], to: players[0], from: game_numbers[1] },
-              { key: 'invite', options: [players[0].nickname, players[0].avatar], to: new_player, from: game_numbers[0]  }
+              { key: 'invite', options: [players[0].nickname, players[0].avatar], to: new_player, from: game_numbers[0] }
             ]
           );
         });
@@ -59,7 +59,7 @@ describe('New Game', () => {
             { player: players[0], msg: rule('invite').example() + existing_player.number, to: game_numbers[1] },
             [
               { key: 'intro_existing_player', options: [existing_player.number], to: players[0], from: game_numbers[1] },
-              { key: 'invite_existing_player', options: [existing_player.nickname, existing_player.avatar, players[0].nickname, players[0].avatar], to: existing_player, from: game_numbers[1]  }
+              { key: 'invite_existing_player', options: [existing_player.nickname, existing_player.avatar, players[0].nickname, players[0].avatar], to: existing_player, from: game_numbers[1] }
             ]
           );
         });
@@ -163,7 +163,7 @@ describe('New Game', () => {
           { player: new_player, msg: rule('invite').example() + players[0].number },
           [
             { key: 'intro_existing_player', options: [players[0].number], to: new_player, from: game_numbers[0] },
-            { key: 'invite_existing_player', options: [players[0].nickname, players[0].avatar, new_player.nickname, new_player.avatar], to: players[0], from: game_numbers[1]  }
+            { key: 'invite_existing_player', options: [players[0].nickname, players[0].avatar, new_player.nickname, new_player.avatar], to: players[0], from: game_numbers[1] }
           ]
         );
       });

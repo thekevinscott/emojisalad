@@ -27,16 +27,17 @@ const sql_file = 'test/fixtures/test-db.sql';
  * This imports the stored SQL file, then seeds it
  * with required data
  */
-function seed() {
-  process.env.ENVIRONMENT = 'test';
-  const test = require('./config/database/test');
+function seed(ENV) {
+  process.env.ENVIRONMENT = ENV || 'development';
+  console.log('This will import the locally saved seed file into the ${process.env.ENVIRONMENT} database');
+  const config = require(`./config/database/${process.env.ENVIRONMENT}`);
   const db = require('./db');
 
-  return shared.importDB(test, sql_file).then(() => {
+  return shared.importDB(config, sql_file).then(() => {
     // various deleting commands
-    const seed = require('./test/fixtures/seed') || [];
+    const seedConfig = require('./test/fixtures/seed') || [];
     // various seeding commands
-    return Promise.all(seed.map((cmd) => {
+    return Promise.all(seedConfig.map((cmd) => {
       const query = squel
                     .insert({
                       autoQuoteTableNames: true,
@@ -47,6 +48,9 @@ function seed() {
       return db.query(query.toString());
     }));
   });
+}
+function seed_test() {
+  return seed('test');
 }
 
 /**
@@ -60,11 +64,11 @@ gulp.task('update-fixtures', (cb) => {
   const tables = [
     {
       table: 'messages',
-      data: true
+      data: true,
     },
     {
       table: 'message_variants',
-      data: false
+      data: true,
     },
     {
       table: 'attributes',
@@ -96,6 +100,14 @@ gulp.task('seed', (cb) => {
   });
 });
 
+gulp.task('seed_test', (cb) => {
+  seed_test().then(() => {
+    cb();
+  }).done(() => {
+    process.exit();
+  });
+});
+
 /**
  * Seed the test suite from the saved SQL file,
  * and some seed commands in here, then run the test suite
@@ -109,14 +121,14 @@ gulp.task('test', (cb) => {
       slow: 500,
       bail: true
     }))
-    .on('error', function(data) {
+    .on('error', (data) => {
       console.error(data.message);
       process.exit(1);
     })
-    .once('end', function() {
+    .once('end', () => {
       process.exit();
     });
-  }).catch(function(err) {
+  }).catch((err) => {
     console.error(err);
     process.exit(1);
   }).done(() => {
@@ -141,11 +153,11 @@ gulp.task('server', () => {
 
   const LOG_LEVEL = util.env.LOG_LEVEL || 'warning';
   return shared.server({
-    PROTOCOLS: PROTOCOLS,
-    PORT: PORT,
-    LOG_LEVEL: LOG_LEVEL,
+    PROTOCOLS,
+    PORT,
+    LOG_LEVEL,
     TRIPWIRE_TRIP: util.env.TRIPWIRE_TRIP,
-    TRIPWIRE_ALERT: util.env.TRIPWIRE_ALERT 
+    TRIPWIRE_ALERT: util.env.TRIPWIRE_ALERT,
   })();
 });
 
@@ -153,6 +165,7 @@ gulp.task('default', () => {
   console.log('* update-fixtures - this pulls a copy of the matching production database and saves it to the test fixtures folder. Run this whenever there\'s a database change on production');
   console.log('* test - Reimports the local database file, seeds with data, and runs the test suite');
   console.log('* seed - Reimports the local database file and seeds with data');
+  console.log('* seed_test - Reimports the local database file into the test database and seeds with data');
   console.log('* server - Spins up the server with default arguments');
   console.log('* update-fixtures - Pulls down a version of the production database');
 });

@@ -28,43 +28,6 @@ app.post('/', (res) => {
   callback(res);
 });
 
-const messages = {};
-
-// checks that a certain action's
-// return matches an expected array
-const check = (action, expected) => {
-  // these commands instruct setup to return
-  // the associated message id,
-  // and if we expect messages, the associated
-  // messages
-  action.get_response = true;
-  action.expect_response = expected.length > 0;
-  return setup(action).then((created_messages) => {
-    const created_message = created_messages.shift();
-
-    return Promise.join(
-      populateExpectedMessages(expected),
-      (processed) => {
-        const actions = parseActions(created_message);
-
-        if ( expected.length && ! processed.length ) {
-          console.error('*** expected', expected);
-          console.error('*** processed', processed);
-          throw 'wtf, no processed, this probably implies a bug';
-        }
-
-        processed.map((message) => {
-          messages[message.key] = message;
-        });
-
-        const expecteds = parseExpecteds(expected, messages);
-
-        return inlineCheck(actions, expecteds);
-      }
-    );
-  });
-};
-
 const populateExpectedMessages = (expected) => {
   const messages = {};
   return Promise.all(expected.map((message) => {
@@ -101,23 +64,7 @@ const parseActions = (action_output) => {
   }
 };
 
-const parseExpecteds = (expected, messages) => {
-  let expecteds = [];
-  // first pass, associated messages with a particular expected message
-  if ( expected.length ) {
-    expecteds = expected.map((expected_message) => {
-      const expected_obj = {
-        //body: messages[expected_message.key].body,
-        variants: messages[expected_message.key].variants
-      };
-      if ( expected_message.to ) {
-        expected_obj.recipient = expected_message.to.from || expected_message.to.number;
-        expected_obj.game_number = expected_message.from || expected_message.to.to;
-      }
-      return expected_obj;
-    });
-  }
-
+const concatenateExpecteds = (expecteds) => {
   // second pass, conatenate particular expecteds to a particular player
   const concatenated_by_recipient = expecteds.reduce((obj, expected) => {
     const recipient = expected.recipient;
@@ -156,28 +103,25 @@ const parseExpecteds = (expected, messages) => {
   });
 };
 
-const inlineCheck = (actions, expecteds) => {
-  if ( actions.length !== expecteds.length ) {
-    // this will throw an error; but it'll indicate exactly
-    // what's wrong with our expectations
-    console.error('***** message length mismatch *****');
-    console.error('actions', actions);
-    console.error('expecteds', expecteds);
-    actions.should.deep.equal(expecteds);
+const parseExpecteds = (expected, messages) => {
+  let expecteds = [];
+  // first pass, associated messages with a particular expected message
+  if ( expected.length ) {
+    expecteds = expected.map((expected_message) => {
+      const expected_obj = {
+        //body: messages[expected_message.key].body,
+        variants: messages[expected_message.key].variants
+      };
+      if ( expected_message.to ) {
+        expected_obj.recipient = expected_message.to.from || expected_message.to.number;
+        expected_obj.game_number = expected_message.from || expected_message.to.to;
+      }
+      return expected_obj;
+    });
   }
 
-  actions.map((action, i) => {
-    return checkBody(action, expecteds[i]);
-  });
-
-  actions.map((action) => {
-    delete action.body;
-    return action;
-  }).should.deep.equal(expecteds.map((expected) => {
-    //delete expected.body;
-    delete expected.variants;
-    return expected;
-  }));
+  return expecteds;
+  //return concatenateExpecteds(expecteds);
 };
 
 const escapeRegExp = (str) => {
@@ -201,12 +145,12 @@ const checkBody = (action, expected) => {
 
         if ( re.test(action_body) ) {
           match = true;
-        };
+        }
       });
       if ( ! match ) {
         throw new Error();
       }
-    } catch(err) {
+    } catch (err) {
       console.error('***** error found *****');
       console.error('action', action);
       console.error('expected', expected);
@@ -220,6 +164,68 @@ const checkBody = (action, expected) => {
     // the best way to check for this.
     action.should.be(undefined);
   }
+};
+
+const inlineCheck = (actions, expecteds) => {
+  if ( actions.length !== expecteds.length ) {
+    // this will throw an error; but it'll indicate exactly
+    // what's wrong with our expectations
+    console.error('***** message length mismatch *****');
+    console.error('actions', actions);
+    console.error('expecteds', expecteds);
+    actions.should.deep.equal(expecteds);
+  }
+
+  actions.map((action, i) => {
+    //console.log('actions', actions);
+    //console.log('expecteds', expecteds);
+    return checkBody(action, expecteds[i]);
+  });
+
+  actions.map((action) => {
+    delete action.body;
+    return action;
+  }).should.deep.equal(expecteds.map((expected) => {
+    //delete expected.body;
+    delete expected.variants;
+    return expected;
+  }));
+};
+
+// checks that a certain action's
+// return matches an expected array
+const check = (action, expected) => {
+  const messages = {};
+  // these commands instruct setup to return
+  // the associated message id,
+  // and if we expect messages, the associated
+  // messages
+  action.get_response = true;
+  action.expect_response = expected.length > 0;
+  return setup(action, expected.length).then((created_messages) => {
+    const created_message = created_messages.shift();
+
+    return Promise.join(
+      populateExpectedMessages(expected),
+      (processed) => {
+        const actions = parseActions(created_message);
+
+        if ( expected.length && ! processed.length ) {
+          console.error('*** expected', expected);
+          console.error('*** processed', processed);
+          throw new Error('wtf, no processed, this probably implies a bug');
+        }
+
+        processed.map((message) => {
+          messages[message.key] = message;
+        });
+
+        const expecteds = parseExpecteds(expected, messages);
+
+        return inlineCheck(actions, expecteds);
+      }
+    );
+  });
 };
 
 module.exports = check;

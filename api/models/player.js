@@ -6,6 +6,7 @@ let Game;
 const registry = require('microservice-registry');
 const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
+import setKey from 'setKey';
 
 const Player = {
   // create a new player
@@ -34,54 +35,6 @@ const Player = {
       } else {
         return user;
       }
-      /*
-    }).then((user) => {
-      let number_query;
-      let options;
-      const service = registry.get(user.protocol);
-      console.log('5');
-      if ( params.to ) {
-        options = {
-          url: processEndpoint(service.api.senders.getID.endpoint, { sender: params.to }),
-          method: service.api.senders.getID.method
-        };
-      } else {
-        // no game number has been specified;
-        // for instance, if an invite has
-        // been created.
-        //
-        // in this case, we auto generate a game
-        // number for this player
-        options = {
-          url: service.api.senders.get.endpoint,
-          method: service.api.senders.get.method
-        };
-      }
-
-      console.log('options', options);
-      return request(options).then((response) => {
-        console.log('response', response.body);
-        return JSON.parse(response.body);
-      }).then((response) => {
-        return {
-          to: response.id,
-          user_id: user.id
-        };
-      });
-      //return db.query(number_query.toString()).then((numbers_rows) => {
-
-        //if ( !numbers_rows.length ) {
-          //console.error(number_query.toString());
-          //throw new Error("No game number found");
-        //} else {
-          //return {
-            //to : numbers_rows[0].id,
-            //user_id: user.id
-          //};
-        //}
-      //});
-    }).then((player_params) => {
-    */
     }).then((user) => {
       //console.log('the player params, with sender id', player_params);
       return Game.findOne(params.game_id).then((game) => {
@@ -101,34 +54,23 @@ const Player = {
       }
       //console.log('**** player params', player_params);
       const query = squel
-                    .insert({ autoQuoteFieldNames: true })
-                    .into('players')
-                    .setFields({
-                      to: player_params.to,
-                      created: squel.fval('NOW(3)'),
-                      user_id: player_params.user_id,
-                      game_id: player_params.game_id
-                    });
+      .insert({ autoQuoteFieldNames: true })
+      .into('players')
+      .setFields({
+        to: player_params.to,
+        created: squel.fval('NOW(3)'),
+        user_id: player_params.user_id,
+        game_id: player_params.game_id
+      });
 
-      //let state;
-      //if ( params.initial_state ) {
-        //state = params.initial_state;
-        //delete params.initial_state;
-      //} else {
-        //state = 'waiting-for-confirmation';
-      //}
-
-      //query.setFields({ 'state_id': squel
-                                   //.select()
-                                   //.field('id')
-                                   //.from('player_states')
-                                   //.where('state=?',state)});
-
-
-                                   //console.log('query', query.toString());
       return Player.findOne( player_params ).then((pl) => {
         return db.create(query.toString()).then((result) => {
-          return Player.findOne(result.insertId);
+          return setKey('players', {
+            ...player_params,
+            id: result.insertId,
+          }).then(() => {
+            return Player.findOne(result.insertId);
+          });
         }).catch((err) => {
           console.error('err', err);
           throw err;
@@ -159,6 +101,7 @@ const Player = {
     let query = squel
                 .select({ autoEscapeFieldNames: true })
                 .field('p.id')
+                .field('p.key')
                 .field('p.created')
                 .field('p.archived')
                 .field('p.`to`')

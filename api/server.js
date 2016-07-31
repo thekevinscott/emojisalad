@@ -7,6 +7,7 @@ const registry = require('microservice-registry');
 
 const port = process.env.PORT || 1338;
 
+require('./generateKeys');
 registry.register('api',{
   //services: ['testqueue'],
   api: require('./manifest')(port)

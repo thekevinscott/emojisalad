@@ -19,6 +19,8 @@ const playGames = (players, number_of_games, options) => {
   return startGames(players, number_of_games, options).then((games) => {
     return sequence(games.map((game) => {
       const game_players = parseSenderIDs(game.players);
+      //const expected_message_length = 1 + game_players.length * 2;
+      const expected_message_length = 5;
       const player = game_players.filter((game_player) => {
         return game_player.from === players[0].from;
       }).pop();
@@ -30,7 +32,7 @@ const playGames = (players, number_of_games, options) => {
       };
 
       return () => {
-        return setup([msg]);
+        return setup([msg], expected_message_length);
       };
     })).then(() => {
       return games;
