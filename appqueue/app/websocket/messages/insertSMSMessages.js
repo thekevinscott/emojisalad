@@ -65,13 +65,16 @@ function getSenderForGames(games, userKey) {
 }
 
 export default function insertSMSMessages(userKey, messages, userId, gamesArray) {
+  console.info('time to insert sms messages');
   return Promise.all([
     'received',
     'sent',
   ].map(table => {
+    console.info('insert for table', table);
     const games = getSenderForGames(gamesArray, userKey);
+    console.info('got sender for games', games);
     const rows = messages[table].map(message => {
-      console.info('the message');
+      console.info('the message', message);
       const key = table === 'received' ? 'to' : 'from';
       const messageKey = message[key];
       //console.log('message key', key, messageKey, games);
