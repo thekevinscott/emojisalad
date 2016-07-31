@@ -12,32 +12,43 @@ import {
   //return state.data.players[player.id];
 //}
 
-export function selectMessages(state, messageKeys = []) {
-  //console.log('select messages', state, messageKeys);
-  return messageKeys.map(key => {
-    return {
-      key,
-      ...state.data.messages[key],
-    };
-  });
+function sortByOldest(a, b) {
+  return new Date(a.timestamp) - new Date(b.timestamp);
 }
+//const getGame = (state, props) => state.data.games[props.game.key];
+//const getMessages = (state) => state.data.messages;
 
-export function mapStateToProps(state, ownProps) {
-  const game = state.data.games[ownProps.game.key];
+export const makeSelectMessages = () => {
+  return (game, messages) => {
+    //console.log('select messages for', game);
+    return game.messages.map(key => {
+      return {
+        key,
+        ...messages[key],
+      };
+    }).sort(sortByOldest);
+  };
+};
 
-  return {
-    game,
-    messages: selectMessages(state, game.messages),
-    me: selectMe(state),
+export function makeMapStateToProps() {
+  const selectMessages = makeSelectMessages();
+  return (state, props) => {
+    const game = state.data.games[props.game.key];
+
+    return {
+      game,
+      messages: selectMessages(game, state.data.messages),
+      me: selectMe(state),
+    };
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps() {
   return {
     actions: {
-      fetchMessages: (userId) => {
+      //fetchMessages: (userId) => {
         //return dispatch(fetchMessages(userId));
-      },
+      //},
     },
   };
 }

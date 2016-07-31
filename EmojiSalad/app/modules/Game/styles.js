@@ -1,6 +1,9 @@
 export const container = {
-  paddingTop: 64,
-  backgroundColor: '#CCC',
+  paddingTop: 84,
+  //backgroundColor: '#CCC',
+  height: 200,
+  backgroundColor: 'blue',
+  flex: 0,
 };
 
 export const row = {

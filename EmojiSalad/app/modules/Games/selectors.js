@@ -1,9 +1,9 @@
-import {
-  selectors,
-} from '../Game';
-const {
-  selectMessages,
-} = selectors;
+//import {
+  //selectors,
+//} from '../Game';
+//const {
+  //selectMessages,
+//} = selectors;
 
 export function selectUser(state, userId) {
   return state.data.users[userId];
@@ -18,6 +18,12 @@ export function selectPlayers(state, userKeys = []) {
 
 function getLastMessageAsDate(game) {
   return new Date(game.messages[game.messages.length - 1].timestamp * 1000);
+}
+
+function selectMessages(state, messageKeys) {
+  return messageKeys.map(key => {
+    return state.data.messages[key];
+  });
 }
 
 export function selectGames(state) {

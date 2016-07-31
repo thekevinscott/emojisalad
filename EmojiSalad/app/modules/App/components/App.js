@@ -20,7 +20,6 @@ export default class App extends Component {
   render() {
     const state = this.props.store.getState();
     const me = selectMe(state);
-    console.log('App render');
 
     return (
       <AppProvider store={this.props.store}>

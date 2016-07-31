@@ -1,7 +1,7 @@
 import {
   API_PORT,
   API_HOST,
-} from '../config';
+} from '../../../../config';
 
 import error from './error';
 import message from './message';

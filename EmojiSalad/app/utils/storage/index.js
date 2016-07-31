@@ -5,7 +5,7 @@ const {
 
 import {
   KEY,
-} from './config';
+} from '../../../config';
 
 // TODO: Fix this import
 export getStore from './getStore';

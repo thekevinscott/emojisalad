@@ -1,5 +1,1 @@
-/**
- * @flow
- */
-
-import bootstrap from './app/redux/bootstrap';
+require('./app/redux/bootstrap');

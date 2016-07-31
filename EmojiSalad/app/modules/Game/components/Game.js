@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import GiftedMessenger from 'react-native-gifted-messenger';
+import { GiftedChat } from 'react-native-gifted-chat';
 
 import * as styles from '../styles';
 
@@ -18,13 +18,25 @@ import {
 } from '../actions';
 
 import {
-  mapStateToProps,
+  makeMapStateToProps,
   mapDispatchToProps,
 } from '../selectors';
 
 class Game extends Component {
+  constructor(props) {
+    super(props);
+    this.onLoadEarlier = this.onLoadEarlier.bind(this);
+    this.state = {
+      loadEarlier: true,
+    };
+  }
+
   componentWillMount() {
     //this.props.actions.fetchMessages(this.props.me.id);
+  }
+
+  onLoadEarlier() {
+    console.log('load the earlier ones');
   }
 
   render() {
@@ -32,25 +44,24 @@ class Game extends Component {
       <View
         style={styles.container}
       >
-        <GiftedMessenger
+        <GiftedChat
           styles={{
             bubbleRight: styles.myMessage,
           }}
-
-          autoFocus={false}
-          messages={this.props.messages.map(message => {
-            //console.log(message);
+          isAnimated={true}
+          loadEarlier={this.state.loadEarlier}
+          onLoadEarlier={this.onLoadEarlier}
+          messages={this.props.messages.slice(0, 1).map(message => {
             return {
               text: message.body,
               uniqueId: message.key,
-              name: 'React-Bot',
+              //name: 'React-Bot',
               //image: (message.type === 'received') ? null : {
                 //uri: 'https://facebook.github.io/react/img/logo_og.png',
               //},
               position: (message.type === 'received') ? 'right' : 'left',
             };
           })}
-          parseText={true}
         />
       </View>
     );
@@ -58,6 +69,6 @@ class Game extends Component {
 }
 
 export default connect(
-  mapStateToProps,
+  makeMapStateToProps,
   mapDispatchToProps
 )(Game);

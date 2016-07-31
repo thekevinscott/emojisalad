@@ -147,32 +147,31 @@ class Register extends Component {
             Welcome to the Emoji Salad App Beta!
           </Animated.Text>
           <Animated.Text style={bodyStyle}>
-            This beta is by invitation only.
-          </Animated.Text>
-          <Animated.Text style={bodyStyle}>
-            Please enter the phone number you used for the SMS version of the game.
+            This beta is by invitation only. Please enter the phone number you used for the SMS version of the game.
           </Animated.Text>
           <Animated.Text style={bodyStyle}>
             We're positively tickled to have you here!
           </Animated.Text>
         </View>
-        <TextInput
-          style={{
-            ...styles.input,
-            color: this.props.claiming ? '#AAA' : styles.input.color,
-          }}
-          ref={(ref) => { this.textInput = ref; }}
-          placeholder="Type your phone number here"
-          autoFocus={true}
-          autoCorrect={false}
-          enablesReturnKeyAutomatically={true}
-          //keyboardType="phone-pad"
-          onSubmitEditing={this.submitClaim}
-          returnKeyType="join"
-          onChangeText={this.props.actions.updateText}
-          //editable={!this.props.claiming}
-          value={this.props.text}
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={{
+              ...styles.input,
+              color: this.props.claiming ? '#AAA' : styles.input.color,
+            }}
+            ref={(ref) => { this.textInput = ref; }}
+            placeholder="Type your phone number here"
+            autoFocus={true}
+            autoCorrect={false}
+            enablesReturnKeyAutomatically={true}
+            keyboardType="phone-pad"
+            onSubmitEditing={this.submitClaim}
+            returnKeyType="join"
+            onChangeText={this.props.actions.updateText}
+            //editable={!this.props.claiming}
+            value={this.props.text}
+          />
+        </View>
         {this.props.error ? (
           <Text
             style={styles.error}

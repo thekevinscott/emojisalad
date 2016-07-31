@@ -1,4 +1,5 @@
 import typeToReducer from 'type-to-reducer';
+import R from 'ramda';
 
 // TODO: Fix this import (should pull from index)
 import {
@@ -18,11 +19,7 @@ function translateRound(round = {}) {
   };
 }
 
-function orderByOldest(a, b) {
-  return new Date(a.timestamp) - new Date(b.timestamp);
-}
-
-function translateGame(currentGame, game) {
+function translateGame(currentGame = {}, game = {}) {
   return {
     key: game.key,
     created: game.created,
@@ -30,7 +27,7 @@ function translateGame(currentGame, game) {
     round_count: game.round_count,
     players: game.players.map(player => player.user_key),
     round: translateRound(game.round || {}),
-    messages: (game.messages || []).sort(orderByOldest).map(message => message.key),
+    messages: R.uniq((currentGame.messages || []).concat((game.messages || []).map(message => message.key))),
   };
 }
 

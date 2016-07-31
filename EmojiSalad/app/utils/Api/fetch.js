@@ -1,6 +1,6 @@
 import {
   NETWORK_TIMEOUT,
-} from './config';
+} from '../../../config';
 
 export default function newFetch(url, options = {}) {
   const parsedOptions = {

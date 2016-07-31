@@ -45,10 +45,14 @@ const styles = {
     padding: 20,
   },
   input: {
-    height: 40,
+    height: 50,
     textAlign: 'center',
     fontSize: 20,
     color: constants.purple,
+    //borderBottom: 'none',
+  },
+  inputContainer: {
+    alignSelf: 'stretch',
   },
 };
 

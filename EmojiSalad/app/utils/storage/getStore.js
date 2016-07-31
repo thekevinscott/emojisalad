@@ -6,7 +6,7 @@ const {
 import {
   KEY,
   RESET,
-} from './config';
+} from '../../../config';
 
 export default function getStore() {
   return AsyncStorage.getItem(KEY).then(savedStorage => {
