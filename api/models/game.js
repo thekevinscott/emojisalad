@@ -272,6 +272,7 @@ const Game = {
     let query = squel
                 .select()
                 .field('g.id')
+                .field('g.key')
                 .field('g.created')
                 .field('r.id', 'round_id')
                 .field('COUNT(r.id)', 'round_count')

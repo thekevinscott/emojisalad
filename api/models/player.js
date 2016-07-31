@@ -101,6 +101,7 @@ const Player = {
     let query = squel
                 .select({ autoEscapeFieldNames: true })
                 .field('p.id')
+                .field('p.key')
                 .field('p.created')
                 .field('p.archived')
                 .field('p.`to`')

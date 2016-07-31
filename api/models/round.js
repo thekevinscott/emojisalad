@@ -317,6 +317,7 @@ const Round = {
     let query = squel
                 .select()
                 .field('r.id')
+                .field('r.key')
                 .field('r.submitter_id')
                 .field('r.phrase_id')
                 .field('r.winner_id')
