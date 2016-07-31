@@ -71,6 +71,7 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
   ].map(table => {
     const games = getSenderForGames(gamesArray, userKey);
     const rows = messages[table].map(message => {
+      console.info('the message');
       const key = table === 'received' ? 'to' : 'from';
       const messageKey = message[key];
       //console.log('message key', key, messageKey, games);
@@ -88,6 +89,7 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
     });
 
     if (rows.length) {
+      console.info('we have messages to insert');
       const queries = rows.map(row => {
         return {
           row,
