@@ -1,13 +1,5 @@
-import Game from './components/Game';
-import reducer from './reducer';
-import * as actions from './actions';
-import * as types from './types';
-import * as selectors from './selectors';
-
-export default {
-  Game,
-  reducer,
-  actions,
-  types,
-  selectors,
-};
+export Game from './components/Game';
+export reducer from './reducer';
+export * as actions from './actions';
+export * as types from './types';
+export * as selectors from './selectors';

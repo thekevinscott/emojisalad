@@ -9,11 +9,10 @@ import {
 } from '../utils/storage';
 import configureStore from './configureStore';
 
-import AppContents from '../modules/App';
-const {
+import {
   App,
   Loading,
-} = AppContents;
+} from '../modules/App';
 
 const style = {
   flex: 1,

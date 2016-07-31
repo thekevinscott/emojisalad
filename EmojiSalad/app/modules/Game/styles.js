@@ -12,6 +12,12 @@ export const row = {
 export const rowText = {
 };
 
+export const myMessage = {
+  marginLeft: 70,
+  //backgroundColor: '#007aff',
+  backgroundColor: '#bb27dd',
+};
+
 export const rowSeparator = (adjacentRowHighlighted) => ({
   height: adjacentRowHighlighted ? 4 : 1,
   backgroundColor: adjacentRowHighlighted ? '#AAA' : '#333',

@@ -1,11 +1,4 @@
-import App from './components/App';
-import Loading from './components/Loading';
-import reducer from './reducer';
-import selectors from './selectors';
-
-export default {
-  App,
-  Loading,
-  reducer,
-  selectors,
-};
+export App from './components/App';
+export Loading from './components/Loading';
+export reducer from './reducer';
+export selectors from './selectors';

@@ -1,3 +1,10 @@
+import {
+  selectors,
+} from '../Game';
+const {
+  selectMessages,
+} = selectors;
+
 export function selectUser(state, userId) {
   return state.data.users[userId];
 }
@@ -6,12 +13,6 @@ export function selectPlayers(state, userKeys = []) {
   return userKeys.map(userKey => {
     const player = state.data.users[userKey] || {};
     return player;
-  });
-}
-
-export function selectMessages(state, messageKeys = []) {
-  return messageKeys.map(key => {
-    return state.data.messages[key];
   });
 }
 

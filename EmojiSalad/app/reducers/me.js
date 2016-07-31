@@ -1,9 +1,8 @@
 import typeToReducer from 'type-to-reducer';
 
-import Register from '../modules/Register';
-const {
+import {
   types,
-} = Register;
+} from '../modules/Register';
 const {
   SUBMIT_CLAIM,
 } = types;

@@ -11,20 +11,17 @@ import { Actions } from 'react-native-router-flux';
 
 import { Router as _Router, Scene } from 'react-native-router-flux';
 
-import RegisterContents from '../../Register';
-const {
+import {
   Register,
-} = RegisterContents;
+} from '../../Register';
 
-import GamesContents from '../../Games';
-const {
+import {
   Games,
-} = GamesContents;
+} from '../../Games';
 
-import GameContents from '../../Game';
-const {
+import {
   Game,
-} = GameContents;
+} from '../../Game';
 
 export default class Router extends Component {
   render() {
@@ -50,7 +47,7 @@ export default class Router extends Component {
           <Scene
             key="game"
             component={Game}
-            title=""
+            title="Game"
             leftTitle="Games"
             onLeft={() => {
               Actions.games();

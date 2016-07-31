@@ -5,9 +5,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Text,
+  //Text,
   View,
-  TouchableHighlight,
 } from 'react-native';
 
 import GiftedMessenger from 'react-native-gifted-messenger';
@@ -15,69 +14,43 @@ import GiftedMessenger from 'react-native-gifted-messenger';
 import * as styles from '../styles';
 
 import {
-  fetchMessages,
+  //fetchMessages,
 } from '../actions';
 
 import {
-  selectMessages,
+  mapStateToProps,
+  mapDispatchToProps,
 } from '../selectors';
-
-import {
-  selectMe,
-} from '../../App/selectors';
-
-function mapStateToProps(state, ownProps) {
-  const game = ownProps.game;
-
-  return {
-    game,
-    messages: selectMessages(state, game.id),
-    me: selectMe(state),
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: {
-      fetchMessages: (userId) => {
-        return dispatch(fetchMessages(userId));
-      },
-    },
-  };
-}
 
 class Game extends Component {
   componentWillMount() {
-    this.props.actions.fetchMessages(this.props.me.id);
+    //this.props.actions.fetchMessages(this.props.me.id);
   }
 
   render() {
-    const {
-      game,
-    } = this.props;
-    //console.log('this props', this.props.messages);
+    console.log(this.props);
     return (
       <View
         style={styles.container}
       >
         <GiftedMessenger
           styles={{
-            bubbleRight: {
-              marginLeft: 70,
-              backgroundColor: '#007aff',
-            },
+            bubbleRight: styles.myMessage,
           }}
 
           autoFocus={false}
-          messages={this.props.messages.map(message => ({
-            text: message.body,
-            uniqueId: message.id,
-            name: 'React-Bot',
-            image: (message.type === 'received') ? null : {
-              uri: 'https://facebook.github.io/react/img/logo_og.png',
-            },
-            position: (message.type === 'received') ? 'right' : 'left',
-          }))}
+          messages={this.props.messages.map(message => {
+            console.log(message);
+            return {
+              text: message.body,
+              uniqueId: message.key,
+              name: 'React-Bot',
+              //image: (message.type === 'received') ? null : {
+                //uri: 'https://facebook.github.io/react/img/logo_og.png',
+              //},
+              position: (message.type === 'received') ? 'right' : 'left',
+            };
+          })}
           parseText={true}
         />
       </View>
