@@ -32,7 +32,7 @@ function getTotalQuery(where) {
 }
 function fetchTotals(where) {
   const query = getTotalQuery(where);
-  console.log('the query', query.toString());
+  //console.log('the query', query.toString());
   return db.query(query);
 }
 

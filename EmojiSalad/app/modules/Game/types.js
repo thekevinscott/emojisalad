@@ -1,5 +1,7 @@
-const KEY = '@Game';
+const KEY = '@Game/';
 
-export const FETCH_MESSAGES = `${KEY}_FETCH_MESSAGES`;
-export const TRANSITION_TO_GAMES = `${KEY}_TRANSITION_TO_GAMES`;
-export const INCREMENT_PAGE = `${KEY}_INCREMENT_PAGE`;
+export const FETCH_MESSAGES = `${KEY}FETCH_MESSAGES`;
+export const TRANSITION_TO_GAMES = `${KEY}TRANSITION_TO_GAMES`;
+export const INCREMENT_PAGE = `${KEY}INCREMENT_PAGE`;
+export const SEND_MESSAGE = `${KEY}SEND_MESSAGE`;
+export const UPDATE_COMPOSE = `${KEY}UPDATE_COMPOSE`;

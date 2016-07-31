@@ -8,6 +8,7 @@ import {
 
 import {
   FETCH_MESSAGES,
+  SEND_MESSAGE,
 } from '../modules/Game/types';
 
 const initialState = {};
@@ -66,6 +67,26 @@ export default typeToReducer({
           ...obj,
           [game.key]: translateGame(state[game.key], game),
         }), {}),
+      };
+    },
+  },
+  [SEND_MESSAGE]: {
+    FULFILLED: (state, { data }) => {
+      const gameKey = data.gameKey;
+      const message = data;
+      const messages = translateMessages(state[gameKey], {
+        messages: [message],
+      });
+      const game = state[gameKey];
+      console.log('game', game);
+      console.log('messages length', messages.length);
+      return {
+        ...state,
+        [gameKey]: {
+          ...game,
+          messages,
+          totalMessages: game.totalMessages + 1,
+        },
       };
     },
   },

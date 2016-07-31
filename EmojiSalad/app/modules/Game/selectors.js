@@ -5,56 +5,56 @@ import {
 import {
   fetchMessages,
   incrementPage,
+  updateCompose,
+  sendMessage,
 } from './actions';
 
-//export function selectMyPlayer(state, gameId) {
-  //const me = state.data.me;
-  //const game = state.data.games[gameId];
-  //const players = game.players.map(playerId => {
-    //return state.data.players[playerId];
-  //});
-  //const player = players.filter(gamePlayer => gamePlayer.user_id === me.id)[0];
-  //return state.data.players[player.id];
-//}
-
-function sortByOldest(a, b) {
+function sortByNewestFirst(a, b) {
   return new Date(b.timestamp) - new Date(a.timestamp);
 }
 //function sortByNewest(a, b) {
   //return new Date(a.timestamp) - new Date(b.timestamp);
 //}
-//const getGame = (state, props) => state.data.games[props.game.key];
-//const getMessages = (state) => state.data.messages;
 
 export const makeSelectMessages = () => {
-  const messagesPerPage = 20;
-  return (game, messages, page) => {
-    console.log('incoming page', page);
-    //console.log('select messages for', game);
+  const messagesPerPage = 19;
+  return (game, messages, page, sentMessages = 0) => {
     return game.messages.map(key => {
       return {
         key,
         ...messages[key],
       };
-    }).sort(sortByOldest).slice(0, messagesPerPage * page);
+    }).sort(sortByNewestFirst).slice(0, messagesPerPage * page + sentMessages);
   };
 };
+
+function selectCompose(state, gameKey) {
+  return state.ui.Game.compose[gameKey];
+}
 
 export function makeMapStateToProps() {
   const selectMessages = makeSelectMessages();
   return (state, props) => {
     const gameKey = props.game.key;
     const game = state.data.games[gameKey];
+    const {
+      pages,
+      sentMessages,
+    } = state.ui.Game;
+    const messages = selectMessages(game, state.data.messages, pages[gameKey], sentMessages[gameKey]);
+
+    console.log('the messages', messages.length);
 
     return {
       game,
-      messages: selectMessages(game, state.data.messages, state.ui.Game.pages[gameKey]),
+      messages,
       me: selectMe(state),
+      compose: selectCompose(state, game.key),
     };
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch, props) {
   return {
     actions: {
       fetchMessages: (userKey, gameKey, messageKeysToExclude) => {
@@ -62,6 +62,14 @@ export function mapDispatchToProps(dispatch) {
       },
       incrementPage: (gameKey) => {
         return dispatch(incrementPage(gameKey));
+      },
+      updateCompose: (text) => {
+        const gameKey = props.game.key;
+        return dispatch(updateCompose(gameKey, text));
+      },
+      sendMessage: (userKey, message) => {
+        const gameKey = props.game.key;
+        return dispatch(sendMessage(userKey, gameKey, message));
       },
     },
   };

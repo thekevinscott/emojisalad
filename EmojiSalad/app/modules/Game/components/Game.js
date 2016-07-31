@@ -23,7 +23,7 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.loadEarlier = this.loadEarlier.bind(this);
-    this.onSend = this.onSend.bind(this);
+    this.handleSend = this.handleSend.bind(this);
     this.renderBubble = this.renderBubble.bind(this);
     this.renderComposer = this.renderComposer.bind(this);
     this.state = {
@@ -39,8 +39,10 @@ class Game extends Component {
     this.props.actions.incrementPage(this.props.game.key);
   }
 
-  onSend() {
-    console.log('send!');
+  handleSend() {
+    this.props.actions.sendMessage(this.props.me.key, {
+      body: this.props.compose,
+    });
   }
 
   renderBubble(props) {
@@ -62,11 +64,10 @@ class Game extends Component {
         placeholderTextColor={styles.placeholder.color}
         multiline={false}
         style={styles.composer}
-        onChange={(e) => {
-          console.log(e);
-        }}
-        enablesReturnKeyAutomatically={true}
+        onChangeText={this.props.actions.updateCompose}
         underlineColorAndroid="transparent"
+        onSubmitEditing={this.handleSend}
+        value={this.props.compose}
       />
     );
   }
@@ -75,6 +76,7 @@ class Game extends Component {
     //console.log('laod earlier', this.props.messages.length, this.props.game.totalMessages);
     return (
       <GiftedChat
+        isAnimated={true}
         styles={{
           backgroundColor: 'blue',
         }}
@@ -85,19 +87,20 @@ class Game extends Component {
         user={{
           _id: 1,
         }}
-        onSend={this.onSend}
         renderComposer={this.renderComposer}
-        messages={this.props.messages.map((message, index) => {
+        messages={this.props.messages.map((message) => {
           const user = {
             _id: (message.type === 'received') ? 1 : 2,
           };
-          return {
+          const payload = {
             text: message.body,
-            _id: index + 1,
+            _id: message.key,
             position: (message.type === 'received') ? 'right' : 'left',
             createdAt: new Date(message.timestamp * 1000),
             user,
           };
+          //console.log('payload', payload);
+          return payload;
         })}
       />
     );
