@@ -12,7 +12,6 @@ export default function fetchMessages(ws, { userKey, gameKey, messageKeysToExclu
   }
 
   return fetchMessagesForGames(userKey, [gameKey], messageKeysToExclude).then(messagesByGames => {
-    console.log('**** got here');
     return {
       key: gameKey,
       messages: messagesByGames[gameKey],

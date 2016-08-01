@@ -29,7 +29,7 @@ export default function saveMessage(table, userKey, gameKey, message, attempts =
       body: message.body,
       userKey,
       gameKey,
-      timestamp: (new Date()).getTime() / 1000 + (365*24*60*60) ,
+      timestamp: (new Date()).getTime() / 1000,
       type: table,
     };
   });

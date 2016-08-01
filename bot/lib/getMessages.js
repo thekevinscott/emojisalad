@@ -9,7 +9,7 @@ const registry = require('microservice-registry');
 const getMessages = (ids, protocols, options = {}) => {
   //console.log('time to get messages');
   if ( ids === undefined ) {
-    throw "You must provide ids";
+    throw new Error("You must provide ids");
   }
 
   //console.info('the protocols', protocols);
@@ -35,7 +35,9 @@ const getMessages = (ids, protocols, options = {}) => {
       let body = response.body;
 
       // if err, already parsed
-      try { body = JSON.parse(body); } catch(err) {}
+      try { body = JSON.parse(body); } catch (err) {
+        // do nothing
+      }
 
       body = body.map((b) => {
         b.protocol = protocol;
@@ -44,8 +46,13 @@ const getMessages = (ids, protocols, options = {}) => {
       });
       return body;
     }).catch((err) => {
-      console.error(err);
-      throw err;
+      if (err.code === 'ECONNREFUSED') {
+        console.error('Service is not responsive', protocol);
+        return [];
+      } else {
+        console.error('Error connecting to service', protocol, err);
+        throw err;
+      }
     });
   })).then((responses) => {
     return [].concat(...responses);
@@ -55,7 +62,7 @@ const getMessages = (ids, protocols, options = {}) => {
     }
     if ( options.trip && responses.length >= options.trip ) {
       sendAlert(responses, 'tripped', 'get');
-      throw "Tripwire tripped on get, too many messages";
+      throw new Error("Tripwire tripped on get, too many messages");
     } else if ( options.alert && responses.length >= options.alert ) {
       sendAlert(responses, 'alert', 'get');
       console.info(`Warning, alert tripped: ${responses.length}`);

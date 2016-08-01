@@ -1,18 +1,20 @@
-export default function bootstrapREST(app) {
-  //const receive = require('./receive');
+import routes from './routes';
+import bodyParser from 'body-parser';
+import pmx from 'pmx';
 
-  //app.get('/received', require('./received'));
+const defaultPOSTLimit = '35mb';
+
+export default function bootstrapREST(app) {
+  app.use(pmx.expressErrorHandler());
+  // to support JSON-encoded bodies
+  app.use(bodyParser.json({
+    limit: defaultPOSTLimit,
+  }));
+  app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true,
+    limit: defaultPOSTLimit,
+  }));
   //app.get('/senders', require('./rest/senders'));
   //app.get('/senders/:sender', require('./restsenders').getSenderID);
-  app.get('/', (req, res) => {
-    res.send('app queue root');
-  });
-  app.get('*', (req, res) => {
-    console.error('unknown error requested', req.url);
-  });
-  //app.post('/claim', require('./claim'));
-  //app.get('/games', require('./games'));
-  app.get('/test', (req, res) => {
-    res.json({ foo: 'bar' });
-  });
+  routes(app);
 }

@@ -1,3 +1,8 @@
+import fetchFromService from '../websocket/lib/fetchFromService';
+
 export default function pingBot() {
-  console.log('ping the bot here');
+  return fetchFromService({
+    service: 'bot',
+    route: 'ping',
+  });
 }

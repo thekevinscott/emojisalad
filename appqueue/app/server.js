@@ -3,8 +3,6 @@
 import registry from 'microservice-registry';
 import http from 'http';
 import express from 'express';
-import pmx from 'pmx';
-import bodyParser from 'body-parser';
 import bootstrapWebsocket from './websocket';
 import bootstrapREST from './rest';
 import manifest from './manifest';
@@ -19,12 +17,6 @@ const app = express();
 
 bootstrapWebsocket(server);
 bootstrapREST(app);
-
-app.use(pmx.expressErrorHandler());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true,
-}));
 
 registry.register(NAME, {
   api: manifest,
