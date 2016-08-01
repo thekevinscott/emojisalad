@@ -62,7 +62,6 @@ export default function (req, res) {
 
   //console.log(query.toString());
   return db.query(query).then((rows) => {
-    console.log('new received messages', rows);
     return (rows || []).map(row => {
       return {
         ...row,
@@ -71,6 +70,9 @@ export default function (req, res) {
       };
     });
   }).then(rows => {
+    if (rows.length) {
+      console.log('new received messages', rows);
+    }
     return res.json(rows);
   });
 }

@@ -4,7 +4,6 @@ import getUUID from '../../utils/getUUID';
 
 import {
   translateUserKeyFromUserId,
-  translateFromFieldIntoGameKey,
 } from './lib/translate';
 
 function getPromise() {
@@ -63,6 +62,8 @@ export default function send(req, res) {
   }).then((senders) => {
   */
   return messages.reduce((promise, message) => {
+    console.log('incoming message', message);
+    const player = message.player;
     const payload = {
       body: message.body,
       from: message.from,
@@ -71,7 +72,7 @@ export default function send(req, res) {
       created: squel.fval('NOW(3)'),
       key: getUUID(),
       user_key: translateUserKeyFromUserId(message.to),
-      game_key: translateFromFieldIntoGameKey(message.from),
+      game_key: player.game_key,
     };
     const insert = squel
     .insert({

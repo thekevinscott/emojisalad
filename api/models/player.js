@@ -110,6 +110,7 @@ const Player = {
                 .field('u.id', 'user_id')
                 .field('u.key', 'user_key')
                 .field('g.id', 'game_id')
+                .field('g.key', 'game_key')
                 //.field('u.blacklist')
                 .field('u.nickname')
                 .field('u.from')
