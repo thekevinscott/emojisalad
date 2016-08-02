@@ -1,9 +1,10 @@
 {
   "name": "EmojiSalad",
-  "version": "0.0.1",
+  "version": "0.1",
   "private": true,
   "scripts": {
-    "start": "react-native start -- --port=8081 --reset-cache"
+    "start": "react-native start -- --port=8081 --reset-cache",
+    "beta": "fastlane beta"
   },
   "dependencies": {
     "axios": "0.13.1",
