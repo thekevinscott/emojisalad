@@ -45,7 +45,7 @@ function processRoute(ws, type, payload) {
     REJECTED,
   } = getTypes(type);
 
-  console.info('procesing route', type, payload);
+  console.info('processing route', type, payload);
 
   return ROUTES[type](ws, payload).then(data => {
     return {

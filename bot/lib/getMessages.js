@@ -47,7 +47,11 @@ const getMessages = (ids, protocols, options = {}) => {
       return body;
     }).catch((err) => {
       if (err.code === 'ECONNREFUSED') {
-        console.error('Service is not responsive', protocol);
+        console.error('Service is not responsive', protocol, Object.keys(service.api).map(key => {
+          if (service.api[key].endpoint) {
+            return service.api[key].endpoint;
+          }
+        }).filter(el => el).join(', '));
         return [];
       } else {
         console.error('Error connecting to service', protocol, err);

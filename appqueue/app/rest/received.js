@@ -6,8 +6,7 @@ import getPlayerWhereQuery from './lib/getPlayerWhereQuery';
 //const squel = require('squel').useFlavour('mysql');
 
 import {
-  translateUserKeyIntoUserId,
-  translateGameKeyIntoToField,
+  translateOutgoingMessage,
 } from './lib/translate';
 
 export default function (req, res) {
@@ -31,6 +30,7 @@ export default function (req, res) {
 
   let query = squel
   .select()
+  .field('id')
   .field('received.id')
   .field('body')
   .field('user_key')
@@ -62,13 +62,9 @@ export default function (req, res) {
 
   //console.log(query.toString());
   return db.query(query).then((rows) => {
-    return (rows || []).map(row => {
-      return {
-        ...row,
-        from: translateUserKeyIntoUserId(row.user_key),
-        to: translateGameKeyIntoToField(row.game_key),
-      };
-    });
+    return Promise.all((rows || []).map(row => {
+      return translateOutgoingMessage(row);
+    }));
   }).then(rows => {
     if (rows.length) {
       console.log('new received messages', rows);

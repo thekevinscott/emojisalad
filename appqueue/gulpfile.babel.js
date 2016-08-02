@@ -16,7 +16,7 @@ const shared = require('../shared/gulp');
 const app = require('config/app');
 
 gulp.task('server', (opts) => {
-  const PORT = util.env.PORT || app.port;
+  const PORT = util.env.PORT;
   const LOG_LEVEL = util.env.LOG_LEVEL || app.log_level;
   return shared.server({
     LOG_LEVEL,

@@ -1,4 +1,4 @@
-import fetchFromService from '../websocket/lib/fetchFromService';
+import fetchFromService from '../../utils/fetchFromService';
 
 export default function pingBot() {
   return fetchFromService({

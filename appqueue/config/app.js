@@ -1,6 +1,6 @@
 module.exports = {
   HOST: 'localhost',
-  PORT: process.env.PORT || 5012,
+  PORT: (parseInt(process.env.PORT, 10)) ? process.env.PORT : 5012,
   NAME: 'appqueue',
   LOG_LEVEL: 'info',
   REQUIRED_SERVICES: [

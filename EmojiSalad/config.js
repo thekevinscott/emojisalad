@@ -14,7 +14,7 @@ function getAPI(environment) {
   }
   return {
     API_HOST: 'localhost',
-    API_PORT: '5009',
+    API_PORT: '5012',
   };
 }
 
@@ -25,8 +25,9 @@ export const API_PORT = apiConfig.API_PORT;
 
 /* Storage */
 export const KEY = '@EmojiSalad';
-export const RESET = false;
+const SHOULD_PERSIST_DATA = false;
+export const PERSIST_DATA = (ENVIRONMENT === 'production') ? true : SHOULD_PERSIST_DATA;
 
-if (ENVIRONMENT === 'production' && !RESET) {
+if (ENVIRONMENT === 'production' && !PERSIST_DATA) {
   console.warn('RESET is set to true in a production environment; are you sure about that?');
 }

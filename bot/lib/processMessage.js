@@ -1,5 +1,4 @@
-'use strict';
-const _ = require('lodash');
+'use strict'; const _ = require('lodash');
 const router = require('routes');
 //const Phone = require('models/phone');
 //const Player = require('models/player');
@@ -22,7 +21,12 @@ module.exports = (message) => {
   }
 
   // responses comes back as an array of messages
-  return router(message.from, message.body, message.to, message.protocol).then((responses) => {
+  return router({
+    from: message.from,
+    message: message.body,
+    to: message.to,
+    protocol: message.protocol,
+  }).then((responses) => {
     //console.info('responses back', responses);
     if ( responses && _.isArray(responses) && responses.length ) {
       return Message.parse(responses, message).then((response) => {

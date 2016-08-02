@@ -152,6 +152,22 @@ const Player = {
       query = query.where('u.`id` IN ?',params.user_ids);
     }
 
+    if ( params.user_key ) {
+      query = query.where('u.`key` = ?',params.user_key);
+    }
+
+    if ( params.user_keys ) {
+      query = query.where('u.`key` IN ?',params.user_keys);
+    }
+
+    if ( params.game_key ) {
+      query = query.where('g.`key` = ?',params.game_key);
+    }
+
+    if ( params.game_keys ) {
+      query = query.where('g.`key` IN ?',params.game_keys);
+    }
+
     if ( params.protocol ) {
       query = query.where('u.protocol = ?',params.protocol);
     }

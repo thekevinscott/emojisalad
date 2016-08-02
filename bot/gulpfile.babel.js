@@ -139,7 +139,8 @@ gulp.task('test', (cb) => {
 gulp.task('server', () => {
   // default protocols
   let PROTOCOLS = [
-    'sms'
+    'sms',
+    'appqueue',
   ].join(',');
 
   let PORT = '5000';

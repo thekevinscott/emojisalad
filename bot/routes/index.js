@@ -5,7 +5,7 @@
 const Player = require('models/player');
 const User = require('models/user');
 
-const Router = (from, message, to, protocol) => {
+const Router = ({ from, message, to, protocol }) => {
   console.info(`===========Router Index: ${message} | ${from} | ${to} | ${protocol}`);
   return Player.get({
     from,

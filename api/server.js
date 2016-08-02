@@ -33,6 +33,6 @@ require('./controllers')(app);
 
 module.exports = registry.ready(() => {
   app.listen(app.get('port'), () => {
-    console.info(`EmojinaryFriend API: ${process.env.ENVIRONMENT}`);
+    console.info(`EmojinaryFriend API: ${process.env.ENVIRONMENT} ${app.get('port')}`);
   });
 });

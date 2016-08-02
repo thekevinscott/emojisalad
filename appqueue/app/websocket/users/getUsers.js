@@ -2,7 +2,7 @@
  * Get the users matching a certain query
  */
 
-import fetchFromService from '../lib/fetchFromService';
+import fetchFromService from '../../../utils/fetchFromService';
 
 export default function getUsers(query) {
   return fetchFromService({

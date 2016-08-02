@@ -99,7 +99,7 @@ const sendMessages = (messages, options = {}) => {
   })).then((response) => {
     if (messages.length > 0) {
       //console.log('send 6');
-      console.info('already sent these messages', messages.map(m => m.body));
+      console.info('messages sent: ', messages.map(m => m.body));
       //console.info('messages are sent! within sendMessages');
     }
     return response;

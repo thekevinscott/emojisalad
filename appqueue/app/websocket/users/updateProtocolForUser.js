@@ -1,4 +1,4 @@
-import fetchFromService from '../lib/fetchFromService';
+import fetchFromService from '../../../utils/fetchFromService';
 
 export default function updateProtocolForUser(user) {
   return fetchFromService({

@@ -1,4 +1,3 @@
-//import fetchFromService from '../lib/fetchFromService';
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const sms = db.sms;
