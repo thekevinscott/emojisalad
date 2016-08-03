@@ -4,10 +4,20 @@ import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 
 function parseURLAndOptions(url, options) {
+  if (options.qs && options.method === 'GET') {
+    const qs = options.qs;
+    delete options.qs;
+    return {
+      url: `${url}?${querystring.stringify(qs)}`,
+      options,
+    };
+  }
+
   if (options.body) {
     const body = options.body;
     delete options.body;
     if (options.method === 'GET') {
+      console.info('Dont do this naymore, pass body params to get requests as query string');
       return {
         url: `${url}?${querystring.stringify(body)}`,
         options,
@@ -45,5 +55,8 @@ module.exports = function req(origUrl, origOptions) {
       throw response;
     }
     return response.json();
+  }).then(response => {
+    console.log('response', response);
+    return response;
   });
 };

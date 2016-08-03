@@ -53,9 +53,12 @@ const getLastProtocolMessageIDs = (allowed_protocols) => {
 };
 
 const runRead = () => {
+  console.info('run read 1');
   return getLastProtocolMessageIDs(PROTOCOLS).then((last_protocol_message_ids) => {
+    console.info('run read 2');
     return getMessages(last_protocol_message_ids, PROTOCOLS, tripwire_settings);
   }).then((messages) => {
+    console.info('run read 3');
     if ( messages.length ) {
       console.info('got messages', messages.map((message) => {
         return message;
@@ -79,6 +82,7 @@ const runRead = () => {
       });
     }
   }).then(() => {
+    console.info('run read 4');
     // process any outstanding timers
     return Timer.get().then((timers) => {
       if (timers.length) {
@@ -97,6 +101,7 @@ const runRead = () => {
       return Timer.use(timer_keys, timer_game_ids);
     });
   }).then(() => {
+    console.info('run read 5');
     return getLastProtocolMessageIDs(['web']).then(last_protocol_message_ids => {
       return getWebSubmissions(last_protocol_message_ids);
     }).then(responses => {
@@ -131,13 +136,14 @@ const runRead = () => {
 // in this case, we want to queue those pings to run
 // immediately on complete (but only one ping can get queued up)
 const read = () => {
+  console.info('read called');
   if ( processing === false ) {
     //console.log('process read');
-    //console.info('read');
+    console.info('read');
     processing = true;
 
     return runRead().then(() => {
-      //console.log('run read is complete');
+      console.info('run read is complete');
     }).catch((err) => {
       //console.log('error with read');
       console.error(err.stack);
@@ -148,7 +154,8 @@ const read = () => {
       console.info('set processing to false 2');
       throw err;
     }).finally(() => {
-      //console.log('done with read', callbacks.length);
+      //console.info('done with read');
+      console.info('done with read', callbacks.length);
       processing = false;
       if ( callbacks.length ) {
         //console.log('immediately do anotehr read');
@@ -165,12 +172,13 @@ const read = () => {
       }
     });
   } else {
-    //console.log('do not process read (yet)');
+    console.info('do not process read (yet)');
     return new Promise((resolve) => {
-      console.info('read is already processing, queue this for the next go round');
+      const key = Math.random();
+      console.info('read is already processing, queue this for the next go round', key);
       //queued_read_action = true;
       callbacks.push((promise) => {
-        //console.log('processed waiting read!');
+        console.info('processed waiting read!', key);
         resolve(promise);
       });
     });

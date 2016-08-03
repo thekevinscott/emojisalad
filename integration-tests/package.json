@@ -4,7 +4,7 @@
   "description": "Bot for EmojinaryFriend",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --watch"
+    "test": "killall -9 node; gulp test --BAIL true"
   },
   "author": "",
   "license": "ISC",

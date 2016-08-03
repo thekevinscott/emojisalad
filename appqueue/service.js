@@ -4,7 +4,7 @@ const registry = require('microservice-registry');
 const Promise = require('bluebird');
 const req = Promise.promisify(require('request'));
 const request = function(options) {
-  //console.log('options', options);
+  console.info('sending service url', options.url);
   return req(options).then((response) => {
     //console.log('re', response);
     let body = response.body;

@@ -67,7 +67,7 @@ export default function (req, res) {
     }));
   }).then(rows => {
     if (rows.length) {
-      console.log('new received messages', rows);
+      console.info('new received messages', rows);
     }
     return res.json(rows);
   });

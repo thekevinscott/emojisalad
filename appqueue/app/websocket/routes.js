@@ -1,7 +1,7 @@
 import claim from './routes/users/claim';
 import fetchGames from './routes/games/fetch';
 import fetchMessages from './routes/games/messages';
-import sendMessage from './routes/messages/send';
+import receiveMessage from './routes/messages/receive';
 
 export const CLAIM = 'CLAIM';
 export const FETCH_GAMES = 'FETCH_GAMES';
@@ -12,7 +12,7 @@ const ROUTES = {
   [CLAIM]: claim,
   [FETCH_GAMES]: fetchGames,
   [FETCH_MESSAGES]: fetchMessages,
-  [SEND_MESSAGE]: sendMessage,
+  [SEND_MESSAGE]: receiveMessage,
 };
 
 export default ROUTES;

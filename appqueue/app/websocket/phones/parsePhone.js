@@ -12,5 +12,8 @@ export default function parsePhone(number) {
   }).then(response => {
     console.log('response', response);
     return response.number;
+  }).catch(err => {
+    console.info('server error', err);
+    throw new Error('Error communicating with the server');
   });
 }

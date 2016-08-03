@@ -1,0 +1,17 @@
+import fetchFromDevice from './fetchFromDevice';
+
+export default function fetchUserKey(phoneNumber) {
+  return fetchFromDevice([
+    'user_key',
+  ], {
+    'number=?': phoneNumber,
+  }).then(row => {
+    console.info('getting user key', row);
+    if (!row || !row.user_key) {
+      throw new Error(`No user key found for ${phoneNumber}`);
+    }
+
+    return (row || {}).user_key;
+  });
+}
+

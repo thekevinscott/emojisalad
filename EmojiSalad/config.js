@@ -25,7 +25,7 @@ export const API_PORT = apiConfig.API_PORT;
 
 /* Storage */
 export const KEY = '@EmojiSalad';
-const SHOULD_PERSIST_DATA = false;
+const SHOULD_PERSIST_DATA = true;
 export const PERSIST_DATA = (ENVIRONMENT === 'production') ? true : SHOULD_PERSIST_DATA;
 
 if (ENVIRONMENT === 'production' && !PERSIST_DATA) {

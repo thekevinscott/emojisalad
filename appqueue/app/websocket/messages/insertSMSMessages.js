@@ -123,8 +123,8 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
       return insertAllQueries(table, queries).then(result => {
         console.info('result of insert', result);
         return rows.reduce((promise, row) => {
-          return promise.then((resultt) => {
-            console.info('promise has been satisfied', resultt);
+          return promise.then(() => {
+            //console.info('promise has been satisfied', resultt);
             return updateKey(table, row.sms_id);
           });
         }, getPromise()).then(() => {

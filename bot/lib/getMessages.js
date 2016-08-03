@@ -5,18 +5,10 @@ const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
 //const Protocol = require('./protocol');
 
-//const getMessages = (timestamp, protocols, options = {}) => {
-const getMessages = (ids, protocols, options = {}) => {
-  //console.log('time to get messages');
-  if ( ids === undefined ) {
-    throw new Error("You must provide ids");
-  }
-
-  //console.info('the protocols', protocols);
-
-  return Promise.all(protocols.map((protocol) => {
-    //if ( queue_registrys[protocol] ) {
+function getMessagesFromProtocol(ids) {
+  return protocol => {
     const service = registry.get(protocol);
+    console.log('getting message from protocol', protocol);
     if ( ! service ) {
       throw new Error(`No service found for protocol ${protocol}`);
     }
@@ -27,38 +19,63 @@ const getMessages = (ids, protocols, options = {}) => {
         id: ids[protocol]
       }
     };
-    //console.log('payload', payload);
-    return request(payload).then((response) => {
-      if ( ! response || ! response.body ) {
-        throw response;
-      }
-      let body = response.body;
+    console.info('payload', payload);
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject('Request timed out for: ' + protocol);
+      }, 5000);
 
-      // if err, already parsed
-      try { body = JSON.parse(body); } catch (err) {
-        // do nothing
-      }
+      return request(payload).then((response) => {
+        clearTimeout(timer);
+        console.info('got response');
+        if ( ! response || ! response.body ) {
+          throw response;
+        }
+        let body = response.body;
 
-      body = body.map((b) => {
-        b.protocol = protocol;
-        //b.protocol_id = Protocol.getID(protocol);
-        return b;
+        // if err, already parsed
+        try { body = JSON.parse(body); } catch (err) {
+          // do nothing
+        }
+
+        body = body.map((b) => {
+          b.protocol = protocol;
+          //b.protocol_id = Protocol.getID(protocol);
+          return b;
+        });
+        resolve(body);
+      }).catch((err) => {
+        clearTimeout(timer);
+        console.info('err', err);
+        if (err.code === 'ECONNREFUSED') {
+          console.error('Service is not responsive', protocol, Object.keys(service.api).map(key => {
+            if (service.api[key].endpoint) {
+              return service.api[key].endpoint;
+            }
+          }).filter(el => el).join(', '));
+          resolve([]);
+        } else {
+          console.error('Error connecting to service', protocol, err);
+          reject(err);
+        }
       });
-      return body;
-    }).catch((err) => {
-      if (err.code === 'ECONNREFUSED') {
-        console.error('Service is not responsive', protocol, Object.keys(service.api).map(key => {
-          if (service.api[key].endpoint) {
-            return service.api[key].endpoint;
-          }
-        }).filter(el => el).join(', '));
-        return [];
-      } else {
-        console.error('Error connecting to service', protocol, err);
-        throw err;
-      }
     });
-  })).then((responses) => {
+  };
+}
+
+
+//const getMessages = (timestamp, protocols, options = {}) => {
+const getMessages = (ids, protocols, options = {}) => {
+  //console.log('time to get messages');
+  if ( ids === undefined ) {
+    throw new Error("You must provide ids");
+  }
+
+  console.info('the protocols', protocols);
+
+  return Promise.all(protocols.map(getMessagesFromProtocol(ids))).then(responses => {
+    console.info('messages back', responses);
+    // flatten the messages
     return [].concat(...responses);
   }).then((responses) => {
     if (responses.length) {

@@ -7,7 +7,7 @@ const sendMessage = Promise.promisify(client.sendMessage);
 const phone = require('lib/phone');
 
 const sms = Promise.coroutine(function* (params) {
-  return {};
+  //return {};
   const twiml = new twilio.TwimlResponse();
   let newParams = {};
   if ( params ) {

@@ -1,6 +1,5 @@
 {
   "name": "EmojiSalad",
-  "version": "0.1",
   "private": true,
   "scripts": {
     "start": "react-native start -- --port=8081 --reset-cache",

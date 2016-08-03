@@ -3,7 +3,7 @@ import db from 'db';
 import getUUID from '../../utils/getUUID';
 
 import {
-  translateUserKeyFromUserId,
+  translateIncomingMessage,
 } from './lib/translate';
 
 function getPromise() {
@@ -12,15 +12,40 @@ function getPromise() {
 
 function getMessages(req) {
   try {
-    //console.log('the original parsed', typeof req.body.messages, req.body.messages);
     const messages = JSON.parse(req.body.messages);
-    //console.log('processed', typeof messages, messages);
-
     return messages;
   } catch (err) {
     console.error('Invalid messages payload', err, req.body);
     throw new Error(err);
   }
+}
+
+function saveIncomingMessage(message, attempts = 0) {
+  if (attempts > 5) {
+    throw new Error(`too many attempts trying to generate random ID for an incoming message from bot: ${message.body}`);
+  }
+  const insert = squel
+  .insert({
+    autoQuoteTableNames: true,
+    autoQuoteFieldNames: true,
+  })
+  .into('sent')
+  .setFields({
+    body: message.body,
+    //from: message.from,
+    //to: message.to,
+    initiated_id: message.initiated_id,
+    created: squel.fval('NOW(3)'),
+    key: getUUID(),
+    user_key: message.userKey,
+    game_key: message.gameKey,
+  });
+  console.log(insert.toString());
+  return db.query(insert).then(result => {
+    if (!result.insertId) {
+      return saveIncomingMessage(message, attempts + 1);
+    }
+  });
 }
 
 export default function send(req, res) {
@@ -32,60 +57,21 @@ export default function send(req, res) {
   }
 
   const messages = getMessages(req);
-  console.info(`app queue send ${Buffer.byteLength(JSON.stringify(messages), 'utf9')} bytes`);
+  //console.info(`app queue send ${Buffer.byteLength(JSON.stringify(messages), 'utf9')} bytes`);
 
-  //const senderIds = messages.map((message) => {
-    //return message.from;
-  //});
-
-  /*
-  const getSenderIds = squel
-  .select()
-  .field('id')
-  .field('sender')
-  .from('senders')
-  .where('id IN ?', senderIds);
-
-  return db.query(getSenderIds).then((rows) => {
-    return rows.reduce((obj, row) => {
-      obj[row.id] = row.sender;
-      return obj;
-    }, {});
-  }).then((senders) => {
-    // check that theres an id for each senderId
-    senderIds.forEach((senderId) => {
-      if (! senders[senderId]) {
-        throw new Error(`No sender found for ${senderId}`);
-      }
-    });
-    return senders;
-  }).then((senders) => {
-  */
-  return messages.reduce((promise, message) => {
-    console.log('incoming message', message);
-    const player = message.player;
-    const payload = {
-      body: message.body,
-      from: message.from,
-      //to: message.to,
-      initiated_id: message.initiated_id || '',
-      created: squel.fval('NOW(3)'),
-      key: getUUID(),
-      user_key: translateUserKeyFromUserId(message.to),
-      game_key: player.game_key,
-    };
-    const insert = squel
-    .insert({
-      autoQuoteTableNames: true,
-      autoQuoteFieldNames: true,
-    })
-    .into('sent')
-    .setFields(payload);
-
-    return promise.then(() => {
-      return db.query(insert);
-    });
-  }, getPromise()).then(() => {
+  console.info('before promise');
+  return Promise.all(messages.map(message => {
+    console.info('each message');
+    return translateIncomingMessage(message);
+  })).then(translatedMessages => {
+    return translatedMessages.reduce((promise, message) => {
+      console.info('back from payloads');
+      return promise.then(() => {
+        console.log('payload', message);
+        return saveIncomingMessage(message);
+      });
+    }, getPromise());
+  }).then(() => {
     console.log('*** also make sure to update status of message when sent');
     res.json({});
   });
@@ -112,3 +98,4 @@ return responses.concat(data);
   //}).then((responses) => {
   //res.json(responses);
 }
+
