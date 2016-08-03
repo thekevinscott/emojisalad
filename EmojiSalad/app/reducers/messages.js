@@ -17,7 +17,7 @@ const translateMessage = (message) => {
     body: message.body,
     userKey: message.user_key,
     gameKey: message.game_key,
-    timestamp: message.timestamp,
+    timestamp: message.timestamp * 1000,
     type: message.type,
   };
 };

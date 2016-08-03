@@ -43,7 +43,7 @@ export function makeMapStateToProps() {
     } = state.ui.Game;
     const messages = selectMessages(game, state.data.messages, pages[gameKey], sentMessages[gameKey]);
 
-    console.log('the messages', messages.length);
+    console.log('the messages', messages.map(m => [m.body, new Date(m.timestamp)]));
 
     return {
       game,

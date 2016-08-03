@@ -96,7 +96,7 @@ class Game extends Component {
             text: message.body,
             _id: message.key,
             position: (message.type === 'received') ? 'right' : 'left',
-            createdAt: new Date(message.timestamp * 1000),
+            createdAt: new Date(message.timestamp),
             user,
           };
           //console.log('payload', payload);
@@ -107,7 +107,7 @@ class Game extends Component {
   }
 
   render() {
-    console.log('render Game');
+    //console.log('render Game');
     return (
       <View
         style={styles.container}

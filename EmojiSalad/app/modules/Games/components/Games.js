@@ -63,7 +63,7 @@ function getPlayerString(players) {
 }
 
 function parseTimestamp(timestamp) {
-  const date = moment(timestamp * 1000);
+  const date = moment(timestamp);
   return date.fromNow();
 }
 
