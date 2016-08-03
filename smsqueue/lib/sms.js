@@ -10,7 +10,9 @@ const sms = Promise.coroutine(function* (params) {
   //return {};
   const twiml = new twilio.TwimlResponse();
   let newParams = {};
+  console.info('sms 1');
   if ( params ) {
+    console.info('sms 2');
     if ( ! params.body ) {
       throw new Error("You must provide params body");
     }
@@ -20,14 +22,18 @@ const sms = Promise.coroutine(function* (params) {
     if ( ! params.to ) {
       throw new Error("You must provide params to");
     }
+    console.info('sms 3');
     const to = yield validNumber(params.to);
     const from = yield validNumber(params.from);
+    console.info('sms 4');
     newParams = {
       to,
       from,
       body: params.body
     };
+    console.info('sms 5');
     const result = yield sendMessage(newParams);
+    console.info('sms 6');
     if ( result.status === 'queued' ) {
       return {
         status: 2
