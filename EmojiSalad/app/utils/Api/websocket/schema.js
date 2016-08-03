@@ -4,6 +4,7 @@ import {
 import {
   SEND_MESSAGE,
   FETCH_MESSAGES,
+  RECEIVE_MESSAGE,
 } from '../../../modules/Game/types';
 
 // TODO: How to keep this up to date with the server?
@@ -11,6 +12,7 @@ const TYPES = {
   [SUBMIT_CLAIM]: 'CLAIM',
   [SEND_MESSAGE]: 'SEND_MESSAGE',
   [FETCH_MESSAGES]: 'FETCH_MESSAGES',
+  [RECEIVE_MESSAGE]: 'RECEIVE_MESSAGE',
 };
 
 export default Object.keys(TYPES).reduce((obj, type) => {

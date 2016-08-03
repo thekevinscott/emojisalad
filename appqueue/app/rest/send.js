@@ -6,6 +6,8 @@ import {
   translateIncomingMessage,
 } from './lib/translate';
 
+import sendMessageToWebsocket from '../websocket/routes/messages/send';
+
 function getPromise() {
   return new Promise(resolve => resolve());
 }
@@ -24,6 +26,9 @@ function saveIncomingMessage(message, attempts = 0) {
   if (attempts > 5) {
     throw new Error(`too many attempts trying to generate random ID for an incoming message from bot: ${message.body}`);
   }
+
+  const key = getUUID();
+
   const insert = squel
   .insert({
     autoQuoteTableNames: true,
@@ -36,15 +41,32 @@ function saveIncomingMessage(message, attempts = 0) {
     //to: message.to,
     initiated_id: message.initiated_id,
     created: squel.fval('NOW(3)'),
-    key: getUUID(),
+    key,
     user_key: message.userKey,
     game_key: message.gameKey,
   });
   console.log(insert.toString());
   return db.query(insert).then(result => {
+    console.log('result back');
     if (!result.insertId) {
       return saveIncomingMessage(message, attempts + 1);
     }
+
+    const getMessage = squel
+    .select()
+    .field('UNIX_TIMESTAMP(created)', 'timestamp')
+    .from('sent')
+    .where('`key`=?', key);
+
+    console.log(getMessage.toString());
+    return db.query(getMessage).then(gotMessage => {
+      console.log(' got back message back');
+      return {
+        ...message,
+        timestamp: gotMessage[0].timestamp,
+        key,
+      };
+    });
   });
 }
 
@@ -64,38 +86,21 @@ export default function send(req, res) {
     console.info('each message');
     return translateIncomingMessage(message);
   })).then(translatedMessages => {
+    console.log('messages to process', translatedMessages.length);
     return translatedMessages.reduce((promise, message) => {
       console.info('back from payloads');
       return promise.then(() => {
         console.log('payload', message);
-        return saveIncomingMessage(message);
+        return saveIncomingMessage(message).then(savedMessage => {
+          console.log('message saved');
+          // don't return this; we don't want to wait on it.
+          sendMessageToWebsocket(savedMessage);
+          return true;
+        });
       });
     }, getPromise());
   }).then(() => {
     console.log('*** also make sure to update status of message when sent');
     res.json({});
   });
-
-    // THIS NEEDS TO HAPPEN LATER
-    /*
-       return Promise.reduce(processedMessages, (responses, data) => {
-       const payload = Object.assign({}, data, {
-from: data.sender,
-});
-
-return options.send(payload).then((response) => {
-const updateMessage = squel
-.update()
-.table('sent')
-.set('status', response.status)
-.where('id=?', data.id);
-return db.query(updateMessage);
-}).then(() => {
-return responses.concat(data);
-});
-}, []);
-*/
-  //}).then((responses) => {
-  //res.json(responses);
 }
-

@@ -7,10 +7,11 @@ import {
 } from './translate';
 
 export default function sendMessage(websocket) {
-  return (type, payload) => {
+  return (userKey, type, payload) => {
     if (websocket.isOpen) {
       const packet = JSON.stringify({
         type: fromTypeToApi(type),
+        userKey,
         payload,
       });
       console.log('sending', packet);

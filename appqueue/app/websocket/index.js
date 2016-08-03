@@ -1,6 +1,9 @@
 import WS from 'ws';
 import receiveMessage from './receiveMessage';
 import sendMessage from './sendMessage';
+import {
+  setClient,
+} from './connections';
 //import url from 'url';
 const WebSocketServer = WS.Server;
 //const routes = require('./routes');
@@ -13,7 +16,10 @@ export default function bootstrapWebsocket(server) {
     // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 
     ws.on('message', message => {
-      console.log('clients', wss.clients.length);
+      setClient(ws, message);
+
+      console.log('message', message);
+      //console.log('clients', wss.clients.length);
       receiveMessage(ws, message).then(sendMessage(ws)).catch(sendMessage(ws));
     });
   });

@@ -83,24 +83,5 @@ export default function receiveMessage(ws, message) {
     }
 
     return processRoute(ws, type, payload);
-
-/*
-   switch (payload.type) {
-     case 'FETCH_MESSAGES':
-       [
-       'received',
-       'sent',
-       ].forEach(type => {
-       getMessages(payload.userId, type).then(messages => {
-       wsSend({
-type: 'FETCH_MESSAGES_FULFILLED',
-payload: messages,
-});
-});
-});
-break;
-    default: break;
-      }
-      */
   });
 }

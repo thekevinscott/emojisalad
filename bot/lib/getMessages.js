@@ -22,6 +22,7 @@ function getMessagesFromProtocol(ids) {
     console.info('payload', payload);
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
+        console.info('timer timed out');
         reject('Request timed out for: ' + protocol);
       }, 5000);
 
@@ -89,6 +90,9 @@ const getMessages = (ids, protocols, options = {}) => {
       console.info(`Warning, alert tripped: ${responses.length}`);
     }
     return responses;
+  }).catch(err => {
+    console.error('There was an error', err);
+    throw err;
   });
 };
 

@@ -1,6 +1,7 @@
-'use strict';
-console.info(`App Queue db: ${process.env.ENVIRONMENT}`);
-//const config = require(`./config/database/${process.env.ENVIRONMENT}`);
+import {
+  ENVIRONMENT,
+} from './config/app';
+console.info(`App Queue db: ${ENVIRONMENT}`);
 const config = require('./config/db');
 
 module.exports = require('../db')(config);

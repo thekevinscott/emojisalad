@@ -7,6 +7,7 @@ import {
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
+  RECEIVE_MESSAGE,
 } from '../modules/Game/types';
 
 const initialState = {};
@@ -52,6 +53,11 @@ export default typeToReducer({
     },
   },
   [SEND_MESSAGE]: {
+    FULFILLED: (state, action) => {
+      return buildMessageObj(state, [action.data]);
+    },
+  },
+  [RECEIVE_MESSAGE]: {
     FULFILLED: (state, action) => {
       return buildMessageObj(state, [action.data]);
     },

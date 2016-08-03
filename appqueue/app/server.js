@@ -15,7 +15,7 @@ import {
 const server = http.createServer();
 const app = express();
 
-bootstrapWebsocket(server);
+bootstrapWebsocket(server, app);
 bootstrapREST(app);
 
 registry.register(NAME, {

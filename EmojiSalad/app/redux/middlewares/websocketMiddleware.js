@@ -1,6 +1,6 @@
 import Api from '../../utils/Api';
 
-export default function websocketMiddleware({ dispatch, getState }) {
+export default function websocketMiddleware({ getState }) {
   return next => action => {
     //return next(action);
     const {
@@ -13,7 +13,8 @@ export default function websocketMiddleware({ dispatch, getState }) {
       return next(action);
     }
 
-    Api.sendMessage(type, payload);
+    const userKey = getState().data.me.key;
+    Api.sendMessage(userKey, type, payload);
 
     // continue on through the middleware stack
     return next({ ...rest, type });

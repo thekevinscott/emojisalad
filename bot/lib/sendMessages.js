@@ -43,7 +43,7 @@ function hasBodyError(options, body, byteLength) {
 
 const sendMessages = (messages, options = {}) => {
   //console.log('send 1');
-  //console.info('messages to send', messages);
+  console.info('messages to send', messages);
 
   if ( options.trip && messages.length >= options.trip ) {
     sendAlert(messages, 'tripped', 'send');
@@ -65,10 +65,10 @@ const sendMessages = (messages, options = {}) => {
   }, {});
 
   //console.info('messages_by_protocol', messages_by_protocol);
-  //console.log('send 2');
+  console.log('send 2');
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
-    //console.log('send 3', protocol);
-    //console.info('protocol', protocol);
+    console.log('send 3', protocol);
+    console.info('protocol', protocol);
     const protocolMessages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
     //console.info('service', service);
@@ -83,22 +83,29 @@ const sendMessages = (messages, options = {}) => {
     const stringifiedOptions = JSON.stringify(requestOptions);
     const byteLength = Buffer.byteLength(stringifiedOptions, 'utf8') + " bytes";
 
-    return request(requestOptions).then((response) => {
-      if (response.body) {
-        if (hasBodyError(options, response.body, byteLength)) {
-          return null;
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(`Request took too long when sending messages: ${protocol} : ${service.api.send.endpoint}`);
+      }, 5000);
+      return request(requestOptions).then((response) => {
+        clearTimeout(timer);
+        if (response.body) {
+          if (hasBodyError(options, response.body, byteLength)) {
+            resolve(null);
+          }
         }
-      }
-      //console.log('Request is fine', response.body, byteLength);
-      return response;
-    }).catch((err) => {
-      //console.log('send 5a');
-      console.error('error sending response', err, requestOptions);
-      throw new Error(err);
+        console.log('Request is fine', response.body, byteLength);
+        resolve(response);
+      }).catch((err) => {
+        clearTimeout(timer);
+        console.log('send 5a');
+        console.error('error sending response', err, requestOptions);
+        reject(err);
+      });
     });
   })).then((response) => {
     if (messages.length > 0) {
-      //console.log('send 6');
+      console.log('send 6');
       console.info('messages sent: ', messages.map(m => m.body));
       //console.info('messages are sent! within sendMessages');
     }

@@ -14,7 +14,7 @@ export default function fetchGames(ws, { userKey }) {
       key: game.key,
       created: game.created,
       players: game.players,
-      round: game.round,
+      //round: game.round,
       round_count: game.round_count,
     }));
   }).then(games => {
