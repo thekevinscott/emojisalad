@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 
+import { Logger } from '../../../components/Logger';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import * as styles from '../styles';
@@ -107,6 +108,7 @@ class Game extends Component {
   }
 
   render() {
+    const logger = this.props.logger;
     //console.log('render Game');
     return (
       <View
@@ -116,6 +118,7 @@ class Game extends Component {
           flex: 1,
         }}>
           {this.renderMessenger()}
+          <Logger logger={logger} />
         </View>
       </View>
     );

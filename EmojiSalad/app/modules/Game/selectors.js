@@ -19,12 +19,12 @@ function sortByNewestFirst(a, b) {
 export const makeSelectMessages = () => {
   const messagesPerPage = 19;
   return (game, messages, page, sentMessages = 0) => {
-    return game.messages.map(key => {
-      return {
-        key,
-        ...messages[key],
-      };
-    }).sort(sortByNewestFirst).slice(0, messagesPerPage * page + sentMessages);
+    return game.messages.map(key => ({
+      key,
+      ...messages[key],
+    }))
+    .sort(sortByNewestFirst)
+    .slice(0, messagesPerPage * page + sentMessages);
   };
 };
 
@@ -43,13 +43,14 @@ export function makeMapStateToProps() {
     } = state.ui.Game;
     const messages = selectMessages(game, state.data.messages, pages[gameKey], sentMessages[gameKey]);
 
-    console.log('the messages', messages.map(m => [m.body, new Date(m.timestamp)]));
+    //console.log('the messages', messages.map(m => [m.body, new Date(m.timestamp)]));
 
     return {
       game,
       messages,
       me: selectMe(state),
       compose: selectCompose(state, game.key),
+      logger: state.ui.Games.logger,
     };
   };
 }

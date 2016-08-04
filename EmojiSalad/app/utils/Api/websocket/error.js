@@ -1,6 +1,6 @@
-export default function error() {
+export default function error(websocket) {
   return e => {
     // an error occurred
-    console.log('an error from web socket', e.message);
+    websocket.log('an error from web socket', e.message);
   };
 }

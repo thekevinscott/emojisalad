@@ -15,6 +15,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 
 import * as styles from '../styles';
+import { Logger } from '../../../components/Logger';
 
 import {
   fetchGames,
@@ -34,6 +35,7 @@ function mapStateToProps(state) {
     games: selectGames(state),
     me: selectMe(state),
     ui: selectUI(state),
+    logger: state.ui.Games.logger,
   };
 }
 
@@ -69,10 +71,15 @@ function parseTimestamp(timestamp) {
 
 class Games extends Component {
   componentWillMount() {
+    console.log('Games mount');
     this.props.actions.fetchGames(this.props.me.key);
   }
 
-  _renderRow(game, sectionId, rowId, highlightRow) {
+  onDidFocus() {
+    console.log('did focus');
+  }
+
+  _renderRow(game, sectionId, rowId) {
     //console.log(highlightRow);
     const message = (game.messages[game.messages.length - 1] || {});
     return (
@@ -125,6 +132,8 @@ class Games extends Component {
   }
 
   render() {
+    console.log('render games');
+    const logger = this.props.logger;
     //console.log(this.props);
     return (
       <View style={{ flex: 1 }}>
@@ -135,6 +144,7 @@ class Games extends Component {
           renderSeparator={this._renderSeperator}
           style={styles.container}
         />
+        <Logger logger={logger} />
       </View>
     );
   }

@@ -15,4 +15,10 @@ export default typeToReducer({
       fetching: false,
     }),
   },
+  UPDATE_LOGGER: (state, action) => {
+    return {
+      ...state,
+      logger: action.logger,
+    };
+  },
 }, initialState);

@@ -16,11 +16,11 @@ export default function sendMessage(websocket) {
       });
       console.log('sending', packet);
       websocket.get('websocket').send(packet);
-    } else {
-      Alert.alert(
-        'Websocket is not connected',
-        'Wruh wroh, your message was thrown in the trash.'
-      );
+    //} else {
+      //Alert.alert(
+        //'Websocket is not connected',
+        //'Wruh wroh, your message was thrown in the trash.'
+      //);
     }
   };
 }

@@ -28,6 +28,9 @@ function getDefaultCompose(data) {
 }
 
 const initialState = {
+  compose: {},
+  pages: {},
+  sentMessage: {},
 };
 
 export default typeToReducer({

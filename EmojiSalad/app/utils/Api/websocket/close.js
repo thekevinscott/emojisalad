@@ -3,7 +3,7 @@
 //} from 'react-native';
 
 export default function close(websocket, callback) {
-  return e => {
+  return () => {
     if (websocket.isOpen) {
       //Alert.alert(
         //'Websocket has gone away',
@@ -11,7 +11,7 @@ export default function close(websocket, callback) {
       //);
       websocket.isOpen = false;
       // connection closed
-      console.log('websocket has closed', e.code, e.reason);
+      websocket.log('websocket has closed');
     }
 
     callback();
