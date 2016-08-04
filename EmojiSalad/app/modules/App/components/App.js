@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 //} from 'react-native';
 
 import AppProvider from '../../../redux/AppProvider';
-import Router from './Router';
+import Routes from './Routes';
 import {
   selectMe,
 } from '../selectors';
@@ -23,7 +23,7 @@ export default class App extends Component {
 
     return (
       <AppProvider store={this.props.store}>
-        <Router me={me} />
+        <Routes me={me} />
       </AppProvider>
     );
   }

@@ -3,12 +3,11 @@
  */
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import connectWithFocus from '../../../utils/connectWithFocus';
 import {
   //Text,
   TextInput,
   View,
-  AppState,
 } from 'react-native';
 
 import { Logger } from '../../../components/Logger';
@@ -34,16 +33,6 @@ class Game extends Component {
 
   componentWillMount() {
     //this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
-  }
-
-  componentDidMount() {
-    console.log('component did mount', AppState);
-    AppState.addEventListener('change', (change) => {
-      console.log('it changed', change);
-    });
-  }
-  componentWillUnmount() {
-    //AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
   loadEarlier() {
@@ -136,7 +125,7 @@ class Game extends Component {
   }
 }
 
-export default connect(
+export default connectWithFocus(
   makeMapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Game);

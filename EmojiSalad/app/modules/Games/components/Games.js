@@ -3,7 +3,8 @@
  */
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import connectWithFocus from '../../../utils/connectWithFocus';
+//import { connect } from 'react-redux';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
@@ -150,7 +151,7 @@ class Games extends Component {
   }
 }
 
-export default connect(
+export default connectWithFocus(
   mapStateToProps,
   mapDispatchToProps
 )(Games);

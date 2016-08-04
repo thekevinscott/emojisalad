@@ -43,7 +43,6 @@ export function makeMapStateToProps() {
       sentMessages,
     } = state.ui.Game;
 
-    console.log('state', state);
     const page = (pages || {})[gameKey] || 1;
     const sentMessagesPayload = sentMessages[gameKey];
     const messages = selectMessages(game, state.data.messages, page, sentMessagesPayload);
