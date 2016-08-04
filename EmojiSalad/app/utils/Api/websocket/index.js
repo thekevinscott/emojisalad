@@ -22,10 +22,10 @@ const websocketClass = {
   },
   log: (msg) => {
     this.msg = msg;
-    console.log('Logger', msg);
+    //console.log('Logger', msg);
     if (websocketClass.store) {
       this.lastMsg = null;
-      console.log('store is dispatched');
+      //console.log('store is dispatched');
       websocketClass.store.dispatch({
         type: 'UPDATE_LOGGER',
         logger: msg,
@@ -76,7 +76,7 @@ websocketClass.initialize();
 export const sendMessage = origSendMessage(websocketClass);
 
 export function configureWebsocket(store) {
-  console.log('configure websocket');
+  //console.log('configure websocket');
   websocketClass.store = store;
   websocketClass.get('websocket').onmessage = message(store);
   websocketClass.setLogger(store.dispatch);

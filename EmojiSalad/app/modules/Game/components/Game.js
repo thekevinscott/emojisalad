@@ -8,6 +8,7 @@ import {
   //Text,
   TextInput,
   View,
+  AppState,
 } from 'react-native';
 
 import { Logger } from '../../../components/Logger';
@@ -32,7 +33,17 @@ class Game extends Component {
   }
 
   componentWillMount() {
-    //this.props.actions.fetchMessages(this.props.me.id);
+    //this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
+  }
+
+  componentDidMount() {
+    AppState.addEventListener('change', this._handleAppStateChange);
+  }
+  componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
+  }
+  _handleAppStateChange(currentAppState) {
+    console.log('current app state', currentAppState);
   }
 
   loadEarlier() {

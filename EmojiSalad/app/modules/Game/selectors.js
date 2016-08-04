@@ -17,7 +17,7 @@ function sortByNewestFirst(a, b) {
 //}
 
 export const makeSelectMessages = () => {
-  const messagesPerPage = 19;
+  const messagesPerPage = 8;
   return (game, messages, page, sentMessages = 0) => {
     return game.messages.map(key => ({
       key,
@@ -41,7 +41,9 @@ export function makeMapStateToProps() {
       pages,
       sentMessages,
     } = state.ui.Game;
-    const messages = selectMessages(game, state.data.messages, pages[gameKey], sentMessages[gameKey]);
+
+    const page = (pages || {})[gameKey] || 1;
+    const messages = selectMessages(game, state.data.messages, page, sentMessages[gameKey]);
 
     //console.log('the messages', messages.map(m => [m.body, new Date(m.timestamp)]));
 
