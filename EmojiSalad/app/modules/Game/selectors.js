@@ -19,7 +19,6 @@ function sortByNewestFirst(a, b) {
 export const makeSelectMessages = () => {
   const messagesPerPage = 8;
   return (game, messages, page, sentMessages = 0) => {
-    console.log('5');
     return game.messages.map(key => ({
       key,
       ...messages[key],
@@ -33,30 +32,30 @@ function selectCompose(state, gameKey) {
   return state.ui.Game.compose[gameKey];
 }
 
-export function makeMapStateToProps() {
+export function makeMapStateToProps(state, props) {
   const selectMessages = makeSelectMessages();
-  return (state, props) => {
-    const gameKey = props.game.key;
-    const game = state.data.games[gameKey];
-    const {
-      pages,
-      sentMessages,
-    } = state.ui.Game;
+  //return (state, props) => {
+  const gameKey = props.game.key;
+  const game = state.data.games[gameKey];
+  const {
+    pages,
+    sentMessages,
+  } = state.ui.Game;
 
-    const page = (pages || {})[gameKey] || 1;
-    const sentMessagesPayload = sentMessages[gameKey];
-    const messages = selectMessages(game, state.data.messages, page, sentMessagesPayload);
+  const page = (pages || {})[gameKey] || 1;
+  const sentMessagesPayload = sentMessages[gameKey];
+  const messages = selectMessages(game, state.data.messages, page, sentMessagesPayload);
 
-    //console.log('the messages', messages.map(m => [m.body, new Date(m.timestamp)]));
+  //console.log('the messages', messages.map(m => [m.body, new Date(m.timestamp)]));
 
-    return {
-      game,
-      messages,
-      me: selectMe(state),
-      compose: selectCompose(state, game.key),
-      logger: state.ui.Games.logger,
-    };
+  return {
+    game,
+    messages,
+    me: selectMe(state),
+    compose: selectCompose(state, game.key),
+    logger: state.ui.Games.logger,
   };
+  //};
 }
 
 export function mapDispatchToProps(dispatch, props) {

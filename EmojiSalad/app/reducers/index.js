@@ -1,11 +1,17 @@
+import {
+  combineReducers,
+} from 'redux';
+
 import games from './games';
-import players from './players';
 import users from './users';
 import messages from './messages';
+import me from './me';
 
-export default {
+export router from './router';
+
+export default combineReducers({
+  me,
   messages,
   games,
-  players,
   users,
-};
+});

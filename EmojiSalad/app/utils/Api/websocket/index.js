@@ -9,6 +9,10 @@ import open from './open';
 import close from './close';
 import origSendMessage from './sendMessage';
 
+import {
+  WEBSOCKET_CONNECT,
+} from './types';
+
 const websocketClass = {
   reconnect: null,
   isOpen: false,
@@ -21,39 +25,41 @@ const websocketClass = {
     return this[key];
   },
   log: (msg) => {
-    this.msg = msg;
-    //console.log('Logger', msg);
-    if (websocketClass.store) {
-      this.lastMsg = null;
-      //console.log('store is dispatched');
-      websocketClass.store.dispatch({
-        type: 'UPDATE_LOGGER',
-        logger: msg,
-      });
-    } else {
-      this.lastMsg = msg;
-      //console.log('store is not yet attached');
+    websocketClass.dispatch({
+      type: 'UPDATE_LOGGER',
+      logger: msg,
+    });
+  },
+  setStore: (store) => {
+    websocketClass.store = store;
+    if (websocketClass.toDispatch.length) {
+      while (websocketClass.toDispatch.length) {
+        websocketClass.dispatch(websocketClass.toDispatch.shift());
+      }
     }
   },
-  setLogger: () => {
-    if (this.lastMsg) {
-      websocketClass.store.dispatch({
-        type: 'UPDATE_LOGGER',
-        logger: this.lastMsg,
-      });
-      this.lastMsg = null;
+  toDispatch: [],
+  dispatch: payload => {
+    if (websocketClass.store) {
+      websocketClass.store.dispatch(payload);
+    } else {
+      websocketClass.toDispatch.push(payload);
     }
   },
   attempts: 0,
   initialize: () => {
     websocketClass.attempts = websocketClass.attempts + 1;
-    websocketClass.log(`attempting to connect websocket at ws://${API_HOST}:${API_PORT}/, attempt ${websocketClass.attempts}`);
+    websocketClass.log(`connecting at ws://${API_HOST}:${API_PORT}/, # ${websocketClass.attempts}`);
     this.websocket = new WebSocket(`ws://${API_HOST}:${API_PORT}/`);
 
     if (websocketClass.store) {
       websocketClass.get('websocket').onmessage = message(websocketClass.store);
     }
     this.websocket.onopen = open(websocketClass, () => {
+      websocketClass.dispatch({
+        type: WEBSOCKET_CONNECT,
+        connected: true,
+      });
       if (websocketClass.reconnect) {
         clearInterval(websocketClass.reconnect);
         websocketClass.reconnect = null;
@@ -63,6 +69,10 @@ const websocketClass = {
     this.websocket.onerror = error(websocketClass);
     this.websocket.onclose = close(websocketClass, () => {
       websocketClass.log('websocket closed');
+      websocketClass.dispatch({
+        type: WEBSOCKET_CONNECT,
+        connected: false,
+      });
       if (!websocketClass.reconnect) {
         websocketClass.reconnect = setInterval(() => {
           websocketClass.initialize();
@@ -77,9 +87,8 @@ export const sendMessage = origSendMessage(websocketClass);
 
 export function configureWebsocket(store) {
   //console.log('configure websocket');
-  websocketClass.store = store;
   websocketClass.get('websocket').onmessage = message(store);
-  websocketClass.setLogger(store.dispatch);
+  websocketClass.setStore(store);
 }
 
 export const attachLogger = websocketClass.attachLogger;

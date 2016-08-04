@@ -31,8 +31,9 @@ class Game extends Component {
     };
   }
 
-  componentWillMount() {
-    //this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
+  componentWillFocus() {
+    console.log('Game focus');
+    this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
   }
 
   loadEarlier() {
@@ -74,7 +75,6 @@ class Game extends Component {
   }
 
   renderMessenger() {
-    //console.log('laod earlier', this.props.messages.length, this.props.game.totalMessages);
     return (
       <GiftedChat
         isAnimated={true}
@@ -100,7 +100,6 @@ class Game extends Component {
             createdAt: new Date(message.timestamp),
             user,
           };
-          //console.log('payload', payload);
           return payload;
         })}
       />
@@ -109,7 +108,6 @@ class Game extends Component {
 
   render() {
     const logger = this.props.logger;
-    //console.log('render Game');
     return (
       <View
         style={styles.container}

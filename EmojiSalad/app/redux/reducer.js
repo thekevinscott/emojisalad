@@ -7,10 +7,9 @@ import App from '../modules/App/reducer';
 import Games from '../modules/Games/reducer';
 import Game from '../modules/Game/reducer';
 
-import games from '../reducers/games';
-import messages from '../reducers/messages';
-import users from '../reducers/users';
-import me from '../reducers/me';
+import data, {
+  router,
+} from '../reducers';
 
 export default combineReducers({
   ui: combineReducers({
@@ -19,10 +18,6 @@ export default combineReducers({
     Games,
     Game,
   }),
-  data: combineReducers({
-    games,
-    messages,
-    users,
-    me,
-  }),
+  data,
+  router,
 });

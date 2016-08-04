@@ -71,17 +71,12 @@ function parseTimestamp(timestamp) {
 }
 
 class Games extends Component {
-  componentWillMount() {
-    console.log('Games mount');
+  componentWillFocus() {
+    console.log('Games focus');
     this.props.actions.fetchGames(this.props.me.key);
   }
 
-  onDidFocus() {
-    console.log('did focus');
-  }
-
   _renderRow(game, sectionId, rowId) {
-    //console.log(highlightRow);
     const message = (game.messages[game.messages.length - 1] || {});
     return (
       <TouchableHighlight
@@ -133,9 +128,7 @@ class Games extends Component {
   }
 
   render() {
-    console.log('render games');
     const logger = this.props.logger;
-    //console.log(this.props);
     return (
       <View style={{ flex: 1 }}>
         <Spinner visible={this.props.ui.fetching && !this.props.games.length} />
