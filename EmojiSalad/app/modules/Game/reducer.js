@@ -30,7 +30,7 @@ function getDefaultCompose(data) {
 const initialState = {
   compose: {},
   pages: {},
-  sentMessage: {},
+  sentMessages: {},
 };
 
 export default typeToReducer({

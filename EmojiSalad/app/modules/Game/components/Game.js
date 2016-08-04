@@ -37,13 +37,13 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    AppState.addEventListener('change', this._handleAppStateChange);
+    console.log('component did mount', AppState);
+    AppState.addEventListener('change', (change) => {
+      console.log('it changed', change);
+    });
   }
   componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange);
-  }
-  _handleAppStateChange(currentAppState) {
-    console.log('current app state', currentAppState);
+    //AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
   loadEarlier() {
