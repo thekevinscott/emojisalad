@@ -71,7 +71,7 @@ function parseTimestamp(timestamp) {
 }
 
 class Games extends Component {
-  componentWillFocus() {
+  componentWillAppear() {
     console.log('Games focus');
     this.props.actions.fetchGames(this.props.me.key);
   }

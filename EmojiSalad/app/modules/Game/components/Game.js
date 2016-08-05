@@ -31,7 +31,7 @@ class Game extends Component {
     };
   }
 
-  componentWillFocus() {
+  componentWillAppear() {
     console.log('Game focus');
     this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
   }
