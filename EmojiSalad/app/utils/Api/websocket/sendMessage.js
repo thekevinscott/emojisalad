@@ -14,7 +14,7 @@ export default function sendMessage(websocket) {
         userKey,
         payload,
       });
-      console.log('sending', packet);
+      //console.log('sending', packet);
       websocket.get('websocket').send(packet);
     //} else {
       //Alert.alert(

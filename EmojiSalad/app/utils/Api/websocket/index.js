@@ -25,6 +25,7 @@ const websocketClass = {
     return this[key];
   },
   log: (msg) => {
+    console.log(msg);
     websocketClass.dispatch({
       type: 'UPDATE_LOGGER',
       logger: msg,
@@ -49,13 +50,14 @@ const websocketClass = {
   attempts: 0,
   initialize: () => {
     websocketClass.attempts = websocketClass.attempts + 1;
-    websocketClass.log(`connecting at ws://${API_HOST}:${API_PORT}/, # ${websocketClass.attempts}`);
+    //websocketClass.log(`connecting at ws://${API_HOST}:${API_PORT}/, # ${websocketClass.attempts}`);
     this.websocket = new WebSocket(`ws://${API_HOST}:${API_PORT}/`);
 
     if (websocketClass.store) {
       websocketClass.get('websocket').onmessage = message(websocketClass.store);
     }
     this.websocket.onopen = open(websocketClass, () => {
+      websocketClass.log('websocket connection opened');
       websocketClass.dispatch({
         type: WEBSOCKET_CONNECT,
         connected: true,
@@ -66,9 +68,11 @@ const websocketClass = {
       }
       websocketClass.attempts = 0;
     });
-    this.websocket.onerror = error(websocketClass);
+    //this.websocket.onerror = error(websocketClass);
     this.websocket.onclose = close(websocketClass, () => {
-      websocketClass.log('websocket closed');
+      if (websocketClass.attempts === 0) {
+        websocketClass.log('websocket connection closed');
+      }
       websocketClass.dispatch({
         type: WEBSOCKET_CONNECT,
         connected: false,

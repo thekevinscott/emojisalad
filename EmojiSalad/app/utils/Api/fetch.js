@@ -15,7 +15,7 @@ export default function newFetch(url, options = {}) {
   };
 
   const getErrorMessage = (response) => {
-    console.log('response status', response.status);
+    //console.log('response status', response.status);
     if (response.status === 404) {
       console.log(`Error: URL not found: ${url}`);
     } else if (response.status === 500) {
@@ -50,7 +50,7 @@ export default function newFetch(url, options = {}) {
       reject(new Error('fetch timed out'));
     }, NETWORK_TIMEOUT);
 
-    console.log('making request', url, parsedOptions);
+    //console.log('making request', url, parsedOptions);
     fetch(url, parsedOptions)
     .then(handleErrors)
     .then(response => {

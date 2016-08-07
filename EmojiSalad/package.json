@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "start": "react-native start -- --port=8081 --reset-cache",
-    "beta": "fastlane beta"
+    "beta": "fastlane beta",
+    "test": "jest"
   },
   "dependencies": {
     "axios": "0.13.1",
@@ -26,10 +27,24 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
+    "babel-jest": "^14.1.0",
+    "babel-polyfill": "^6.13.0",
     "babel-preset-stage-0": "^6.5.0",
     "eslint": "^3.1.1",
     "eslint-plugin-import": "1.11.1",
     "eslint-plugin-jsx-a11y": "2.0.1",
-    "eslint-plugin-react": "^5.2.2"
+    "eslint-plugin-react": "^5.2.2",
+    "faker": "^3.1.0",
+    "jest-cli": "^14.1.0"
+  },
+  "jest": {
+    "globals": {
+      "__DEV__": true
+    },
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/fbjs",
+      "<rootDir>/node_modules/lodash"
+    ]
   }
 }

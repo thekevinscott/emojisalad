@@ -16,7 +16,6 @@ import {
 import { Actions } from 'react-native-router-flux';
 
 import * as styles from '../styles';
-import { Logger } from '../../../components/Logger';
 
 import {
   fetchGames,
@@ -72,7 +71,7 @@ function parseTimestamp(timestamp) {
 
 class Games extends Component {
   componentWillAppear() {
-    console.log('Games focus');
+    console.log('Games Overview Component componentWillAppear called');
     this.props.actions.fetchGames(this.props.me.key);
   }
 
@@ -128,7 +127,6 @@ class Games extends Component {
   }
 
   render() {
-    const logger = this.props.logger;
     return (
       <View style={{ flex: 1 }}>
         <Spinner visible={this.props.ui.fetching && !this.props.games.length} />
@@ -138,7 +136,6 @@ class Games extends Component {
           renderSeparator={this._renderSeperator}
           style={styles.container}
         />
-        <Logger logger={logger} />
       </View>
     );
   }

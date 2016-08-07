@@ -109,7 +109,7 @@ export default function patchedConnect(...args) {
       }
 
       refHandler(c) {
-        if (!this.instance) {
+        if (c) {
           this.instance = c.getWrappedInstance();
           if (!this.state.handleMounted) {
             this.setState({

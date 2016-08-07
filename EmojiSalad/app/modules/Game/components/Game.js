@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 
-import { Logger } from '../../../components/Logger';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import * as styles from '../styles';
@@ -32,7 +31,7 @@ class Game extends Component {
   }
 
   componentWillAppear() {
-    console.log('Game focus');
+    console.log('Game Drilldown Component componentWillAppear called');
     this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
   }
 
@@ -107,7 +106,6 @@ class Game extends Component {
   }
 
   render() {
-    const logger = this.props.logger;
     return (
       <View
         style={styles.container}
@@ -116,7 +114,6 @@ class Game extends Component {
           flex: 1,
         }}>
           {this.renderMessenger()}
-          <Logger logger={logger} />
         </View>
       </View>
     );

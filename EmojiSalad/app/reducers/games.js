@@ -12,7 +12,7 @@ import {
   RECEIVE_MESSAGE,
 } from '../modules/Game/types';
 
-const initialState = {};
+export const initialState = {};
 
 function translateRound(round = {}) {
   return {
@@ -21,30 +21,46 @@ function translateRound(round = {}) {
     clue: round.clue,
     winner: round.winner,
     submission: round.submission,
-    created: round.created,
+    created: Number(round.created),
   };
 }
 
+function getMessageKeys(messages = []) {
+  return messages.map(message => message.key);
+}
+
 function translateMessages(currentGame = {}, game = {}) {
-  const newMessages = (game.messages || []).map(message => message.key);
-  const messages = R.uniq((currentGame.messages || []).concat(newMessages));
-  return messages;
+  const newMessageKeys = getMessageKeys(game.messages);
+  return R.uniq((currentGame.messages || []).concat(newMessageKeys));
 }
 
 function translateGame(currentGame = {}, game = {}) {
   return {
     key: game.key || currentGame.key,
-    created: game.created || currentGame.created,
-    archived: game.archived || currentGame.archived,
-    round_count: game.round_count || currentGame.round_count,
+    created: Number(game.created || currentGame.created),
+    archived: (game.archived !== undefined) ? game.archived : currentGame.archived,
+    roundCount: (game.round_count !== undefined) ? game.round_count : currentGame.round_count,
     players: game.players.map(player => player.user_key) || currentGame.players,
     round: translateRound(game.round || {}) || currentGame.round,
-    messages: translateMessages(currentGame, game) || currentGame.messages,
-    totalMessages: game.total_messages || currentGame.total_messages,
+    // messages is an array of keys of messages in an unordered list
+    messages: translateMessages(currentGame, game) || currentGame.messages || [],
+    totalMessages: (game.total_messages !== undefined) ? game.total_messages : currentGame.total_messages,
   };
 }
 
 export default typeToReducer({
+  [FETCH_GAMES]: {
+    FULFILLED: (state, action) => {
+      return {
+        ...state,
+        ...action.data.reduce((obj, game) => ({
+          ...obj,
+          [game.key]: translateGame(state[game.key], game),
+        }), {}),
+      };
+    },
+  },
+  // fetch messages for a specific game
   [FETCH_MESSAGES]: {
     FULFILLED: (state, { data }) => {
       const gameKey = data.key;
@@ -60,17 +76,6 @@ export default typeToReducer({
       };
     },
   },
-  [FETCH_GAMES]: {
-    FULFILLED: (state, action) => {
-      return {
-        ...state,
-        ...action.data.reduce((obj, game) => ({
-          ...obj,
-          [game.key]: translateGame(state[game.key], game),
-        }), {}),
-      };
-    },
-  },
   [SEND_MESSAGE]: {
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
@@ -79,8 +84,6 @@ export default typeToReducer({
         messages: [message],
       });
       const game = state[gameKey];
-      console.log('game', game);
-      console.log('messages length', messages.length);
       return {
         ...state,
         [gameKey]: {
@@ -99,8 +102,6 @@ export default typeToReducer({
         messages: [message],
       });
       const game = state[gameKey];
-      console.log('game', game);
-      console.log('messages length', messages.length);
       return {
         ...state,
         [gameKey]: {
