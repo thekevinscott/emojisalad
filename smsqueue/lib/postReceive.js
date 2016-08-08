@@ -1,4 +1,4 @@
-export default function(messageId, res) {
+module.exports = function(messageId, res) {
   //return res.json({
     //id: message_id
   //});
