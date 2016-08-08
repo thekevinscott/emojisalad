@@ -22,7 +22,7 @@ import {
 } from '../actions';
 
 import {
-  selectGames,
+  selectGamesByNewestFirst,
   selectUI,
 } from '../selectors';
 
@@ -32,7 +32,7 @@ import {
 
 function mapStateToProps(state) {
   return {
-    games: selectGames(state),
+    games: selectGamesByNewestFirst(state),
     me: selectMe(state),
     ui: selectUI(state),
     logger: state.ui.Games.logger,
@@ -135,6 +135,7 @@ class Games extends Component {
           renderRow={this._renderRow}
           renderSeparator={this._renderSeperator}
           style={styles.container}
+          enableEmptySections={true}
         />
       </View>
     );

@@ -16,6 +16,8 @@ export function getLastMessage(game) {
 export function selectMessages(state, messageKeys) {
   return messageKeys.map(key => {
     return state.data.messages[key];
+  }).sort((a, b) => {
+    return new Date(a.timestamp) - new Date(b.timestamp);
   });
 }
 
@@ -28,14 +30,14 @@ export function selectGames(state) {
       messages: selectMessages(state, game.messages),
     };
   });
-  console.log('games', games.map(game => {
-    return getLastMessage(game);
-  }));
   const sortedGames = games.sort((a, b) => {
     return new Date(getLastMessage(a)) - new Date(getLastMessage(b));
   });
-  //console.log('sorted games', sortedGames);
   return sortedGames;
+}
+
+export function selectGamesByNewestFirst(state) {
+  return selectGames(state).reverse();
 }
 
 export function selectUI(state) {

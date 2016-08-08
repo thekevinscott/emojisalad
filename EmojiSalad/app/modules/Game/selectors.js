@@ -9,32 +9,24 @@ import {
   sendMessage,
 } from './actions';
 
-function sortByNewestFirst(a, b) {
-  return new Date(b.timestamp) - new Date(a.timestamp);
-}
-//function sortByNewest(a, b) {
-  //return new Date(a.timestamp) - new Date(b.timestamp);
-//}
+export const MESSAGES_PER_PAGE = 20;
 
-export const makeSelectMessages = () => {
-  const messagesPerPage = 8;
-  return (game, messages, page, sentMessages = 0) => {
-    return game.messages.map(key => ({
-      key,
-      ...messages[key],
-    }))
-    .sort(sortByNewestFirst)
-    .slice(0, messagesPerPage * page + sentMessages);
-  };
-};
+export function selectMessages(game, messages, page = 1, visibleMessages = 0) {
+  return game.messages.map(key => ({
+    key,
+    ...messages[key],
+  }))
+  .sort((a, b) => {
+    return new Date(a.timestamp) - new Date(b.timestamp);
+  })
+  .slice(0, MESSAGES_PER_PAGE * page + visibleMessages);
+}
 
 function selectCompose(state, gameKey) {
   return state.ui.Game.compose[gameKey];
 }
 
 export function makeMapStateToProps(state, props) {
-  const selectMessages = makeSelectMessages();
-  //return (state, props) => {
   const gameKey = props.game.key;
   const game = state.data.games[gameKey];
   const {
@@ -46,8 +38,6 @@ export function makeMapStateToProps(state, props) {
   const sentMessagesPayload = sentMessages[gameKey];
   const messages = selectMessages(game, state.data.messages, page, sentMessagesPayload);
 
-  //console.log('the messages', messages.map(m => [m.body, new Date(m.timestamp)]));
-
   return {
     game,
     messages,
@@ -55,7 +45,6 @@ export function makeMapStateToProps(state, props) {
     compose: selectCompose(state, game.key),
     logger: state.ui.Games.logger,
   };
-  //};
 }
 
 export function mapDispatchToProps(dispatch, props) {
@@ -78,4 +67,3 @@ export function mapDispatchToProps(dispatch, props) {
     },
   };
 }
-

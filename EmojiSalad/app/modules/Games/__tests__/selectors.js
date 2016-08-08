@@ -115,50 +115,18 @@ describe('Games selectors', () => {
       expect(Object.keys(result)).not.toContain('bar');
     });
 
-    fit('should return a sorted array of messages', () => {
-      const messageKeys = [
-        'foo',
-        'bar',
-        'baz',
-      ];
-      const messageArr = messageKeys.map(key => {
-        return getFixture('message', {
-          key,
-        });
-      }).map(msg => {
-        return {
-          ...msg,
-          timestamp: Number(msg.timestamp) * 1000,
-        };
-      });
+    it('should return a sorted array of messages', getState(state => {
+      const messageKeys = Object.keys(state.data.messages).slice(0, 3);
 
-      const messages = messageArr.reduce((obj, message) => ({
-        ...obj,
-        [message.key]: message,
-      }), {});
+      state.data.messages[messageKeys[0]].timestamp = Number(daysAgo(2)) * 1000;
+      state.data.messages[messageKeys[1]].timestamp = Number(daysAgo(1)) * 1000;
+      state.data.messages[messageKeys[2]].timestamp = Number(daysAgo(3)) * 1000;
 
-      console.log(messageArr);
-      console.log('state data', messageArr.map(msg => {
-        return {
-          key: msg.key,
-          body: msg.body,
-          d: new Date(msg.timestamp),
-        };
-      }));
-
-      messages.foo.timestamp = daysAgo(3);
-      messages.bar.timestamp = daysAgo(1);
-      messages.baz.timestamp = daysAgo(2);
-
-      const result = selectMessages({
-        data: {
-          messages,
-        },
-      }, messageKeys);
-      expect(result[0]).toEqual(messages.foo);
-      expect(result[1]).toEqual(messages.baz);
-      expect(result[2]).toEqual(messages.bar);
-    });
+      const result = selectMessages(state, messageKeys);
+      expect(result[0]).toEqual(state.data.messages[messageKeys[2]]);
+      expect(result[1]).toEqual(state.data.messages[messageKeys[0]]);
+      expect(result[2]).toEqual(state.data.messages[messageKeys[1]]);
+    }));
   });
 
   describe('selectGames', () => {
@@ -178,15 +146,16 @@ describe('Games selectors', () => {
 
       const newMessages = [
         getFixture('message', {
-          timestamp: daysAgo(5),
+          timestamp: daysAgo(3),
         }),
         getFixture('message', {
           timestamp: daysAgo(1),
         }),
         getFixture('message', {
-          timestamp: daysAgo(3),
+          timestamp: daysAgo(2),
         }),
       ];
+
       newMessages.forEach((message, index) => {
         gamesArray[index].messages.push(message.key);
         state.data.messages[message.key] = message;

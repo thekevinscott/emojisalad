@@ -16,13 +16,13 @@ export function getWhereParameters(userKey, gameKey, messageKeysToExclude) {
   return whereParams;
 }
 
-export default function fetchMessagesForGames(userKey, gameKeys, messageKeysToExclude) {
+export default function fetchMessagesForGames(userKey, gameKeys, messageKeysToExclude = [], limit = null) {
   return Promise.all(gameKeys.map(gameKey => {
     return fetchMessages(getWhereParameters(
       userKey,
       gameKey,
       messageKeysToExclude
-    )).then(messages => ({
+    ), limit).then(messages => ({
       [gameKey]: messages,
     }));
   })).then(messages => {

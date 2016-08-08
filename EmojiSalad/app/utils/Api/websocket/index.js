@@ -3,7 +3,7 @@ import {
   API_HOST,
 } from '../../../../config';
 
-import error from './error';
+//import error from './error';
 import message from './message';
 import open from './open';
 import close from './close';

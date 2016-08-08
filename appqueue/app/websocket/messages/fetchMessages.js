@@ -15,7 +15,10 @@ function getFields(table) {
   .from(table);
 }
 
-function getQuery(where) {
+function getQuery(where, limit = LIMIT) {
+  if (limit >= LIMIT) {
+    limit = LIMIT;
+  }
   const query = squel
   .select()
   .from(
@@ -25,15 +28,15 @@ function getQuery(where) {
     ), 't'
   )
   .order('timestamp', false)
-  .limit(LIMIT);
+  .limit(limit);
 
   return Object.keys(where).reduce((q, key) => {
     return q.where(key, where[key]);
   }, query);
 }
 
-export default function fetchMessagesForGame(where = {}) {
-  const query = getQuery(where);
+export default function fetchMessagesForGame(where = {}, limit) {
+  const query = getQuery(where, limit);
   console.log('the query', query.toString());
   return db.query(query);
 }

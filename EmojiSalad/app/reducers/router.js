@@ -9,9 +9,9 @@ import {
 
 const initialState = {
   scene: {
-    name: null,
-    key: null,
-    title: null,
+    name: 'games',
+    key: 'games',
+    title: 'Games',
   },
   websocket: {
     connected: false,
@@ -20,15 +20,15 @@ const initialState = {
 
 export default typeToReducer({
   [ActionConst.FOCUS]: (state, { scene }) => ({
-    ...state.websocket,
     scene: {
       name: scene.name,
       key: scene.sceneKey,
       title: scene.title,
     },
+    websocket: state.websocket,
   }),
   [WEBSOCKET_CONNECT]: (state, action) => ({
-    ...state.scene,
+    scene: state.scene,
     websocket: {
       connected: action.connected,
     },

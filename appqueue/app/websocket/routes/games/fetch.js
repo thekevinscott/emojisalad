@@ -21,7 +21,7 @@ export default function fetchGames(ws, { userKey }) {
     const gameKeys = games.map(game => game.key);
     return Promise.all([
       fetchTotalMessagesForGames(userKey, gameKeys),
-      fetchMessagesForGames(userKey, gameKeys),
+      fetchMessagesForGames(userKey, gameKeys, null, 1),
     ]).then(response => {
       const totalMessages = response[0];
       const messages = response[1];
