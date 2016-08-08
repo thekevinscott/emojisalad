@@ -3,15 +3,19 @@ jest.unmock('../../modules/Games/types');
 jest.unmock('../../modules/Game/types');
 jest.unmock('moment');
 jest.unmock('type-to-reducer');
-jest.unmock('faker');
 jest.unmock('ramda');
+jest.unmock('../../utils/translateTimestampFromDatabase');
+jest.unmock('../../testUtils/getFixture');
 
-import moment from 'moment';
-import faker from 'faker';
+//import faker from 'faker';
+
+//import daysAgo from '../../testUtils/daysAgo';
+import getFixture from '../../testUtils/getFixture';
 
 import {
   FETCH_GAMES,
 } from '../../modules/Games/types';
+
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
@@ -22,48 +26,10 @@ import games, {
   initialState,
 } from '../games';
 
-function daysAgo(days = 0) {
-  return moment().subtract(days, 'days').format('X');
-}
-
 const FETCH_GAMES_FULFILLED = `${FETCH_GAMES}_FULFILLED`;
 const FETCH_MESSAGES_FULFILLED = `${FETCH_MESSAGES}_FULFILLED`;
 const SEND_MESSAGE_FULFILLED = `${SEND_MESSAGE}_FULFILLED`;
 const RECEIVE_MESSAGE_FULFILLED = `${RECEIVE_MESSAGE}_FULFILLED`;
-
-function getFixture(type, payload = {}) {
-  switch (type) {
-  case 'game' :
-    return {
-      key: faker.random.uuid(),
-      created: daysAgo(1),
-      archived: 0,
-      round_count: 0,
-      players: [],
-      round: getFixture('round'),
-      messages: [
-        getFixture('message'),
-      ],
-      total_messages: 1,
-      ...payload,
-    };
-  case 'message':
-    return {
-      key: faker.random.uuid(),
-      ...payload,
-    };
-  case 'round':
-    return {
-      key: faker.random.uuid(),
-      phrase: faker.random.word(),
-      clue: faker.random.word(),
-      winner: null,
-      submission: null,
-      created: daysAgo(1),
-      ...payload,
-    };
-  }
-}
 
 function getExpectedResult(type, data, payload = {}) {
   switch (type) {
@@ -71,7 +37,7 @@ function getExpectedResult(type, data, payload = {}) {
     return {
       [data.key]: {
         key: data.key,
-        created: Number(data.created),
+        timestamp: Number(data.created) * 1000,
         archived: data.archived,
         roundCount: data.round_count,
         players: data.players,
@@ -81,7 +47,7 @@ function getExpectedResult(type, data, payload = {}) {
           clue: data.round.clue,
           winner: data.round.winner,
           submission: data.round.submission,
-          created: Number(data.round.created),
+          timestamp: Number(data.round.created) * 1000,
         },
         messages: data.messages.map(msg => msg.key),
         totalMessages: data.total_messages,
@@ -91,7 +57,7 @@ function getExpectedResult(type, data, payload = {}) {
   }
 }
 
-describe('games', () => {
+describe('games reducer', () => {
   it('returns the initial state', () => {
     expect(games(undefined, {})).toEqual(initialState);
   });
@@ -195,6 +161,32 @@ describe('games', () => {
       });
     });
 
+    it('should maintain the correct timestamp translation', () => {
+      const game = getFixture('game');
+
+      const gameState = games(initialState, {
+        type: FETCH_GAMES_FULFILLED,
+        data: [game],
+      });
+
+      expect(gameState[game.key].timestamp).toEqual(game.created * 1000);
+
+      const messages = [
+        getFixture('message'),
+        getFixture('message'),
+      ];
+
+      const result = games(gameState, {
+        type: FETCH_MESSAGES_FULFILLED,
+        data: {
+          key: game.key,
+          messages,
+        },
+      });
+
+      expect(result[game.key].timestamp).toEqual(game.created * 1000);
+    });
+
     it('should only update messages payload with unique messages', () => {
       const game = getFixture('game');
 
@@ -272,15 +264,16 @@ describe('games', () => {
         data: [game, gameTwo],
       });
 
-      const data = {
+
+      const data = getFixture('message', {
         gameKey: game.key,
-        ...getFixture('message'),
-      };
+      });
 
       const result = games(gameState, {
         type: SEND_MESSAGE_FULFILLED,
         data,
       });
+
 
       expect(result[game.key].messages).toContain(data.key);
       expect(result[gameTwo.key].messages).not.toContain(data.key);
@@ -299,10 +292,9 @@ describe('games', () => {
         data: [game, gameTwo],
       });
 
-      const data = {
+      const data = getFixture('message', {
         gameKey: game.key,
-        ...getFixture('message'),
-      };
+      });
 
       const result = games(gameState, {
         type: RECEIVE_MESSAGE_FULFILLED,

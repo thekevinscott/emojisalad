@@ -1,6 +1,8 @@
 import typeToReducer from 'type-to-reducer';
 import R from 'ramda';
 
+import translateTimestampFromDatabase from '../utils/translateTimestampFromDatabase';
+
 // TODO: Fix this import (should pull from index)
 import {
   FETCH_GAMES,
@@ -21,7 +23,7 @@ function translateRound(round = {}) {
     clue: round.clue,
     winner: round.winner,
     submission: round.submission,
-    created: Number(round.created),
+    timestamp: translateTimestampFromDatabase(round.created),
   };
 }
 
@@ -34,10 +36,12 @@ function translateMessages(currentGame = {}, game = {}) {
   return R.uniq((currentGame.messages || []).concat(newMessageKeys));
 }
 
+
 function translateGame(currentGame = {}, game = {}) {
+  const timestamp = translateTimestampFromDatabase(game.created) || currentGame.timestamp;
   return {
     key: game.key || currentGame.key,
-    created: Number(game.created || currentGame.created),
+    timestamp,
     archived: (game.archived !== undefined) ? game.archived : currentGame.archived,
     roundCount: (game.round_count !== undefined) ? game.round_count : currentGame.round_count,
     players: game.players.map(player => player.user_key) || currentGame.players,

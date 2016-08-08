@@ -1,5 +1,7 @@
 import typeToReducer from 'type-to-reducer';
 
+import translateTimestampFromDatabase from '../utils/translateTimestampFromDatabase';
+
 import {
   FETCH_GAMES,
 } from '../modules/Games/types';
@@ -17,7 +19,7 @@ const translateMessage = (message) => {
     body: message.body,
     userKey: message.user_key,
     gameKey: message.game_key,
-    timestamp: message.timestamp * 1000,
+    timestamp: translateTimestampFromDatabase(message.timestamp),
     type: message.type,
   };
 };

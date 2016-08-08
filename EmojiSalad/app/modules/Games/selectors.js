@@ -1,12 +1,5 @@
-//import {
-  //selectors,
-//} from '../Game';
-//const {
-  //selectMessages,
-//} = selectors;
-
-export function selectUser(state, userId) {
-  return state.data.users[userId];
+export function selectUser(state, userKey) {
+  return state.data.users[userKey];
 }
 
 export function selectPlayers(state, userKeys = []) {
@@ -16,27 +9,33 @@ export function selectPlayers(state, userKeys = []) {
   });
 }
 
-function getLastMessageAsDate(game) {
-  return new Date(game.messages[game.messages.length - 1].timestamp * 1000);
+export function getLastMessage(game) {
+  return Number(game.messages[game.messages.length - 1].timestamp);
 }
 
-function selectMessages(state, messageKeys) {
+export function selectMessages(state, messageKeys) {
   return messageKeys.map(key => {
     return state.data.messages[key];
   });
 }
 
 export function selectGames(state) {
-  return Object.keys(state.data.games || {}).map(gameId => {
+  const games = Object.keys(state.data.games || {}).map(gameId => {
     const game = state.data.games[gameId];
     return {
       ...game,
       players: selectPlayers(state, game.players),
       messages: selectMessages(state, game.messages),
     };
-  }).sort((a, b) => {
-    return getLastMessageAsDate(b) - getLastMessageAsDate(a);
   });
+  console.log('games', games.map(game => {
+    return getLastMessage(game);
+  }));
+  const sortedGames = games.sort((a, b) => {
+    return new Date(getLastMessage(a)) - new Date(getLastMessage(b));
+  });
+  //console.log('sorted games', sortedGames);
+  return sortedGames;
 }
 
 export function selectUI(state) {
