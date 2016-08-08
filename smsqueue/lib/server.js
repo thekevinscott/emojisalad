@@ -18,6 +18,7 @@ const app = require('queue')({
   options,
   parse: require('lib/parse'),
   send: require('lib/sms'),
+  postReceive: require('lib/postReceive'),
   preprocessSend: require('lib/preprocessSend'),
   POST_LIMIT: '60mb',
   maintenance: require('lib/maintenance'),
