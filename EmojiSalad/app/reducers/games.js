@@ -106,7 +106,6 @@ export default typeToReducer({
         messages: [message],
       });
       const game = state[gameKey];
-      //console.log('game', game);
       return {
         ...state,
         [gameKey]: {

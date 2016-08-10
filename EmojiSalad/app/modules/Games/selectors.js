@@ -1,5 +1,5 @@
 import {
-  sortByOldestFirst,
+  sortBy,
 } from '../../utils/sort';
 
 export function selectUser(state, userKey) {
@@ -20,7 +20,7 @@ export function getLastMessage(game) {
 export function selectMessages(state, messageKeys) {
   return messageKeys.map(key => {
     return state.data.messages[key];
-  }).sort(sortByOldestFirst);
+  }).sort(sortBy('oldestFirst', a => a.timestamp));
 }
 
 export function selectGames(state) {
@@ -32,9 +32,8 @@ export function selectGames(state) {
       messages: selectMessages(state, game.messages),
     };
   });
-  const sortedGames = games.sort((a, b) => {
-    return new Date(getLastMessage(a)) - new Date(getLastMessage(b));
-  });
+
+  const sortedGames = games.sort(sortBy('newestFirst', a => a.messages[0].timestamp));
   return sortedGames;
 }
 

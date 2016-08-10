@@ -9,7 +9,7 @@ import {
 } from './actions';
 
 import {
-  sortByNewestFirst,
+  sortBy,
 } from '../../utils/sort';
 
 export const MESSAGES_PER_PAGE = 20;
@@ -19,7 +19,7 @@ export function selectMessages(game, messages, firstRead) {
     key,
     ...messages[key],
   }))
-  .sort(sortByNewestFirst);
+  .sort(sortBy('newestFirst', a => a.timestamp));
 
   const indexFirstRead = sortedMessages.map(msg => msg.key).indexOf(firstRead);
   //console.log('index first read', indexFirstRead);
