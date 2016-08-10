@@ -1,1 +1,3 @@
-export const FETCH_GAMES = 'FETCH_GAMES';
+const KEY = '@Games/';
+
+export const FETCH_GAMES = `${KEY}FETCH_GAMES`;

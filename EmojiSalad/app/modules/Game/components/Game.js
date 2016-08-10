@@ -15,9 +15,11 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import * as styles from '../styles';
 
 import {
-  makeMapStateToProps,
+  mapStateToProps,
   mapDispatchToProps,
 } from '../selectors';
+
+const MESSAGES_PER_PAGE = 20;
 
 class Game extends Component {
   constructor(props) {
@@ -26,18 +28,33 @@ class Game extends Component {
     this.handleSend = this.handleSend.bind(this);
     this.renderBubble = this.renderBubble.bind(this);
     this.renderComposer = this.renderComposer.bind(this);
-    this.state = {
-    };
+    this.state = {};
   }
 
   componentWillAppear() {
-    console.log('Game Drilldown Component componentWillAppear called');
-    this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
+    const {
+      game,
+      actions,
+      me,
+      messages,
+    } = this.props;
+
+    //console.log('Game Drilldown Component componentWillAppear called');
+    if (messages.length < MESSAGES_PER_PAGE) {
+      console.log('fetch messages');
+      actions.fetchMessages(me.key, game.key);
+    }
   }
 
   loadEarlier() {
-    this.props.actions.fetchMessages(this.props.me.key, this.props.game.key, this.props.game.messages);
-    this.props.actions.incrementPage(this.props.game.key);
+    const {
+      game,
+      actions,
+      me,
+      seen,
+    } = this.props;
+
+    actions.fetchMessages(me.key, game.key, seen.first);
   }
 
   handleSend() {
@@ -64,6 +81,7 @@ class Game extends Component {
         placeholder="Message"
         placeholderTextColor={styles.placeholder.color}
         multiline={false}
+        autoCorrect={false}
         style={styles.composer}
         onChangeText={this.props.actions.updateCompose}
         underlineColorAndroid="transparent"
@@ -121,6 +139,6 @@ class Game extends Component {
 }
 
 export default connectWithFocus(
-  makeMapStateToProps,
+  mapStateToProps,
   mapDispatchToProps,
 )(Game);

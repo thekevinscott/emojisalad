@@ -7,8 +7,8 @@ const sendMessage = ws => payload => {
     } else if (typeof payload.data === 'string') {
       reject(`data must not be a string ${payload}`);
     } else {
+      console.log('the payload being returned', payload);
       const parsedPayload = JSON.stringify(payload);
-      console.log('parsed payload', parsedPayload);
       ws.send(parsedPayload);
       resolve(parsedPayload);
     }

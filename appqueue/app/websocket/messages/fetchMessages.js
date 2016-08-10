@@ -15,8 +15,8 @@ function getFields(table) {
   .from(table);
 }
 
-function getQuery(where, limit = LIMIT) {
-  if (limit >= LIMIT) {
+function getQuery(where, limit) {
+  if (!limit || limit >= LIMIT) {
     limit = LIMIT;
   }
   const query = squel

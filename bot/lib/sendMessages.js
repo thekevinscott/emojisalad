@@ -86,7 +86,7 @@ const sendMessages = (messages, options = {}) => {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         reject(`Request took too long when sending messages: ${protocol} : ${service.api.send.endpoint}`);
-      }, 5000);
+      }, 4000); // keep this below bot run time (which is 5000);
       return request(requestOptions).then((response) => {
         clearTimeout(timer);
         if (response.body) {

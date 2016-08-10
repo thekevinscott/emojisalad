@@ -6,7 +6,7 @@ export default function fetchUserKey(phoneNumber) {
   ], {
     'number=?': phoneNumber,
   }).then(row => {
-    console.info('getting user key', row);
+    console.info('getting user key', row, 'for', phoneNumber);
     if (!row || !row.user_key) {
       throw new Error(`No user key found for ${phoneNumber}`);
     }

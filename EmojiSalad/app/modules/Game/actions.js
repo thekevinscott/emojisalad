@@ -9,13 +9,14 @@ import {
   UPDATE_COMPOSE,
 } from './types';
 
-export function fetchMessages(userKey, gameKey, messageKeysToExclude) {
+export function fetchMessages(userKey, gameKey, seen, meta = {}) {
   return {
     type: FETCH_MESSAGES,
+    meta,
     payload: {
       userKey,
       gameKey,
-      messageKeysToExclude,
+      before: seen,
     },
   };
 }

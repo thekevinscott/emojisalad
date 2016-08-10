@@ -4,39 +4,41 @@ import {
 
 import {
   fetchMessages,
-  incrementPage,
   updateCompose,
   sendMessage,
 } from './actions';
 
+import {
+  sortByNewestFirst,
+} from '../../utils/sort';
+
 export const MESSAGES_PER_PAGE = 20;
 
-export function selectMessages(game, messages, page = 1, visibleMessages = 0) {
-  return game.messages.map(key => ({
+export function selectMessages(game, messages, firstRead) {
+  const sortedMessages = game.messages.map(key => ({
     key,
     ...messages[key],
   }))
-  .sort((a, b) => {
-    return new Date(a.timestamp) - new Date(b.timestamp);
-  })
-  .slice(0, MESSAGES_PER_PAGE * page + visibleMessages);
+  .sort(sortByNewestFirst);
+
+  const indexFirstRead = sortedMessages.map(msg => msg.key).indexOf(firstRead);
+  //console.log('index first read', indexFirstRead);
+  return sortedMessages.slice(indexFirstRead).reverse();
 }
 
 function selectCompose(state, gameKey) {
-  return state.ui.Game.compose[gameKey];
+  return state.ui.Game[gameKey].compose;
 }
 
-export function makeMapStateToProps(state, props) {
+export function mapStateToProps(state, props) {
   const gameKey = props.game.key;
   const game = state.data.games[gameKey];
-  const {
-    pages,
-    sentMessages,
-  } = state.ui.Game;
 
-  const page = (pages || {})[gameKey] || 1;
-  const sentMessagesPayload = sentMessages[gameKey];
-  const messages = selectMessages(game, state.data.messages, page, sentMessagesPayload);
+  const {
+    seen,
+  } = state.ui.Game[gameKey];
+
+  const messages = selectMessages(game, state.data.messages, seen.first);
 
   return {
     game,
@@ -44,17 +46,15 @@ export function makeMapStateToProps(state, props) {
     me: selectMe(state),
     compose: selectCompose(state, game.key),
     logger: state.ui.Games.logger,
+    seen,
   };
 }
 
 export function mapDispatchToProps(dispatch, props) {
   return {
     actions: {
-      fetchMessages: (userKey, gameKey, messageKeysToExclude) => {
-        return dispatch(fetchMessages(userKey, gameKey, messageKeysToExclude));
-      },
-      incrementPage: (gameKey) => {
-        return dispatch(incrementPage(gameKey));
+      fetchMessages: (userKey, gameKey, seen, meta) => {
+        return dispatch(fetchMessages(userKey, gameKey, seen, meta));
       },
       updateCompose: (text) => {
         const gameKey = props.game.key;

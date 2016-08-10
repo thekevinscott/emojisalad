@@ -76,7 +76,8 @@ class Games extends Component {
   }
 
   _renderRow(game, sectionId, rowId) {
-    const message = (game.messages[game.messages.length - 1] || {});
+    //const message = (game.messages[game.messages.length - 1] || {});
+    const message = game.messages[0] || {};
     return (
       <TouchableHighlight
         onPress={() => {

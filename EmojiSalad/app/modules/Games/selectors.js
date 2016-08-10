@@ -1,3 +1,7 @@
+import {
+  sortByOldestFirst,
+} from '../../utils/sort';
+
 export function selectUser(state, userKey) {
   return state.data.users[userKey];
 }
@@ -16,9 +20,7 @@ export function getLastMessage(game) {
 export function selectMessages(state, messageKeys) {
   return messageKeys.map(key => {
     return state.data.messages[key];
-  }).sort((a, b) => {
-    return new Date(a.timestamp) - new Date(b.timestamp);
-  });
+  }).sort(sortByOldestFirst);
 }
 
 export function selectGames(state) {

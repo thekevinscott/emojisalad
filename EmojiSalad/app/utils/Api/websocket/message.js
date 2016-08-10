@@ -20,11 +20,13 @@ export default function message(store) {
     const {
       type,
       data,
+      meta,
     } = parsePayload(e);
 
     const payload = {
       type: fromApiToType(type),
       data,
+      meta,
     };
 
     return store.dispatch(payload);

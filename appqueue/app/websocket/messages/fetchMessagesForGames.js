@@ -1,28 +1,30 @@
 import fetchMessages from './fetchMessages';
 
-export function getWhereParameters(userKey, gameKey, messageKeysToExclude) {
+export function getWhereParameters(userKey, gameKey, before) {
   const whereParams = {
     'game_key=?': gameKey,
     'user_key=?': userKey,
   };
-  if (messageKeysToExclude) {
-    //console.log(messageKeysToExclude);
+  if (before) {
+    console.log(before);
+    const beforeQuery = ` (timestamp < (SELECT UNIX_TIMESTAMP(created) FROM sent WHERE \`key\` = '${before}')
+        OR timestamp < (SELECT UNIX_TIMESTAMP(created) FROM received WHERE \`key\` = '${before}'))`;
     return {
       ...whereParams,
-      '`key` NOT IN ?': messageKeysToExclude,
+      [beforeQuery]: '',
     };
   }
 
   return whereParams;
 }
 
-export default function fetchMessagesForGames(userKey, gameKeys, messageKeysToExclude = [], limit = null) {
+export default function fetchMessagesForGames(userKey, gameKeys, options = {}) {
   return Promise.all(gameKeys.map(gameKey => {
     return fetchMessages(getWhereParameters(
       userKey,
       gameKey,
-      messageKeysToExclude
-    ), limit).then(messages => ({
+      options.before
+    ), options.limit).then(messages => ({
       [gameKey]: messages,
     }));
   })).then(messages => {
@@ -30,5 +32,7 @@ export default function fetchMessagesForGames(userKey, gameKeys, messageKeysToEx
       ...obj,
       ...gameMessages,
     }), {});
+  }).catch(err => {
+    console.error('some error', err);
   });
 }

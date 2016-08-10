@@ -1,26 +1,34 @@
-import {
-  Alert,
-} from 'react-native';
+//import {
+  //Alert,
+//} from 'react-native';
 
 import {
   fromTypeToApi,
 } from './translate';
 
 export default function sendMessage(websocket) {
-  return (userKey, type, payload) => {
+  return (dispatch, {
+    userKey,
+    type,
+    meta,
+    payload,
+  }) => {
     if (websocket.isOpen) {
       const packet = JSON.stringify({
         type: fromTypeToApi(type),
         userKey,
+        meta: meta || {},
         payload,
       });
       //console.log('sending', packet);
       websocket.get('websocket').send(packet);
-    //} else {
-      //Alert.alert(
-        //'Websocket is not connected',
-        //'Wruh wroh, your message was thrown in the trash.'
-      //);
+    } else {
+      dispatch({
+        type: `${type}_REJECTED`,
+        data: {
+          message: 'There was an error communicating with the server.',
+        },
+      });
     }
   };
 }

@@ -87,18 +87,20 @@ const runRead = () => {
     return Timer.get().then((timers) => {
       if (timers.length) {
         console.info('timers to process', timers);
-      }
-      const timer_messages = timers.reduce((messages, t) => {
-        return messages.concat(t.messages);
-      }, []);
+        const timer_messages = timers.reduce((messages, t) => {
+          return messages.concat(t.messages);
+        }, []);
 
-      return sendMessages(timer_messages).then(() => {
-        return timers;
-      });
-    }).then((timers) => {
-      const timer_keys = _.uniq(timers.map(t => t.key));
-      const timer_game_ids = _.uniq(timers.map(t => t.game_id));
-      return Timer.use(timer_keys, timer_game_ids);
+        console.info('timer messages', timer_messages);
+        return sendMessages(timer_messages).then(() => {
+          const timer_keys = _.uniq(timers.map(t => t.key));
+          const timer_game_ids = _.uniq(timers.map(t => t.game_id));
+          return Timer.use(timer_keys, timer_game_ids);
+          //return timers;
+        }).catch(err => {
+          console.log('some err!', err);
+        });
+      }
     });
   }).then(() => {
     console.info('run read 5');

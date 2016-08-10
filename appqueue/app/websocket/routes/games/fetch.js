@@ -17,11 +17,14 @@ export default function fetchGames(ws, { userKey }) {
       //round: game.round,
       round_count: game.round_count,
     }));
+    //.filter(game => {
+      //return game.key === '01dea15e-7d75-4709-b23f-1ae6ce9fb0c2';
+    //});
   }).then(games => {
     const gameKeys = games.map(game => game.key);
     return Promise.all([
       fetchTotalMessagesForGames(userKey, gameKeys),
-      fetchMessagesForGames(userKey, gameKeys, null, 1),
+      fetchMessagesForGames(userKey, gameKeys, { limit: 1 }),
     ]).then(response => {
       const totalMessages = response[0];
       const messages = response[1];

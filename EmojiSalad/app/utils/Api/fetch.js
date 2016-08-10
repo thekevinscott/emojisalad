@@ -50,7 +50,6 @@ export default function newFetch(url, options = {}) {
       reject(new Error('fetch timed out'));
     }, NETWORK_TIMEOUT);
 
-    //console.log('making request', url, parsedOptions);
     fetch(url, parsedOptions)
     .then(handleErrors)
     .then(response => {

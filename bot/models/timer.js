@@ -91,12 +91,13 @@ const Timer = {
       game_ids = [game_ids];
     }
     const clear_timer_query = squel
-                              .update()
-                              .table('timers')
-                              .set('active', 0)
-                              .where('`key` IN (?)', keys.join(','))
-                              .where('game_id IN (?)', game_ids.join(','));
+    .update()
+    .table('timers')
+    .set('active', 0)
+    .where(`\`key\` IN (${keys.map(key => "'"+key+"'").join(',')})`)
+    .where(`game_id IN (${game_ids.join(',')})`);
 
+    //console.info(clear_timer_query.toString());
     return db.query(clear_timer_query);
   }
 };

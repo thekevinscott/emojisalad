@@ -8,6 +8,22 @@ function getComponentStatePart(state, topKey) {
   return reducers.reduce((obj, key) => ({
     ...obj,
     [key]: state[topKey][key],
+    //[key]: (key === 'games') ?
+      //Object.keys(state[topKey][key]).reduce((gameObj, gameKey) => {
+        //const game = state[topKey][key][gameKey];
+        //const messages = game.messages;
+        //const msgLength = messages.length;
+        //const payload = {
+          //...game,
+          //messages: [messages[msgLength - 1]],
+        //};
+        //return {
+          //...gameObj,
+          //[gameKey]: payload,
+        //};
+      //}, {})
+      //:
+      //state[topKey][key],
   }), {});
 }
 

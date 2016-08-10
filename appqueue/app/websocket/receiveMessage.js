@@ -12,10 +12,14 @@ function parseMessage(message) {
   return new Promise((resolve, reject) => {
     try {
       const parsedMessage = JSON.parse(message);
-      const type = parsedMessage.type;
-      const payload = parsedMessage.payload;
+      const {
+        type,
+        payload,
+        meta,
+      } = parsedMessage;
       resolve({
         type,
+        meta,
         payload,
       });
     } catch (err) {
@@ -39,17 +43,18 @@ function getTypes(type) {
   };
 }
 
-function processRoute(ws, type, payload) {
+function processRoute(ws, type, payload, meta) {
   const {
     FULFILLED,
     REJECTED,
   } = getTypes(type);
 
-  console.info('processing route', type, payload);
+  console.info('processing route', type, payload, meta);
 
   return ROUTES[type](ws, payload).then(data => {
     return {
       type: FULFILLED,
+      meta,
       data,
     };
   }).catch(data => {
@@ -57,6 +62,7 @@ function processRoute(ws, type, payload) {
       console.log('data back from rejection', data.message, data.stack);
       throw new RouteException(
         REJECTED,
+        meta,
         data.message,
       );
     } else {
@@ -70,7 +76,9 @@ function processRoute(ws, type, payload) {
 }
 
 export default function receiveMessage(ws, message) {
-  return parseMessage(message).then(({ type, payload }) => {
+  console.log('received message', message);
+  return parseMessage(message).then(({ type, payload, meta }) => {
+    console.log(type, payload, meta);
     const {
       REJECTED,
     } = getTypes(type);
@@ -82,6 +90,6 @@ export default function receiveMessage(ws, message) {
       );
     }
 
-    return processRoute(ws, type, payload);
+    return processRoute(ws, type, payload, meta);
   });
 }
