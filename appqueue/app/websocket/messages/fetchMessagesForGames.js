@@ -19,7 +19,6 @@ export function getWhereParameters(userKey, gameKey, options = {}) {
     'user_key=?': userKey,
   };
 
-  console.log('incoming options', options);
   if (options.before || options.since) {
     return {
       ...whereParams,

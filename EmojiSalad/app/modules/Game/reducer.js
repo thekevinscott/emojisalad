@@ -20,7 +20,7 @@ import {
 
 const initialState = {};
 
-const getFirstAndLastMessages = (messages = []) => {
+const getFirstAndLastMessages = (messages = [], currentGame = {}) => {
   if (messages.length) {
     return {
       first: messages[messages.length - 1].key,
@@ -28,9 +28,14 @@ const getFirstAndLastMessages = (messages = []) => {
     };
   }
 
+  const {
+    first,
+    last,
+  } = currentGame.seen || {};
+
   return {
-    first: null,
-    last: null,
+    first,
+    last,
   };
 };
 
@@ -67,7 +72,7 @@ export default typeToReducer({
       const {
         first,
         last,
-      } = getFirstAndLastMessages(action.data.messages);
+      } = getFirstAndLastMessages(action.data.messages || [], state[gameKey]);
 
       return {
         ...state,

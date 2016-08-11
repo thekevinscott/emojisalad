@@ -46,16 +46,6 @@ class Game extends Component {
       messages,
       seen,
     });
-
-    /*
-    //console.log('Game Drilldown Component componentWillAppear called');
-    if (messages.length < MESSAGES_PER_PAGE) {
-      console.log('fetch messages');
-      actions.fetchFirstPageMessages(me.key, game.key);
-    //} else {
-      //actions.fetchMessagesSinceLast(me.key, game.key);
-    }
-    */
   }
 
   loadEarlier() {

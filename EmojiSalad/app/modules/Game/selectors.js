@@ -22,7 +22,6 @@ export function selectMessages(game, messages, firstRead) {
   .sort(sortBy('newestFirst', a => a.timestamp));
 
   const indexFirstRead = sortedMessages.map(msg => msg.key).indexOf(firstRead);
-  //console.log('index first read', indexFirstRead);
   return sortedMessages.slice(indexFirstRead).reverse();
 }
 
@@ -64,14 +63,11 @@ export function mapDispatchToProps(dispatch, ownProps) {
           seen,
         } = props;
 
-        //console.log('what is messages', messages);
 
-        if (messages.length < 20) {
-          return dispatch(fetchMessages(userKey, gameKey, {
-          }));
+        if (messages.length < MESSAGES_PER_PAGE) {
+          return dispatch(fetchMessages(userKey, gameKey));
         }
 
-        //console.log('do a regular dispatch');
         return dispatch(fetchMessages(userKey, gameKey, {
           since: seen.last,
         }));

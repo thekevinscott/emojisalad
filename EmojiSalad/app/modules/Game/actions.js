@@ -10,7 +10,7 @@ import {
 } from './types';
 
 export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
-  return {
+  const payload = {
     type: FETCH_MESSAGES,
     meta,
     payload: {
@@ -19,6 +19,7 @@ export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
       ...options,
     },
   };
+  return payload;
 }
 
 export function goToGames() {
