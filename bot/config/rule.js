@@ -20,7 +20,8 @@ const rules = {
     ]
   },
   'help': {
-    pattern: '^options(.*)',
+    //pattern: '^options(.*)',
+    pattern: '^\s*?(options|help)\s*?$',
     flags: 'i',
     example: [
       'options'
