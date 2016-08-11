@@ -1,6 +1,6 @@
 /* API */
-//export const ENVIRONMENT = 'production';
-export const ENVIRONMENT = 'development';
+export const ENVIRONMENT = 'production';
+//export const ENVIRONMENT = 'development';
 
 // Rest API timeout
 export const NETWORK_TIMEOUT = 5000;
