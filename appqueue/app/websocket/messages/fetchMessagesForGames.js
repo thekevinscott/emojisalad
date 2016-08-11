@@ -19,6 +19,7 @@ export function getWhereParameters(userKey, gameKey, options = {}) {
     'user_key=?': userKey,
   };
 
+  console.log('incoming options', options);
   if (options.before || options.since) {
     return {
       ...whereParams,
@@ -34,7 +35,7 @@ export default function fetchMessagesForGames(userKey, gameKeys, options = {}) {
     return fetchMessages(getWhereParameters(
       userKey,
       gameKey,
-      options.before
+      options
     ), options.limit).then(messages => ({
       [gameKey]: messages,
     }));

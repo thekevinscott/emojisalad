@@ -20,16 +20,20 @@ function parseEndpoint(url, params = {}) {
 }
 
 function getRequestedRoute(service, route, routeParams) {
-  const serviceEndpoint = registry.get(service).api;
-  const {
-    endpoint,
-    method,
-  } = getApi(serviceEndpoint, route.split('.'));
+  const serviceEndpoint = (registry.get(service) || {}).api;
+  if (serviceEndpoint) {
+    const {
+      endpoint,
+      method,
+    } = getApi(serviceEndpoint, route.split('.'));
 
-  return {
-    url: parseEndpoint(endpoint, routeParams),
-    method,
-  };
+    return {
+      url: parseEndpoint(endpoint, routeParams),
+      method,
+    };
+  }
+
+  throw new Error(`No Endpoint for ${service}`);
 }
 
 export default function fetchFromService({
@@ -38,18 +42,25 @@ export default function fetchFromService({
   routeParams,
   options,
 }) {
-  const {
-    url,
-    method,
-  } = getRequestedRoute(service, route, routeParams);
+  return new Promise((resolve, reject) => {
+    try {
+      const {
+        url,
+        method,
+      } = getRequestedRoute(service, route, routeParams);
 
-  if (!url) {
-    throw new Error('URL does not exist for route', route);
-  }
-  const payload = {
-    method,
-    ...options,
-  };
+      if (!url) {
+        reject(`URL does not exist for route: ${route}`);
+      }
 
-  return fetch(url, payload);
+      const payload = {
+        method,
+        ...options,
+      };
+
+      return fetch(url, payload).then(resolve).catch(resolve);
+    } catch (err) {
+      reject(err.message);
+    }
+  });
 }
