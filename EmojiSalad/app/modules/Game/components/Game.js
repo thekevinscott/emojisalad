@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Logger } from '../../../components/Logger';
 import {
   //Text,
   TextInput,
@@ -128,6 +129,7 @@ class Game extends Component {
     const {
       messages,
       game,
+      logger,
     } = this.props;
     const loading = messages.length < MESSAGES_PER_PAGE && game.messages.length !== game.totalMessages;
     return (
@@ -141,6 +143,7 @@ class Game extends Component {
             visible={loading}
           />
           {!loading ? this.renderMessenger() : null}
+          <Logger logger={logger} />
         </View>
       </View>
     );

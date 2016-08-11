@@ -7,6 +7,7 @@ import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
 import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Logger } from '../../../components/Logger';
 import {
   Text,
   View,
@@ -149,6 +150,7 @@ class Games extends Component {
           style={styles.container}
           enableEmptySections={true}
         />
+        <Logger logger={this.props.logger} />
       </View>
     );
   }
