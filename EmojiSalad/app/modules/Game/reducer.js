@@ -15,23 +15,34 @@ import {
 
 const initialState = {};
 
-function getNewGameState(gameKey, state, action) {
-  //if (action.meta && action.meta.loadEarlier) {
-  const messages = action.data.messages;
-  const first = messages[messages.length - 1].key;
-  const last = messages[0].key;
+const getFirstAndLastMessages = (messages = []) => {
+  if (messages.length) {
+    return {
+      first: messages[messages.length - 1].key,
+      last: messages[0].key,
+    };
+  }
+
+  return {
+    first: null,
+    last: null,
+  };
+};
+
+const getNewGameState = (gameKey, state, action) => {
+  const {
+    first,
+    last,
+  } = getFirstAndLastMessages(action.data.messages);
+
   return {
     ...state[gameKey],
     seen: {
-      //...state[gameKey],
       first,
       last,
     },
   };
-  //}
-
-  //return state[gameKey];
-}
+};
 
 export default typeToReducer({
   [FETCH_MESSAGES]: {
