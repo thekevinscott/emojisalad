@@ -55,8 +55,8 @@ export default typeToReducer({
           [key]: {
             compose: currentGame.compose || '',
             seen: {
-              ...currentGame.seen,
-              first: game.messages[0].key,
+              first: (currentGame.seen || {}).first || null,
+              last: (currentGame.seen || {}).last || null,
             },
           },
         };

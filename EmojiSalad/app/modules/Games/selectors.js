@@ -13,9 +13,9 @@ export function selectPlayers(state, userKeys = []) {
   });
 }
 
-export function getLastMessage(game) {
-  return Number(game.messages[game.messages.length - 1].timestamp);
-}
+//export function getLastMessage(game) {
+  //return Number(game.messages[game.messages.length - 1].timestamp);
+//}
 
 export function selectMessages(state, messageKeys) {
   return messageKeys.map(key => ({
@@ -39,7 +39,7 @@ export function selectGames(state) {
     };
   });
 
-  const sortedGames = games.sort(sortBy('newestFirst', a => a.messages[0].timestamp));
+  const sortedGames = games.sort(sortBy('newestFirst', a => (a.messages[0] || {}).timestamp || 0));
   return sortedGames;
 }
 
