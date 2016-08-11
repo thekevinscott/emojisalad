@@ -1,6 +1,10 @@
 import typeToReducer from 'type-to-reducer';
 
 import {
+  ActionConst,
+} from 'react-native-router-flux';
+
+import {
   FETCH_GAMES,
 } from '../Games/types';
 
@@ -9,6 +13,7 @@ import {
   UPDATE_COMPOSE,
   FETCH_MESSAGES,
   SEND_MESSAGE,
+  RECEIVE_MESSAGE,
 } from './types';
 
 //const DEFAULT_PAGE = 1;
@@ -29,29 +34,51 @@ const getFirstAndLastMessages = (messages = []) => {
   };
 };
 
-const getNewGameState = (gameKey, state, action) => {
-  const {
-    first,
-    last,
-  } = getFirstAndLastMessages(action.data.messages);
-
+const updateGameSeen = (state, gameKey, payload = {}) => {
   return {
-    ...state[gameKey],
+    active: state[gameKey].active,
+    compose: '',
     seen: {
-      first,
-      last,
+      ...state[gameKey].seen,
+      ...payload,
     },
   };
 };
 
 export default typeToReducer({
+  [ActionConst.FOCUS]: (state, { scene }) => {
+    const {
+      game,
+    } = scene;
+    return Object.keys(state).reduce((obj, gameKey) => {
+      return {
+        ...obj,
+        [gameKey]: {
+          ...state[gameKey],
+          active: gameKey === (game || {}).key,
+        },
+      };
+    }, {});
+  },
   [FETCH_MESSAGES]: {
     FULFILLED: (state, action) => {
       const gameKey = action.data.key;
-      const newGameState = getNewGameState(gameKey, state, action);
+
+      const {
+        first,
+        last,
+      } = getFirstAndLastMessages(action.data.messages);
+
       return {
         ...state,
-        [action.data.key]: newGameState,
+        [action.data.key]: {
+          active: state[gameKey].active,
+          compose: state[gameKey].compose,
+          seen: {
+            first,
+            last,
+          },
+        },
       };
     },
   },
@@ -64,6 +91,7 @@ export default typeToReducer({
         return {
           ...obj,
           [key]: {
+            active: currentGame.active || false,
             compose: currentGame.compose || '',
             seen: {
               first: (currentGame.seen || {}).first || null,
@@ -86,17 +114,23 @@ export default typeToReducer({
   [SEND_MESSAGE]: {
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
-      console.log('data', data);
       return {
         ...state,
-        [gameKey]: {
-          //...state[gameKey],
-          compose: '',
-          seen: {
-            ...state[gameKey].seen,
-            //last:
-          },
-        },
+        [gameKey]: updateGameSeen(state, gameKey, {
+          last: data.key,
+        }),
+      };
+    },
+  },
+  [RECEIVE_MESSAGE]: {
+    FULFILLED: (state, { data }) => {
+      const gameKey = data.gameKey;
+      const game = state[gameKey];
+      return {
+        ...state,
+        [gameKey]: updateGameSeen(state, gameKey, {
+          last: game.active ? data.key : game.seen.last,
+        }),
       };
     },
   },

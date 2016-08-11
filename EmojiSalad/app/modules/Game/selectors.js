@@ -34,7 +34,6 @@ export function mapStateToProps(state, props) {
   const gameKey = props.game.key;
   const game = state.data.games[gameKey];
 
-  console.log(state.ui.Game);
   const {
     seen,
   } = state.ui.Game[gameKey] || {};
