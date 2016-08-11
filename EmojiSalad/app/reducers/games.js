@@ -1,5 +1,8 @@
 import typeToReducer from 'type-to-reducer';
 import R from 'ramda';
+import {
+  Vibration,
+} from 'react-native';
 
 import translateTimestampFromDatabase from '../utils/translateTimestampFromDatabase';
 
@@ -100,6 +103,7 @@ export default typeToReducer({
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, { data }) => {
+      Vibration.vibrate();
       const gameKey = data.gameKey;
       const message = data;
       const messages = translateMessages(state[gameKey], {

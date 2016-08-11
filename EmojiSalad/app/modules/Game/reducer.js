@@ -15,25 +15,17 @@ import {
 
 const initialState = {};
 
-const getInitialGameState = game => {
-  return {
-    compose: '',
-    seen: {
-      first: game.messages[0].key,
-      last: game.messages[0].key,
-    },
-  };
-};
-
 function getNewGameState(gameKey, state, action) {
   //if (action.meta && action.meta.loadEarlier) {
   const messages = action.data.messages;
   const first = messages[messages.length - 1].key;
+  const last = messages[0].key;
   return {
     ...state[gameKey],
     seen: {
-      ...state[gameKey],
+      //...state[gameKey],
       first,
+      last,
     },
   };
   //}
@@ -57,11 +49,15 @@ export default typeToReducer({
       ...state,
       ...action.data.reduce((obj, game) => {
         const key = game.key;
+        const currentGame = state[key] || {};
         return {
           ...obj,
           [key]: {
-            ...getInitialGameState(game),
-            ...state[key],
+            compose: currentGame.compose || '',
+            seen: {
+              ...currentGame.seen,
+              first: game.messages[0].key,
+            },
           },
         };
       }, {}),
@@ -79,11 +75,16 @@ export default typeToReducer({
   [SEND_MESSAGE]: {
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
+      console.log('data', data);
       return {
         ...state,
         [gameKey]: {
-          ...state[gameKey],
+          //...state[gameKey],
           compose: '',
+          seen: {
+            ...state[gameKey].seen,
+            //last:
+          },
         },
       };
     },

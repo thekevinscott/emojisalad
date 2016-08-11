@@ -27,18 +27,19 @@ export function selectMessages(game, messages, firstRead) {
 }
 
 function selectCompose(state, gameKey) {
-  return state.ui.Game[gameKey].compose;
+  return (state.ui.Game[gameKey] || {}).compose;
 }
 
 export function mapStateToProps(state, props) {
   const gameKey = props.game.key;
   const game = state.data.games[gameKey];
 
+  console.log(state.ui.Game);
   const {
     seen,
-  } = state.ui.Game[gameKey];
+  } = state.ui.Game[gameKey] || {};
 
-  const messages = selectMessages(game, state.data.messages, seen.first);
+  const messages = selectMessages(game, state.data.messages, (seen || {}).first);
 
   return {
     game,

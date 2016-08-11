@@ -18,18 +18,24 @@ export function getLastMessage(game) {
 }
 
 export function selectMessages(state, messageKeys) {
-  return messageKeys.map(key => {
-    return state.data.messages[key];
-  }).sort(sortBy('oldestFirst', a => a.timestamp));
+  return messageKeys.map(key => ({
+    ...state.data.messages[key],
+    key,
+  })).sort(sortBy('oldestFirst', a => a.timestamp));
+}
+
+export function selectLastRead(state, gameKey) {
+  return ((state.ui.Game[gameKey] || {}).seen || {}).last;
 }
 
 export function selectGames(state) {
-  const games = Object.keys(state.data.games || {}).map(gameId => {
-    const game = state.data.games[gameId];
+  const games = Object.keys(state.data.games || {}).map(gameKey => {
+    const game = state.data.games[gameKey];
     return {
       ...game,
       players: selectPlayers(state, game.players),
       messages: selectMessages(state, game.messages),
+      lastRead: selectLastRead(state, gameKey),
     };
   });
 

@@ -78,6 +78,10 @@ class Games extends Component {
   _renderRow(game, sectionId, rowId) {
     //const message = (game.messages[game.messages.length - 1] || {});
     const message = game.messages[0] || {};
+    const unreadDotStyle = {
+      ...styles.unreadDot,
+      opacity: (message.key !== game.lastRead) ? 1 : 0,
+    };
     return (
       <TouchableHighlight
         onPress={() => {
@@ -87,28 +91,35 @@ class Games extends Component {
         }}
         key={`${rowId}`}
       >
-        <View
-          style={styles.row}
-        >
-          <View style={styles.rowHeader}>
+        <View style={styles.rowContainer}>
+          <View
+            style={styles.unread}
+          >
+            <View style={unreadDotStyle} />
+          </View>
+          <View
+            style={styles.row}
+          >
+            <View style={styles.rowHeader}>
+              <Text
+                style={
+                  styles.players
+                }
+                numberOfLines={1}
+              >
+                {getPlayerString(game.players)}
+              </Text>
+              <Text style={styles.timestamp}>
+                {parseTimestamp(message.timestamp)}
+              </Text>
+            </View>
             <Text
-              style={
-                styles.players
-              }
-              numberOfLines={1}
+              style={styles.message}
+              numberOfLines={2}
             >
-              {getPlayerString(game.players)}
-            </Text>
-            <Text style={styles.timestamp}>
-              {parseTimestamp(message.timestamp)}
+              {message.body}
             </Text>
           </View>
-          <Text
-            style={styles.message}
-            numberOfLines={2}
-          >
-            {message.body}
-          </Text>
         </View>
       </TouchableHighlight>
     );

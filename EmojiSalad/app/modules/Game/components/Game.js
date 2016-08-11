@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   //Text,
   TextInput,
@@ -124,6 +125,11 @@ class Game extends Component {
   }
 
   render() {
+    const {
+      messages,
+      game,
+    } = this.props;
+    const loading = messages.length < MESSAGES_PER_PAGE && game.messages.length !== game.totalMessages;
     return (
       <View
         style={styles.container}
@@ -131,7 +137,10 @@ class Game extends Component {
         <View style={{
           flex: 1,
         }}>
-          {this.renderMessenger()}
+          <Spinner
+            visible={loading}
+          />
+          {!loading ? this.renderMessenger() : null}
         </View>
       </View>
     );

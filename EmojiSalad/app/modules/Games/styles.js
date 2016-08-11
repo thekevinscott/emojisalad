@@ -1,3 +1,5 @@
+const PURPLE = '#bb27dd';
+
 export const container = {
   paddingTop: 64,
 };
@@ -32,3 +34,22 @@ export const rowSeparator = (adjacentRowHighlighted) => ({
   height: adjacentRowHighlighted ? 4 : 1,
   backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
 });
+
+export const rowContainer = {
+  flex: 1,
+  flexDirection: 'row',
+};
+
+const dotSize = 10;
+export const unread = {
+  paddingTop: 25,
+  paddingLeft: 10,
+  width: 30,
+};
+
+export const unreadDot = {
+  width: dotSize,
+  height: dotSize,
+  borderRadius: dotSize,
+  backgroundColor: PURPLE,
+};
