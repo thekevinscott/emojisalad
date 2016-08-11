@@ -1,5 +1,6 @@
 const sendMessage = ws => payload => {
   return new Promise((resolve, reject) => {
+    console.log('payload', payload);
     if (!payload.type) {
       reject(`You must provide a type: ${payload}`);
     } else if (!payload.data) {

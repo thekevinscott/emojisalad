@@ -1,11 +1,12 @@
 const PARSE_ERROR = 'PARSE_ERROR';
 import ROUTES from './routes';
 
-function RouteException(type, message) {
+function RouteException(type, message, meta) {
   this.data = {
     message,
   };
   this.type = type;
+  this.meta = meta;
 }
 
 function parseMessage(message) {
@@ -62,8 +63,8 @@ function processRoute(ws, type, payload, meta) {
       console.log('data back from rejection', data.message, data.stack);
       throw new RouteException(
         REJECTED,
-        meta,
         data.message,
+        meta,
       );
     } else {
       console.log('data back from rejection', data);

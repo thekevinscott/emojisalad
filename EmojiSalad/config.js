@@ -1,6 +1,6 @@
 /* API */
-export const ENVIRONMENT = 'production';
-//export const ENVIRONMENT = 'development';
+//export const ENVIRONMENT = 'production';
+export const ENVIRONMENT = 'development';
 
 // Rest API timeout
 export const NETWORK_TIMEOUT = 5000;
@@ -25,7 +25,7 @@ export const API_PORT = apiConfig.API_PORT;
 
 /* Storage */
 export const KEY = '@EmojiSalad';
-export const PERSIST_DATA = true;
+export const PERSIST_DATA = false;
 
 if (ENVIRONMENT === 'production' && !PERSIST_DATA) {
   console.warn('RESET is set to true in a production environment; are you sure about that?');
