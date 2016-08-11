@@ -1,6 +1,6 @@
 import fetchMessagesForGames from '../../messages/fetchMessagesForGames';
 
-export default function fetchMessages(ws, { userKey, gameKey, before }) {
+export default function fetchMessages(ws, { userKey, gameKey, before, since }) {
   if (! userKey) {
     return new Promise((resolve, reject) => {
       reject('You must provide a user key');
@@ -11,7 +11,7 @@ export default function fetchMessages(ws, { userKey, gameKey, before }) {
     });
   }
 
-  return fetchMessagesForGames(userKey, [gameKey], { before }).then(messagesByGames => {
+  return fetchMessagesForGames(userKey, [gameKey], { before, since }).then(messagesByGames => {
     return {
       key: gameKey,
       messages: messagesByGames[gameKey],

@@ -9,14 +9,14 @@ import {
   UPDATE_COMPOSE,
 } from './types';
 
-export function fetchMessages(userKey, gameKey, seen, meta = {}) {
+export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
   return {
     type: FETCH_MESSAGES,
     meta,
     payload: {
       userKey,
       gameKey,
-      before: seen,
+      ...options,
     },
   };
 }

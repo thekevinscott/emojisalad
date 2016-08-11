@@ -50,18 +50,38 @@ export function mapStateToProps(state, props) {
   };
 }
 
-export function mapDispatchToProps(dispatch, props) {
+export function mapDispatchToProps(dispatch, ownProps) {
   return {
     actions: {
-      fetchMessages: (userKey, gameKey, seen, meta) => {
-        return dispatch(fetchMessages(userKey, gameKey, seen, meta));
+      fetchMessagesBeforeFirst: (userKey, gameKey, props = {}) => {
+        return dispatch(fetchMessages(userKey, gameKey, {
+          before: props.seen.first,
+        }));
+      },
+      fetchLatestMessages: (userKey, gameKey, props = {}) => {
+        const {
+          messages,
+          seen,
+        } = props;
+
+        //console.log('what is messages', messages);
+
+        if (messages.length < 20) {
+          return dispatch(fetchMessages(userKey, gameKey, {
+          }));
+        }
+
+        //console.log('do a regular dispatch');
+        return dispatch(fetchMessages(userKey, gameKey, {
+          since: seen.last,
+        }));
       },
       updateCompose: (text) => {
-        const gameKey = props.game.key;
+        const gameKey = ownProps.game.key;
         return dispatch(updateCompose(gameKey, text));
       },
       sendMessage: (userKey, message) => {
-        const gameKey = props.game.key;
+        const gameKey = ownProps.game.key;
         return dispatch(sendMessage(userKey, gameKey, message));
       },
     },

@@ -39,13 +39,23 @@ class Game extends Component {
       actions,
       me,
       messages,
+      seen,
     } = this.props;
 
+    actions.fetchLatestMessages(me.key, game.key, {
+      messages,
+      seen,
+    });
+
+    /*
     //console.log('Game Drilldown Component componentWillAppear called');
     if (messages.length < MESSAGES_PER_PAGE) {
       console.log('fetch messages');
-      actions.fetchMessages(me.key, game.key);
+      actions.fetchFirstPageMessages(me.key, game.key);
+    //} else {
+      //actions.fetchMessagesSinceLast(me.key, game.key);
     }
+    */
   }
 
   loadEarlier() {
@@ -56,7 +66,9 @@ class Game extends Component {
       seen,
     } = this.props;
 
-    actions.fetchMessages(me.key, game.key, seen.first);
+    actions.fetchMessagesBeforeFirst(me.key, game.key, {
+      seen,
+    });
   }
 
   handleSend() {

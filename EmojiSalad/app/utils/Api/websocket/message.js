@@ -29,7 +29,9 @@ export default function message(store) {
       meta,
     };
 
-    return store.dispatch(payload);
+    if (type !== 'RECEIVE_MESSAGE_FULFILLED') {
+      return store.dispatch(payload);
+    }
   };
 }
 
