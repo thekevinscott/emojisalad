@@ -7,6 +7,7 @@ import {
   INCREMENT_PAGE,
   SEND_MESSAGE,
   UPDATE_COMPOSE,
+  LOAD_EARLIER,
 } from './types';
 
 export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
@@ -19,6 +20,18 @@ export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
       ...options,
     },
   };
+  if (options.before) {
+    return dispatch => {
+      dispatch({
+        type: LOAD_EARLIER,
+        gameKey,
+      });
+      setTimeout(() => {
+        dispatch(payload);
+      }, 10000);
+    };
+  }
+
   return payload;
 }
 

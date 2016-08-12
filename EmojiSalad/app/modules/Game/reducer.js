@@ -14,6 +14,7 @@ import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
+  LOAD_EARLIER,
 } from './types';
 
 //const DEFAULT_PAGE = 1;
@@ -76,9 +77,9 @@ export default typeToReducer({
 
       return {
         ...state,
-        [action.data.key]: {
-          active: state[gameKey].active,
-          compose: state[gameKey].compose,
+        [gameKey]: {
+          ...state[gameKey],
+          isLoadingEarlier: false,
           seen: {
             first,
             last,
@@ -96,6 +97,7 @@ export default typeToReducer({
         return {
           ...obj,
           [key]: {
+            isLoadingEarlier: false,
             active: currentGame.active || false,
             compose: currentGame.compose || '',
             seen: {
@@ -138,5 +140,14 @@ export default typeToReducer({
         }),
       };
     },
+  },
+  [LOAD_EARLIER]: (state, { gameKey }) => {
+    return {
+      ...state,
+      [gameKey]: {
+        ...state[gameKey],
+        isLoadingEarlier: true,
+      },
+    };
   },
 }, initialState);

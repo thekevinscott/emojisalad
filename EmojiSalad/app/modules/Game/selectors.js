@@ -32,9 +32,9 @@ function selectCompose(state, gameKey) {
 export function mapStateToProps(state, props) {
   const gameKey = props.game.key;
   const game = state.data.games[gameKey];
-
   const {
     seen,
+    isLoadingEarlier,
   } = state.ui.Game[gameKey] || {};
 
   const messages = selectMessages(game, state.data.messages, (seen || {}).first);
@@ -46,6 +46,7 @@ export function mapStateToProps(state, props) {
     compose: selectCompose(state, game.key),
     logger: state.ui.Games.logger,
     seen,
+    isLoadingEarlier,
   };
 }
 

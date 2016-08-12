@@ -1,119 +1,93 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  Image,
   View,
+  Text,
   TouchableOpacity,
   LayoutAnimation,
 } from 'react-native';
 
-const originalState = function(){
-  return {
-    borderRadius: 20,
-  };
-};
+import Spinner from './Spinner';
 
-const spinnerSize = 40;
-const padding = 20;
+import {
+  BUTTON,
+  ANIMATION,
+  styles,
+} from './styles';
 
-const loadingState = function(){
-  return {
-    width: 60,
-    borderRadius: 500,
-  };
-};
+const originalState = () => ({
+  borderRadius: BUTTON.BORDER_RADIUS.REST,
+  width: BUTTON.WIDTH.REST,
+});
+
+const loadingState = () => ({
+  width: BUTTON.WIDTH.LOADING,
+  borderRadius: BUTTON.BORDER_RADIUS.LOADING,
+});
 
 const CustomLayoutSpring = {
-  duration: 300,
+  duration: ANIMATION.DURATION,
   create: {
     type: LayoutAnimation.Types.spring,
     property: LayoutAnimation.Properties.scaleXY,
-    springDamping: 0.7,
+    springDamping: ANIMATION.DAMPING,
   },
   update: {
     type: LayoutAnimation.Types.spring,
-    springDamping: 0.7,
+    springDamping: ANIMATION.DAMPING,
   },
 };
 
-export default class Button extends Component {
-  constructor() {
+export default class LaddaButton extends Component {
+  constructor(props) {
+    super(props);
+    this.onPress = this.onPress.bind(this);
     this.state = {
       style: originalState(),
-      spinnerStyle: { opacity: 0 },
-      loading: false,
     };
+    LayoutAnimation.configureNext(CustomLayoutSpring);
   }
 
-  _updateState {
-    LayoutAnimation.configureNext(CustomLayoutSpring);
-    const loading = !this.state.loading;
-    this.setState({
-      style: loading ? loadingState() : originalState(),
-      spinnerStyle: loading? { opacity: 1 } : { opacity : 0 },
-      loading: loading
-    });
-  },
-
-  _onPress {
-    if (!this.state.loading) {
-      // Animate the update
-      this._updateState();
-
-      setTimeout(function() {
-        this._updateState();  
-      }.bind(this), 2000);
+  componentWillReceiveProps(nextProps) {
+    if (this.props.isLoading !== nextProps.isLoading) {
+      LayoutAnimation.configureNext(CustomLayoutSpring);
+      this.setState({
+        style: nextProps.isLoading ? loadingState() : originalState(),
+      });
     }
-  },
+  }
 
-  render {
-    const left = parseInt((this.state.style.width / 2) - (spinnerSize / 2) - (padding), 10);
-    const opacity = this.state.loading? 1 : 0;
+  onPress() {
+    this.props.onLoadEarlier();
+  }
 
+  render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity activeOpacity={1} onPress={this._onPress} style={[styles.box, { ... this.state.style }]}>
-          <View style={{ justifyContent : 'center', flex: 1,
-            flexDirection: 'row', }} >
-            <Text style={{ textAlign: 'center' }}>{!this.state.loading ? 'Load Earlier Messages' : null}</Text>
-
-
-            <Image
-              source={{uri: 'http://scottdesignllc.com/loadingaaa.gif'}}
-              style={[this.state.spinnerStyle, { width: spinnerSize, height: spinnerSize, top: 0 - (spinnerSize / 2) + (padding/2), position: 'absolute', left: left,  }]}
-
-            />
-          </View>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={this.onPress}
+          style={{
+            ...styles.box,
+            ...this.state.style,
+          }}
+          {...this.props}
+        >
+          <Text
+            numberOfLines={1}
+            style={{
+              ...styles.text,
+              opacity: this.props.isLoading ? 0 : 1,
+            }}
+          >
+            Load Earlier Messages
+          </Text>
+          <Spinner
+            containerWidth={this.state.style.width}
+            isLoading={this.props.isLoading}
+          />
         </TouchableOpacity>
-
       </View>
+
     );
   }
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  box: {
-    backgroundColor: '#AAA',
-    padding: padding,
-    height: 60,
-    overflow: 'hidden',
-  },
-  button: {
-    marginTop: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: 'black',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+}

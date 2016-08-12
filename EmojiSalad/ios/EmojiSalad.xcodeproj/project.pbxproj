@@ -22,6 +22,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		345B73051D5D579E0002B0D3 /* AirshipConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 345B73041D5D579E0002B0D3 /* AirshipConfig.plist */; };
+		345B73061D5D58470002B0D3 /* libReactNativeUAIOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 345B73031D5D57730002B0D3 /* libReactNativeUAIOS.a */; };
+		345B73081D5D58780002B0D3 /* AirshipResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 345B73071D5D58780002B0D3 /* AirshipResources.bundle */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +92,13 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
+		345B73021D5D57730002B0D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 345B72FE1D5D57730002B0D3 /* ReactNativeUAIOS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 51AC19491CE4ACED00EF7E09;
+			remoteInfo = ReactNativeUAIOS;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -125,6 +135,9 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = EmojiSalad/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = EmojiSalad/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		345B72FE1D5D57730002B0D3 /* ReactNativeUAIOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeUAIOS.xcodeproj; path = "../node_modules/react-native-ua/ios/ReactNativeUAIOS.xcodeproj"; sourceTree = "<group>"; };
+		345B73041D5D579E0002B0D3 /* AirshipConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AirshipConfig.plist; path = "../node_modules/react-native-ua/ios/AirshipConfig.plist"; sourceTree = "<group>"; };
+		345B73071D5D58780002B0D3 /* AirshipResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = AirshipResources.bundle; path = "../node_modules/react-native-ua/ios/Libraries/Airship/AirshipResources.bundle"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -142,6 +155,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				345B73061D5D58470002B0D3 /* libReactNativeUAIOS.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
@@ -234,6 +248,7 @@
 		13B07FAE1A68108700A75B9A /* EmojiSalad */ = {
 			isa = PBXGroup;
 			children = (
+				345B73041D5D579E0002B0D3 /* AirshipConfig.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -253,6 +268,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		345B72FF1D5D57730002B0D3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				345B73031D5D57730002B0D3 /* libReactNativeUAIOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -264,6 +287,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				345B72FE1D5D57730002B0D3 /* ReactNativeUAIOS.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
 				00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */,
@@ -289,6 +313,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				345B73071D5D58780002B0D3 /* AirshipResources.bundle */,
 				13B07FAE1A68108700A75B9A /* EmojiSalad */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* EmojiSaladTests */,
@@ -361,6 +386,14 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 92TG8V3QUG;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -415,6 +448,10 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = 345B72FF1D5D57730002B0D3 /* Products */;
+					ProjectRef = 345B72FE1D5D57730002B0D3 /* ReactNativeUAIOS.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -482,6 +519,13 @@
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		345B73031D5D57730002B0D3 /* libReactNativeUAIOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeUAIOS.a;
+			remoteRef = 345B73021D5D57730002B0D3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -510,6 +554,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				345B73081D5D58780002B0D3 /* AirshipResources.bundle in Resources */,
+				345B73051D5D579E0002B0D3 /* AirshipConfig.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -619,6 +665,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-ua/ios/**",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -627,6 +674,9 @@
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
+					"-lz
+",
+					"-lsqlite3\n",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;
@@ -647,6 +697,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-ua/ios/**",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -655,6 +706,9 @@
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
+					"-lz
+",
+					"-lsqlite3\n",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;

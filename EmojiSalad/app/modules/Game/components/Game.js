@@ -1,18 +1,12 @@
-/**
- * @flow
- */
-
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Messenger } from '../../../components/Messenger';
 import { Logger } from '../../../components/Logger';
+
 import {
-  //Text,
-  TextInput,
   View,
 } from 'react-native';
-
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import * as styles from '../styles';
 
@@ -28,9 +22,6 @@ class Game extends Component {
     super(props);
     this.loadEarlier = this.loadEarlier.bind(this);
     this.handleSend = this.handleSend.bind(this);
-    this.renderBubble = this.renderBubble.bind(this);
-    this.renderComposer = this.renderComposer.bind(this);
-    this.state = {};
   }
 
   componentWillAppear() {
@@ -67,65 +58,6 @@ class Game extends Component {
     });
   }
 
-  renderBubble(props) {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          left: styles.receivedMessage,
-          right: styles.sentMessage,
-        }}
-      />
-    );
-  }
-
-  renderComposer() {
-    return (
-      <TextInput
-        placeholder="Message"
-        placeholderTextColor={styles.placeholder.color}
-        multiline={false}
-        autoCorrect={false}
-        style={styles.composer}
-        onChangeText={this.props.actions.updateCompose}
-        underlineColorAndroid="transparent"
-        onSubmitEditing={this.handleSend}
-        value={this.props.compose}
-      />
-    );
-  }
-
-  renderMessenger() {
-    return (
-      <GiftedChat
-        isAnimated={true}
-        styles={{
-          backgroundColor: 'blue',
-        }}
-        isAnimated={true}
-        loadEarlier={this.props.messages.length < this.props.game.totalMessages}
-        onLoadEarlier={this.loadEarlier}
-        renderBubble={this.renderBubble}
-        user={{
-          _id: 1,
-        }}
-        renderComposer={this.renderComposer}
-        messages={this.props.messages.map((message) => {
-          const user = {
-            _id: (message.type === 'received') ? 1 : 2,
-          };
-          const payload = {
-            text: message.body,
-            _id: message.key,
-            position: (message.type === 'received') ? 'right' : 'left',
-            createdAt: new Date(message.timestamp),
-            user,
-          };
-          return payload;
-        })}
-      />
-    );
-  }
 
   render() {
     const {
@@ -133,7 +65,9 @@ class Game extends Component {
       game,
       logger,
     } = this.props;
+
     const loading = messages.length < MESSAGES_PER_PAGE && game.messages.length !== game.totalMessages;
+
     return (
       <View
         style={styles.container}
@@ -144,7 +78,16 @@ class Game extends Component {
           <Spinner
             visible={loading}
           />
-          {!loading ? this.renderMessenger() : null}
+          {!loading ? (
+            <Messenger
+              handleSend={this.handleSend}
+              loadEarlier={this.loadEarlier}
+              isLoadingEarlier={this.props.isLoadingEarlier}
+              updateCompose={this.props.actions.updateCompose}
+              messages={messages}
+              totalMessages={game.totalMessages}
+            />
+          ) : null}
           <Logger logger={logger} />
         </View>
       </View>

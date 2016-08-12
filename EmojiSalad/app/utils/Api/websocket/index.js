@@ -48,7 +48,7 @@ const websocketClass = {
     }
   },
   attempts: 0,
-  initialize: () => {
+  connect: () => {
     websocketClass.attempts = websocketClass.attempts + 1;
     websocketClass.log(`connecting at ws://${API_HOST}:${API_PORT}/, # ${websocketClass.attempts}`);
     this.websocket = new WebSocket(`ws://${API_HOST}:${API_PORT}/`);
@@ -78,14 +78,14 @@ const websocketClass = {
         connected: false,
       });
       if (!websocketClass.reconnect) {
-        websocketClass.reconnect = setInterval(() => {
-          websocketClass.initialize();
+        setTimeout(() => {
+          websocketClass.connect();
         }, 1000);
       }
     });
   },
 };
-websocketClass.initialize();
+websocketClass.connect();
 
 export const sendMessage = origSendMessage(websocketClass);
 
