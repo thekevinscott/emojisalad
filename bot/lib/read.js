@@ -53,18 +53,18 @@ const getLastProtocolMessageIDs = (allowed_protocols) => {
 };
 
 const runRead = () => {
-  console.info('run read 1');
+  //console.info('run read 1');
   return getLastProtocolMessageIDs(PROTOCOLS).then((last_protocol_message_ids) => {
-    console.info('run read 2');
+    //console.info('run read 2');
     return getMessages(last_protocol_message_ids, PROTOCOLS, tripwire_settings);
   }).then((messages) => {
-    console.info('run read 3');
+    //console.info('run read 3');
     if ( messages.length ) {
-      console.info('got messages', messages.map((message) => {
-        return message;
-      }));
+      //console.info('got messages', messages.map((message) => {
+        //return message;
+      //}));
       return setStore(messages).then(() => {
-        console.info('the retrieved messages from the protocol', messages);
+        //console.info('the retrieved messages from the protocol', messages);
         return sequential(messages.map((message) => {
           return () => {
             return processMessage(message);
@@ -76,22 +76,22 @@ const runRead = () => {
           // as blacklisted.
           return message;
         }).then((processed_messages) => {
-          console.info('processed messages', processed_messages.length);
+          //console.info('processed messages', processed_messages.length);
           return sendMessages(processed_messages);
         });
       });
     }
   }).then(() => {
-    console.info('run read 4');
+    //console.info('run read 4');
     // process any outstanding timers
     return Timer.get().then((timers) => {
       if (timers.length) {
-        console.info('timers to process', timers);
+        //console.info('timers to process', timers);
         const timer_messages = timers.reduce((messages, t) => {
           return messages.concat(t.messages);
         }, []);
 
-        console.info('timer messages', timer_messages);
+        //console.info('timer messages', timer_messages);
         return sendMessages(timer_messages).then(() => {
           const timer_keys = _.uniq(timers.map(t => t.key));
           const timer_game_ids = _.uniq(timers.map(t => t.game_id));
@@ -103,7 +103,7 @@ const runRead = () => {
       }
     });
   }).then(() => {
-    console.info('run read 5');
+    //console.info('run read 5');
     return getLastProtocolMessageIDs(['web']).then(last_protocol_message_ids => {
       return getWebSubmissions(last_protocol_message_ids);
     }).then(responses => {
@@ -121,7 +121,7 @@ const runRead = () => {
             });
           }, []));
         }).then(messages => {
-          console.info('messages', messages);
+          //console.info('messages', messages);
           return sendMessages(messages);
         });
       }
@@ -138,14 +138,14 @@ const runRead = () => {
 // in this case, we want to queue those pings to run
 // immediately on complete (but only one ping can get queued up)
 const read = () => {
-  console.info('read called');
+  //console.info('read called');
   if ( processing === false ) {
     //console.log('process read');
-    console.info('read');
+    //console.info('read');
     processing = true;
 
     return runRead().then(() => {
-      console.info('run read is complete');
+      //console.info('run read is complete');
     }).catch((err) => {
       //console.log('error with read');
       console.error(err.stack);
@@ -153,11 +153,11 @@ const read = () => {
       if ( timer ) {
         clearTimeout(timer);
       }
-      console.info('set processing to false 2');
+      //console.info('set processing to false 2');
       throw err;
     }).finally(() => {
       //console.info('done with read');
-      console.info('done with read', callbacks.length);
+      //console.info('done with read', callbacks.length);
       processing = false;
       if ( callbacks.length ) {
         //console.log('immediately do anotehr read');
@@ -174,13 +174,13 @@ const read = () => {
       }
     });
   } else {
-    console.info('do not process read (yet)');
+    //console.info('do not process read (yet)');
     return new Promise((resolve) => {
       const key = Math.random();
-      console.info('read is already processing, queue this for the next go round', key);
+      //console.info('read is already processing, queue this for the next go round', key);
       //queued_read_action = true;
       callbacks.push((promise) => {
-        console.info('processed waiting read!', key);
+        //console.info('processed waiting read!', key);
         resolve(promise);
       });
     });
