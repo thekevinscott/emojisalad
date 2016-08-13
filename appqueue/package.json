@@ -33,10 +33,12 @@
     "microservice-registry": "https://github.com/scottlabs/microservice-registry.git",
     "node-uuid": "^1.4.7",
     "pmx": "^0.6.0",
+    "pusher": "^1.4.0-rc6",
     "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
     "request": "^2.71.0",
     "squel": "^4.3.1",
     "twilio": "^2.8.0",
+    "urban-airship": "^0.4.1",
     "ws": "^1.1.1"
   },
   "devDependencies": {

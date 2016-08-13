@@ -34,3 +34,30 @@ registry.ready(() => {
   });
 });
 
+
+const Pusher = require('pusher');
+
+const pusher = new Pusher({
+  appId: '236009',
+  key: '64297db42152849faef9',
+  secret: '1a755792726bf38ea8bd',
+  //encrypted: true,
+});
+
+pusher.trigger('test_channel', 'my_event', {
+  message: 'hello world',
+});
+
+pusher.notify(['donuts'], {
+  apns: {
+    aps: {
+      alert: {
+        body: 'donuts!',
+      },
+    },
+  },
+
+  webhook_url: 'http://requestb.in/xcehthxc',
+  webhook_level: 'DEBUG',
+});
+console.log('here we go', pusher);

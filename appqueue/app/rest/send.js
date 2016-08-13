@@ -45,9 +45,9 @@ function saveIncomingMessage(message, attempts = 0) {
     user_key: message.userKey,
     game_key: message.gameKey,
   });
-  console.log(insert.toString());
+  console.info(insert.toString());
   return db.query(insert).then(result => {
-    console.log('result back');
+    console.info('result back');
     if (!result.insertId) {
       return saveIncomingMessage(message, attempts + 1);
     }
@@ -58,9 +58,9 @@ function saveIncomingMessage(message, attempts = 0) {
     .from('sent')
     .where('`key`=?', key);
 
-    console.log(getMessage.toString());
+    console.info(getMessage.toString());
     return db.query(getMessage).then(gotMessage => {
-      console.log(' got back message back');
+      console.info(' got back message back');
       return {
         ...message,
         timestamp: gotMessage[0].timestamp,
@@ -86,13 +86,13 @@ export default function send(req, res) {
     console.info('each message');
     return translateIncomingMessage(message);
   })).then(translatedMessages => {
-    console.log('messages to process', translatedMessages.length);
+    console.info('messages to process', translatedMessages.length);
     return translatedMessages.reduce((promise, message) => {
       console.info('back from payloads');
       return promise.then(() => {
-        console.log('payload', message);
+        console.info('payload', message);
         return saveIncomingMessage(message).then(savedMessage => {
-          console.log('message saved');
+          console.info('message saved');
           // don't return this; we don't want to wait on it.
           sendMessageToWebsocket(savedMessage);
           return true;
@@ -100,7 +100,10 @@ export default function send(req, res) {
       });
     }, getPromise());
   }).then(() => {
-    console.log('*** also make sure to update status of message when sent');
+    console.info('*** also make sure to update status of message when sent');
     res.json({});
+  }).catch(err => {
+    console.error('Error handling response', err);
+    throw new Error('There was an error handling the response in app queue');
   });
 }
