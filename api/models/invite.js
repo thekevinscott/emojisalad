@@ -153,12 +153,14 @@ const Invite = {
                   console.info('invite query', query.toString());
                   return db.query(query.toString()).then(row => {
                     console.info('invite row back', row);
-                    invited_user.to = senderId;
-
                     const finalInvite = {
                       id: row.insertId,
                       game,
-                      invited_user,
+                      invited_user: {
+                        ...invited_user,
+                        to: senderId,
+                        game_key: game.key,
+                      },
                       inviter_player
                     };
                     return setKey('invites', {

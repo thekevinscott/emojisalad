@@ -322,7 +322,7 @@ const Game = {
       }, {});
     };
 
-    console.info('api query', query.toString());
+    console.info('find games', query.toString());
 
     return db.query(query).then((games) => {
       //console.info('return from games');
