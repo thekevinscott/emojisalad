@@ -18,7 +18,7 @@ export const SPINNER = {
 
 export const ANIMATION = {
   DURATION: 300,
-  DAMPING: 0.7,
+  DAMPING: 0.5,
 };
 
 export const styles = {

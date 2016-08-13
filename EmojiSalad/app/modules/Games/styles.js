@@ -1,14 +1,19 @@
 const PURPLE = '#bb27dd';
+const ROW_HEIGHT = 100;
+const MESSAGE_TOP = 50;
+const ROW_PADDING = 20;
 
 export const container = {
   paddingTop: 64,
 };
 
-export const row = {
+export const game = {
   backgroundColor: '#FFF',
-  padding: 20,
+  padding: ROW_PADDING,
+  overflow: 'hidden',
   //justifyContent: 'center',
   flex: 1,
+  flexDirection: 'row',
 };
 
 export const players = {
@@ -28,6 +33,9 @@ export const timestamp = {
 export const rowHeader = {
   flex: 1,
   flexDirection: 'row',
+  height: 30,
+  backgroundColor: '#aaaaaa',
+  overflow: 'hidden',
 };
 
 export const rowSeparator = (adjacentRowHighlighted) => ({
@@ -38,6 +46,10 @@ export const rowSeparator = (adjacentRowHighlighted) => ({
 export const rowContainer = {
   flex: 1,
   flexDirection: 'row',
+  // if we don't specify explicit height,
+  // we'll need to expand this based on the
+  // length of the message
+  height: ROW_HEIGHT,
 };
 
 const dotSize = 10;
@@ -52,4 +64,13 @@ export const unreadDot = {
   height: dotSize,
   borderRadius: dotSize,
   backgroundColor: PURPLE,
+};
+
+export const messagesContainer = {
+  flex: 1,
+  position: 'absolute',
+  left: ROW_PADDING,
+  right: ROW_PADDING,
+  top: MESSAGE_TOP,
+  backgroundColor: '#eee',
 };

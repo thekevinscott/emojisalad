@@ -5,15 +5,16 @@
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
-import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Logger } from '../../../components/Logger';
 import {
-  Text,
+  //Text,
   View,
   TouchableHighlight,
   ListView,
 } from 'react-native';
+import Messages from './Messages';
+import RowHeader from './RowHeader';
 import { Actions } from 'react-native-router-flux';
 
 import * as styles from '../styles';
@@ -54,22 +55,6 @@ const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
 });
 
-function getPlayerString(players) {
-  const playerString = players.map(player => `${player.nickname}`).join(', ');
-
-  const characterLimit = 30;
-
-  if (playerString.length > characterLimit) {
-    return `${playerString.substring(0, characterLimit - 3)}...`;
-  }
-  return playerString;
-}
-
-function parseTimestamp(timestamp) {
-  const date = moment(timestamp);
-  return date.fromNow();
-}
-
 class Games extends Component {
   componentWillAppear() {
     console.log('Games Overview Component componentWillAppear called');
@@ -78,10 +63,11 @@ class Games extends Component {
 
   _renderRow(game, sectionId, rowId) {
     //const message = (game.messages[game.messages.length - 1] || {});
-    const message = game.messages[0] || {};
+    const messages = game.messages;
+    const mostRecentMessage = messages[0] || {};
     const unreadDotStyle = {
       ...styles.unreadDot,
-      opacity: (message.key !== game.lastRead) ? 1 : 0,
+      opacity: (mostRecentMessage.key !== game.lastRead) ? 1 : 0,
     };
     return (
       <TouchableHighlight
@@ -99,27 +85,15 @@ class Games extends Component {
             <View style={unreadDotStyle} />
           </View>
           <View
-            style={styles.row}
+            style={styles.game}
           >
-            <View style={styles.rowHeader}>
-              <Text
-                style={
-                  styles.players
-                }
-                numberOfLines={1}
-              >
-                {getPlayerString(game.players)}
-              </Text>
-              <Text style={styles.timestamp}>
-                {parseTimestamp(message.timestamp)}
-              </Text>
-            </View>
-            <Text
-              style={styles.message}
-              numberOfLines={2}
-            >
-              {message.body}
-            </Text>
+            <Messages
+              messages={messages}
+            />
+            <RowHeader
+              players={game.players}
+              timestamp={mostRecentMessage.timestamp}
+            />
           </View>
         </View>
       </TouchableHighlight>
