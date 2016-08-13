@@ -25,10 +25,10 @@ export default function translateIncomingData(message) {
   console.log('incoming 1');
   return fetchUserKey(phoneNumber).then(userKey => {
     console.log('incoming 2', userKey);
-    if (message.gameKey) {
+    if (message.game_key) {
       return {
         userKey,
-        gameKey: message.gameKey,
+        gameKey: message.game_key,
       };
     }
 
