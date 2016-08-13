@@ -25,15 +25,30 @@ export default function translateIncomingData(message) {
   console.log('incoming 1');
   return fetchUserKey(phoneNumber).then(userKey => {
     console.log('incoming 2', userKey);
+    if (message.gameKey) {
+      return {
+        userKey,
+        gameKey: message.gameKey,
+      };
+    }
+
     return fetchGameKey(userKey, senderId).then(gameKey => {
       console.log('incoming 3', gameKey);
       console.info('got the values', userKey, gameKey);
       return {
-        ...setIncomingCache(phoneNumber, senderId, {
-          userKey,
-          gameKey,
-        }),
+        userKey,
+        gameKey,
       };
     });
+  }).then(({
+    userKey,
+    gameKey,
+  }) => {
+    return {
+      ...setIncomingCache(phoneNumber, senderId, {
+        userKey,
+        gameKey,
+      }),
+    };
   });
 }
