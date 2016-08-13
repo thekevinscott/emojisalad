@@ -8,6 +8,16 @@ const Email = require('models/email');
 //const _ = require('lodash');
 const rule = require('config/rule');
 
+const getDefaultPlayerProtocol = player => {
+  if (player.protocol === 'appqueue') {
+    return 'sms';
+  } else if (player.protocol) {
+    return player.protocol;
+  }
+
+  return 'sms';
+};
+
 module.exports = (player, message) => {
   let existing_user;
   let parsed_invitee;
@@ -40,8 +50,7 @@ module.exports = (player, message) => {
     } else {
       console.info('it is a valid phone');
       return {
-        protocol: 'sms',
-        //protocol: player.protocol || 'sms',
+        protocol: getDefaultPlayerProtocol(player),
         from: response.phone
       };
     }

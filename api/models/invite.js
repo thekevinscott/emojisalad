@@ -10,6 +10,46 @@ const registry = require('microservice-registry');
 const request = Promise.promisify(require('request'));
 import setKey from 'setKey';
 
+const getSenderId = (invited_user) => {
+  console.info('getting the sender ids');
+  const player_sender_ids = invited_user.players.map((player) => {
+    return player.to;
+  });
+
+  //if (invited_user.protocol !== 'appqueue') {
+  const service = registry.get(invited_user.protocol);
+  if (!service) {
+    throw new Error(`No service provided for protocol ${invited_user.protocol}`);
+  }
+  console.info('service', invited_user.protocol, JSON.stringify(service.api));
+  const options = {
+    url: service.api.senders.get.endpoint,
+    method: service.api.senders.get.method,
+    qs: {
+      exclude: player_sender_ids.join(',')
+    }
+  };
+
+  console.info('service options', options);
+
+  return request(options).then((response) => {
+    try {
+      return JSON.parse(response.body);
+    } catch (err) {
+      console.error('error parsing json response', response.body);
+      throw new Error(`Error getting sender, for protocol: ${invited_user.protocol}`);
+    }
+  }).then(response => {
+    console.info('request response', response);
+    if ( response && response.id ) {
+      return response.id;
+    } else {
+      console.error('No game numbers returned for', invited_user);
+      throw new Error('No game numbers returned, major error');
+    }
+  });
+};
+
 const Invite = {
   /**
    * Create will return an array of invites corresponding
@@ -90,64 +130,38 @@ const Invite = {
                 };
               } else {
                 console.info('we made it');
-                const player_sender_ids = invited_user.players.map((player) => {
-                  return player.to;
-                });
-
-                const service = registry.get(invited_user.protocol);
-                if (!service) {
-                  throw new Error(`No service provided for protocol ${invited_user.protocol}`);
-                }
-                console.info('service', invited_user.protocol, JSON.stringify(service.api));
-                const options = {
-                  url: service.api.senders.get.endpoint,
-                  method: service.api.senders.get.method,
-                  qs: {
-                    exclude: player_sender_ids.join(',')
-                  }
-                };
-
-                console.info('service options', options);
-
-                return request(options).then((response) => {
-                  try {
-                    return JSON.parse(response.body);
-                  } catch (err) {
-                    console.error('error parsing json response', response.body);
-                    throw new Error(`Error getting sender, for protocol: ${invited_user.protocol}`);
-                  }
-                }).then((response) => {
-                  console.info('request response', response);
-                  if ( response && response.id ) {
-                    //const game_number = rows[0];
-
-                    const query = squel
-                    .insert()
-                    .into('invites')
-                    .set('game_id', game.id)
-                    .set('game_number_id', response.id)
-                    .set('invited_id', invited_user.id)
-                    .set('inviter_id', params.inviter_id);
-
-                    return db.query(query.toString()).then((row) => {
-                      invited_user.to = response.id;
-
-                      const finalInvite = {
-                        id: row.insertId,
-                        game,
-                        invited_user,
-                        inviter_player
-                      };
-                      return setKey('invites', {
-                        ...finalInvite,
-                      }).then(() => {
-                        return finalInvite;
-                      });
-                    });
+                return new Promise((resolve, reject) => {
+                  if (invited_user.protocol === 'appqueue') {
+                    resolve({});
                   } else {
-                    console.error('No game numbers returned for', invited_user);
-                    throw new Error('No game numbers returned, major error');
+                    getSenderId(invited_user).then(resolve).catch(reject);
                   }
+                }).then(senderId => {
+                  //const game_number = rows[0];
+
+                  const query = squel
+                  .insert()
+                  .into('invites')
+                  .set('game_id', game.id)
+                  .set('game_number_id', senderId)
+                  .set('invited_id', invited_user.id)
+                  .set('inviter_id', params.inviter_id);
+
+                  return db.query(query.toString()).then((row) => {
+                    invited_user.to = senderId;
+
+                    const finalInvite = {
+                      id: row.insertId,
+                      game,
+                      invited_user,
+                      inviter_player
+                    };
+                    return setKey('invites', {
+                      ...finalInvite,
+                    }).then(() => {
+                      return finalInvite;
+                    });
+                  });
                 });
               }
             });

@@ -119,6 +119,16 @@ export default typeToReducer({
     };
   },
   [SEND_MESSAGE]: {
+    PENDING: (state, { payload }) => {
+      const gameKey = payload.gameKey;
+      return {
+        ...state,
+        [gameKey]: {
+          ...state[gameKey],
+          compose: '',
+        },
+      };
+    },
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
       return {

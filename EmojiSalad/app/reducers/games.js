@@ -47,7 +47,7 @@ function translateGame(currentGame = {}, game = {}) {
     timestamp,
     archived: (game.archived !== undefined) ? game.archived : currentGame.archived,
     roundCount: (game.round_count !== undefined) ? game.round_count : currentGame.round_count,
-    players: game.players.map(player => player.user_key) || currentGame.players,
+    players: (game.players || []).map(player => player.user_key),
     round: translateRound(game.round || {}) || currentGame.round,
     pendingMessages: currentGame.pendingMessages || [],
     // messages is an array of keys of messages in an unordered list
