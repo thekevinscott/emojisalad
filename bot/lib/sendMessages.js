@@ -83,10 +83,11 @@ const sendMessages = (messages, options = {}) => {
     const stringifiedOptions = JSON.stringify(requestOptions);
     const byteLength = Buffer.byteLength(stringifiedOptions, 'utf8') + " bytes";
 
+    const timeoutTime = 10000;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        reject(`Request took too long when sending messages: ${protocol} : ${service.api.send.endpoint}`);
-      }, 10000); // keep this below bot run time (which is 5000);
+        reject(`Request took over ${timeoutTime / 1000} seconds when sending messages: ${protocol} : ${service.api.send.endpoint}`);
+      }, timeoutTime); // keep this below bot run time (which is 5000);
       return request(requestOptions).then((response) => {
         clearTimeout(timer);
         if (response.body) {
