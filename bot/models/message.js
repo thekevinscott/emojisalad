@@ -75,11 +75,11 @@ const Message = {
           return reducedObj;
         }, {});
 
-        const messages_array = Object.keys(messages_by_id).map(message_id =>  messages_by_id[message_id]);
+        const messages_array = Object.keys(messages_by_id).map(message_id => messages_by_id[message_id]);
 
         return messages_array;
       } else {
-        throw "No messages found for keys " + key;
+        throw new Error("No messages found for keys " + key);
       }
     });
   },
@@ -107,22 +107,24 @@ const Message = {
         return responses.map((response) => {
           let from;
 
-          //console.info('response player', response);
-          if ( response.player.from ) {
-            from = response.player.from;
-          } else if ( response.player.user && response.player.user.from ) {
-            from = response.player.user.from;
-          }
-          const to = response.player.to;
+          const player = response.player;
 
-          if ( ! to ) {
+          //console.info('response player', response);
+          if ( player.from ) {
+            from = player.from;
+          } else if ( player.user && player.user.from ) {
+            from = player.user.from;
+          }
+          const to = player.to;
+
+          if ( ! to && player.protocol !== 'appqueue' ) {
             console.error(response);
-            throw "Missing to field in Message.parse";
+            throw new Error("Missing to field in Message.parse");
           }
 
           if ( ! from ) {
             console.error(response);
-            throw "Missing from field in Message.parse";
+            throw new Error("Missing from field in Message.parse");
           }
 
           // The 'to' and 'from fields get flipped.
@@ -133,7 +135,7 @@ const Message = {
             body: messages[response.key],
             to: from,
             from: to,
-            protocol: response.player.protocol || original_message.protocol,
+            protocol: player.protocol || original_message.protocol,
             initiated_id: original_message.id
           }, response);
         });
