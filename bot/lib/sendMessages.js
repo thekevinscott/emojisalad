@@ -95,7 +95,11 @@ const sendMessages = (messages, options = {}) => {
 
       return request(requestOptions).then((response) => {
         clearTimeout(timer);
-        console.info('response status', Object.keys(response), response);
+        try {
+          console.info('response status', response.statusCode);
+        } catch (err) {
+          console.info('no key for status code');
+        }
         if (response.body) {
           if (hasBodyError(options, response.body, byteLength)) {
             resolve(null);

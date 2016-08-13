@@ -23,17 +23,17 @@ module.exports = (player, message) => {
     if ( ! response || ! response.phone ) {
       console.info('not a valid phone');
       // this means its not a valid phone. is it a valid email?
-      return Email.parse(invited_string).then((response) => {
-        console.info('email parse response', response);
-        if ( ! response || ! response.email ) {
+      return Email.parse(invited_string).then(emailResponse => {
+        console.info('email parse response', emailResponse);
+        if ( ! emailResponse || ! emailResponse.email ) {
           // not a valid email either.
           // because our majority use case is sms,
           // alert the user that the phone number was invalid
-          throw new Error(`Problem parsing phone number: ${JSON.stringify(response)} ${message}`);
+          throw new Error(`Problem parsing phone number: ${JSON.stringify(emailResponse)} ${message}`);
         } else {
           return {
             protocol: 'mail',
-            from: response.email
+            from: emailResponse.email
           };
         }
       });
@@ -76,7 +76,6 @@ module.exports = (player, message) => {
             options: [invited_string]
           }
         ];
-        break;
       case 1202:
         // Invite already exists
         return [
@@ -86,7 +85,6 @@ module.exports = (player, message) => {
             options: [invited_string]
           }
         ];
-        break;
       case 1203:
         // Cannot invite yourself
         return [
@@ -96,7 +94,6 @@ module.exports = (player, message) => {
             options: []
           }
         ];
-        break;
       case 1204:
         // Invited user playing maximum games
         return [
@@ -105,7 +102,6 @@ module.exports = (player, message) => {
             key: 'error-12'
           }
         ];
-        break;
       case 1205:
         // Invited user is already in the game
         return [
@@ -117,7 +113,6 @@ module.exports = (player, message) => {
             ]
           }
         ];
-        break;
       default:
         return [
           {
@@ -126,7 +121,6 @@ module.exports = (player, message) => {
             options: [invited_string]
           }
         ];
-        break;
       }
     } else {
       if ( existing_user ) {

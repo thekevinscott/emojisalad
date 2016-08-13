@@ -8,7 +8,7 @@ const registry = require('microservice-registry');
 function getMessagesFromProtocol(ids) {
   return protocol => {
     const service = registry.get(protocol);
-    console.log('getting message from protocol', protocol);
+    //console.info('getting message from protocol', protocol);
     if ( ! service ) {
       throw new Error(`No service found for protocol ${protocol}`);
     }
