@@ -83,8 +83,11 @@ export default function send(req, res) {
 
   console.info('before promise');
   return Promise.all(messages.map(message => {
-    console.info('each message');
-    return translateIncomingMessage(message);
+    console.info('each message', message);
+    return translateIncomingMessage(message).then(response => {
+      console.info('response for', message, response);
+      return response;
+    });
   })).then(translatedMessages => {
     console.info('messages to process', translatedMessages.length);
     return translatedMessages.reduce((promise, message) => {

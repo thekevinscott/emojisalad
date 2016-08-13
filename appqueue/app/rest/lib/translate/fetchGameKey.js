@@ -1,6 +1,7 @@
 import fetchFromService from '../../../../utils/fetchFromService';
 
-export default function fetchPlayerTo(userKey, senderId) {
+export default function fetchGameKey(userKey, senderId) {
+  console.info('fetch game key for', userKey, senderId);
   if (!userKey) {
     throw new Error('You must provide a user key');
   }
