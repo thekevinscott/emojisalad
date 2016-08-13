@@ -84,8 +84,10 @@ const sendMessages = (messages, options = {}) => {
     const byteLength = Buffer.byteLength(stringifiedOptions, 'utf8') + " bytes";
 
     const timeoutTime = 10000;
+    console.info('prepare to request for ', protocol);
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
+        console.info('request took too long for', protocol);
         const errorMessage = `Request took over ${timeoutTime / 1000} seconds when sending messages for ${protocol} at ${service.api.send.endpoint} with payload of ${byteLength}`;
         console.error(errorMessage, protocolMessages);
         reject(errorMessage);
@@ -93,7 +95,7 @@ const sendMessages = (messages, options = {}) => {
 
       return request(requestOptions).then((response) => {
         clearTimeout(timer);
-        console.info('response status', response.status);
+        console.info('response status', Object.keys(response), response);
         if (response.body) {
           if (hasBodyError(options, response.body, byteLength)) {
             resolve(null);
