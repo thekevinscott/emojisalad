@@ -103,7 +103,7 @@ const Invite = {
                     return JSON.parse(response.body);
                   } catch (err) {
                     console.error('error parsing json response', response.body);
-                    throw new Error('Error getting sender');
+                    throw new Error(`Error getting sender, for protocol: ${invited_user.protocol}`);
                   }
                 }).then((response) => {
                   console.info('request response', response);
