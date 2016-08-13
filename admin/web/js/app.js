@@ -7,9 +7,6 @@ const RouteHandler = Router.RouteHandler;
 const Link = Router.Link;
 
 export class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     return (
       <div className="admin">

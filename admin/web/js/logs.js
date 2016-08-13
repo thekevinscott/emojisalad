@@ -49,6 +49,9 @@ export const Logs = React.createClass({
 const socket = window.socket;
 export const Log = React.createClass({
   mixins: [Base], // Use the mixin
+  componentDidMount: function() {
+    document.title = this.props.params.log;
+  },
   url: function() {
     return `/api/logs/${this.props.params.log}`;
   },
