@@ -29,7 +29,18 @@ const Invite = {
       }
     }).then((inviter_player) => {
       console.info('the invitee string', params.invitee);
-      return User.findOne(params.invitee).then((user) => {
+      const userFindParams = Object.keys(params.invitee).reduce((obj, key) => {
+        // we don't need to select on a user's protocol
+        if (key === 'protocol') {
+          return obj;
+        }
+
+        return {
+          ...obj,
+          [key]: params.invitee[key],
+        };
+      });
+      return User.findOne(userFindParams).then((user) => {
         if ( user && user.id ) {
           console.info('user exists and is', user);
           return user;
