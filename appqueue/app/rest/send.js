@@ -100,9 +100,14 @@ export default function send(req, res) {
       });
     }, getPromise());
   }).then(() => {
-    console.info('*** also make sure to update status of message when sent');
+    //console.info('*** also make sure to update status of message when sent');
     res.json({});
   }).catch(err => {
+    if (err.message.indexOf('No user key')) {
+      res.status(500);
+      res.json({ error: err.message });
+    }
+
     console.error('Error handling response', err);
     throw new Error('There was an error handling the response in app queue');
   });
