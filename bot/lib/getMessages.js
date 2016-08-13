@@ -19,7 +19,7 @@ function getMessagesFromProtocol(ids) {
         id: ids[protocol]
       }
     };
-    console.info('payload', payload);
+    //console.info('payload', payload);
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         console.info('timer timed out');
@@ -72,15 +72,15 @@ const getMessages = (ids, protocols, options = {}) => {
     throw new Error("You must provide ids");
   }
 
-  console.info('the protocols', protocols);
+  //console.info('the protocols', protocols);
 
   return Promise.all(protocols.map(getMessagesFromProtocol(ids))).then(responses => {
-    console.info('messages back', responses);
+    //console.info('messages back', responses);
     // flatten the messages
     return [].concat(...responses);
   }).then((responses) => {
     if (responses.length) {
-      console.info('response back', responses);
+      //console.info('response back', responses);
     }
     if ( options.trip && responses.length >= options.trip ) {
       sendAlert(responses, 'tripped', 'get');
