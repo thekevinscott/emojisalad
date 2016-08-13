@@ -30,11 +30,11 @@ function hasBodyError(options, body, byteLength) {
     if (body.indexOf('Error: request entity too large') !== -1) {
       throw new Error('Request too large: ' + byteLength);
     } else if (body.indexOf('PayloadTooLargeError') !== -1) {
-      console.log(options, body);
+      console.info(options, body);
       throw new Error('Payload Too Large Error: ' + byteLength);
     }
 
-    console.log('unknown error', body);
+    console.info('unknown error', body);
     console.error('unknown error', body);
     throw new Error('Unknown error: ' + byteLength + ' ' + body);
   }
@@ -42,7 +42,7 @@ function hasBodyError(options, body, byteLength) {
 }
 
 const sendMessages = (messages, options = {}) => {
-  //console.log('send 1');
+  //console.info('send 1');
   console.info('messages to send', messages);
 
   if ( options.trip && messages.length >= options.trip ) {
@@ -65,9 +65,9 @@ const sendMessages = (messages, options = {}) => {
   }, {});
 
   //console.info('messages_by_protocol', messages_by_protocol);
-  console.log('send 2');
+  console.info('send 2');
   return Promise.all(Object.keys(messages_by_protocol).map((protocol) => {
-    console.log('send 3', protocol);
+    console.info('send 3', protocol);
     console.info('protocol', protocol);
     const protocolMessages = messages_by_protocol[protocol];
     const service = registry.get(protocol);
@@ -98,18 +98,16 @@ const sendMessages = (messages, options = {}) => {
             resolve(null);
           }
         }
-        console.log('Request is fine', response.body, byteLength);
+        console.info('Request is fine', response.body, byteLength);
         resolve(response);
       }).catch((err) => {
         clearTimeout(timer);
-        console.log('send 5a');
         console.error('error sending response', err, requestOptions);
         reject(err);
       });
     });
   })).then((response) => {
     if (messages.length > 0) {
-      console.log('send 6');
       console.info('messages sent: ', messages.map(m => m.body));
       //console.info('messages are sent! within sendMessages');
     }
