@@ -93,6 +93,7 @@ const sendMessages = (messages, options = {}) => {
 
       return request(requestOptions).then((response) => {
         clearTimeout(timer);
+        console.info('response status', response.status);
         if (response.body) {
           if (hasBodyError(options, response.body, byteLength)) {
             resolve(null);
