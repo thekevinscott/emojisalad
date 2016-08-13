@@ -40,7 +40,8 @@ module.exports = (player, message) => {
     } else {
       console.info('it is a valid phone');
       return {
-        protocol: player.protocol || 'sms',
+        protocol: 'sms',
+        //protocol: player.protocol || 'sms',
         from: response.phone
       };
     }
