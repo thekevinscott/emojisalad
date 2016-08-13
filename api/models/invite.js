@@ -132,11 +132,14 @@ const Invite = {
                 console.info('we made it');
                 return new Promise((resolve, reject) => {
                   if (invited_user.protocol === 'appqueue') {
-                    resolve({});
+                    console.info('user protocol is app queue, therefore resolve with nothing');
+                    resolve();
                   } else {
+                    console.info(`user protocol is ${invited_user.protocol}, therefore resolve with sender id`);
                     getSenderId(invited_user).then(resolve).catch(reject);
                   }
                 }).then(senderId => {
+                  console.info('found sender id', senderId);
                   //const game_number = rows[0];
 
                   const query = squel
@@ -147,7 +150,9 @@ const Invite = {
                   .set('invited_id', invited_user.id)
                   .set('inviter_id', params.inviter_id);
 
-                  return db.query(query.toString()).then((row) => {
+                  console.info('invite query', query.toString());
+                  return db.query(query.toString()).then(row => {
+                    console.info('invite row back', row);
                     invited_user.to = senderId;
 
                     const finalInvite = {
@@ -161,6 +166,9 @@ const Invite = {
                     }).then(() => {
                       return finalInvite;
                     });
+                  }).catch(err => {
+                    console.error('Error inserting invite query', err, query.toString());
+                    throw new Error(`Error inserting invite for user ${invited_user.id}`);
                   });
                 });
               }
