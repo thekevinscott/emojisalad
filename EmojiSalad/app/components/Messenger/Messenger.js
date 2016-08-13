@@ -10,6 +10,10 @@ import {
   LoadEarlier,
 } from './';
 
+const getMessagePosition = type => {
+  return (type === 'received' || type === 'pending') ? 'right' : 'left';
+};
+
 export default class Messenger extends Component {
   constructor(props) {
     super(props);
@@ -17,20 +21,30 @@ export default class Messenger extends Component {
   }
 
   parseMessages(messages) {
-    return messages.map((message) => ({
-      text: message.body,
-      _id: message.key,
-      position: (message.type === 'received') ? 'right' : 'left',
-      createdAt: new Date(message.timestamp),
-      user: { _id: message.type },
-    }));
+    return messages.map(({
+      type,
+      key,
+      body,
+      timestamp,
+    }) => {
+      const position = getMessagePosition(type);
+
+      return {
+        type,
+        text: body,
+        _id: key,
+        position,
+        createdAt: new Date(timestamp),
+        user: { _id: position },
+      };
+    });
   }
 
   render() {
     // this tells gifted chat whether a message is from
     // us or from them
     const user = {
-      _id: 'received',
+      _id: 'right',
     };
 
     return (

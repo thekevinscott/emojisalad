@@ -119,6 +119,9 @@ export default typeToReducer({
         [gameKey]: {
           ...game,
           messages,
+          pendingMessages: game.pendingMessages.filter(pendingKey => {
+            return pendingKey !== action.meta.pendingKey;
+          }),
           totalMessages: game.totalMessages + 1,
         },
       };

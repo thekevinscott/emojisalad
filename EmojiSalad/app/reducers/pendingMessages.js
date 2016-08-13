@@ -15,18 +15,18 @@ export default typeToReducer({
         message,
       } = payload;
 
-      const temporaryKey = meta.temporaryKey;
+      const pendingKey = meta.pendingKey;
 
       return {
         ...state,
-        [temporaryKey]: {
-          key: temporaryKey,
-          temporaryKey,
+        [pendingKey]: {
+          key: pendingKey,
+          pendingKey,
           body: message.body,
           gameKey,
           userKey,
-          timestamp: (new Date()).getTime() / 1000,
-          type: 'received',
+          timestamp: (new Date()).getTime(),
+          type: 'pending',
         },
       };
     },

@@ -11,7 +11,11 @@ export const receivedMessage = {
 
 export const sentMessage = {
   //backgroundColor: '#007aff',
-  backgroundColor: '#bb27dd',
+  backgroundColor: PURPLE,
+};
+
+export const pendingMessage = {
+  backgroundColor: 'green',
 };
 
 export const placeholder = {
