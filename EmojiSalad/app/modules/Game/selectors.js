@@ -14,12 +14,18 @@ import {
 
 export const MESSAGES_PER_PAGE = 20;
 
-export function selectMessages(game, messages, firstRead) {
-  const sortedMessages = game.messages.map(key => ({
+const selectArrayFromState = (messages = {}, keys = []) => {
+  return keys.map(key => ({
     key,
     ...messages[key],
-  }))
-  .sort(sortBy('newestFirst', a => a.timestamp));
+  }));
+};
+
+export function selectMessages(game, messages, pendingMessages, firstRead) {
+  const selectedMessages = selectArrayFromState(messages, game.messages);
+  const selectedPendingMessages = selectArrayFromState(pendingMessages, game.pendingMessages);
+
+  const sortedMessages = selectedMessages.concat(selectedPendingMessages).sort(sortBy('newestFirst', a => a.timestamp));
 
   const indexFirstRead = sortedMessages.map(msg => msg.key).indexOf(firstRead);
   return sortedMessages.slice(indexFirstRead).reverse();
@@ -37,14 +43,21 @@ export function mapStateToProps(state, props) {
     isLoadingEarlier,
   } = state.ui.Game[gameKey] || {};
 
-  const messages = selectMessages(game, state.data.messages, (seen || {}).first);
+  const messages = selectMessages(
+    game,
+    state.data.messages,
+    state.data.pendingMessages,
+    (seen || {}).first
+  );
+
+  const compose = selectCompose(state, game.key);
 
   return {
     game,
     messages,
     me: selectMe(state),
-    compose: selectCompose(state, game.key),
     logger: state.ui.Games.logger,
+    compose,
     seen,
     isLoadingEarlier,
   };

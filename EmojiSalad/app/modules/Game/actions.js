@@ -52,6 +52,9 @@ export function incrementPage(gameKey) {
 export function sendMessage(userKey, gameKey, message) {
   return {
     type: SEND_MESSAGE,
+    meta: {
+      pendingKey: Math.random(),
+    },
     payload: {
       userKey,
       gameKey,

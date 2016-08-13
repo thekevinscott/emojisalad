@@ -2,6 +2,8 @@ import {
   Platform,
 } from 'react-native';
 
+const PURPLE = '#bb27dd';
+
 export const receivedMessage = {
   marginLeft: -40,
   backgroundColor: '#d8d8d8',
@@ -16,21 +18,54 @@ export const placeholder = {
   color: '#bbbbbb',
 };
 
-export const composer = {
+export const composerContainer = {
+  backgroundColor: '#eeeeee',
+  padding: 5,
   flex: 1,
-  marginLeft: 10,
+  height: Platform.select({
+    ios: 44,
+    android: 33,
+  }),
+  flexDirection: 'row',
+  borderWidth: 1,
+  borderColor: '#cccccc',
+  borderBottomWidth: 0,
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
+export const composerText = {
+  borderColor: '#cccccc',
+  backgroundColor: 'white',
+  borderRadius: 5,
+  borderWidth: 1,
+  paddingTop: 2,
+  paddingBottom: 5,
+  paddingLeft: 10,
+  paddingRight: 10,
   fontSize: 16,
   lineHeight: 16,
-  marginTop: Platform.select({
-    ios: 6,
-    android: 0,
-  }),
-  marginBottom: Platform.select({
-    ios: 5,
-    android: 3,
-  }),
-  height: Platform.select({
-    ios: 33,
-    android: 41,
-  }),
+  flex: 1,
+};
+
+export const composerSend = {
+  marginLeft: 8,
+  marginRight: 2,
+  fontWeight: 'bold',
+  textDecorationLine: 'underline',
+  color: PURPLE,
+};
+
+export const composerSendView = {
+  width: 0,
+  marginTop: -18,
+};
+
+export const composerSendViewVisible = {
+  width: 50,
+  marginTop: 0,
+};
+
+export const animation = {
+  duration: 250,
 };

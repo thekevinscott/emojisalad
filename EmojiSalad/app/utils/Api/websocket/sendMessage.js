@@ -14,8 +14,9 @@ export default function sendMessage(websocket) {
     payload,
   }) => {
     if (websocket.isOpen) {
+      const apiType = fromTypeToApi(type);
       const packet = JSON.stringify({
-        type: fromTypeToApi(type),
+        type: apiType,
         userKey,
         meta: meta || {},
         payload,

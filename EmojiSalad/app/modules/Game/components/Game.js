@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Messenger } from '../../../components/Messenger';
-import { Logger } from '../../../components/Logger';
+//import { Logger } from '../../../components/Logger';
 
 import {
   View,
@@ -63,7 +63,8 @@ class Game extends Component {
     const {
       messages,
       game,
-      logger,
+      //logger,
+      compose,
     } = this.props;
 
     const loading = messages.length < MESSAGES_PER_PAGE && game.messages.length !== game.totalMessages;
@@ -84,11 +85,11 @@ class Game extends Component {
               loadEarlier={this.loadEarlier}
               isLoadingEarlier={this.props.isLoadingEarlier}
               updateCompose={this.props.actions.updateCompose}
+              compose={compose}
               messages={messages}
               totalMessages={game.totalMessages}
             />
           ) : null}
-          <Logger logger={logger} />
         </View>
       </View>
     );

@@ -49,6 +49,7 @@ function translateGame(currentGame = {}, game = {}) {
     roundCount: (game.round_count !== undefined) ? game.round_count : currentGame.round_count,
     players: game.players.map(player => player.user_key) || currentGame.players,
     round: translateRound(game.round || {}) || currentGame.round,
+    pendingMessages: currentGame.pendingMessages || [],
     // messages is an array of keys of messages in an unordered list
     messages: translateMessages(currentGame, game) || currentGame.messages || [],
     totalMessages: (game.total_messages !== undefined) ? game.total_messages : currentGame.total_messages,
@@ -84,7 +85,29 @@ export default typeToReducer({
     },
   },
   [SEND_MESSAGE]: {
-    FULFILLED: (state, { data }) => {
+    PENDING: (state, { payload, meta }) => {
+      const {
+        gameKey,
+      } = payload;
+
+      const {
+        pendingKey,
+      } = meta;
+
+      const game = state[gameKey];
+
+      const pendingMessages = (game.pendingMessages || []).concat(pendingKey);
+
+      return {
+        ...state,
+        [gameKey]: {
+          ...game,
+          pendingMessages,
+        },
+      };
+    },
+    FULFILLED: (state, action) => {
+      const data = action.data;
       const gameKey = data.gameKey;
       const message = data;
       const messages = translateMessages(state[gameKey], {

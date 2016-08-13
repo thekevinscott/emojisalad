@@ -19,7 +19,33 @@ const WHITELISTED_REDUCERS = {
   ],
   data: [
     'me',
-    'games',
+    {
+      key: 'games',
+      slice: state => {
+        return Object.keys(state).reduce((obj, gameKey) => {
+          const {
+            key,
+            roundCount,
+            players,
+            round,
+            messages,
+            totalMessages,
+          } = state[gameKey];
+
+          return {
+            ...obj,
+            [gameKey]: {
+              key,
+              roundCount,
+              players,
+              round,
+              messages,
+              totalMessages,
+            },
+          };
+        }, {});
+      },
+    },
     'users',
     'players',
     'messages',

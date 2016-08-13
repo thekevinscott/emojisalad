@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Pusher from 'pusher-js/react-native';
+//import Pusher from 'pusher-js/react-native';
 
 import {
   AppRegistry,
@@ -17,34 +17,17 @@ import {
   Loading,
 } from '../modules/App';
 
-import ReactNativeUA from 'react-native-ua'; // import module
-
 const style = {
   flex: 1,
 };
 
 class EmojiSalad extends Component {
-  constructor(props) {
-    super(props);
-    //ReactNativeUA.enable_notification(); // prompt user to enable notification
-  }
-
   componentWillMount() {
     this.setState({
       store: null,
     });
 
     this.getStore();
-
-    //ReactNativeUA.on_notification((notification) => {
-      //console.log('notification:',
-                  //notification.platform,
-                  //notification.event,
-                  //notification.alert,
-                  //notification.data);
-
-                  //alert(notification.alert);
-    //});
   }
 
   getStore() {
@@ -90,8 +73,8 @@ const pusher = new Pusher('64297db42152849faef9', {
   encrypted: true,
 });
 
+pusher.subscribe('donuts');
 const channel = pusher.subscribe('test_channel');
-pusher.subscribe('fuck_all');
 channel.bind('my_event', function(data) {
   alert(data.message);
 });

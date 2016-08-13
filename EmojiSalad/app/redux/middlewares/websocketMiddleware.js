@@ -14,6 +14,8 @@ export default function websocketMiddleware({ getState, dispatch }) {
       return next(action);
     }
 
+    const PENDING = `${type}_PENDING`;
+
     const userKey = getState().data.me.key;
     Api.sendMessage(dispatch, {
       userKey,
@@ -21,7 +23,13 @@ export default function websocketMiddleware({ getState, dispatch }) {
       payload,
       meta,
     });
+
     // continue on through the middleware stack
-    return next({ ...rest, type });
+    return next({
+      ...rest,
+      type: PENDING,
+      payload,
+      meta,
+    });
   };
 }
