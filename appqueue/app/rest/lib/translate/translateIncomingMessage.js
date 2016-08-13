@@ -5,10 +5,15 @@ export default function translateIncomingMessage(message) {
   return translateIncomingData(message).then(({
     userKey,
     gameKey,
-  }) => ({
-    body: message.body,
-    initiated_id: message.initiated_id || null,
-    userKey,
-    gameKey,
-  }));
+  }) => {
+    console.info('incoming data translated', userKey, gameKey);
+    const payload = {
+      body: message.body,
+      initiated_id: message.initiated_id || null,
+      userKey,
+      gameKey,
+    };
+    console.info('returning payload', payload);
+    return payload;
+  });
 }
