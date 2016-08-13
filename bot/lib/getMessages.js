@@ -28,7 +28,7 @@ function getMessagesFromProtocol(ids) {
 
       return request(payload).then((response) => {
         clearTimeout(timer);
-        console.info('got response');
+        //console.info('got response');
         if ( ! response || ! response.body ) {
           throw response;
         }
