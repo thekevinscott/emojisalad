@@ -174,7 +174,7 @@ const User = {
     query = query.where('u.archived=?', archived);
     query = query.group('u.id');
 
-    console.info(query.toString());
+    console.info('find user', query.toString());
     return db.query(query).then((users) => {
       if ( users.length ) {
         return Player.find({ user_ids: users.map(user => user.id ) }).then((players) => {
