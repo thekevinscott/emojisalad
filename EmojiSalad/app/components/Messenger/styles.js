@@ -71,5 +71,5 @@ export const composerSendViewVisible = {
 };
 
 export const animation = {
-  duration: 170,
+  duration: 150,
 };
