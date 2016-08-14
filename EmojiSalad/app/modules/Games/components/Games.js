@@ -15,12 +15,12 @@ import {
 } from 'react-native';
 import Messages from './Messages';
 import RowHeader from './RowHeader';
-import { Actions } from 'react-native-router-flux';
 
 import * as styles from '../styles';
 
 import {
   fetchGames,
+  openGame,
 } from '../actions';
 
 import {
@@ -47,6 +47,9 @@ function mapDispatchToProps(dispatch) {
       fetchGames: (userKey) => {
         return dispatch(fetchGames(userKey));
       },
+      openGame: (game, games) => {
+        return dispatch(openGame(game, games));
+      },
     },
   };
 }
@@ -56,15 +59,20 @@ const ds = new ListView.DataSource({
 });
 
 class Games extends Component {
+  constructor(props) {
+    super(props);
+    this.renderRow = this.renderRow.bind(this);
+  }
+
   componentWillAppear() {
     console.log('Games Overview Component componentWillAppear called');
     this.props.actions.fetchGames(this.props.me.key);
   }
 
-  _renderRow(game, sectionId, rowId) {
+  renderRow(game, sectionId, rowId) {
     //const message = (game.messages[game.messages.length - 1] || {});
     const messages = game.messages;
-    const mostRecentMessage = messages[0] || {};
+    const mostRecentMessage = messages[messages.length - 1] || {};
     const unreadDotStyle = {
       ...styles.unreadDot,
       opacity: (mostRecentMessage.key !== game.lastRead) ? 1 : 0,
@@ -72,9 +80,7 @@ class Games extends Component {
     return (
       <TouchableHighlight
         onPress={() => {
-          Actions.game({
-            game,
-          });
+          this.props.actions.openGame(game, this.props.games);
         }}
         key={`${rowId}`}
       >
@@ -100,7 +106,7 @@ class Games extends Component {
     );
   }
 
-  _renderSeperator(sectionID, rowID, adjacentRowHighlighted) {
+  renderSeperator(sectionID, rowID, adjacentRowHighlighted) {
     return (
       <View
         key={`${sectionID}-${rowID}`}
@@ -119,8 +125,8 @@ class Games extends Component {
         <Spinner visible={this.props.ui.fetching && !this.props.games.length} />
         <ListView
           dataSource={this.getGames()}
-          renderRow={this._renderRow}
-          renderSeparator={this._renderSeperator}
+          renderRow={this.renderRow}
+          renderSeparator={this.renderSeperator}
           style={styles.container}
           enableEmptySections={true}
         />

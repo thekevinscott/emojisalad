@@ -17,11 +17,14 @@ export function selectPlayers(state, userKeys = []) {
   //return Number(game.messages[game.messages.length - 1].timestamp);
 //}
 
-export function selectMessages(state, messageKeys) {
-  return messageKeys.map(key => ({
+export function selectMessages(state, messageKeys, startingMessage) {
+  const sortedMessages = messageKeys.map(key => ({
     ...state.data.messages[key],
     key,
   })).sort(sortBy('oldestFirst', a => a.timestamp));
+  const index = sortedMessages.map(message => message.key).indexOf(startingMessage) + 1;
+
+  return sortedMessages.slice(0, index !== -1 ? index : null);
 }
 
 export function selectLastRead(state, gameKey) {
@@ -31,10 +34,11 @@ export function selectLastRead(state, gameKey) {
 export function selectGames(state) {
   const games = Object.keys(state.data.games || {}).map(gameKey => {
     const game = state.data.games[gameKey];
+    const startingMessage = (state.ui.Games.games[gameKey] || {}).startingMessage;
     return {
       ...game,
       players: selectPlayers(state, game.players),
-      messages: selectMessages(state, game.messages),
+      messages: selectMessages(state, game.messages, startingMessage),
       lastRead: selectLastRead(state, gameKey),
     };
   });

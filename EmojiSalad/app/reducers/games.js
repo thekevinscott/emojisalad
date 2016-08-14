@@ -58,10 +58,10 @@ function translateGame(currentGame = {}, game = {}) {
 
 export default typeToReducer({
   [FETCH_GAMES]: {
-    FULFILLED: (state, action) => {
+    FULFILLED: (state, { data }) => {
       return {
         ...state,
-        ...action.data.reduce((obj, game) => ({
+        ...data.reduce((obj, game) => ({
           ...obj,
           [game.key]: translateGame(state[game.key], game),
         }), {}),
@@ -106,8 +106,7 @@ export default typeToReducer({
         },
       };
     },
-    FULFILLED: (state, action) => {
-      const data = action.data;
+    FULFILLED: (state, { data, meta }) => {
       const gameKey = data.gameKey;
       const message = data;
       const messages = translateMessages(state[gameKey], {
@@ -120,7 +119,7 @@ export default typeToReducer({
           ...game,
           messages,
           pendingMessages: game.pendingMessages.filter(pendingKey => {
-            return pendingKey !== action.meta.pendingKey;
+            return pendingKey !== meta.pendingKey;
           }),
           totalMessages: game.totalMessages + 1,
         },

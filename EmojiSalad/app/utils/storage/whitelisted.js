@@ -16,6 +16,19 @@ const WHITELISTED_REDUCERS = {
         }, {});
       },
     },
+    {
+      key: 'Games',
+      slice: state => {
+        return {
+          games: Object.keys(state.games).reduce((obj, gameKey) => ({
+            ...obj,
+            [gameKey]: {
+              startingMessage: (state.games[gameKey] || {}).startingMessage,
+            },
+          }), {}),
+        };
+      },
+    },
   ],
   data: [
     'me',

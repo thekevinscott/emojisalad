@@ -45,6 +45,7 @@ export default class Messages extends Component {
 
   componentDidMount() {
     this.state.top.setValue(styles.rowContainer.height - styles.messagesContainer.top);
+    this.state.top.setValue(0);
     Animated.spring(this.state.top, {
       toValue: 0,
       friction: 1,
