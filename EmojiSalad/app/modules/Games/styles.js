@@ -1,7 +1,10 @@
 const PURPLE = '#bb27dd';
+const ROW_HEADER_HEIGHT = 20;
 const ROW_HEIGHT = 100;
-const MESSAGE_TOP = 50;
+const MESSAGE_TOP = ROW_HEADER_HEIGHT + 20;
 const ROW_PADDING = 20;
+export const MESSAGE_FADEIN_DURATION = 200;
+export const MESSAGE_SLIDE_DURATION = 500;
 
 export const container = {
   paddingTop: 64,
@@ -10,6 +13,7 @@ export const container = {
 export const game = {
   backgroundColor: '#FFF',
   padding: ROW_PADDING,
+  paddingTop: 0,
   overflow: 'hidden',
   //justifyContent: 'center',
   flex: 1,
@@ -33,8 +37,9 @@ export const timestamp = {
 export const rowHeader = {
   flex: 1,
   flexDirection: 'row',
-  height: 30,
-  backgroundColor: '#aaaaaa',
+  height: ROW_HEADER_HEIGHT + ROW_PADDING,
+  paddingTop: ROW_PADDING,
+  backgroundColor: 'white',
   overflow: 'hidden',
 };
 
@@ -72,5 +77,5 @@ export const messagesContainer = {
   left: ROW_PADDING,
   right: ROW_PADDING,
   top: MESSAGE_TOP,
-  backgroundColor: '#eee',
+  backgroundColor: 'white',
 };

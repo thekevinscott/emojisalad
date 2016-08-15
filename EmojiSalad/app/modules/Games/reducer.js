@@ -7,6 +7,7 @@ import {
 import {
   FETCH_GAMES,
   OPEN_GAME,
+  UPDATE_STARTING_MESSAGE,
 } from './types';
 
 import {
@@ -43,6 +44,16 @@ export default typeToReducer({
     ...state,
     active: getActive(scene.name),
   }),
+  [UPDATE_STARTING_MESSAGE]: (state, { game }) => {
+    const message = game.messages[game.messages.length - 1];
+    return {
+      ...state,
+      games: {
+        ...state.games,
+        [game.key]: setStartingMessage(game, message.key),
+      },
+    };
+  },
   [FETCH_GAMES]: {
     FULFILLED: (state, { data }) => ({
       ...state,

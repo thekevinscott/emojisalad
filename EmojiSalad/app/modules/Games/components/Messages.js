@@ -12,52 +12,70 @@ import Message from './Message';
 
 import * as styles from '../styles';
 
-//const messagesMatch = (oldMessages, newMessages) => {
-  //if (oldMessages.length !== newMessages.length) {
-    //return false;
-  //}
-
-  //return oldMessages.filter((message, index) => {
-    //return message.key !== newMessages[index].key;
-  //}).length;
-//};
+import {
+  //getMessagesAsArray,
+  messagesShouldAnimate,
+  getTargetHeight,
+} from '../utils';
 
 export default class Messages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      top: new Animated.Value(styles.rowContainer.height - styles.messagesContainer.top),
+      top: new Animated.Value(0),
+      messages: {},
+      mounted: false,
+      props: {
+        prev: { messages: [] },
+        current: { messages: [] },
+      },
     };
   }
 
-  //componentWillReceiveProps({ messages }) {
-    //if (!messagesMatch(this.props.messages, messages)) {
-      //console.log('do it');
-      //LayoutAnimation.configureNext(CustomLayout);
-      //this.setState({
-        //style: {
-          //top: 0,
-          //backgroundColor: 'red',
-        //},
-      //});
-    //}
-  //}
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      ...this.state,
+      props: {
+        prev: this.props,
+        current: nextProps,
+      },
+    });
+  }
+
+  componentShouldAnimate() {
+    if (messagesShouldAnimate(this.state.props, this.state.messages)) {
+      if (this.animation) {
+        this.animation.stop();
+      }
+
+      const toValue = getTargetHeight(this.state.props.current.messages, this.state.messages);
+      const duration = this.state.props.current.messages.length > 1 ? styles.MESSAGE_SLIDE_DURATION : 0;
+      this.animation = Animated.timing(this.state.top, {
+        toValue,
+        duration,
+      });
+
+      this.animation.start(() => {
+        this.props.updateStartingMessage(this.props.game);
+        delete this.animation;
+      });
+    }
+  }
+
+  componentDidUpdate() {
+    this.componentShouldAnimate();
+  }
 
   componentDidMount() {
-    this.state.top.setValue(styles.rowContainer.height - styles.messagesContainer.top);
-    this.state.top.setValue(0);
-    Animated.spring(this.state.top, {
-      toValue: 0,
-      friction: 1,
-    }).start();
+    this.setState({
+      mounted: true,
+    });
   }
 
   render() {
     const {
       messages,
     } = this.props;
-
-    console.log('this state top', this.state.top._value);
 
     return (
       <Animated.View
@@ -71,6 +89,23 @@ export default class Messages extends Component {
         {messages.map((message, key) => (
           <Message
             key={key}
+            shouldFadeIn={!this.state.mounted}
+            handleLayoutChange={e => {
+              //console.log('layout change for', message.body, 'key', key);
+              const newState = {
+                messages: {
+                  ...this.state.messages,
+                  [message.key]: {
+                    index: key,
+                    body: message.body,
+                    layout: e.nativeEvent.layout,
+                  },
+                },
+              };
+              this.setState(newState);
+              this.componentShouldAnimate();
+              //console.log(newState.messageLayouts);
+            }}
             body={message.body}
           />
         ))}

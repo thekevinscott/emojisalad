@@ -21,6 +21,7 @@ import * as styles from '../styles';
 import {
   fetchGames,
   openGame,
+  updateStartingMessage,
 } from '../actions';
 
 import {
@@ -49,6 +50,9 @@ function mapDispatchToProps(dispatch) {
       },
       openGame: (game, games) => {
         return dispatch(openGame(game, games));
+      },
+      updateStartingMessage: game => {
+        return dispatch(updateStartingMessage(game));
       },
     },
   };
@@ -95,6 +99,8 @@ class Games extends Component {
           >
             <Messages
               messages={messages}
+              game={game}
+              updateStartingMessage={this.props.actions.updateStartingMessage}
             />
             <RowHeader
               players={game.players}

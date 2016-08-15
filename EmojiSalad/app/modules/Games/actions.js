@@ -4,6 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import {
   FETCH_GAMES,
   OPEN_GAME,
+  UPDATE_STARTING_MESSAGE,
 } from './types';
 
 export function fetchGames(userKey) {
@@ -26,5 +27,12 @@ export function openGame(game, games) {
       game,
       games,
     });
+  };
+}
+
+export function updateStartingMessage(game) {
+  return {
+    type: UPDATE_STARTING_MESSAGE,
+    game,
   };
 }

@@ -22,9 +22,10 @@ export function selectMessages(state, messageKeys, startingMessage) {
     ...state.data.messages[key],
     key,
   })).sort(sortBy('oldestFirst', a => a.timestamp));
+
   const index = sortedMessages.map(message => message.key).indexOf(startingMessage) + 1;
 
-  return sortedMessages.slice(0, index !== -1 ? index : null);
+  return sortedMessages.slice(0, index !== -1 ? index : null).reverse();
 }
 
 export function selectLastRead(state, gameKey) {
