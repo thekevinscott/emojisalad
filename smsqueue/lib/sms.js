@@ -8,7 +8,7 @@ const phone = require('lib/phone');
 
 const sms = Promise.coroutine(function* (params) {
   //return {};
-  const twiml = new twilio.TwimlResponse();
+  //const twiml = new twilio.TwimlResponse();
   let newParams = {};
   //console.info('sms 1');
   if ( params ) {
