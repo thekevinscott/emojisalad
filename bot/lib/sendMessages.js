@@ -88,7 +88,7 @@ const sendMessages = (messages, options = {}) => {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         console.info('request took too long for', protocol);
-        const errorMessage = `Request took over ${timeoutTime / 1000} seconds when sending messages for ${protocol} at ${service.api.send.endpoint} with payload of ${byteLength}`;
+        const errorMessage = `Request took over ${timeoutTime / 1000} seconds when sending messages for ${protocol} at ${service.api.send.endpoint} with payload of ${byteLength}\n\n${JSON.stringify(protocolMessages)}`;
         console.error(errorMessage, protocolMessages);
         reject(errorMessage);
       }, timeoutTime); // keep this below bot run time (which is 5000);
