@@ -11,8 +11,12 @@ import Network from '../../Network';
 
 import {
   onMessage,
-  sendMessage as origSendMessage,
+  sendMessage as _sendMessage,
 } from './events';
+
+import {
+  setSendMessage,
+} from './events/sendMessage';
 
 import {
   setStore,
@@ -20,14 +24,15 @@ import {
 
 import connect from './utils/connect';
 
-let _sendMessage;
-
 Network.onConnect(() => {
   connect().then(ws => {
-    _sendMessage = origSendMessage(ws);
+    setSendMessage(ws);
     ws.onmessage = onMessage;
   });
 });
 
+// this will be dispatched at some point in the future;
+// if a websocket connection exists now, it will be
+// sent now, or else it will be sent on connection.
 export const sendMessage = _sendMessage;
 export const configureWebsocket = store => setStore(store);

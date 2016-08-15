@@ -1,3 +1,5 @@
+import checker from './checker';
+
 let store;
 const toDispatch = [];
 
@@ -20,12 +22,20 @@ export const setStore = theStore => {
 
 export const dispatch = payload => {
   if (store) {
-    dispatch(payload);
+    store.dispatch(payload);
   } else {
     storeDispatchPayload(payload);
   }
 };
 
 export const getStore = () => {
-  return store.getState().router.websocket;
-}
+  return checker({
+    check: () => store,
+    success: () => {
+      return store.getState().router.websocket;
+    },
+    failure: () => {
+      return 'Could not find store in 2 seconds';
+    },
+  });
+};

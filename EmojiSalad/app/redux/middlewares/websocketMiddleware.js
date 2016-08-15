@@ -1,4 +1,6 @@
-import Api from '../../utils/Api';
+import {
+  sendMessage,
+} from '../../utils/Api/websocket';
 
 export default function websocketMiddleware({ getState }) {
   return next => action => {
@@ -17,7 +19,7 @@ export default function websocketMiddleware({ getState }) {
     const PENDING = `${type}_PENDING`;
 
     const userKey = getState().data.me.key;
-    Api.sendMessage({
+    sendMessage({
       userKey,
       type,
       payload,

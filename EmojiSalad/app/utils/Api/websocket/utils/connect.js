@@ -35,21 +35,27 @@ const setReconnector = callback => {
 const connect = () => {
   return new Promise(resolve => {
     dispatch(attemptConnection());
-    log(`connecting at ws://${API_HOST}:${API_PORT}/, # ${getStore().attempts}`);
+    getStore().then(state => {
+      log(`connecting at ws://${API_HOST}:${API_PORT}/, # ${state.attempts}`);
+    });
 
     ws = new WebSocket(`ws://${API_HOST}:${API_PORT}/`);
 
     ws.onopen = () => {
       updateStatus(true);
-      log('websocket connection opened');
+      getStore().then(state => {
+        log(`websocket connection opened after ${state.attempts} attempts`);
+      });
       resolve(ws);
     };
 
     ws.onclose = () => {
       updateStatus(false);
-      if (getStore().connected) {
-        log('websocket has closed');
-      }
+      getStore().then(state => {
+        if (state.connected) {
+          log('websocket has closed');
+        }
+      });
 
       // If there is a connection, that means the websocket fell
       // over. Try and reconnect.

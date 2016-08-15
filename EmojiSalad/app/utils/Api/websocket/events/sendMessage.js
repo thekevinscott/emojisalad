@@ -3,9 +3,13 @@ import {
   getStore,
 } from '../utils/store';
 
+import checker from '../utils/checker';
+
 import {
   fromTypeToApi,
 } from '../translate';
+
+let ws;
 
 const getPacket = ({
   userKey,
@@ -23,18 +27,38 @@ const getPacket = ({
   return packet;
 };
 
-export default function sendMessage(ws) {
-  return params => {
-    if (getStore.connected) {
-      const packet = getPacket(params);
+const sendPacket = payload => {
+  return getStore().then(connected => {
+    if (connected) {
+      const packet = getPacket(payload);
       ws.send(packet);
     } else {
       dispatch({
-        type: `${params.type}_REJECTED`,
+        type: `${payload.type}_REJECTED`,
         data: {
           message: 'There was an error communicating with the server.',
         },
       });
     }
-  };
-}
+  });
+};
+
+const sendMessage = payload => {
+  return checker({
+    check: () => ws,
+    success: () => {
+      return ws;
+    },
+    failure: () => {
+      return 'Could not find store in 2 seconds';
+    },
+  }).then(() => {
+    return sendPacket(payload);
+  });
+};
+
+export default sendMessage;
+
+export const setSendMessage = _ws => {
+  ws = _ws;
+};
