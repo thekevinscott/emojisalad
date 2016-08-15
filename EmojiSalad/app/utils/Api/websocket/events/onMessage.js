@@ -1,6 +1,10 @@
 import {
   fromApiToType,
-} from './translate';
+} from '../translate';
+
+import {
+  dispatch,
+} from '../utils/store';
 
 function parsePayload(e) {
   try {
@@ -15,21 +19,20 @@ function parsePayload(e) {
   }
 }
 
-export default function message(store) {
-  return e => {
-    const {
-      type,
-      data,
-      meta,
-    } = parsePayload(e);
+const onMessage = e => {
+  const {
+    type,
+    data,
+    meta,
+  } = parsePayload(e);
 
-    const payload = {
-      type: fromApiToType(type),
-      data,
-      meta,
-    };
-
-    return store.dispatch(payload);
+  const payload = {
+    type: fromApiToType(type),
+    data,
+    meta,
   };
-}
 
+  return dispatch(payload);
+};
+
+export default onMessage;

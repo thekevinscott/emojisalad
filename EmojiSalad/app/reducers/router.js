@@ -4,7 +4,8 @@ import {
 } from 'react-native-router-flux';
 
 import {
-  WEBSOCKET_CONNECT,
+  STATUS_UPDATE,
+  ATTEMPT_CONNECTION,
 } from '../utils/Api/websocket/types';
 
 const initialState = {
@@ -15,22 +16,36 @@ const initialState = {
   },
   websocket: {
     connected: false,
+    attempts: 0,
   },
 };
 
 export default typeToReducer({
   [ActionConst.FOCUS]: (state, { scene }) => ({
+    ...state,
     scene: {
       name: scene.name,
       key: scene.sceneKey,
       title: scene.title,
     },
-    websocket: state.websocket,
   }),
-  [WEBSOCKET_CONNECT]: (state, action) => ({
-    scene: state.scene,
+  [STATUS_UPDATE]: (state, { connected }) => {
+    const attempts = connected ? 0 : state.websocket.attempts;
+
+    return {
+      ...state,
+      websocket: {
+        ...state.websocket,
+        connected,
+        attempts,
+      },
+    };
+  },
+  [ATTEMPT_CONNECTION]: (state) => ({
+    ...state,
     websocket: {
-      connected: action.connected,
+      ...state.websocket,
+      attempts: state.websocket.attempts + 1,
     },
   }),
 }, initialState);

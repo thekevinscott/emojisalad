@@ -1,17 +1,17 @@
 import {
   SUBMIT_CLAIM,
   MIGRATE_USER,
-} from '../../../modules/Register/types';
+} from '../../../../modules/Register/types';
 
 import {
   FETCH_GAMES,
-} from '../../../modules/Games/types';
+} from '../../../../modules/Games/types';
 
 import {
   SEND_MESSAGE,
   FETCH_MESSAGES,
   RECEIVE_MESSAGE,
-} from '../../../modules/Game/types';
+} from '../../../../modules/Game/types';
 
 // TODO: How to keep this up to date with the server?
 const TYPES = {
