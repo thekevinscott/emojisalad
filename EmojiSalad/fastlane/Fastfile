@@ -29,11 +29,12 @@ lane :beta do
   )
 
   # Sometimes itunes email is different!
-  if changelog
-    pilot(username: "kevin@scottlabsllc.com")
-  else
-    pilot(username: "kevin@scottlabsllc.com", changelog: changelog)
-  end
+  # if changelog
+  #   pilot(username: "kevin@scottlabsllc.com", changelog: changelog)
+  # else
+  #   pilot(username: "kevin@scottlabsllc.com")
+  # end
+  pilot(username: "kevin@scottlabsllc.com")
 
   # Reminder of testers
   sh "pilot list"

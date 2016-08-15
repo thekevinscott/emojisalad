@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import {
+  Platform,
   Text,
   View,
   TextInput,
@@ -45,11 +46,18 @@ export default class Composer extends Component {
       value,
     } = this.props;
 
+    const keyboardType = Platform.select({
+      ios: 'twitter',
+      android: 'default',
+    });
+
     return (
       <View
         style={styles.composerContainer}
       >
         <TextInput
+          keyboardType={keyboardType}
+
           placeholder="Message"
           multiline={true}
           autoCorrect={false}
