@@ -12,16 +12,12 @@
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 
-#import "ReactNativeUAIOS.h"
-
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
-  
-  [ReactNativeUAIOS setupUrbanAirship];
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
 
