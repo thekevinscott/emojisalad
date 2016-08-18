@@ -38,7 +38,7 @@ function mapStateToProps(state) {
     games: selectGamesByNewestFirst(state),
     me: selectMe(state),
     ui: selectUI(state),
-    logger: state.ui.Games.logger,
+    logger: state.ui.Logger.logger,
   };
 }
 

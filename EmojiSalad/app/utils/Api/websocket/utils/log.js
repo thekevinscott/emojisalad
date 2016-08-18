@@ -2,11 +2,12 @@ import {
   dispatch,
 } from './store';
 
+import {
+  update,
+} from '../../../../components/Logger/actions';
+
 const log = (msg) => {
-  dispatch({
-    type: 'UPDATE_LOGGER',
-    logger: msg,
-  });
+  dispatch(update(msg));
 };
 
 export default log;

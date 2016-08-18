@@ -3,6 +3,10 @@ import {
 } from '../App/selectors';
 
 import {
+  update as updateLogger,
+} from '../../components/Logger/actions';
+
+import {
   fetchMessages,
   updateCompose,
   sendMessage,
@@ -56,7 +60,7 @@ export function mapStateToProps(state, props) {
     game,
     messages,
     me: selectMe(state),
-    logger: state.ui.Games.logger,
+    logger: state.ui.Logger.logger,
     compose,
     seen,
     isLoadingEarlier,
@@ -93,6 +97,9 @@ export function mapDispatchToProps(dispatch, ownProps) {
       sendMessage: (userKey, message) => {
         const gameKey = ownProps.game.key;
         return dispatch(sendMessage(userKey, gameKey, message));
+      },
+      updateLogger: msg => {
+        return dispatch(updateLogger(msg));
       },
     },
   };

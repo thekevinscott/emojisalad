@@ -6,6 +6,7 @@ import Register from '../modules/Register/reducer';
 import App from '../modules/App/reducer';
 import Games from '../modules/Games/reducer';
 import Game from '../modules/Game/reducer';
+import Logger from '../components/Logger/reducer';
 
 import data, {
   router,
@@ -17,6 +18,7 @@ export default combineReducers({
     App,
     Games,
     Game,
+    Logger,
   }),
   data,
   router,

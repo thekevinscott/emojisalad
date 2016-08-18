@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Messenger } from '../../../components/Messenger';
-//import { Logger } from '../../../components/Logger';
+import { Logger } from '../../../components/Logger';
+import moment from 'moment';
 
 import {
   View,
@@ -25,6 +26,9 @@ class Game extends Component {
   }
 
   componentWillAppear() {
+    console.log('game component will appear');
+    const d = moment();
+    this.props.actions.updateLogger(`Game component refreshed: ${d.format('dddd Do h:mm:ss a')}`);
     const {
       game,
       actions,
@@ -91,6 +95,7 @@ class Game extends Component {
             />
           ) : null}
         </View>
+        <Logger logger={this.props.logger} />
       </View>
     );
   }
