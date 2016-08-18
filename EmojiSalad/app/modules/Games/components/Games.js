@@ -40,7 +40,7 @@ function mapStateToProps(state) {
     games: selectGamesByNewestFirst(state),
     me: selectMe(state),
     ui: selectUI(state),
-    logger: loggerMessages[loggerMessages.length - 1],
+    logger: loggerMessages.slice(loggerMessages.length - 1 - 5),
   };
 }
 

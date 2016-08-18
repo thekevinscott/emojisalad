@@ -62,7 +62,7 @@ export function mapStateToProps(state, props) {
     game,
     messages,
     me: selectMe(state),
-    logger: loggerMessages[loggerMessages.length - 1],
+    logger: loggerMessages.slice(loggerMessages.length - 1 - 5),
     compose,
     seen,
     isLoadingEarlier,
