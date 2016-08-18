@@ -25,7 +25,6 @@ export default function configureStore(initialState = {}) {
   );
 
   const store = createStore(reducer, initialState, enhancer);
-  devTools.updateStore(store);
 
   configureWebsocket(store);
 
