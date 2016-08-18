@@ -34,11 +34,13 @@ import {
 } from '../../App/selectors';
 
 function mapStateToProps(state) {
+  const loggerMessages = state.ui.Logger.messages;
+
   return {
     games: selectGamesByNewestFirst(state),
     me: selectMe(state),
     ui: selectUI(state),
-    logger: state.ui.Logger.logger,
+    logger: loggerMessages[loggerMessages.length - 1],
   };
 }
 

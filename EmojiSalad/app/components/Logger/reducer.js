@@ -5,13 +5,13 @@ import {
 } from './types';
 
 const initialState = {
-  logger: '',
+  messages: [],
 };
 
 export default typeToReducer({
   [UPDATE_LOGGER]: (state, action) => ({
     ...state,
-    logger: action.logger,
+    messages: state.messages.concat(action.logger),
   }),
 }, initialState);
 
