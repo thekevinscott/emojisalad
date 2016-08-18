@@ -15,10 +15,17 @@ import {
 export default function configureStore(initialState = {}) {
   const enhancer = compose(
     middleware,
-    devTools()
+    devTools({
+      name: 'iOS',
+      realtime: true,
+      //hostname: '',
+      //port: '',
+      sendOnError: 1,
+    })
   );
 
   const store = createStore(reducer, initialState, enhancer);
+  devTools.updateStore(store);
 
   configureWebsocket(store);
 
