@@ -63,19 +63,3 @@ class EmojiSalad extends Component {
 }
 
 AppRegistry.registerComponent('EmojiSalad', () => EmojiSalad);
-
-
-/*
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = true;
-
-const pusher = new Pusher('64297db42152849faef9', {
-  encrypted: true,
-});
-
-pusher.subscribe('donuts');
-const channel = pusher.subscribe('test_channel');
-channel.bind('my_event', function(data) {
-  alert(data.message);
-});
-*/

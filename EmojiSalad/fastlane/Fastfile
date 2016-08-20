@@ -5,8 +5,8 @@ lane :beta do
   # UI.important "Important Message"
   # UI.error "O NO!"
   # UI.message "Basic blah"
-  # answer = UI.select("Would you like to add a Changelog?", ["Yes", "No"])
-  # changelog = ask('Type Changelog message:') if answer == "Yes"
+  answer = UI.select("Would you like to add a Changelog?", ["Yes", "No"])
+  changelog = ask('Type Changelog message:') if answer == "Yes"
 
   # Do application testing here
   # Very personal process
@@ -29,11 +29,11 @@ lane :beta do
   )
 
   # Sometimes itunes email is different!
-  # if changelog
-  #   pilot(username: "kevin@scottlabsllc.com", changelog: changelog)
-  # else
-  #   pilot(username: "kevin@scottlabsllc.com")
-  # end
+  if changelog
+    pilot(username: "kevin@scottlabsllc.com", changelog: changelog)
+  else
+    pilot(username: "kevin@scottlabsllc.com")
+  end
   pilot(username: "kevin@scottlabsllc.com")
 
   # Reminder of testers
