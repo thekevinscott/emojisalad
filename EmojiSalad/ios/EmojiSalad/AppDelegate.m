@@ -35,4 +35,9 @@
   return YES;
 }
 
+-(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  NSLog(@"APN device token: %@", deviceToken);    
+  NSString *deviceTokenString = [NSString stringWithFormat:@"%@",deviceToken];
+}
+
 @end
