@@ -1,0 +1,3 @@
+[submodule "EmojiSalad/apn"]
+	path = EmojiSalad/apn
+	url = https://github.com/argon/node-apn.git
