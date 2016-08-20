@@ -642,7 +642,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;
-				PROVISIONING_PROFILE = "a7ca0639-0a7b-4c12-8454-00e252173fb2";
+				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -674,7 +674,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;
-				PROVISIONING_PROFILE = "a7ca0639-0a7b-4c12-8454-00e252173fb2";
+				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -719,7 +719,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -759,7 +759,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -776,7 +776,7 @@
 				00E356F71AD99517003FC87E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "EmojiSalad" */ = {
 			isa = XCConfigurationList;
@@ -785,7 +785,7 @@
 				13B07F951A680F5B00A75B9A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "EmojiSalad" */ = {
 			isa = XCConfigurationList;
@@ -794,7 +794,7 @@
 				83CBBA211A601CBA00E9B192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

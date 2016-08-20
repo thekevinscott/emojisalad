@@ -32,7 +32,30 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  NSLog(@"Registering for push notifications...");
+  
+  UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
+  UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+  [application registerUserNotificationSettings:settings];
+  [application registerForRemoteNotifications];
+  
   return YES;
 }
+
+
+-(void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+  NSLog(@"Did successfully register for remote notifications");
+//  NSString *str = [NSString stringWithFormat:@"Device Token=%@",deviceToken];
+  NSLog(@"This is device token%@", deviceToken);
+}
+
+-(void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err
+{
+  NSLog(@"Did fail to register for remote notifications");
+//  NSString *str = [NSString stringWithFormat: @"Error: %@", err];
+  NSLog(@"Error %@",err);
+}
+
 
 @end
