@@ -71,9 +71,10 @@ class Games extends Component {
     this.renderRow = this.renderRow.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     PushNotificationIOS.requestPermissions();
     PushNotificationIOS.addEventListener('register', token => {
+      console.log('register callback!');
       console.log('the token', token);
     });
   }

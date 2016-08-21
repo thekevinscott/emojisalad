@@ -6,6 +6,7 @@ import {
 
 export default class Logger extends Component {
   render() {
+    const text = (this.props.logger || []).join('\n\n');
     return (
       <View
         style={{
@@ -15,7 +16,7 @@ export default class Logger extends Component {
           borderTopWidth: 1,
         }}
       >
-        <Text>Logger: {this.props.logger.join('\n\n')}</Text>
+        <Text>Logger: {text}</Text>
       </View>
     );
   }
