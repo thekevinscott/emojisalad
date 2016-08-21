@@ -11,7 +11,6 @@ import {
   PORT,
   REQUIRED_SERVICES,
 } from 'config/app';
-import apn from 'apn';
 
 const server = http.createServer();
 const app = express();
@@ -35,5 +34,3 @@ registry.ready(() => {
   });
 });
 
-const options = { };
-const apnConnection = new apn.Connection(options);
