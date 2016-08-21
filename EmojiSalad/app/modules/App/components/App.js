@@ -1,11 +1,4 @@
 import React, { Component } from 'react';
-//import { connect } from 'react-redux';
-//import {
-  //View,
-  //Text,
-  //Navigator,
-  //TouchableHighlight,
-//} from 'react-native';
 
 import AppProvider from '../../../redux/AppProvider';
 import Routes from './Routes';
@@ -17,6 +10,7 @@ export default class App extends Component {
   shouldComponentUpdate() {
     return false;
   }
+
   render() {
     const state = this.props.store.getState();
     const me = selectMe(state);

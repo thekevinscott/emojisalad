@@ -32,9 +32,11 @@ class EmojiSalad extends Component {
 
   getStore() {
     return getStore().then(initialState => {
-      this.setState({
-        store: configureStore(initialState),
-      });
+      if (!this.state.store) {
+        this.setState({
+          store: configureStore(initialState),
+        });
+      }
     }).catch(err => {
       this.setState({
         store: configureStore({}),

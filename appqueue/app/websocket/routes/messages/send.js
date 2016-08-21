@@ -26,7 +26,6 @@ export default function send(message) {
     });
   }
 
-
   pushNotification(KEVIN, message.body, {
     badge: 3,
   });

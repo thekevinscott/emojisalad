@@ -12,6 +12,7 @@ import {
   View,
   TouchableHighlight,
   ListView,
+  PushNotificationIOS,
 } from 'react-native';
 import Messages from './Messages';
 import RowHeader from './RowHeader';
@@ -68,6 +69,16 @@ class Games extends Component {
   constructor(props) {
     super(props);
     this.renderRow = this.renderRow.bind(this);
+  }
+
+  componentWillMount() {
+    PushNotificationIOS.requestPermissions();
+    PushNotificationIOS.addEventListener('register', token => {
+      console.log('the token', token);
+    });
+  }
+
+  componentWillUnmount() {
   }
 
   componentWillAppear() {

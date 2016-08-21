@@ -15,7 +15,7 @@ export default class Logger extends Component {
           borderTopWidth: 1,
         }}
       >
-        <Text>Logger: {this.props.logger}</Text>
+        <Text>Logger: {this.props.logger.join('\n\n')}</Text>
       </View>
     );
   }
