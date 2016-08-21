@@ -41,7 +41,7 @@ function mapStateToProps(state) {
     games: selectGamesByNewestFirst(state),
     me: selectMe(state),
     ui: selectUI(state),
-    logger: loggerMessages.slice(loggerMessages.length - 1 - 5),
+    logger: loggerMessages,
   };
 }
 
@@ -69,17 +69,21 @@ class Games extends Component {
   constructor(props) {
     super(props);
     this.renderRow = this.renderRow.bind(this);
+    this.onRegister = this.onRegister.bind(this);
   }
 
   componentDidMount() {
     PushNotificationIOS.requestPermissions();
-    PushNotificationIOS.addEventListener('register', token => {
-      console.log('register callback!');
-      console.log('the token', token);
-    });
+    PushNotificationIOS.addEventListener('register', this.onRegister);
   }
 
   componentWillUnmount() {
+    PushNotificationIOS.removeEventListener('register', this.onRegister);
+  }
+
+  onRegister(token) {
+    console.log('register callback!');
+    console.log('the token', token);
   }
 
   componentWillAppear() {

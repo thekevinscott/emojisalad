@@ -4,14 +4,12 @@
 
 import fetchFromService from '../../../utils/fetchFromService';
 
-export default function getUsers(query) {
+export default function getUsers(body = {}) {
   return fetchFromService({
     service: 'api',
     route: 'users.get',
     options: {
-      body: {
-        from: query,
-      },
+      body,
     },
   });
 }

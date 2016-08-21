@@ -1,6 +1,10 @@
 import typeToReducer from 'type-to-reducer';
 
 import {
+  UPDATE_TOKEN,
+} from '../components/PushNotificationListeners/types';
+
+import {
   types,
 } from '../modules/Register';
 const {
@@ -21,6 +25,8 @@ const initialState = {
   confirmed: null,
   confirmed_avatar: null,
   protocol: null,
+  token: null,
+  deviceInfo: null,
 };
 
 const translateMe = (payload) => {
@@ -43,11 +49,14 @@ const translateMe = (payload) => {
 
 export default typeToReducer({
   [SUBMIT_CLAIM]: {
-    FULFILLED: (state, action) => {
-      return {
-        ...state,
-        ...translateMe(action.data),
-      };
-    },
+    FULFILLED: (state, action) => ({
+      ...state,
+      ...translateMe(action.data),
+    }),
   },
+  [UPDATE_TOKEN]: (state, { token }) => ({
+    ...state,
+    token,
+  }),
+
 }, initialState);

@@ -3,13 +3,13 @@
 import updateProtocolForUser from './updateProtocolForUser';
 import migrateMessages from '../messages/migrateMessages';
 import sendMessage from '../sendMessage';
-import saveDevice from './saveDevice';
+import setDeviceInfo from '../devices/setDeviceInfo';
 export default function updateUser(ws, user, payload) {
   console.info('update user route');
   return Promise.all([
     updateProtocolForUser(user),
     migrateMessages(user),
-    saveDevice(user, payload),
+    setDeviceInfo(user.key, payload.device, payload.phone),
   ]).then(() => {
     console.info('user updated successfully');
     sendMessage(ws)({

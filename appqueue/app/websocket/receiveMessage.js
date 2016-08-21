@@ -1,39 +1,6 @@
-const PARSE_ERROR = 'PARSE_ERROR';
 import ROUTES from './routes';
 
-function RouteException(type, message, meta) {
-  this.data = {
-    message,
-  };
-  this.type = type;
-  this.meta = meta;
-}
-
-function parseMessage(message) {
-  return new Promise((resolve, reject) => {
-    try {
-      const parsedMessage = JSON.parse(message);
-      const {
-        type,
-        payload,
-        meta,
-      } = parsedMessage;
-      resolve({
-        type,
-        meta,
-        payload,
-      });
-    } catch (err) {
-      console.error('Invalid payload', message, err);
-      reject({
-        type: PARSE_ERROR,
-        data: {
-          message: 'Invalid payload',
-        },
-      });
-    }
-  });
-}
+import RouteException from './RouteException';
 
 function getTypes(type) {
   const FULFILLED = `${type}_FULFILLED`;
@@ -44,15 +11,21 @@ function getTypes(type) {
   };
 }
 
-function processRoute(ws, type, payload, meta) {
+function processRoute({
+  ws,
+  type,
+  payload,
+  meta,
+  userKey,
+}) {
   const {
     FULFILLED,
     REJECTED,
   } = getTypes(type);
 
-  console.info('processing route', type, payload, meta);
+  console.info('processing route', type, payload, meta, userKey);
 
-  return ROUTES[type](ws, payload).then(data => {
+  return ROUTES[type](ws, payload, userKey).then(data => {
     return {
       type: FULFILLED,
       meta,
@@ -60,14 +33,14 @@ function processRoute(ws, type, payload, meta) {
     };
   }).catch(data => {
     if (data.message || data.stack) {
-      console.log('data back from rejection', data.message, data.stack);
+      console.error('data back from rejection', data.message, data.stack);
       throw new RouteException(
         REJECTED,
         data.message,
         meta,
       );
     } else {
-      console.log('data back from rejection', data);
+      console.error('data back from rejection', data);
       throw new RouteException(
         REJECTED,
         'Unknown error',
@@ -76,21 +49,31 @@ function processRoute(ws, type, payload, meta) {
   });
 }
 
-export default function receiveMessage(ws, message) {
-  console.log('received message', message);
-  return parseMessage(message).then(({ type, payload, meta }) => {
-    console.log(type, payload, meta);
+export default function receiveMessage(ws, {
+  type,
+  payload,
+  meta,
+  userKey,
+}) {
+  return new Promise((resolve, reject) => {
+    console.info('received message', type, payload, meta, userKey);
     const {
       REJECTED,
     } = getTypes(type);
 
     if (!ROUTES[type]) {
-      throw new RouteException(
+      reject(new RouteException(
         REJECTED,
         `No route found for ${type}`
-      );
+      ));
     }
 
-    return processRoute(ws, type, payload, meta);
+    resolve(processRoute({
+      ws,
+      type,
+      payload,
+      meta,
+      userKey,
+    }));
   });
 }

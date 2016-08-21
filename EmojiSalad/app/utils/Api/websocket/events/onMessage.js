@@ -32,6 +32,8 @@ const onMessage = e => {
     meta,
   };
 
+  //console.log('the payload from onMessage', payload);
+
   return dispatch(payload);
 };
 

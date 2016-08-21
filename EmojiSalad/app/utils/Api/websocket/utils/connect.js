@@ -4,8 +4,8 @@ import {
 } from '../../../../../config';
 
 import {
-  attemptConnection,
-  updateStatus,
+  attemptConnection as _attemptConnection,
+  updateStatus as _updateStatus,
 } from '../actions';
 
 import Network from '../../../Network';
@@ -16,6 +16,13 @@ import {
 } from './store';
 
 import log from './log';
+
+const updateStatus = (...rest) => {
+  return dispatch(_updateStatus(...rest));
+};
+const attemptConnection = (...rest) => {
+  return dispatch(_attemptConnection(...rest));
+};
 
 let ws;
 let reconnecter;
@@ -34,7 +41,7 @@ const setReconnector = callback => {
 
 const connect = () => {
   return new Promise(resolve => {
-    dispatch(attemptConnection());
+    attemptConnection();
     getStore().then(state => {
       log(`connecting at ws://${API_HOST}:${API_PORT}/, # ${state.attempts}`);
     });
@@ -42,9 +49,9 @@ const connect = () => {
     ws = new WebSocket(`ws://${API_HOST}:${API_PORT}/`);
 
     ws.onopen = () => {
-      updateStatus(true);
       getStore().then(state => {
-        log(`websocket connection opened after ${state.attempts} attempts`);
+        const attempts = state.attempts;
+        log(`websocket connection opened after ${attempts} attempts`);
       });
       resolve(ws);
     };

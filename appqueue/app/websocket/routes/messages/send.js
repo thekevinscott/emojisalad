@@ -21,14 +21,14 @@ export default function send(message) {
       type: RECEIVE_MESSAGE_FULFILLED,
       data: message,
     }).then(() => {
-      console.info('now update status delivered');
+      //console.info('now update status delivered');
       return updateStatus(message.key, 'delivered');
     });
   }
 
+  console.info('send a notification', message);
   pushNotification(KEVIN, message.body, {
     badge: 3,
   });
-  console.info('send a notification', message);
   return updateStatus(message.key, 'notified');
 }

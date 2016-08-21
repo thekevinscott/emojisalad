@@ -1,5 +1,8 @@
 //import Api from '../../utils/Api';
 import { Actions } from 'react-native-router-flux';
+import {
+  update as updateLogger,
+} from '../../components/Logger/actions';
 
 import {
   FETCH_GAMES,
@@ -8,11 +11,14 @@ import {
 } from './types';
 
 export function fetchGames(userKey) {
-  return {
-    type: FETCH_GAMES,
-    payload: {
-      userKey,
-    },
+  return dispatch => {
+    dispatch(updateLogger(`fetch games with user key: ${userKey}`));
+    return dispatch({
+      type: FETCH_GAMES,
+      payload: {
+        userKey,
+      },
+    });
   };
 }
 

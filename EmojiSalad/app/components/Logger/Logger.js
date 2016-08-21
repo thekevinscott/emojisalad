@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import {
   Text,
   View,
 } from 'react-native';
 
+const getText = (messages = []) => {
+  return messages.map(message => {
+    if (typeof message === 'string') {
+      return message;
+    }
+
+    const t = moment(message.timestamp);
+    return `${t.format('HH:mm:ss.SSS a')}: ${message.message}`;
+  }).join('\n\n');
+};
+
 export default class Logger extends Component {
   render() {
-    const text = (this.props.logger || []).join('\n\n');
+    const text = getText(this.props.logger);
     return (
       <View
         style={{
@@ -16,7 +28,7 @@ export default class Logger extends Component {
           borderTopWidth: 1,
         }}
       >
-        <Text>Logger: {text}</Text>
+        <Text>{text}</Text>
       </View>
     );
   }

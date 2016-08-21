@@ -1,17 +1,6 @@
 const clients = {};
 
-function parseMessage(message) {
-  try {
-    return JSON.parse(message);
-  } catch (err) {
-    return {};
-  }
-}
-
-export function setClient(ws, message) {
-  const {
-    userKey,
-  } = parseMessage(message);
+export function setClient(ws, { userKey }) {
   if (userKey && !clients[userKey]) {
     clients[userKey] = ws;
 

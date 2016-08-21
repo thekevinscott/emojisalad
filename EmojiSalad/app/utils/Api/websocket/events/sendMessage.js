@@ -31,6 +31,7 @@ const sendPacket = payload => {
   return getStore().then(connected => {
     if (connected) {
       const packet = getPacket(payload);
+      //console.log(new Date(), 'sending packet', packet);
       ws.send(packet);
     } else {
       dispatch({

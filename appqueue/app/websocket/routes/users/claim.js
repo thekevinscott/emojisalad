@@ -4,8 +4,8 @@ import updateUser from '../../users/updateUser';
 
 export default function claim(ws, payload) {
   const text = payload.text;
-  const device = payload.device;
-  console.info('claim', text, device);
+  //const device = payload.device;
+  //console.info('claim', text, device);
 
   return parsePhone(text).then(phone => {
     console.info('phone parsed', phone);
@@ -13,16 +13,16 @@ export default function claim(ws, payload) {
       throw new Error('Invalid phone number');
     }
 
-    return getUsers(phone).then(users => {
+    return getUsers({ from: phone }).then(users => {
       console.info('users got', users);
       if (users.length === 0) {
         throw new Error(`No users found for ${text}`);
       }
-      return users.shift();
+      return users.slice(0, 1);
     }).then(user => {
       console.info('now, upadte users');
       updateUser(ws, user, {
-        device,
+        //device,
         phone,
       });
       console.info('return user', user);

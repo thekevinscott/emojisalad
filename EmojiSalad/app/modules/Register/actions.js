@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 
-import device from '../../utils/device';
+//import device from '../../utils/device';
 
 import {
   SUBMIT_CLAIM,
@@ -13,7 +13,6 @@ export function submitClaim(text) {
     type: SUBMIT_CLAIM,
     payload: {
       text,
-      device,
     },
   };
 }

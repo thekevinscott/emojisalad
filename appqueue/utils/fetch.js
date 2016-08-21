@@ -17,7 +17,8 @@ function parseURLAndOptions(url, options) {
     const body = options.body;
     delete options.body;
     if (options.method === 'GET') {
-      console.info('Dont do this naymore, pass body params to get requests as query string');
+      console.info('Dont do this anymore, pass body params to get requests as query string');
+      console.info('this is probably coming from fetchfromservice; this logic could be moved there I believe');
       return {
         url: `${url}?${querystring.stringify(body)}`,
         options,
@@ -50,14 +51,14 @@ module.exports = function req(origUrl, origOptions) {
     options,
   } = parseURLAndOptions(origUrl, origOptions);
 
-  console.info('url', url, options);
+  //console.info('url', url, options);
   return fetch(url, options).then(response => {
     if (response.status >= 400) {
       throw response;
     }
     return response.json();
   }).then(response => {
-    console.log('response', response);
+    //console.log('response', response);
     return response;
   });
 };

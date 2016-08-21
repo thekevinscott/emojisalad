@@ -1,5 +1,8 @@
 //console.log('this line should be re-enabled');
 import { Actions } from 'react-native-router-flux';
+import {
+  update as updateLogger,
+} from '../../components/Logger/actions';
 
 import {
   FETCH_MESSAGES,
@@ -11,28 +14,33 @@ import {
 } from './types';
 
 export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
-  const payload = {
-    type: FETCH_MESSAGES,
-    meta,
-    payload: {
-      userKey,
-      gameKey,
-      ...options,
-    },
-  };
-  if (options.before) {
-    return dispatch => {
-      dispatch({
+  return dispatch => {
+    dispatch(updateLogger(`fetch messages with game key: ${gameKey}`));
+    const payload = {
+      type: FETCH_MESSAGES,
+      meta,
+      payload: {
+        userKey,
+        gameKey,
+        ...options,
+      },
+    };
+
+    if (options.before) {
+      // TODO: WTF IS THIS??
+      console.log('Yo what the FUCK is this code? Who the fuck wrote this? (Kevin did)');
+      setTimeout(() => {
+        dispatch(payload);
+      }, 1000);
+
+      return dispatch({
         type: LOAD_EARLIER,
         gameKey,
       });
-      setTimeout(() => {
-        dispatch(payload);
-      }, 10000);
-    };
-  }
+    }
 
-  return payload;
+    return dispatch(payload);
+  };
 }
 
 export function goToGames() {

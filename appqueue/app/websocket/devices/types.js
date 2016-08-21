@@ -1,0 +1,4 @@
+const KEY = '@Device/';
+
+export const REQUEST_DEVICE_INFO = `${KEY}REQUEST_DEVICE_INFO`;
+export const REQUEST_DEVICE_TOKEN = `${KEY}REQUEST_DEVICE_TOKEN`;

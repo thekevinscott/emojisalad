@@ -84,7 +84,9 @@ const patchedConnect = (...args) => component => {
       if (this.isComponentActive(this.props.activeComponent)) {
         // only focus if we're coming from a websocket-unconnected state
         // and we're going to a websocket-connected state
-        return this.props.websocketConnected === false && nextProps.websocketConnected === true;
+        const websocketWillBecomeActive = this.props.websocketConnected === false && nextProps.websocketConnected === true;
+        console.log('will websocket become active?', websocketWillBecomeActive);
+        return websocketWillBecomeActive;
       }
       return false;
     }
@@ -118,6 +120,7 @@ const patchedConnect = (...args) => component => {
         }
       }
     }
+
     render() {
       return (
         <WrappedComponent
@@ -127,6 +130,7 @@ const patchedConnect = (...args) => component => {
       );
     }
   }
+
   return connect(
     mapStateToProps
   )(WrapperComponent);
