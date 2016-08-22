@@ -33,6 +33,6 @@ export default function sendNotification(userKey, body, options = {}) {
     const note = getNotification(body, options);
     console.info('got note', note);
     connection.pushNotification(note, device);
-    console.info(`sent ${note.alert.body} on ${device}`);
+    console.info(`sent ${note.alert.body}`);
   });
 }

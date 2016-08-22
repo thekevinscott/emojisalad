@@ -5,8 +5,8 @@ import {
   View,
 } from 'react-native';
 
-const getText = (messages = []) => {
-  return messages.map(message => {
+const getText = messages => {
+  return (messages || []).map(message => {
     if (typeof message === 'string') {
       return message;
     }
