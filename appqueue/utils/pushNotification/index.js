@@ -1,7 +1,7 @@
 import apn from 'apn';
 import getConnection from './getConnection';
 import getNotification from './getNotification';
-import getDevice from '../../websocket/devices/getDevice';
+import getDevice from '../../app/websocket/devices/getDevice';
 
 const connection = getConnection({});
 
