@@ -1,8 +1,12 @@
 import typeToReducer from 'type-to-reducer';
 
 import {
-  UPDATE_TOKEN,
-} from '../components/PushNotificationListeners/types';
+  UPDATE_DEVICE_TOKEN,
+} from '../utils/pushNotificationListeners/types';
+
+import {
+  UPDATE_DEVICE_INFO,
+} from '../utils/device/types';
 
 import {
   types,
@@ -25,7 +29,7 @@ const initialState = {
   confirmed: null,
   confirmed_avatar: null,
   protocol: null,
-  token: null,
+  deviceToken: null,
   deviceInfo: null,
 };
 
@@ -54,9 +58,13 @@ export default typeToReducer({
       ...translateMe(action.data),
     }),
   },
-  [UPDATE_TOKEN]: (state, { token }) => ({
+  [UPDATE_DEVICE_TOKEN]: (state, { deviceToken }) => ({
     ...state,
-    token,
+    deviceToken,
+  }),
+  [UPDATE_DEVICE_INFO]: (state, { info }) => ({
+    ...state,
+    deviceInfo: info,
   }),
 
 }, initialState);

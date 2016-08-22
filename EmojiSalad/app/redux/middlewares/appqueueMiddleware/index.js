@@ -12,52 +12,46 @@
 import {
   REQUEST_DEVICE_INFO,
   REQUEST_DEVICE_TOKEN,
-  SEND_DEVICE_INFO,
-  SEND_DEVICE_TOKEN,
 } from './types';
 
-import deviceInfo from '../../../utils/device';
+import {
+  sendDeviceInfo,
+  sendDeviceToken,
+} from './actions';
 
 const APPQUEUE_REQUESTS = [
   REQUEST_DEVICE_INFO,
   REQUEST_DEVICE_TOKEN,
 ];
 
-const getAppqueuePayload = type => {
+const getAppqueuePayload = (type, state) => {
   if (type === REQUEST_DEVICE_INFO) {
-    return {
-      type: SEND_DEVICE_INFO,
-      payload: {
-        info: deviceInfo,
-      },
-    };
+    return sendDeviceInfo(state);
   } else if (type === REQUEST_DEVICE_TOKEN) {
-    return {
-      type: SEND_DEVICE_TOKEN,
-      payload: {
-        token: 'foo',
-      },
-    };
+    return sendDeviceToken(state);
   }
 
   return null;
 };
 
-const handleValidAppqueueRequest = (dispatch, type) => {
+const handleValidAppqueueRequest = (dispatch, state, type) => {
   if (APPQUEUE_REQUESTS.indexOf(type) !== -1) {
-    const payload = getAppqueuePayload(type);
+    const payload = getAppqueuePayload(type, state);
     dispatch({
       ...payload,
     });
   }
 };
 
-const appqueueMiddleware = ({ dispatch }) => next => action => {
+const appqueueMiddleware = ({
+  dispatch,
+  getState,
+}) => next => action => {
   const {
     type,
   } = action;
 
-  handleValidAppqueueRequest(dispatch, type);
+  handleValidAppqueueRequest(dispatch, getState(), type);
 
   return next(action);
 };

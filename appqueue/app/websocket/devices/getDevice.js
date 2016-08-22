@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Squel from 'squel';
 import db from 'db';
 
@@ -23,9 +24,16 @@ const getDevice = userKey => {
 
     return devices[0];
   }).then(deviceRow => {
+    let device_info;
+    try {
+      device_info = JSON.parse(deviceRow.device_info);
+    } catch (err) {
+      console.error('error with parsing json for device', deviceRow);
+      device_info = {};
+    }
     return {
       ...deviceRow,
-      device: JSON.parse(deviceRow.device),
+      device_info,
     };
   });
 };

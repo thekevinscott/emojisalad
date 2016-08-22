@@ -12,6 +12,10 @@ import {
   configureWebsocket,
 } from '../utils/Api/websocket';
 
+import {
+  updateDeviceInfo,
+} from '../utils/device/actions';
+
 export default function configureStore(initialState = {}) {
   const enhancer = compose(
     middleware,
@@ -27,6 +31,8 @@ export default function configureStore(initialState = {}) {
   const store = createStore(reducer, initialState, enhancer);
 
   configureWebsocket(store);
+
+  store.dispatch(updateDeviceInfo());
 
   return store;
 }

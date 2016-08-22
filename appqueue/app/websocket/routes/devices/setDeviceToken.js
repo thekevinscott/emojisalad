@@ -1,8 +1,5 @@
-const setDeviceToken = (ws, message) => {
-  console.log('set the device token', message);
-  return new Promise(resolve => {
-    resolve('good job');
-  });
-};
+import setDevice from '../../devices/setDevice';
 
-export default setDeviceToken;
+export default function (ws, { device_token }, userKey) {
+  return setDevice(userKey, { device_token });
+}

@@ -7,6 +7,11 @@ import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Logger } from '../../../components/Logger';
+
+import {
+  updateDeviceToken,
+} from '../../../utils/pushNotificationListeners/actions';
+
 import {
   //Text,
   View,
@@ -57,6 +62,9 @@ function mapDispatchToProps(dispatch) {
       updateStartingMessage: game => {
         return dispatch(updateStartingMessage(game));
       },
+      updateDeviceToken: token => {
+        dispatch(updateDeviceToken(token));
+      },
     },
   };
 }
@@ -82,8 +90,7 @@ class Games extends Component {
   }
 
   onRegister(token) {
-    console.log('register callback!');
-    console.log('the token', token);
+    this.props.actions.updateDeviceToken(token);
   }
 
   componentWillAppear() {

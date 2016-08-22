@@ -1,20 +1,29 @@
 /* API */
 //export const ENVIRONMENT = 'production';
-export const ENVIRONMENT = 'development';
+//export const ENVIRONMENT = 'development';
+export const ENVIRONMENT = 'development-device';
+
+const LOCAL_IP = '192.168.0.8';
 
 // Rest API timeout
 export const NETWORK_TIMEOUT = 5000;
 
 function getAPI(environment) {
+  const API_PORT = '5012';
   if (environment === 'production') {
     return {
       API_HOST: '45.55.41.73',
-      API_PORT: '5012',
+      API_PORT,
+    };
+  } else if (environment === 'development-device') {
+    return {
+      API_HOST: LOCAL_IP,
+      API_PORT,
     };
   }
   return {
     API_HOST: 'localhost',
-    API_PORT: '5012',
+    API_PORT,
   };
 }
 

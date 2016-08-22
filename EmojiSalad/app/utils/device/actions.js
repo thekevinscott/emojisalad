@@ -2,9 +2,11 @@ import {
   UPDATE_DEVICE_INFO,
 } from './types';
 
-export function updateDeviceInfo(info) {
+import INFO from './info';
+
+export function updateDeviceInfo() {
   return {
     type: UPDATE_DEVICE_INFO,
-    info,
+    info: INFO,
   };
 }

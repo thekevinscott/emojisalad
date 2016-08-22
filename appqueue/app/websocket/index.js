@@ -25,14 +25,13 @@ const sendHandshake = ws => {
 export default function bootstrapWebsocket(server) {
   const wss = new WebSocketServer({ server });
   wss.on('connection', ws => {
-    console.info(new Date(), 'we made connection');
     //const location = url.parse(ws.upgradeReq.url, true);
     // you might use location.query.access_token to authenticate or share sessions
     // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
     sendHandshake(ws);
 
     ws.on('message', json => {
-      console.log(new Date(), 'we got a message');
+      //console.log(new Date(), 'we got a message');
       return parseMessage(json).then(message => {
         console.info('received a message', message);
         // save the websocket connection locally,

@@ -4,12 +4,12 @@ import requestDeviceInfo from './devices/requestDeviceInfo';
 import _sendMessage from './sendMessage';
 
 const getPromises = (ws, {
-  device,
+  device_info: deviceInfo,
   device_token: deviceToken,
 }) => {
   const promises = [];
 
-  if (!device || !device.systemName) {
+  if (!deviceInfo || !deviceInfo.systemName) {
     promises.push(requestDeviceInfo());
   }
 
