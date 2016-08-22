@@ -9,12 +9,18 @@ const cachedDevices = {};
 
 const getCachedDevice = userKey => {
   return new Promise(resolve => {
+    console.info('checking if device is cached for', userKey);
     if (cachedDevices[userKey]) {
+      console.info('device is cached', userKey);
       return resolve(cachedDevices[userKey]);
     }
 
-    return resolve(getDevice(userKey).then(token => {
-      cachedDevices[userKey] = new apn.Device(token);
+    console.info('device is not cached', userKey);
+    return resolve(getDevice(userKey).then(({
+      device_token: deviceToken,
+    }) => {
+      console.info('got device token', deviceToken);
+      cachedDevices[userKey] = new apn.Device(deviceToken);
       resolve(cachedDevices[userKey]);
     }));
   });
