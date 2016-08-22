@@ -16,13 +16,13 @@ const getCachedDevice = userKey => {
     }
 
     console.info('device is not cached', userKey);
-    return resolve(getDevice(userKey).then(({
+    return getDevice(userKey).then(({
       device_token: deviceToken,
     }) => {
       console.info('got device token', deviceToken);
       cachedDevices[userKey] = new apn.Device(deviceToken);
       resolve(cachedDevices[userKey]);
-    }));
+    });
   });
 };
 
