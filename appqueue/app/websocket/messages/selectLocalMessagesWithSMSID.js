@@ -15,7 +15,7 @@ export default function selectLocalMessagesWithSMSID(userKey) {
     .where('sms_id IS NOT NULL')
     //.where(`\`${key}\`=?`, userId);
     .where('user_key', userKey);
-    //console.log(query.toString());
+    console.log('query to select local messages with sms ids, for later exclusion', query.toString());
     return db.query(query).then(messages => {
       return messages.map(message => {
         return message.sms_id;
