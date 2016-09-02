@@ -31,7 +31,7 @@ const getQuery = (userKey, payload) => {
 };
 
 const setDevice = (userKey, fields) => {
-  console.log('setDevice begin');
+  console.info('setDevice begin');
   const query = getQuery(userKey, fields);
 
   console.info('set device query', query.toString());

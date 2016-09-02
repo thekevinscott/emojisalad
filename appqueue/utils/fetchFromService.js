@@ -58,6 +58,7 @@ export default function fetchFromService({
         ...options,
       };
 
+      console.info('fetching with', url, payload);
       return fetch(url, payload).then(resolve).catch(resolve);
     } catch (err) {
       reject(err.message);
