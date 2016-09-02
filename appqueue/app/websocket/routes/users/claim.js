@@ -18,7 +18,7 @@ export default function claim(ws, payload) {
       if (users.length === 0) {
         throw new Error(`No users found for ${text}`);
       }
-      return users.slice(0, 1);
+      return users.shift();
     }).then(user => {
       console.info('now, upadte users');
       updateUser(ws, user, {
