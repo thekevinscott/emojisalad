@@ -34,6 +34,7 @@ export default function fetchFromDevice(fields, where) {
     where
   );
 
+  console.info('fetch from device', query.toString());
   return db.query(query).then(rows => {
     if (rows.length) {
       return rows[0] || null;
