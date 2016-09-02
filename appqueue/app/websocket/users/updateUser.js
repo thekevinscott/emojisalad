@@ -11,7 +11,7 @@ export default function updateUser(ws, user, payload) {
     migrateMessages(user),
     setDevice(user.key, {
       //device_info: JSON.stringify(payload.device),
-      phone: payload.phone,
+      number: payload.phone,
     }),
   ]).then(() => {
     console.info('user updated successfully');
