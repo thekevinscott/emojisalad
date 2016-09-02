@@ -11,7 +11,7 @@ export default function migrateMessages(user) {
     console.info('got local messages, received: ', localMessages.received.length, 'sent', localMessages.sent.length, user);
     // second, select all messages from sms queue that
     // don't exist in the database.
-    return selectSMSMessages(user.from, localMessages);
+    return selectSMSMessages(user.key, localMessages);
   }).then(smsMessages => {
     console.info('got sms messages, received', smsMessages.received.length, 'sent', smsMessages.sent.length);
     // third, retrieve all games for a user, so we can match
