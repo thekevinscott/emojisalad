@@ -21,6 +21,9 @@ export default function migrateMessages(user) {
       // fourth, insert the messages from sms queue into app queue
       return insertSMSMessages(user.key, smsMessages, user.id, userGames);
     });
+  }).then(response => {
+    console.log('migrate messages complete');
+    return response;
   }).catch(err => {
     console.error('error', err);
   });

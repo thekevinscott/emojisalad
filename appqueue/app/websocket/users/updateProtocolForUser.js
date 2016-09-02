@@ -12,5 +12,8 @@ export default function updateProtocolForUser(user) {
         protocol: 'appqueue',
       },
     },
+  }).then(response => {
+    console.log('updateProtocolForUser complete');
+    return response;
   });
 }

@@ -36,6 +36,9 @@ const setDevice = (userKey, fields) => {
   console.info('set device query', query.toString());
   return db.query(query).then(() => {
     return {};
+  }).then(response => {
+    console.log('setDevice complete');
+    return response;
   });
 };
 
