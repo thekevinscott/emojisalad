@@ -14,7 +14,7 @@ export default function updateProtocolForUser(user) {
       },
     },
   }).then(response => {
-    console.log('updateProtocolForUser complete');
+    console.info('updateProtocolForUser complete');
     return response;
   });
 }
