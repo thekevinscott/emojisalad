@@ -83,9 +83,9 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
       //console.info('the message', message);
       const key = table === 'received' ? 'to' : 'from';
       const messageKey = message[key];
-      console.info('message key', key, messageKey);
+      //console.info('message key', key, messageKey);
       const gameKey = games[messageKey];
-      console.info('game key', gameKey);
+      //console.info('game key', gameKey);
       return {
         body: message.body,
         [table === 'received' ? 'from' : 'to']: userId,
