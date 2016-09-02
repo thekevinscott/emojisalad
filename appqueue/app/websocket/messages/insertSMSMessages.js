@@ -51,6 +51,9 @@ function insertAllQueries(table, queries) {
       return updateKey(table, row.sms_id).then(() => {
         return result;
       });
+    }).catch(err => {
+      console.log('There was an error inserting', err);
+      throw new Error(err);
     });
   }, getPromise());
 }
@@ -118,8 +121,7 @@ export default function insertSMSMessages(userKey, messages, userId, gamesArray)
         };
       });
 
-      console.info(`inserting ${rows.length} rows in ${table}`);
-      //console.info('insert query', query.toString());
+      console.info(`inserting ${rows.length} rows into ${table}`);
       return insertAllQueries(table, queries).then(result => {
         console.info('result of insert', result);
         return rows.reduce((promise, row) => {
