@@ -1,38 +1,36 @@
-import apn from 'apn';
-import getConnection from './getConnection';
-import getNotification from './getNotification';
-import getDevice from '../../app/websocket/devices/getDevice';
-
-const connection = getConnection({});
-
-const cachedDevices = {};
-
-const getCachedDevice = userKey => {
-  return new Promise(resolve => {
-    console.info('checking if device is cached for', userKey);
-    if (cachedDevices[userKey]) {
-      console.info('device is cached', userKey);
-      return resolve(cachedDevices[userKey]);
+/*
+  var body = {
+    apiKey: apiKey,
+    userID: userID,
+    badge: badge || 0,
+    notification: {
+      alert: note,
     }
+  };
 
-    console.info('device is not cached', userKey);
-    return getDevice(userKey).then(({
-      device_token: deviceToken,
-    }) => {
-      console.info('got device token', deviceToken);
-      cachedDevices[userKey] = new apn.Device(deviceToken);
-      resolve(cachedDevices[userKey]);
-    });
+  $.post('/api/v1/notify', body, function(response) {
+    $('#results').append(JSON.stringify(response) + '<br />');
   });
-};
+}
+*/
+import {
+  fetch,
+} from '../fetch';
 
+import {
+  PUSHCITY,
+} from '../../config/app';
 
-export default function sendNotification(userKey, body, options = {}) {
-  getCachedDevice(userKey).then(device => {
-    console.info('got device', device);
-    const note = getNotification(body, options);
-    console.info('got note', note);
-    connection.pushNotification(note, device);
-    console.info(`sent ${note.alert.body}`);
+export default function pushNotification(userKey, body, options = {}) {
+  return fetch(`${PUSHCITY.URL}notify`, {
+    method: 'post',
+    body: {
+      apiKey: PUSHCITY.API_KEY,
+      userID: userKey,
+      badge: options.badge || 0,
+      notification: {
+        alert: body,
+      },
+    },
   });
 }

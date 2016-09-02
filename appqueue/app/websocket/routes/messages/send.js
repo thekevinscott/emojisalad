@@ -26,6 +26,14 @@ export default function send(message) {
     });
   }
 
+  // When sending a notification, it will only appear
+  // if the app is not currently visible.
+  // Since we are already handling the visible state
+  // above, we can always send the notification
+  // and trust that things *should* work without a hitch.
+  //
+  //
+  // *should*.
   console.info('send a notification', message);
   pushNotification(message.userKey, message.body, {
     badge: 3,
