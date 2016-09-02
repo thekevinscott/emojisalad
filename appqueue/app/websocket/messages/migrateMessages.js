@@ -8,7 +8,7 @@ export default function migrateMessages(user) {
   // first, select the messages that already exist in the
   // database with an sms id.
   return selectLocalMessagesWithSMSID(user.key).then(localMessages => {
-    console.info('got local messages, received: ', localMessages.received.length, 'sent', localMessages.sent.length, user);
+    console.info('got local messages, received: ', localMessages.received.length, 'sent', localMessages.sent.length);
     // second, select all messages from sms queue that
     // don't exist in the database.
     return selectSMSMessages(user.key, localMessages);
@@ -22,7 +22,7 @@ export default function migrateMessages(user) {
       return insertSMSMessages(user.key, smsMessages, user.id, userGames);
     });
   }).then(response => {
-    console.log('migrate messages complete');
+    console.info('migrate messages complete');
     return response;
   }).catch(err => {
     console.error('error', err);

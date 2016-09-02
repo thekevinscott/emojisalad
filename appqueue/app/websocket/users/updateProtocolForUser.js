@@ -1,6 +1,7 @@
 import fetchFromService from '../../../utils/fetchFromService';
 
 export default function updateProtocolForUser(user) {
+  console.log('updateProtocolForUser begin');
   return fetchFromService({
     service: 'api',
     route: 'users.update',
