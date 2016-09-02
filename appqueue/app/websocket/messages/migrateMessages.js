@@ -8,7 +8,7 @@ export default function migrateMessages(user) {
   // first, select the messages that already exist in the
   // database with an sms id.
   return selectLocalMessagesWithSMSID(user.key).then(localMessages => {
-    console.info('got local messages, received: ', localMessages.received.length, 'sent', localMessages.sent.length);
+    console.info('got local messages, received: ', localMessages.received.length, 'sent', localMessages.sent.length, user);
     // second, select all messages from sms queue that
     // don't exist in the database.
     return selectSMSMessages(user.from, localMessages);
