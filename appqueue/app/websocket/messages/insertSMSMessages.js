@@ -51,9 +51,6 @@ function insertAllQueries(table, queries) {
       return updateKey(table, row.sms_id).then(() => {
         return result;
       });
-    }).catch(err => {
-      console.log('There was an error inserting', err);
-      throw new Error(err);
     });
   }, getPromise());
 }
