@@ -35,13 +35,9 @@ export default function pushNotification(userKey, body, options = {}) {
   });
   return fetch(url, {
     method: 'post',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
     body: params,
   }).then(response => {
-    console.log('got response back from', url);
+    console.log('got response back from', url, response);
     return response;
   });
 }
