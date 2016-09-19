@@ -3,7 +3,7 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 
-function parseURLAndOptions(url, options) {
+function parseURLAndOptions(url, options = {}) {
   if (options.qs && options.method === 'GET') {
     const qs = options.qs;
     delete options.qs;
