@@ -30,7 +30,7 @@ export default function pushNotification(userKey, body, options = {}) {
     },
   };
   console.info('this is a push notification sending', url, params);
-  fetch(`${PUSHCITY.URL}`).then(response => response.json()).then(response => {
+  fetch(`${PUSHCITY.URL}`).then(response => {
     console.log('got the response from root', response);
   });
   return fetch(url, {
