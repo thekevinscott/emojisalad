@@ -1,7 +1,5 @@
 import { Actions } from 'react-native-router-flux';
 
-//import device from '../../utils/device';
-
 import {
   SUBMIT_CLAIM,
   UPDATE_TEXT,

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-//import Pusher from 'pusher-js/react-native';
 
 import {
   AppRegistry,

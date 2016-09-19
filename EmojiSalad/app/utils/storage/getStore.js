@@ -1,16 +1,19 @@
-const React = require('react-native');
-const {
-  AsyncStorage,
-} = React;
-
 import {
   KEY,
   PERSIST_DATA,
 } from '../../../config';
 
+import {
+  AsyncStorage,
+} from 'react-native';
+
+let initialState;
+
 export default function getStore() {
   if (!PERSIST_DATA) {
     return new Promise(resolve => resolve({}));
+  } else if (initialState) {
+    return new Promise(resolve => resolve(initialState));
   }
 
   return AsyncStorage.getItem(KEY).then(savedStorage => {
@@ -20,5 +23,8 @@ export default function getStore() {
       console.error('There was an error parsing JSON', savedStorage);
       throw new Error(err);
     }
+  }).then(state => {
+    initialState = state;
+    return state;
   });
 }

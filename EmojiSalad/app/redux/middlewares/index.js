@@ -8,10 +8,12 @@ import storageMiddleware from './storageMiddleware';
 import websocketMiddleware from './websocketMiddleware';
 import appqueueMiddleware from './appqueueMiddleware';
 import navigationMiddleware from './navigationMiddleware';
+import pushcityMiddleware from './pushcityMiddleware';
 
 const middleware = applyMiddleware(
   thunk,
   promiseMiddleware(),
+  pushcityMiddleware,
   storageMiddleware,
   websocketMiddleware,
   navigationMiddleware,
