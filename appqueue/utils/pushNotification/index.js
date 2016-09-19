@@ -22,6 +22,7 @@ import {
 } from '../../config/app';
 
 export default function pushNotification(userKey, body, options = {}) {
+  console.log('this is a push notification sending');
   return fetch(`${PUSHCITY.URL}notify`, {
     method: 'post',
     body: {
