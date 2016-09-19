@@ -22,16 +22,22 @@ import {
 } from '../../config/app';
 
 export default function pushNotification(userKey, body, options = {}) {
-  console.log('this is a push notification sending');
-  return fetch(`${PUSHCITY.URL}notify`, {
-    method: 'post',
-    body: {
-      apiKey: PUSHCITY.API_KEY,
-      userID: userKey,
-      badge: options.badge || 0,
-      notification: {
-        alert: body,
-      },
+  const url = `${PUSHCITY.URL}notify`;
+  const params = {
+    apiKey: PUSHCITY.API_KEY,
+    userID: userKey,
+    badge: options.badge || 0,
+    notification: {
+      alert: body,
     },
+  };
+  console.info('this is a push notification sending', url, params);
+  return fetch(url, {
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: params,
   });
 }
