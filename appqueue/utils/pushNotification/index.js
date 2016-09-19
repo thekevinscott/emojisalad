@@ -40,5 +40,8 @@ export default function pushNotification(userKey, body, options = {}) {
       'Content-Type': 'application/json',
     },
     body: params,
+  }).then(response => {
+    console.log('got response back from', url);
+    return response;
   });
 }

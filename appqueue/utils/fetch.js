@@ -51,7 +51,6 @@ module.exports = function req(origUrl, origOptions) {
     options,
   } = parseURLAndOptions(origUrl, origOptions);
 
-  console.info('url', url, options);
   return fetch(url, options).then(response => {
     if (response.status >= 400) {
       throw response;
