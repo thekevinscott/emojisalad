@@ -53,16 +53,18 @@ const patchedConnect = (...args) => component => {
     }
 
     componentWillMount() {
-      this.componentWillAppear();
+      this.componentWillAppear({
+        type: 'COMPONENT_WILL_MOUNT',
+      });
       AppState.addEventListener('change', this.handleAppStateChange);
     }
 
-    componentWillAppear() {
+    componentWillAppear(event) {
       if (this.instance) {
         if (!this.instance.componentWillAppear) {
           console.warn('You called connectFocus with a component that failed to implement componentWillAppear', this.instance);
         } else {
-          this.instance.componentWillAppear();
+          this.instance.componentWillAppear(event);
         }
       }
     }
@@ -85,24 +87,29 @@ const patchedConnect = (...args) => component => {
         // only focus if we're coming from a websocket-unconnected state
         // and we're going to a websocket-connected state
         const websocketWillBecomeActive = this.props.websocketConnected === false && nextProps.websocketConnected === true;
-        console.log('will websocket become active?', websocketWillBecomeActive);
+        //console.log('will websocket become active?', websocketWillBecomeActive);
         return websocketWillBecomeActive;
       }
       return false;
     }
 
     componentWillReceiveProps(nextProps) {
-      if (
-        this.willComponentBecomeActive(nextProps) ||
-        this.willWebsocketBecomeActive(nextProps)
-      ) {
-        this.componentWillAppear();
+      if (this.willComponentBecomeActive(nextProps)) {
+        this.componentWillAppear({
+          type: 'COMPONENT_WILL_BECOME_ACTIVE',
+        });
+      } else if (this.willWebsocketBecomeActive(nextProps)) {
+        this.componentWillAppear({
+          type: 'WEBSOCKET_WILL_BECOME_ACTIVE',
+        });
       }
     }
 
     handleAppStateChange(newAppState) {
       if (this.state.appState !== newAppState && newAppState === 'active' && this.isComponentActive(this.props.activeComponent)) {
-        this.componentWillAppear();
+        this.componentWillAppear({
+          type: 'APP_STATE_CHANGED',
+        });
       }
       this.setState({
         appState: newAppState,
@@ -116,7 +123,9 @@ const patchedConnect = (...args) => component => {
           this.setState({
             handleMounted: false,
           });
-          this.componentWillAppear();
+          this.componentWillAppear({
+            type: 'COMPONENT_REF_APPEARED',
+          });
         }
       }
     }

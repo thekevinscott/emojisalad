@@ -6,10 +6,23 @@ import {
 import checker from '../utils/checker';
 
 import {
+  fromApiToType,
   fromTypeToApi,
 } from '../translate';
 
+import {
+  setPendingAction,
+} from '../utils/timer';
+
 let ws;
+
+const messages = [];
+
+const getMessageId = () => {
+  const messageId = messages.length;
+  messages.push(messageId);
+  return messageId;
+};
 
 const getPacket = ({
   userKey,
@@ -21,7 +34,10 @@ const getPacket = ({
   const packet = JSON.stringify({
     type: apiType,
     userKey,
-    meta: meta || {},
+    meta: {
+      ...meta,
+      id: getMessageId(),
+    },
     payload,
   });
   return packet;
@@ -31,8 +47,9 @@ const sendPacket = payload => {
   return getStore().then(connected => {
     if (connected) {
       const packet = getPacket(payload);
-      //console.log(new Date(), 'sending packet', packet);
       ws.send(packet);
+      const type = fromApiToType(payload.type);
+      setPendingAction(type, packet, dispatch);
     } else {
       dispatch({
         type: `${payload.type}_REJECTED`,

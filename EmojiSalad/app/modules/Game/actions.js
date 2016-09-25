@@ -18,7 +18,11 @@ export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
     dispatch(updateLogger(`fetch messages with game key: ${gameKey}`));
     const payload = {
       type: FETCH_MESSAGES,
-      meta,
+      meta: {
+        ...meta,
+        gameKey,
+        userKey,
+      },
       payload: {
         userKey,
         gameKey,

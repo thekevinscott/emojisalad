@@ -6,6 +6,10 @@ import {
   dispatch,
 } from '../utils/store';
 
+import {
+  clearPendingAction,
+} from '../utils/timer';
+
 function parsePayload(e) {
   try {
     const payload = JSON.parse(e.data);
@@ -26,13 +30,15 @@ const onMessage = e => {
     meta,
   } = parsePayload(e);
 
+  const parsedType = fromApiToType(type);
+
   const payload = {
-    type: fromApiToType(type),
+    type: parsedType,
     data,
     meta,
   };
 
-  //console.log('the payload from onMessage', payload);
+  clearPendingAction(meta);
 
   return dispatch(payload);
 };

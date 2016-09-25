@@ -93,8 +93,8 @@ class Games extends Component {
     this.props.actions.updateDeviceToken(token);
   }
 
-  componentWillAppear() {
-    console.log('Games Overview Component componentWillAppear called');
+  componentWillAppear({ type }) {
+    console.log('Games Overview Component componentWillAppear called', type);
     this.props.actions.fetchGames(this.props.me.key);
   }
 

@@ -21,6 +21,17 @@ import {
 
 const initialState = {};
 
+const getEmptyGame = (game = {}) => ({
+  active: game.active || false,
+  compose: game.compose || '',
+  seen: {
+    first: (game.seen || {}).first || null,
+    last: (game.seen || {}).last || null,
+  },
+  loading: game.loading || false,
+  updated: new Date(),
+});
+
 const getFirstAndLastMessages = (messages = [], currentGame = {}) => {
   if (messages.length) {
     return {
@@ -42,31 +53,58 @@ const getFirstAndLastMessages = (messages = [], currentGame = {}) => {
 
 const updateGameSeen = (state, gameKey, payload = {}) => {
   return {
-    active: state[gameKey].active,
-    compose: '',
-    seen: {
-      ...state[gameKey].seen,
-      ...payload,
+    ...state,
+    [gameKey]: {
+      ...state[gameKey],
+      compose: '',
+      seen: {
+        ...state[gameKey].seen,
+        ...payload,
+      },
     },
   };
 };
 
+const setActiveGame = (state, game) => {
+  return Object.keys(state).reduce((obj, gameKey) => ({
+    ...obj,
+    [gameKey]: {
+      ...getEmptyGame(),
+      ...state[gameKey],
+      active: gameKey === (game || {}).key,
+    },
+  }), {});
+};
+
+const updateGame = (state, gameKey, payload = {}) => ({
+  ...state,
+  [gameKey]: {
+    ...state[gameKey],
+    ...payload,
+  },
+});
+
 export default typeToReducer({
   [ActionConst.FOCUS]: (state, { scene }) => {
-    const {
-      game,
-    } = scene;
-    return Object.keys(state).reduce((obj, gameKey) => {
-      return {
+    return setActiveGame(state, scene.game);
+  },
+  [FETCH_GAMES]: {
+    FULFILLED: (state, action) => ({
+      ...state,
+      ...action.data.reduce((obj, { key }) => ({
         ...obj,
-        [gameKey]: {
-          ...state[gameKey],
-          active: gameKey === (game || {}).key,
+        [key]: {
+          ...getEmptyGame(state[key]),
         },
-      };
-    }, {});
+      }), {}),
+    }),
   },
   [FETCH_MESSAGES]: {
+    PENDING: (state, { meta }) => {
+      return updateGame(state, meta.gameKey, {
+        loading: true,
+      });
+    },
     FULFILLED: (state, action) => {
       const gameKey = action.data.key;
 
@@ -75,89 +113,52 @@ export default typeToReducer({
         last,
       } = getFirstAndLastMessages(action.data.messages || [], state[gameKey]);
 
-      return {
-        ...state,
-        [gameKey]: {
-          ...state[gameKey],
-          isLoadingEarlier: false,
-          seen: {
-            first,
-            last,
-          },
+      return updateGame(state, action.data.key, {
+        updated: new Date(),
+        loading: false,
+        seen: {
+          first,
+          last,
         },
-      };
+      });
+    },
+    REJECTED: (state, { meta }) => {
+      return updateGame(state, meta.gameKey, {
+        loading: false,
+      });
     },
   },
-  [FETCH_GAMES]: {
-    FULFILLED: (state, action) => ({
-      ...state,
-      ...action.data.reduce((obj, game) => {
-        const key = game.key;
-        const currentGame = state[key] || {};
-        return {
-          ...obj,
-          [key]: {
-            isLoadingEarlier: false,
-            active: currentGame.active || false,
-            compose: currentGame.compose || '',
-            seen: {
-              first: (currentGame.seen || {}).first || null,
-              last: (currentGame.seen || {}).last || null,
-            },
-          },
-        };
-      }, {}),
-    }),
-  },
   [UPDATE_COMPOSE]: (state, { gameKey, text }) => {
-    return {
-      ...state,
-      [gameKey]: {
-        ...state[gameKey],
-        compose: text,
-      },
-    };
+    return updateGame(state, gameKey, {
+      compose: text,
+    });
   },
   [SEND_MESSAGE]: {
     PENDING: (state, { payload }) => {
-      const gameKey = payload.gameKey;
-      return {
-        ...state,
-        [gameKey]: {
-          ...state[gameKey],
-          compose: '',
-        },
-      };
+      return updateGame(state, payload.gameKey, {
+        compose: '',
+      });
     },
     FULFILLED: (state, { data }) => {
-      const gameKey = data.gameKey;
-      return {
-        ...state,
-        [gameKey]: updateGameSeen(state, gameKey, {
-          last: data.key,
-        }),
-      };
+      return updateGameSeen(state, data.gameKey, {
+        updated: new Date(),
+        last: data.key,
+      });
     },
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
       const game = state[gameKey];
-      return {
-        ...state,
-        [gameKey]: updateGameSeen(state, gameKey, {
-          last: game.active ? data.key : game.seen.last,
-        }),
-      };
+      return updateGameSeen(state, gameKey, {
+        updated: new Date(),
+        last: game.active ? data.key : game.seen.last,
+      });
     },
   },
   [LOAD_EARLIER]: (state, { gameKey }) => {
-    return {
-      ...state,
-      [gameKey]: {
-        ...state[gameKey],
-        isLoadingEarlier: true,
-      },
-    };
+    return updateGame(state, gameKey, {
+      loading: true,
+    });
   },
 }, initialState);

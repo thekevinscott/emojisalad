@@ -706,7 +706,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;
 			};
 			name = Debug;
@@ -731,7 +731,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = siblings.emojiSalad;
 				PRODUCT_NAME = EmojiSalad;
 			};
 			name = Release;

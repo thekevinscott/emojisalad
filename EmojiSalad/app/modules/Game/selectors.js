@@ -44,7 +44,8 @@ export function mapStateToProps(state, props) {
   const game = state.data.games[gameKey];
   const {
     seen,
-    isLoadingEarlier,
+    loading,
+    updated,
   } = state.ui.Game[gameKey] || {};
 
   const messages = selectMessages(
@@ -65,7 +66,8 @@ export function mapStateToProps(state, props) {
     logger: loggerMessages,
     compose,
     seen,
-    isLoadingEarlier,
+    loading,
+    updated,
   };
 }
 

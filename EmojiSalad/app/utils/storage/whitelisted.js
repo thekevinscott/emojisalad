@@ -5,11 +5,13 @@ const WHITELISTED_REDUCERS = {
       key: 'Game',
       slice: state => {
         return Object.keys(state).reduce((obj, gameKey) => {
+          const game = state[gameKey];
           return {
             ...obj,
             [gameKey]: {
+              updated: game.updated,
               seen: {
-                last: (state[gameKey].seen || {}).last,
+                last: (game.seen || {}).last,
               },
             },
           };

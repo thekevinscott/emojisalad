@@ -14,7 +14,6 @@ import {
 
 getStore().then(initialState => {
   if (initialState && initialState.data && initialState.data.me && initialState.data.me.key) {
-    console.log('register with pushcity', initialState.data.me.key, PUSHCITY_API_KEY);
     pushcity.register({
       userID: initialState.data.me.key,
       apiKey: PUSHCITY_API_KEY,
@@ -29,7 +28,6 @@ export default function storageMiddleware() {
         key,
       } = action.data;
 
-      console.log('register with pushcity', key, PUSHCITY_API_KEY);
       pushcity.register({
         userID: key,
         apiKey: PUSHCITY_API_KEY,

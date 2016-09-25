@@ -73,13 +73,13 @@ export default class LaddaButton extends Component {
           {...this.props}
         >
           <Text
-            numberOfLines={1}
+            numberOfLines={2}
             style={{
               ...styles.text,
               opacity: this.props.isLoading ? 0 : 1,
             }}
           >
-            Load Earlier Messages
+            {this.props.children}
           </Text>
           <Spinner
             containerWidth={this.state.style.width}

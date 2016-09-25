@@ -63,6 +63,13 @@ export default typeToReducer({
       }), {}),
       fetching: false,
     }),
+    REJECTED: (state, action) => {
+      console.log('action from fetch games', action);
+      return {
+        ...state,
+        fetching: false,
+      };
+    },
   },
   [SEND_MESSAGE]: {
     FULFILLED: (state, { data: message }) => {

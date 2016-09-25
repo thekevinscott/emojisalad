@@ -56,6 +56,7 @@ export default class Messenger extends Component {
           <LoadEarlier
             handleLoadEarlier={this.props.loadEarlier}
             isLoading={this.props.isLoadingEarlier}
+            updated={this.props.updated}
           />
         )}
         renderBubble={props => (

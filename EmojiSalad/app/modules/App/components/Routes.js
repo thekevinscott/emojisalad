@@ -57,6 +57,10 @@ class Routes extends Component {
           onLeft={() => {
             Actions.games();
           }}
+          rightTitle="DevTools"
+          onRight={() => {
+            console.log('show it');
+          }}
         />
       </Scene>
     );

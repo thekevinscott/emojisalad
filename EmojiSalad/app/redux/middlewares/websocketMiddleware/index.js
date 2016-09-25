@@ -22,15 +22,17 @@ const websocketMiddleware = ({
   } = action;
 
   if (type === HANDSHAKE) {
-    console.log('*** got the handshake');
+    //console.log('*** got the handshake');
     dispatch(updateStatus(true));
   }
 
   if (!payload) {
+    //console.log('there is no payload, move to next action');
     return next(action);
   }
 
   const PENDING = `${type}_PENDING`;
+  const REJECTED = `${type}_REJECTED`;
 
   const userKey = getState().data.me.key;
   sendMessage({
@@ -38,6 +40,13 @@ const websocketMiddleware = ({
     type,
     payload,
     meta,
+  }).catch(() => {
+    console.log('here is a catch', REJECTED);
+    dispatch({
+      ...rest,
+      type: REJECTED,
+      meta,
+    });
   });
 
   // continue on through the middleware stack
