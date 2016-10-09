@@ -13,6 +13,8 @@ const Timer = require('models/timer');
 module.exports = (game, player, input) => {
   //setTimer.clear(game, 'guess');
   Timer.clear('guess', game.id);
+  Timer.clear('nobody-has-guessed', game.id);
+  Timer.clear('nobody-has-guessed-2', game.id);
   const original_phrase = game.round.phrase;
   // game is in progress
   return Round.guess(game.round, {
