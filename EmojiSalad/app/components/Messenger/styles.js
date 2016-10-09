@@ -38,7 +38,15 @@ export const composerContainer = {
   alignItems: 'center',
 };
 
+export const composerTextContainer = {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'row',
+};
+
 export const composerText = {
+  flex: 1,
   borderColor: '#cccccc',
   backgroundColor: 'white',
   borderRadius: 5,
@@ -49,7 +57,6 @@ export const composerText = {
   paddingRight: 10,
   fontSize: 16,
   lineHeight: 16,
-  flex: 1,
 };
 
 export const composerSend = {
