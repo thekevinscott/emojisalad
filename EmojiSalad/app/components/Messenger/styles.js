@@ -62,12 +62,10 @@ export const composerSend = {
 
 export const composerSendView = {
   width: 0,
-  marginTop: -18,
 };
 
 export const composerSendViewVisible = {
   width: 50,
-  marginTop: 0,
 };
 
 export const animation = {

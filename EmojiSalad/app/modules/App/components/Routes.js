@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+  Linking,
+} from 'react-native';
 
 import {
   Actions,
@@ -21,6 +24,13 @@ import {
 } from '../../Game';
 
 class Routes extends Component {
+  constructor(props) {
+    super(props);
+    Linking.getInitialURL().then((url) => {
+      this.initialUrl = url;
+    });
+  }
+
   reducerCreate(params) {
     const defaultReducer = Reducer(params);
     return (state, action) => {
@@ -29,15 +39,24 @@ class Routes extends Component {
     };
   }
 
-  render() {
-    const iExist = !!this.props.me.key;
+  isInitial(key) {
+    console.log('initial url', this.initialUrl);
+    if (key === 'register') {
+      return !this.props.me.key;
+    } else if (key === 'games') {
+      return !!this.props.me.key;
+    } else if (key === 'game') {
+      return false;
+    }
+  }
 
+  render() {
     const scenes = Actions.create(
       <Scene key="root">
         <Scene
           key="register"
           component={Register}
-          initial={!iExist}
+          initial={this.isInitial('register')}
           title="User Registration"
           navigationBarStyle={{
             backgroundColor: '#fafafa',
@@ -46,20 +65,17 @@ class Routes extends Component {
         <Scene
           key="games"
           component={Games}
-          initial={iExist}
+          initial={this.isInitial('games')}
           title="Games"
         />
         <Scene
           key="game"
           component={Game}
+          initial={this.isInitial('game')}
           title="Game"
           leftTitle="Games"
           onLeft={() => {
             Actions.games();
-          }}
-          rightTitle="DevTools"
-          onRight={() => {
-            console.log('show it');
           }}
         />
       </Scene>

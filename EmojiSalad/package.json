@@ -16,6 +16,7 @@
     "react": "15.3.1",
     "react-native": "^0.33.0",
     "react-native-button": "1.6.0",
+    "react-native-code-push": "^1.14.6-beta",
     "react-native-device-info": "^0.9.3",
     "react-native-gifted-chat": "0.0.7",
     "react-native-loading-spinner-overlay": "0.2.3",

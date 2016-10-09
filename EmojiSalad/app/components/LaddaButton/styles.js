@@ -3,7 +3,7 @@ export const BUTTON = {
   HEIGHT: 40,
   MARGIN: 20,
   WIDTH: {
-    REST: 200,
+    REST: 250,
     LOADING: 40,
   },
   BORDER_RADIUS: {
@@ -29,11 +29,13 @@ export const styles = {
   },
   box: {
     margin: BUTTON.MARGIN,
-    padding: BUTTON.PADDING,
-    width: BUTTON.WIDTH,
     height: BUTTON.HEIGHT,
 
     backgroundColor: '#AAA',
+  },
+  touchableOpacity: {
+    padding: BUTTON.PADDING,
+
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',

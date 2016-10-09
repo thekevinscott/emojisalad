@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Image,
+  Animated,
 } from 'react-native';
 
 import {
@@ -10,17 +10,16 @@ import {
 import img from './images/loading.gif';
 
 export default function Spinner({
-  containerWidth,
   isLoading,
+  left,
 }) {
-  const spinnerLeftPosition = (containerWidth / 2) - (styles.spinner.width / 2);
   return (
-    <Image
+    <Animated.Image
       source={img}
       style={{
         ...styles.spinner,
         opacity: isLoading ? 1 : 0,
-        left: spinnerLeftPosition,
+        left,
       }}
     />
   );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import Spinner from 'react-native-loading-spinner-overlay';
 import { Messenger } from '../../../components/Messenger';
-import { Logger } from '../../../components/Logger';
+//import { Logger } from '../../../components/Logger';
 import moment from 'moment';
 
 import {
@@ -89,7 +89,6 @@ class Game extends Component {
             updated={this.props.updated}
           />
         </View>
-        <Logger logger={this.props.logger} />
       </View>
     );
   }

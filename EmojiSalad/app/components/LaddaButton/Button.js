@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+
 import {
   View,
   Text,
   TouchableOpacity,
-  LayoutAnimation,
+  Easing,
+  //LayoutAnimation,
+  Animated,
 } from 'react-native';
 
 import Spinner from './Spinner';
@@ -14,45 +17,70 @@ import {
   styles,
 } from './styles';
 
-const originalState = () => ({
-  borderRadius: BUTTON.BORDER_RADIUS.REST,
-  width: BUTTON.WIDTH.REST,
-});
+const getToValue = (isLoading, key) => {
+  if (key === 'width' || key === 'borderRadius') {
+    const KEYS = {
+      width: 'WIDTH',
+      borderRadius: 'BORDER_RADIUS',
+    };
 
-const loadingState = () => ({
-  width: BUTTON.WIDTH.LOADING,
-  borderRadius: BUTTON.BORDER_RADIUS.LOADING,
-});
+    return isLoading ? BUTTON[KEYS[key]].LOADING : BUTTON[KEYS[key]].REST;
+  }
 
-const CustomLayoutSpring = {
-  duration: ANIMATION.DURATION,
-  create: {
-    type: LayoutAnimation.Types.spring,
-    property: LayoutAnimation.Properties.scaleXY,
-    springDamping: ANIMATION.DAMPING,
-  },
-  update: {
-    type: LayoutAnimation.Types.spring,
-    springDamping: ANIMATION.DAMPING,
-  },
+  const containerWidth = isLoading ? BUTTON.WIDTH.LOADING : BUTTON.WIDTH.REST;
+  return (containerWidth / 2) - (styles.spinner.width / 2);
 };
 
 export default class LaddaButton extends Component {
   constructor(props) {
     super(props);
     this.onPress = this.onPress.bind(this);
+    this.animations = new Map();
+
+    const width = props.isLoading ? BUTTON.WIDTH.LOADING : BUTTON.WIDTH.REST;
+
     this.state = {
-      style: originalState(),
+      //style: props.isLoading ? loadingState() : originalState(),
+      width: new Animated.Value(width),
+      borderRadius: new Animated.Value(props.isLoading ? BUTTON.BORDER_RADIUS.LOADING : BUTTON.BORDER_RADIUS.REST),
+      spinnerLeft: new Animated.Value((width / 2) - (styles.spinner.width / 2)),
     };
-    LayoutAnimation.configureNext(CustomLayoutSpring);
+  }
+
+  stopAnimations() {
+    this.animations.forEach(animation => {
+      if (animation && animation.stop) {
+        animation.stop();
+      }
+    });
+  }
+
+  startAnimations() {
+    this.animations.forEach((animation, key) => {
+      if (animation && animation.start) {
+        animation.start(() => {
+          this.animations.set(key, null);
+        });
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.isLoading !== nextProps.isLoading) {
-      LayoutAnimation.configureNext(CustomLayoutSpring);
-      this.setState({
-        style: nextProps.isLoading ? loadingState() : originalState(),
+      this.stopAnimations();
+      [
+        'width',
+        'spinnerLeft',
+        'borderRadius',
+      ].forEach(key => {
+        const toValue = getToValue(nextProps.isLoading, key);
+        this.animations.set(key, Animated.timing(this.state[key], {
+          toValue,
+          duration: ANIMATION.DURATION,
+          easing: Easing.elastic(1),
+        }));
       });
+      this.startAnimations();
     }
   }
 
@@ -63,31 +91,37 @@ export default class LaddaButton extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={this.onPress}
+        <Animated.View
           style={{
             ...styles.box,
-            ...this.state.style,
+            width: this.state.width,
+            borderRadius: this.state.borderRadius,
           }}
-          {...this.props}
         >
-          <Text
-            numberOfLines={2}
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={this.onPress}
             style={{
-              ...styles.text,
-              opacity: this.props.isLoading ? 0 : 1,
+              //...this.state.style,
             }}
+            {...this.props}
           >
-            {this.props.children}
-          </Text>
-          <Spinner
-            containerWidth={this.state.style.width}
-            isLoading={this.props.isLoading}
-          />
-        </TouchableOpacity>
+            <Text
+              numberOfLines={2}
+              style={{
+                ...styles.text,
+                opacity: this.props.isLoading ? 0 : 1,
+              }}
+            >
+              {this.props.children}
+            </Text>
+            <Spinner
+              left={this.state.spinnerLeft}
+              isLoading={this.props.isLoading}
+            />
+          </TouchableOpacity>
+        </Animated.View>
       </View>
-
     );
   }
 }

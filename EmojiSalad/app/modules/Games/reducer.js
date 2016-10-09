@@ -35,10 +35,12 @@ const setStartingMessage = (game, key) => ({
 export default typeToReducer({
   [OPEN_GAME]: (state, { games }) => ({
     ...state,
-    games: games.reduce((obj, game) => ({
-      ...obj,
-      [game.key]: setStartingMessage(game, game.messages[0].key),
-    }), {}),
+    games: games.reduce((obj, game) => {
+      return {
+        ...obj,
+        [game.key]: setStartingMessage(game, game.messages[0].key),
+      };
+    }, {}),
   }),
   [ActionConst.FOCUS]: (state, { scene }) => ({
     ...state,

@@ -1,4 +1,4 @@
-const TIMEOUT_LENGTH = 50;
+const TIMEOUT_LENGTH = 5000;
 const timers = new Map();
 
 export const setPendingAction = (type, action, dispatch) => {

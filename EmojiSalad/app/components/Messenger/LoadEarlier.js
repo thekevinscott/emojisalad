@@ -8,14 +8,13 @@ export default function LoadEarlier({
   handleLoadEarlier,
   updated,
 }) {
-  const updatedString = moment(updated).format('dddd Do h:mm:ss a');
+  const updatedString = moment(updated).format('Do h:mm:ss a');
   return (
     <LaddaButton
       onLoadEarlier={handleLoadEarlier}
       isLoading={isLoading}
     >
-      Load Earlier Messages
-      ({updatedString})
+      Load Earlier ({updatedString})
     </LaddaButton>
   );
 }

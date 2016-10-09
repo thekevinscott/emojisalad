@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Logger } from '../../../components/Logger';
+//import { Logger } from '../../../components/Logger';
 
 import {
   updateDeviceToken,
@@ -161,7 +161,6 @@ class Games extends Component {
           style={styles.container}
           enableEmptySections={true}
         />
-        <Logger logger={this.props.logger} />
       </View>
     );
   }

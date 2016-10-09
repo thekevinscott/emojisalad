@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import codePush from 'react-native-code-push';
 
 import AppProvider from '../../../redux/AppProvider';
 import Routes from './Routes';
@@ -6,7 +7,12 @@ import {
   selectMe,
 } from '../selectors';
 
-export default class App extends Component {
+const codePushOptions = {
+  updateDialog: true,
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+};
+
+class App extends Component {
   shouldComponentUpdate() {
     return false;
   }
@@ -22,3 +28,5 @@ export default class App extends Component {
     );
   }
 }
+
+export default codePush(codePushOptions)(App);
