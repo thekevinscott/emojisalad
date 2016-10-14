@@ -5,6 +5,7 @@ const request = Promise.promisify(require('request'));
 //const queues = require('config/services').queues;
 const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
+const track = require('./analytics');
 
 function sequence(tasks) {
   return tasks.reduce((current, task) => {
@@ -106,6 +107,11 @@ const sendMessages = (messages, options = {}) => {
           }
         }
         console.info('Request is fine', response.body, byteLength);
+        console.info('protocol messages', protocolMessages);
+        track({
+          id: 'foo',
+          protocol: 'bar',
+        }, 'foobar');
         resolve(response);
       }).catch((err) => {
         clearTimeout(timer);
