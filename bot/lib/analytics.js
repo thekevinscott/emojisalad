@@ -33,19 +33,20 @@ function outgoing(messages) {
   }));
 }
 
-function getUser(phone) {
+function getUser(phone, to) {
   return fetchFromService({
     service: 'api',
-    route: 'users.get',
+    route: 'players.get',
     options: {
       from: phone,
+      to,
     },
   });
 }
 
 function incoming(messages) {
   return Promise.all(messages.map(message => {
-    return getUser(message.from).then(users => {
+    return getUser(message.from, message.to).then(users => {
       if (users.length) {
         return users.shift();
       }
