@@ -20,6 +20,10 @@ function getOptions(user_id, text, platform, who_speaks) {
 
 function outgoing(messages) {
   return Promise.all(messages.map(message => {
+    if (message.protocol === 'testqueue') {
+      return null;
+    }
+
     return request(getOptions(
       message.player.key,
       message.body,
@@ -48,6 +52,10 @@ function incoming(messages) {
 
       throw new Error(`No user found for: ${message.from}`);
     }).then(user => {
+      if (message.protocol === 'testqueue') {
+        return null;
+      }
+
       return request(getOptions(
         user.key,
         message.body,
