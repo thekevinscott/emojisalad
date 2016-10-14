@@ -45,8 +45,6 @@ function getMessagesFromProtocol(ids) {
           //b.protocol_id = Protocol.getID(protocol);
           return b;
         });
-        console.info('body', body);
-
         resolve(body);
         //track(protocolMessages, 'user');
       }).catch((err) => {
