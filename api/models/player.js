@@ -178,7 +178,7 @@ const Player = {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 
-    //console.info('query', query.toString());
+    console.info('query', query.toString());
     return db.query(query);
   },
   remove: (player_id) => {
