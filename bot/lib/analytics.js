@@ -33,7 +33,7 @@ function incoming(messages) {
       message.from,
       message.body,
       message.protocol,
-      'user',
+      'user'
     ));
   }));
 }
