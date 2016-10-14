@@ -38,8 +38,10 @@ function getUser(phone, to) {
     service: 'api',
     route: 'players.get',
     options: {
-      from: phone,
-      to,
+      body: {
+        from: phone,
+        to,
+      },
     },
   });
 }
@@ -57,7 +59,7 @@ function incoming(messages) {
         return null;
       }
 
-      console.info('what is the user object', player);
+      console.info('what is the darned player', player);
 
       return request(getOptions(
         player.key,
