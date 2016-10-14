@@ -19,7 +19,7 @@ function getOptions(user_id, text, platform, who_speaks) {
 function outgoing(messages) {
   return Promise.all(messages.map(message => {
     return request(getOptions(
-      message.player.key,
+      message.player.to,
       message.body,
       message.player.protocol,
       'bot'
