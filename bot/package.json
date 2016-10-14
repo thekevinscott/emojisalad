@@ -29,6 +29,7 @@
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.0.3",
     "inflight": "^1.0.4",
+    "isomorphic-fetch": "^2.2.1",
     "kerberos": "0.0.17",
     "levenshtein": "^1.0.5",
     "lodash": "^3.10.1",
