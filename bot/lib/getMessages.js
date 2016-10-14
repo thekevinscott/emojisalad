@@ -3,6 +3,7 @@ const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
 const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
+const track = require('./analytics');
 //const Protocol = require('./protocol');
 
 function getMessagesFromProtocol(ids) {
@@ -44,7 +45,10 @@ function getMessagesFromProtocol(ids) {
           //b.protocol_id = Protocol.getID(protocol);
           return b;
         });
+        console.info('body', body);
+
         resolve(body);
+        //track(protocolMessages, 'user');
       }).catch((err) => {
         clearTimeout(timer);
         console.info('err', err);
