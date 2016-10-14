@@ -52,13 +52,15 @@ function incoming(messages) {
       }
 
       throw new Error(`No user found for: ${message.from}`);
-    }).then(user => {
+    }).then(player => {
       if (message.protocol === 'testqueue') {
         return null;
       }
 
+      console.info('what is the user object', player);
+
       return request(getOptions(
-        user.key,
+        player.key,
         message.body,
         message.protocol,
         'user'
