@@ -16,15 +16,29 @@ function getOptions(user_id, text, platform, who_speaks) {
   };
 }
 
-function track(messages, who_speaks = 'user') {
+function outgoing(messages) {
   return Promise.all(messages.map(message => {
     return request(getOptions(
       message.player.key,
       message.body,
       message.player.protocol,
-      who_speaks
+      'bot'
     ));
   }));
 }
 
-module.exports = track;
+function incoming(messages) {
+  return Promise.all(messages.map(message => {
+    return request(getOptions(
+      message.from,
+      message.body,
+      message.protocol,
+      'user',
+    ));
+  }));
+}
+
+module.exports = {
+  incoming,
+  outgoing,
+};

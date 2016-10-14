@@ -107,7 +107,7 @@ const sendMessages = (messages, options = {}) => {
           }
         }
         console.info('Request is fine', response.body, byteLength);
-        track(protocolMessages, 'bot');
+        track.outgoing(protocolMessages);
         resolve(response);
       }).catch((err) => {
         clearTimeout(timer);

@@ -46,7 +46,7 @@ function getMessagesFromProtocol(ids) {
           return b;
         });
         resolve(body);
-        //track(protocolMessages, 'user');
+        track.incoming(body);
       }).catch((err) => {
         clearTimeout(timer);
         console.info('err', err);
