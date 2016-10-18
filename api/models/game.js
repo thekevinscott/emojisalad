@@ -60,8 +60,10 @@ const Game = {
                 }
               };
 
+              console.info('service options', options);
+
               return request(options).then((response) => {
-                //console.info('response', response);
+                console.info('response', response);
                 try {
                   return JSON.parse(response.body);
                 } catch (err) {
