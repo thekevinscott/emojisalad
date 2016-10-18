@@ -18,6 +18,10 @@ import setKey from 'setKey';
 const registry = require('microservice-registry');
 const request = Promise.promisify(require('request'));
 
+const NO_SENDERS_NEEDED = [
+  'appqueue',
+];
+
 squel.registerValueHandler(Date, (date) => {
   return '"' + date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate() + '"';
 });
@@ -25,6 +29,47 @@ squel.registerValueHandler(Date, (date) => {
 function getValidUsers(users) {
   return users.filter(user => parseInt(user.id));
 }
+
+const getSender = (user, result) => {
+  return new Promise((resolve, reject) => {
+    if ( user.to ) {
+      console.info('a to exists');
+      return resolve(user.to);
+    }
+
+    if (NO_SENDERS_NEEDED.indexOf(result.protocol) !== -1) {
+      return resolve();
+    }
+
+    console.info('user players', user);
+    const player_sender_ids = result.players.map((player) => {
+      return player.to;
+    });
+
+    const service = registry.get(result.protocol);
+    const options = {
+      url: service.api.senders.get.endpoint,
+      method: service.api.senders.get.method,
+      qs: {
+        exclude: player_sender_ids.join(',')
+      }
+    };
+
+    console.info('service options', options);
+
+    return request(options).then((response) => {
+      //console.info('response', response);
+      try {
+        return JSON.parse(response.body);
+      } catch (err) {
+        console.error('error parsing json response', response.body);
+        reject(new Error('Error getting sender'));
+      }
+    }).then((body) => {
+      resolve(body.id);
+    });
+  });
+};
 
 const Game = {
   create: (users) => {
@@ -41,40 +86,7 @@ const Game = {
       return Promise.all(users.map((user) => {
         console.info('check that this user is valid', user);
         return User.findOne(user.id).then((result) => {
-
-          return new Promise((resolve, reject) => {
-            if ( user.to ) {
-              console.info('a to exists');
-              resolve(user.to);
-            } else {
-              console.info('user players', user);
-              const player_sender_ids = result.players.map((player) => {
-                return player.to;
-              });
-              const service = registry.get(result.protocol);
-              const options = {
-                url: service.api.senders.get.endpoint,
-                method: service.api.senders.get.method,
-                qs: {
-                  exclude: player_sender_ids.join(',')
-                }
-              };
-
-              console.info('service options', options);
-
-              return request(options).then((response) => {
-                console.info('response', response);
-                try {
-                  return JSON.parse(response.body);
-                } catch (err) {
-                  console.error('error parsing json response', response.body);
-                  reject(new Error('Error getting sender'));
-                }
-              }).then((body) => {
-                resolve(body.id);
-              });
-            }
-          }).then((sender) => {
+          return getSender(user, result).then(sender => {
             return Object.assign({}, result, {
               to: sender
             });
@@ -89,7 +101,7 @@ const Game = {
           console.info('the rows', rows);
           rows.map((user) => {
             user.players.map((player) => {
-              if ( player.to === user.to ) {
+              if ( player.to && player.to === user.to ) {
                 throw new Error("A player already exists for this game number");
               }
             });
