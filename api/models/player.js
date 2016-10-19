@@ -49,9 +49,9 @@ const Player = {
         }
       });
     }).then((player_params) => {
-      if ( player_params.to === 0 ) {
-        throw new Error('Invalid to provided', player_params);
-      }
+      //if ( player_params.to === 0 ) {
+        //throw new Error('Invalid to provided', player_params);
+      //}
       //console.log('**** player params', player_params);
       const query = squel
       .insert({ autoQuoteFieldNames: true })
