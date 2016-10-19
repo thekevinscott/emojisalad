@@ -63,8 +63,7 @@ export default class Messenger extends Component {
           <Message {...props} />
         )}
         user={user}
-        /*
-        renderComposer={(any) => {
+        renderComposer={() => {
           return (
             <Composer
               updateCompose={this.props.updateCompose}
@@ -73,7 +72,6 @@ export default class Messenger extends Component {
             />
           );
         }}
-        */
         messages={this.parseMessages(this.props.messages)}
       />
     );
