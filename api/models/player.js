@@ -57,7 +57,7 @@ const Player = {
       .insert({ autoQuoteFieldNames: true })
       .into('players')
       .setFields({
-        to: player_params.to,
+        to: player_params.to || '',
         created: squel.fval('NOW(3)'),
         user_id: player_params.user_id,
         game_id: player_params.game_id
