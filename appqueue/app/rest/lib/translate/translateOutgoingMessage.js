@@ -1,3 +1,9 @@
+/*
+ * This functions translates messages
+ * stored in the received table
+ * into consumable packets for the
+ * bot script.
+ */
 import translateOutgoingData from './translateOutgoingData';
 
 export default function translateOutgoingMessage(message) {

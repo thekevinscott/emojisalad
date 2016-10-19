@@ -19,7 +19,8 @@ export default function fetchPlayerTo(userKey, gameKey) {
       qs,
     },
   }).then(players => {
-    if (! players.length || !players[0].to) {
+    if (!players.length) {
+      //|| !players[0].to) {
       console.info('no players found', players, qs);
       throw new Error(`No sender Id found for user key ${userKey} and ${gameKey}`);
     }
