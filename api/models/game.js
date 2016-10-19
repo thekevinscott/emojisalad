@@ -238,10 +238,10 @@ const Game = {
     }).then((foundGame) => {
       console.info('found teh game', foundGame, users);
       return Promise.all(users.map((user) => {
-        if ( !user.to ) {
-          console.error(user);
-          throw new Error('Why is there no user `to` here');
-        }
+        //if ( !user.to ) {
+          //console.error(user);
+          //throw new Error('Why is there no user `to` here');
+        //}
         const player_params = {
           game_id: foundGame.id,
           user_id: user.id,
