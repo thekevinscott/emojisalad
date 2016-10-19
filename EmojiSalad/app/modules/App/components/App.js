@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import codePush from 'react-native-code-push';
 
 import AppProvider from '../../../redux/AppProvider';
+
 import Routes from './Routes';
 import {
   selectMe,

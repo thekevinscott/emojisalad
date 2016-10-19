@@ -6,8 +6,17 @@ const ROW_PADDING = 20;
 export const MESSAGE_FADEIN_DURATION = 200;
 export const MESSAGE_SLIDE_DURATION = 500;
 
+import {
+  HEADER_HEIGHT,
+} from '../../themes/constants';
+
 export const container = {
-  paddingTop: 64,
+  //paddingTop: HEADER_HEIGHT,
+};
+
+export const games = {
+  paddingTop: HEADER_HEIGHT,
+  flex: 1,
 };
 
 export const game = {

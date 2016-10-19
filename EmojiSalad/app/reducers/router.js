@@ -36,7 +36,7 @@ export default typeToReducer({
       ...state,
       websocket: {
         ...state.websocket,
-        connected,
+        connected: connected ? new Date() : false,
         attempts,
       },
     };

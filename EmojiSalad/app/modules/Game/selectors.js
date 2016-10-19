@@ -1,6 +1,9 @@
 import {
   selectMe,
 } from '../App/selectors';
+import {
+  selectStatus,
+} from '../../utils/Api/websocket/selectors';
 
 import {
   update as updateLogger,
@@ -68,6 +71,7 @@ export function mapStateToProps(state, props) {
     seen,
     loading,
     updated,
+    status: selectStatus(state),
   };
 }
 

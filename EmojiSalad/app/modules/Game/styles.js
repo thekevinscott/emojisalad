@@ -1,12 +1,9 @@
 import {
-  Platform,
-} from 'react-native';
+  HEADER_HEIGHT,
+} from '../../themes/constants';
 
 export const container = {
-  paddingTop: Platform.select({
-    ios: 64,
-    android: 54,
-  }),
+  paddingTop: HEADER_HEIGHT,
   flex: 1,
 };
 

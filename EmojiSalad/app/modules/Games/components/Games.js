@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Status } from '../../../components/Status';
 //import { Logger } from '../../../components/Logger';
 
 import {
@@ -13,7 +14,6 @@ import {
 } from '../../../utils/pushNotificationListeners/actions';
 
 import {
-  //Text,
   View,
   TouchableHighlight,
   ListView,
@@ -39,10 +39,15 @@ import {
   selectMe,
 } from '../../App/selectors';
 
+import {
+  selectStatus,
+} from '../../../utils/Api/websocket/selectors';
+
 function mapStateToProps(state) {
   const loggerMessages = state.ui.Logger.messages;
 
   return {
+    status: selectStatus(state),
     games: selectGamesByNewestFirst(state),
     me: selectMe(state),
     ui: selectUI(state),
@@ -72,6 +77,18 @@ function mapDispatchToProps(dispatch) {
 const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
 });
+
+const getStatus = status => {
+  if (status) {
+    return (
+      <Status>
+        {status}
+      </Status>
+    );
+  }
+
+  return null;
+};
 
 class Games extends Component {
   constructor(props) {
@@ -152,7 +169,10 @@ class Games extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={styles.games}
+      >
+        {getStatus(this.props.status)}
         <Spinner visible={this.props.ui.fetching && !this.props.games.length} />
         <ListView
           dataSource={this.getGames()}

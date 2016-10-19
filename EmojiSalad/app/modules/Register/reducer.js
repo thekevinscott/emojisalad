@@ -33,10 +33,11 @@ export default typeToReducer({
     },
     REJECTED: (state, action) => {
       const DEFAULT_ERROR = 'There was an unknown error';
+      const error = (action.data || {}).message || DEFAULT_ERROR;
       //action.data.message);
       return {
         ...state,
-        error: action.data.message || DEFAULT_ERROR,
+        error,
         claiming: false,
       };
     },

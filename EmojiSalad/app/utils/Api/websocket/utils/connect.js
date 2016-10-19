@@ -50,6 +50,7 @@ const connect = () => {
 
     ws.onopen = () => {
       getStore().then(state => {
+        updateStatus(true);
         const attempts = state.attempts;
         log(`websocket connection opened after ${attempts} attempts`);
       });

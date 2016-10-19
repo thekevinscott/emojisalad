@@ -51,20 +51,6 @@ const getFirstAndLastMessages = (messages = [], currentGame = {}) => {
   };
 };
 
-const updateGameSeen = (state, gameKey, payload = {}) => {
-  return {
-    ...state,
-    [gameKey]: {
-      ...state[gameKey],
-      compose: '',
-      seen: {
-        ...state[gameKey].seen,
-        ...payload,
-      },
-    },
-  };
-};
-
 const setActiveGame = (state, game) => {
   return Object.keys(state).reduce((obj, gameKey) => ({
     ...obj,
@@ -140,9 +126,14 @@ export default typeToReducer({
       });
     },
     FULFILLED: (state, { data }) => {
-      return updateGameSeen(state, data.gameKey, {
-        updated: new Date(),
-        last: data.key,
+      const gameKey = data.gameKey;
+      return updateGame(state, gameKey, {
+        compose: '',
+        seen: {
+          ...state[gameKey].seen,
+          updated: new Date(),
+          last: data.key,
+        },
       });
     },
   },
@@ -150,9 +141,13 @@ export default typeToReducer({
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
       const game = state[gameKey];
-      return updateGameSeen(state, gameKey, {
-        updated: new Date(),
-        last: game.active ? data.key : game.seen.last,
+
+      return updateGame(state, gameKey, {
+        seen: {
+          ...state[gameKey].seen,
+          updated: new Date(),
+          last: game.active ? data.key : game.seen.last,
+        },
       });
     },
   },

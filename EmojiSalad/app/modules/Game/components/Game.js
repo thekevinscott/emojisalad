@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
+import { Status } from '../../../components/Status';
 //import Spinner from 'react-native-loading-spinner-overlay';
 import { Messenger } from '../../../components/Messenger';
 //import { Logger } from '../../../components/Logger';
@@ -17,6 +18,18 @@ import {
 } from '../selectors';
 
 //const MESSAGES_PER_PAGE = 20;
+
+const getStatus = status => {
+  if (status) {
+    return (
+      <Status>
+        {status}
+      </Status>
+    );
+  }
+
+  return null;
+};
 
 class Game extends Component {
   constructor(props) {
@@ -75,6 +88,7 @@ class Game extends Component {
       <View
         style={styles.container}
       >
+        {getStatus(this.props.status)}
         <View style={{
           flex: 1,
         }}>
