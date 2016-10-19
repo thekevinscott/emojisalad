@@ -46,7 +46,9 @@ function getMessagesFromProtocol(ids) {
           return b;
         });
         resolve(body);
-        track.incoming(body);
+        if (protocol !== 'testqueue') {
+          track.incoming(body);
+        }
       }).catch((err) => {
         clearTimeout(timer);
         console.info('err', err);

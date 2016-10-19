@@ -13,9 +13,9 @@ module.exports = (message) => {
   if ( ! message.from ) {
     throw new Error("No from provided");
   }
-  if ( ! message.to ) {
-    throw new Error("No to provided");
-  }
+  //if ( ! message.to ) {
+    //throw new Error("No to provided");
+  //}
   if ( ! message.body ) {
     // this might be an mms
     console.error('No body provided, but it might be an mms', message);

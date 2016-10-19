@@ -107,7 +107,9 @@ const sendMessages = (messages, options = {}) => {
           }
         }
         console.info('Request is fine', response.body, byteLength);
-        track.outgoing(protocolMessages);
+        if (protocol !== 'testqueue') {
+          track.outgoing(protocolMessages);
+        }
         resolve(response);
       }).catch((err) => {
         clearTimeout(timer);
