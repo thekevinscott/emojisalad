@@ -24,11 +24,11 @@ export default function pushNotification(userKey, gameKey, body, options = {}) {
   const params = {
     apiKey: PUSHCITY.API_KEY,
     userID: userKey,
-    badge: options.badge || 0,
     notification: {
       alert: body,
+      badge: options.badge || 0,
+      view: `games/${gameKey}`,
     },
-    view: `games/${gameKey}`,
   };
   console.info('this is a push notification sending', url, params);
   fetch(`${PUSHCITY.URL}`).then(response => {
