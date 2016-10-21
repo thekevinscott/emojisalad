@@ -15,16 +15,6 @@ const RECEIVE_MESSAGE_FULFILLED = 'RECEIVE_MESSAGE_FULFILLED';
 export default function send(message) {
   console.info('send message', message);
   const ws = getClient(message.userKey);
-  if (ws) {
-    console.info('ws exists, send it', message.key);
-    return sendMessage(ws)({
-      type: RECEIVE_MESSAGE_FULFILLED,
-      data: message,
-    }).then(() => {
-      //console.info('now update status delivered');
-      return updateStatus(message.key, 'delivered');
-    });
-  }
 
   // When sending a notification, it will only appear
   // if the app is not currently visible.
@@ -38,5 +28,18 @@ export default function send(message) {
   pushNotification(message.userKey, message.body, {
     badge: 3,
   });
+
+  // now send the message if it exists
+  if (ws) {
+    console.info('ws exists, send it', message.key);
+    return sendMessage(ws)({
+      type: RECEIVE_MESSAGE_FULFILLED,
+      data: message,
+    }).then(() => {
+      //console.info('now update status delivered');
+      return updateStatus(message.key, 'delivered');
+    });
+  }
+
   return updateStatus(message.key, 'notified');
 }
