@@ -135,7 +135,7 @@ const Player = {
       query = query.where('u.nickname LIKE ?',params.nickname+'%');
     }
 
-    if ( params.to ) {
+    if ( params.to && params.to !== 0 ) {
       //query = query.where('n.`number` = ?',params.to);
       query = query.where('p.`to` = ?',params.to);
     }
