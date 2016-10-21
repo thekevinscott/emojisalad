@@ -45,6 +45,7 @@ function getMessagesFromProtocol(ids) {
           //b.protocol_id = Protocol.getID(protocol);
           return b;
         });
+        console.log('the body', body);
         resolve(body);
         if (protocol !== 'testqueue') {
           track.incoming(body);

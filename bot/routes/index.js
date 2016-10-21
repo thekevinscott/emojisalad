@@ -6,7 +6,7 @@ const Player = require('models/player');
 const User = require('models/user');
 
 const Router = ({ game_key, from, message, to, protocol }) => {
-  console.info(`===========Router Index: ${message} | ${from} | ${to} | ${protocol}`);
+  console.info(`===========Router Index: ${message} | ${from} | ${to} | ${protocol} ${game_key}`);
   return Player.get({
     game_key,
     from,
@@ -14,7 +14,10 @@ const Router = ({ game_key, from, message, to, protocol }) => {
     protocol
   }).then((players) => {
     console.info('players', players);
-    if ( players.length ) {
+    if (players.length > 1) {
+      console.error('players', players);
+      throw new Error('Incorrect player retrieval, should not get more than 1');
+    } else if (players.length === 1) {
       const player = players.shift();
       //console.debug('Make sure to check blacklisted status here');
       if ( player.blacklist ) {
