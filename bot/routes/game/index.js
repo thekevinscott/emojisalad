@@ -23,7 +23,7 @@ module.exports = (player, message) => {
     console.info('game help');
     return require('./help')(player, message);
   } else {
-    console.info('game else');
+    console.info('game else', player);
     return Game.get({ player_id: player.id }).then((games) => {
       const game = games[0];
       console.info('got game', game);
