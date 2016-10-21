@@ -120,7 +120,6 @@ export default typeToReducer({
     },
   },
   [UPDATE_COMPOSE]: (state, { gameKey, text }) => {
-    console.log('update compose', gameKey, text);
     return updateGame(state, gameKey, {
       compose: text,
     });

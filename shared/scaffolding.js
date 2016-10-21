@@ -21,6 +21,7 @@ console.error = function() {
     let args = Array.prototype.slice.call(arguments);
     args.unshift(new Date());
     consoleError.apply(null, args);
+    console.info.apply(null, args);
   }
 };
 

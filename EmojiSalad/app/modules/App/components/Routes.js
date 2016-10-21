@@ -24,11 +24,26 @@ import {
 } from '../../Game';
 
 class Routes extends Component {
-  constructor(props) {
-    super(props);
-    Linking.getInitialURL().then((url) => {
-      this.initialUrl = url;
-    });
+  componentDidMount() {
+    Linking.addEventListener('url', this.handleOpenURL);
+  }
+
+  componentWillUnmount() {
+    Linking.removeEventListener('url', this.handleOpenURL);
+  }
+
+  handleOpenURL(event) {
+    if (event.url && event.url.indexOf('emojisalad://') === 0) {
+      const path = event.url.split('emojisalad://').pop();
+      if (path.indexOf('games/' === 0)) {
+        const gameKey = path.split('/').pop();
+        Actions.game({
+          game: {
+            key: gameKey,
+          },
+        });
+      }
+    }
   }
 
   reducerCreate(params) {
@@ -40,7 +55,6 @@ class Routes extends Component {
   }
 
   isInitial(key) {
-    console.log('initial url', this.initialUrl);
     if (key === 'register') {
       return !this.props.me.key;
     } else if (key === 'games') {
