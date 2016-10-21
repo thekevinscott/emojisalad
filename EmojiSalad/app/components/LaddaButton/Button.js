@@ -96,6 +96,7 @@ export default class LaddaButton extends Component {
             ...styles.box,
             width: this.state.width,
             borderRadius: this.state.borderRadius,
+            justifyContent: this.props.isLoading ? 'flex-start' : 'center',
           }}
         >
           <TouchableOpacity

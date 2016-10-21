@@ -5,13 +5,9 @@
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
+//import Spinner from 'react-native-loading-spinner-overlay';
 import { Status } from '../../../components/Status';
 //import { Logger } from '../../../components/Logger';
-
-import {
-  updateDeviceToken,
-} from '../../../utils/pushNotificationListeners/actions';
 
 import {
   View,
@@ -25,70 +21,13 @@ import RowHeader from './RowHeader';
 import * as styles from '../styles';
 
 import {
-  fetchGames,
-  openGame,
-  updateStartingMessage,
-} from '../actions';
-
-import {
-  selectGamesByNewestFirst,
-  selectUI,
+  mapStateToProps,
+  mapDispatchToProps,
 } from '../selectors';
-
-import {
-  selectMe,
-} from '../../App/selectors';
-
-import {
-  selectStatus,
-} from '../../../utils/Api/websocket/selectors';
-
-function mapStateToProps(state) {
-  const loggerMessages = state.ui.Logger.messages;
-
-  return {
-    status: selectStatus(state),
-    games: selectGamesByNewestFirst(state),
-    me: selectMe(state),
-    ui: selectUI(state),
-    logger: loggerMessages,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: {
-      fetchGames: (userKey) => {
-        return dispatch(fetchGames(userKey));
-      },
-      openGame: (game, games) => {
-        return dispatch(openGame(game, games));
-      },
-      updateStartingMessage: game => {
-        return dispatch(updateStartingMessage(game));
-      },
-      updateDeviceToken: token => {
-        dispatch(updateDeviceToken(token));
-      },
-    },
-  };
-}
 
 const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
 });
-
-const getStatus = status => {
-  if (status) {
-    return (
-      <Status>
-        {status}
-      </Status>
-    );
-  }
-
-  return null;
-};
 
 class Games extends Component {
   constructor(props) {
@@ -172,8 +111,7 @@ class Games extends Component {
       <View
         style={styles.games}
       >
-        {getStatus(this.props.status)}
-        <Spinner visible={this.props.ui.fetching && !this.props.games.length} />
+        <Status status={this.props.status} />
         <ListView
           dataSource={this.getGames()}
           renderRow={this.renderRow}

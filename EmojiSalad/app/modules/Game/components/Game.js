@@ -19,18 +19,6 @@ import {
 
 //const MESSAGES_PER_PAGE = 20;
 
-const getStatus = status => {
-  if (status) {
-    return (
-      <Status>
-        {status}
-      </Status>
-    );
-  }
-
-  return null;
-};
-
 class Game extends Component {
   constructor(props) {
     super(props);
@@ -88,7 +76,7 @@ class Game extends Component {
       <View
         style={styles.container}
       >
-        {getStatus(this.props.status)}
+        <Status status={this.props.status} />
         <View style={{
           flex: 1,
         }}>

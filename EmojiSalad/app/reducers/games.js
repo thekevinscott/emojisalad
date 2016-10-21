@@ -134,13 +134,13 @@ export default typeToReducer({
       const messages = translateMessages(state[gameKey], {
         messages: [message],
       });
-      const game = state[gameKey];
+      const game = state[gameKey] || {};
       return {
         ...state,
         [gameKey]: {
           ...game,
           messages,
-          totalMessages: game.totalMessages + 1,
+          totalMessages: (game.totalMessages || 0) + 1,
         },
       };
     },

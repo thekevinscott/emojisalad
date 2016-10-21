@@ -1,6 +1,25 @@
 import {
+  fetchGames,
+  openGame,
+  updateStartingMessage,
+} from './actions';
+
+import {
+  updateDeviceToken,
+} from '../../utils/pushNotificationListeners/actions';
+
+
+import {
   sortBy,
 } from '../../utils/sort';
+
+import {
+  selectMe,
+} from '../App/selectors';
+
+import {
+  selectStatus,
+} from '../../utils/Api/websocket/selectors';
 
 export function selectUser(state, userKey) {
   return state.data.users[userKey];
@@ -57,3 +76,35 @@ export function selectUI(state) {
     fetching: state.ui.Games.fetching,
   };
 }
+
+export function mapStateToProps(state) {
+  const loggerMessages = state.ui.Logger.messages;
+
+  return {
+    games: selectGamesByNewestFirst(state),
+    me: selectMe(state),
+    ui: selectUI(state),
+    logger: loggerMessages,
+    status: selectStatus(state),
+  };
+}
+
+export function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      fetchGames: (userKey) => {
+        return dispatch(fetchGames(userKey));
+      },
+      openGame: (game, games) => {
+        return dispatch(openGame(game, games));
+      },
+      updateStartingMessage: game => {
+        return dispatch(updateStartingMessage(game));
+      },
+      updateDeviceToken: token => {
+        dispatch(updateDeviceToken(token));
+      },
+    },
+  };
+}
+

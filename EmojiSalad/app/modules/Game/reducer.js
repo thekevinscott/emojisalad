@@ -28,7 +28,9 @@ const getEmptyGame = (game = {}) => ({
     first: (game.seen || {}).first || null,
     last: (game.seen || {}).last || null,
   },
+  sending: false,
   loading: game.loading || false,
+  error: game.error || false,
   updated: new Date(),
 });
 
@@ -89,6 +91,7 @@ export default typeToReducer({
     PENDING: (state, { meta }) => {
       return updateGame(state, meta.gameKey, {
         loading: true,
+        error: false,
       });
     },
     FULFILLED: (state, action) => {
@@ -102,6 +105,7 @@ export default typeToReducer({
       return updateGame(state, action.data.key, {
         updated: new Date(),
         loading: false,
+        error: false,
         seen: {
           first,
           last,
@@ -111,10 +115,12 @@ export default typeToReducer({
     REJECTED: (state, { meta }) => {
       return updateGame(state, meta.gameKey, {
         loading: false,
+        error: true,
       });
     },
   },
   [UPDATE_COMPOSE]: (state, { gameKey, text }) => {
+    console.log('update compose', gameKey, text);
     return updateGame(state, gameKey, {
       compose: text,
     });
@@ -122,12 +128,16 @@ export default typeToReducer({
   [SEND_MESSAGE]: {
     PENDING: (state, { payload }) => {
       return updateGame(state, payload.gameKey, {
+        sending: true,
+        error: false,
         compose: '',
       });
     },
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
       return updateGame(state, gameKey, {
+        sending: false,
+        error: false,
         compose: '',
         seen: {
           ...state[gameKey].seen,
@@ -136,17 +146,24 @@ export default typeToReducer({
         },
       });
     },
+    REJECTED: (state, { meta }) => {
+      const gameKey = meta.gameKey;
+      return updateGame(state, gameKey, {
+        sending: false,
+        error: true,
+      });
+    },
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, { data }) => {
       const gameKey = data.gameKey;
-      const game = state[gameKey];
+      const game = state[gameKey] || {};
 
       return updateGame(state, gameKey, {
         seen: {
-          ...state[gameKey].seen,
+          ...(state[gameKey] || {}).seen,
           updated: new Date(),
-          last: game.active ? data.key : game.seen.last,
+          last: game.active ? data.key : (game.seen || {}).last,
         },
       });
     },

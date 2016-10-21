@@ -1,4 +1,4 @@
-const TIMEOUT_LENGTH = 5000;
+const TIMEOUT_LENGTH = 20000;
 const timers = new Map();
 
 export const setPendingAction = (type, action, dispatch) => {
@@ -9,7 +9,7 @@ export const setPendingAction = (type, action, dispatch) => {
   const metaId = meta.id;
   const fn = setTimeout(() => {
     const REJECTED = `${type}_REJECTED`;
-    console.log('REJECTED SUCKA', type, metaId, REJECTED);
+    //console.log('REJECTED SUCKA', type, metaId, REJECTED);
     timers.set(metaId, null);
     dispatch({
       meta,

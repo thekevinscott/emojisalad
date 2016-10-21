@@ -3,7 +3,7 @@ export const BUTTON = {
   HEIGHT: 40,
   MARGIN: 20,
   WIDTH: {
-    REST: 250,
+    REST: 150,
     LOADING: 40,
   },
   BORDER_RADIUS: {
@@ -30,6 +30,7 @@ export const styles = {
   box: {
     margin: BUTTON.MARGIN,
     height: BUTTON.HEIGHT,
+    overflow: 'hidden',
 
     backgroundColor: '#AAA',
   },

@@ -19,6 +19,7 @@ import mapState from './utils/mapState';
 
 const initialState = {
   fetching: true,
+  error: false,
   logger: '',
   games: {},
   active: false,
@@ -36,9 +37,10 @@ export default typeToReducer({
   [OPEN_GAME]: (state, { games }) => ({
     ...state,
     games: games.reduce((obj, game) => {
+      const messageKey = ((game.messages || [])[0] || {}).key;
       return {
         ...obj,
-        [game.key]: setStartingMessage(game, game.messages[0].key),
+        [game.key]: setStartingMessage(game, messageKey),
       };
     }, {}),
   }),
@@ -52,11 +54,16 @@ export default typeToReducer({
       ...state,
       games: {
         ...state.games,
-        [game.key]: setStartingMessage(game, message.key),
+        [game.key]: setStartingMessage(game, (message || {}).key),
       },
     };
   },
   [FETCH_GAMES]: {
+    PENDING: (state) => ({
+      ...state,
+      fetching: true,
+      error: false,
+    }),
     FULFILLED: (state, { data }) => ({
       ...state,
       games: data.reduce((obj, game) => ({
@@ -64,12 +71,14 @@ export default typeToReducer({
         [game.key]: setStartingMessage(game, game.messages[0].key),
       }), {}),
       fetching: false,
+      error: false,
     }),
     REJECTED: (state, action) => {
       console.log('action from fetch games', action);
       return {
         ...state,
         fetching: false,
+        error: true,
       };
     },
   },

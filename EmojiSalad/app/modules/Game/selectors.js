@@ -71,7 +71,7 @@ export function mapStateToProps(state, props) {
     seen,
     loading,
     updated,
-    status: selectStatus(state),
+    status: selectStatus(state, { loading }),
   };
 }
 

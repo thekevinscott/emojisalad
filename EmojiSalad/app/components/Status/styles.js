@@ -10,6 +10,7 @@ export const status = {
   overflow: 'hidden',
   borderBottomWidth: 1,
   borderBottomColor: 'rgba(0, 0, 0, 0.15)',
+  opacity: 1,
   alignItems: 'center',
   justifyContent: 'center',
   /*
@@ -20,4 +21,8 @@ export const status = {
     width: 0,
   },
   */
+};
+
+export const spinner = {
+  marginRight: 10,
 };
