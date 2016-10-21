@@ -19,7 +19,7 @@ import {
   PUSHCITY,
 } from '../../config/app';
 
-export default function pushNotification(userKey, body, options = {}) {
+export default function pushNotification(userKey, gameKey, body, options = {}) {
   const url = `${PUSHCITY.URL}notify`;
   const params = {
     apiKey: PUSHCITY.API_KEY,
@@ -28,6 +28,7 @@ export default function pushNotification(userKey, body, options = {}) {
     notification: {
       alert: body,
     },
+    view: `games/${gameKey}`,
   };
   console.info('this is a push notification sending', url, params);
   fetch(`${PUSHCITY.URL}`).then(response => {

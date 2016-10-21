@@ -25,7 +25,7 @@ export default function send(message) {
   //
   // *should*.
   console.info('send a notification', message);
-  pushNotification(message.userKey, message.body, {
+  pushNotification(message.userKey, message.gameKey, message.body, {
     badge: 3,
   });
 
