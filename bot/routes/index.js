@@ -13,7 +13,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
     to,
     protocol
   }).then((players) => {
-    //console.info('players', players);
+    console.info('players', players);
     if ( players.length ) {
       const player = players.shift();
       //console.debug('Make sure to check blacklisted status here');
