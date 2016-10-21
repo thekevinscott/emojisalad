@@ -24,6 +24,7 @@ module.exports = (message) => {
 
   // responses comes back as an array of messages
   return router({
+    game_key: message.game_key,
     from: message.from,
     message: message.body,
     to: message.to,
