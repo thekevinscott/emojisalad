@@ -9,7 +9,7 @@ const sendMessage = ws => payload => {
     } else {
       console.log('the payload: ', payload);
       const parsedPayload = JSON.stringify(payload);
-      ws.send(parsedPayload);
+      ws.emit('message', parsedPayload);
       resolve(parsedPayload);
     }
   });
