@@ -25,7 +25,8 @@ export default function bootstrapWebsocket(server) {
     socket.on('message', json => {
       //console.log(new Date(), 'we got a message');
       return parseMessage(json).then(message => {
-        console.info('received a message', message);
+        const startTime = new Date();
+        console.info('received a message', message, startTime);
         // save the websocket connection locally,
         // keyed off of the user key, so we can
         // send and receive messages
@@ -33,7 +34,7 @@ export default function bootstrapWebsocket(server) {
 
         // process the particular route based
         // off of the incoming type
-        receiveMessage(socket, message).then(sendMessage(socket)).catch(sendMessage(socket));
+        receiveMessage(socket, message).then(sendMessage(socket, startTime)).catch(sendMessage(socket, startTime));
 
         // check for presence of device info and device
         // token; if non existent, send out requests
