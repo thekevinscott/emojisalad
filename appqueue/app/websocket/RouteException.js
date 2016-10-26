@@ -1,12 +1,11 @@
-const RouteException = (type, message, meta) => {
-  console.error('setting a route exception', this);
-  this.data = {
-    message,
-  };
-  this.type = type;
-  this.meta = meta;
-};
-
-RouteException.prototype = new Error();
-
-export default RouteException;
+export default class RouteException extends Error {
+  constructor(type, message, meta) {
+    super(message);
+    //console.error('setting a route exception', this);
+    this.data = {
+      message,
+    };
+    this.type = type;
+    this.meta = meta;
+  }
+}
