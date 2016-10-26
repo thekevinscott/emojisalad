@@ -8,9 +8,9 @@ import Games from '../modules/Games/reducer';
 import Game from '../modules/Game/reducer';
 import Logger from '../components/Logger/reducer';
 
-import data, {
-  router,
-} from '../reducers';
+import data from '../reducers/data';
+
+import application from '../reducers/application';
 
 export default combineReducers({
   ui: combineReducers({
@@ -21,5 +21,5 @@ export default combineReducers({
     Logger,
   }),
   data,
-  router,
+  application,
 });

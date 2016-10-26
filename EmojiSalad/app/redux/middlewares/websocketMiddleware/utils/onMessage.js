@@ -2,17 +2,11 @@ import {
   fromApiToType,
 } from '../translate';
 
-import {
-  dispatch,
-} from '../utils/store';
+import { clearTimer } from './sendMessage';
 
-import {
-  clearPendingAction,
-} from '../utils/timer';
-
-function parsePayload(e) {
+const parsePayload = (e) => {
   try {
-    const payload = JSON.parse(e.data);
+    const payload = JSON.parse(e);
     //console.log('got a message back', payload);
     if (!payload.type) {
       console.log('no type for payload', Object.keys(payload));
@@ -21,9 +15,9 @@ function parsePayload(e) {
   } catch (err) {
     console.error('payload could not be parsed', e.data, err);
   }
-}
+};
 
-const onMessage = e => {
+const onMessage = dispatch => e => {
   const {
     type,
     data,
@@ -38,7 +32,10 @@ const onMessage = e => {
     meta,
   };
 
-  clearPendingAction(meta);
+  console.log('meta', meta);
+  if (meta && meta.id) {
+    clearTimer(meta.id);
+  }
 
   return dispatch(payload);
 };

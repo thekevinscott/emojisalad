@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Logger } from '../../../components/Logger';
 //import Button from 'react-native-button';
 import {
   Text,
@@ -183,7 +182,6 @@ class Register extends Component {
           ) : null
         }
         {success}
-        <Logger logger={this.props.logger} />
       </Animated.View>
     );
   }

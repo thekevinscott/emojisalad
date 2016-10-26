@@ -4,18 +4,17 @@ import {
   Vibration,
 } from 'react-native';
 
-import translateTimestampFromDatabase from '../utils/translateTimestampFromDatabase';
+import translateTimestampFromDatabase from '../../utils/translateTimestampFromDatabase';
 
-// TODO: Fix this import (should pull from index)
 import {
   FETCH_GAMES,
-} from '../modules/Games/types';
+} from '../../modules/Games/types';
 
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
-} from '../modules/Game/types';
+} from '../../modules/Game/types';
 
 export const initialState = {};
 

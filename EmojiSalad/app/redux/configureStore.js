@@ -9,10 +9,6 @@ import devTools from 'remote-redux-devtools';
 import reducer from './reducer';
 
 import {
-  configureWebsocket,
-} from '../utils/Api/websocket';
-
-import {
   updateDeviceInfo,
 } from '../utils/device/actions';
 
@@ -29,8 +25,6 @@ export default function configureStore(initialState = {}) {
   );
 
   const store = createStore(reducer, initialState, enhancer);
-
-  configureWebsocket(store);
 
   store.dispatch(updateDeviceInfo());
 

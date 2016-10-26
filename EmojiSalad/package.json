@@ -28,6 +28,7 @@
     "redux-thunk": "^2.1.0",
     "remote-redux-devtools": "0.3.4",
     "reselect": "2.5.3",
+    "socket.io": "^1.5.0",
     "type-to-reducer": "1.0.1"
   },
   "devDependencies": {

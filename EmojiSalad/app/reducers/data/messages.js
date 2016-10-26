@@ -1,16 +1,16 @@
 import typeToReducer from 'type-to-reducer';
 
-import translateTimestampFromDatabase from '../utils/translateTimestampFromDatabase';
+import translateTimestampFromDatabase from '../../utils/translateTimestampFromDatabase';
 
 import {
   FETCH_GAMES,
-} from '../modules/Games/types';
+} from '../../modules/Games/types';
 
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
-} from '../modules/Game/types';
+} from '../../modules/Game/types';
 
 const initialState = {};
 

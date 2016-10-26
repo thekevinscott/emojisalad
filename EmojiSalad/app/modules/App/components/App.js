@@ -6,6 +6,7 @@ import AppProvider from '../../../redux/AppProvider';
 import Routes from './Routes';
 import {
   selectMe,
+  selectGames,
 } from '../selectors';
 
 const codePushOptions = {
@@ -21,10 +22,14 @@ class App extends Component {
   render() {
     const state = this.props.store.getState();
     const me = selectMe(state);
+    const games = selectGames(state);
 
     return (
       <AppProvider store={this.props.store}>
-        <Routes me={me} />
+        <Routes
+          me={me}
+          games={games}
+        />
       </AppProvider>
     );
   }

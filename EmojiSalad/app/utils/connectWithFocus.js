@@ -26,15 +26,17 @@ function getWrappedComponent(
 
 const patchedConnect = (...args) => component => {
   const componentName = component.name;
-  const mapStateToProps = ({ router }) => {
+  const mapStateToProps = ({ application }) => {
     const {
       scene,
-      websocket,
-    } = router;
+    } = application.router;
+    const {
+      connected,
+    } = application.connection;
 
     return {
       activeComponent: (scene || {}).title,
-      websocketConnected: (websocket || {}).connected,
+      websocketConnected: connected,
     };
   };
 

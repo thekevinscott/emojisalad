@@ -7,7 +7,6 @@ import promiseMiddleware from 'redux-promise-middleware';
 import storageMiddleware from './storageMiddleware';
 import websocketMiddleware from './websocketMiddleware';
 import appqueueMiddleware from './appqueueMiddleware';
-import navigationMiddleware from './navigationMiddleware';
 import pushcityMiddleware from './pushcityMiddleware';
 
 const middleware = applyMiddleware(
@@ -16,7 +15,6 @@ const middleware = applyMiddleware(
   pushcityMiddleware,
   storageMiddleware,
   websocketMiddleware,
-  navigationMiddleware,
   appqueueMiddleware,
 );
 

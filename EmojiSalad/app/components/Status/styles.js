@@ -4,7 +4,6 @@
 
 export const status = {
   backgroundColor: 'yellow',
-  //marginTop: HEADER_HEIGHT,
   height: 40,
   flexDirection: 'row',
   overflow: 'hidden',
@@ -13,14 +12,10 @@ export const status = {
   opacity: 1,
   alignItems: 'center',
   justifyContent: 'center',
-  /*
-  shadowRadius: 3.0,
-  shadowColor: 'black',
-  shadowOffset: {
-    height: 2,
-    width: 0,
-  },
-  */
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  zIndex: 10,
 };
 
 export const spinner = {

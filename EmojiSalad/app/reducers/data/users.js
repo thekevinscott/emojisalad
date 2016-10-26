@@ -1,9 +1,8 @@
 import typeToReducer from 'type-to-reducer';
 
-// TODO: Fix this import (should pull from index)
 import {
   FETCH_GAMES,
-} from '../modules/Games/types';
+} from '../../modules/Games/types';
 
 const initialState = {};
 

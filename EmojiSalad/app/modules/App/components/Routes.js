@@ -65,6 +65,7 @@ class Routes extends Component {
   }
 
   render() {
+    const gamesTitle = `Games (${this.props.games.length})`;
     const scenes = Actions.create(
       <Scene key="root">
         <Scene
@@ -80,7 +81,7 @@ class Routes extends Component {
           key="games"
           component={Games}
           initial={this.isInitial('games')}
-          title="Games"
+          title={gamesTitle}
         />
         <Scene
           key="game"

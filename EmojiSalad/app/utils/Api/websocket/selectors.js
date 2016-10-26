@@ -1,20 +1,13 @@
 import moment from 'moment';
 
-const getAttemptString = attempts => {
-  if (attempts === 1) {
-    return '1 attempt';
-  }
-
-  return `${attempts} attempts`;
-};
 
 export function selectStatus({
   ui: {
     Games,
   },
-  router: {
-    websocket: {
-      attempts,
+  application: {
+    connection: {
+      lastConnected,
       connected,
     },
   },
@@ -46,12 +39,12 @@ export function selectStatus({
     };
   } else if (!connected) {
     return {
-      text: `Connecting to Server: ${getAttemptString(attempts)}`,
+      text: 'Connecting to Server',
       state: 1,
     };
   }
 
-  const t = moment(connected);
+  const t = moment(lastConnected);
   const time = t.format('HH:mm:ss a');
   return {
     text: `Complete at ${time}`,

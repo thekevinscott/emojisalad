@@ -17,11 +17,22 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.3</string>
+	<string>0.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.siblings.EmojiSalad</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>emojisalad</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>33</string>
+	<string>2</string>
 	<key>CodePushDeploymentKey</key>
 	<string>S6jiYMMKbMUpV2r1JXmUDCJCPlx2VJoZyFQ0-</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -53,16 +64,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.siblings.EmojiSalad</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>emojisalad</string>
-			</array>
-		</dict>
-	</array>
 </dict>
 </plist>

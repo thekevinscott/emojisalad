@@ -10,6 +10,8 @@ import { Status } from '../../../components/Status';
 //import { Logger } from '../../../components/Logger';
 
 import {
+  Text,
+  ActivityIndicator,
   View,
   TouchableHighlight,
   ListView,
@@ -106,12 +108,9 @@ class Games extends Component {
     return ds.cloneWithRows(this.props.games);
   }
 
-  render() {
-    return (
-      <View
-        style={styles.games}
-      >
-        <Status status={this.props.status} />
+  getContent() {
+    if (this.props.games.length) {
+      return (
         <ListView
           dataSource={this.getGames()}
           renderRow={this.renderRow}
@@ -119,6 +118,36 @@ class Games extends Component {
           style={styles.container}
           enableEmptySections={true}
         />
+      );
+    }
+
+    return (
+      <View
+        style={{
+          paddingTop: 80,
+        }}
+      >
+        <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}>
+          <ActivityIndicator style={{
+            marginRight: 10,
+          }} />
+          <Text>Loading Games</Text>
+        </View>
+      </View>
+    );
+  }
+
+  render() {
+    return (
+      <View
+        style={styles.games}
+      >
+        <Status status={this.props.status} />
+        {this.getContent()}
       </View>
     );
   }

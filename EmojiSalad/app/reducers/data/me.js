@@ -2,15 +2,15 @@ import typeToReducer from 'type-to-reducer';
 
 import {
   UPDATE_DEVICE_TOKEN,
-} from '../utils/pushNotificationListeners/types';
+} from '../../utils/pushNotificationListeners/types';
 
 import {
   UPDATE_DEVICE_INFO,
-} from '../utils/device/types';
+} from '../../utils/device/types';
 
 import {
   types,
-} from '../modules/Register';
+} from '../../modules/Register';
 const {
   SUBMIT_CLAIM,
 } = types;
