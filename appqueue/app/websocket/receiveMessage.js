@@ -33,14 +33,14 @@ function processRoute({
     };
   }).catch(data => {
     if (data.message || data.stack) {
-      console.error('data back from rejection', data.message, data.stack);
+      console.error('data back from rejection 1', data.message, data.stack);
       throw new RouteException(
         REJECTED,
         data.message,
         meta,
       );
     } else {
-      console.error('data back from rejection', data);
+      console.error('data back from rejection 2', data);
       throw new RouteException(
         REJECTED,
         'Unknown error',

@@ -1,4 +1,5 @@
 const RouteException = (type, message, meta) => {
+  console.error('setting a route exception', this);
   this.data = {
     message,
   };
