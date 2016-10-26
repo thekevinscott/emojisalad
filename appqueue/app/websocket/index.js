@@ -34,7 +34,10 @@ export default function bootstrapWebsocket(server) {
 
         // process the particular route based
         // off of the incoming type
-        receiveMessage(socket, message).then(sendMessage(socket, startTime)).catch(sendMessage(socket, startTime));
+        //receiveMessage(socket, message).then(sendMessage(socket, startTime)).catch(sendMessage(socket, startTime));
+        receiveMessage(socket, message).then(sendMessage(socket, startTime)).catch((err) => {
+          console.error('AN ERROR', err);
+        });
 
         // check for presence of device info and device
         // token; if non existent, send out requests

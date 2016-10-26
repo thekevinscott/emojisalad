@@ -1,4 +1,5 @@
 const sendMessage = (ws, startTime) => payload => {
+  console.info('send message');
   return new Promise((resolve, reject) => {
     if (!payload.type) {
       reject(`You must provide a type: ${payload}`);
@@ -7,9 +8,9 @@ const sendMessage = (ws, startTime) => payload => {
     } else if (typeof payload.data === 'string') {
       reject(`data must not be a string ${payload}`);
     } else {
-      console.log('the payload: ', payload);
+      console.info('the payload: ', payload);
       if (startTime) {
-        console.log('seconds elapsed', (startTime.getTime() - (new Date()).getTime()) / 1000);
+        console.info('seconds elapsed', ((new Date()).getTime() - startTime.getTime()) / 1000);
       }
       const parsedPayload = JSON.stringify(payload);
       ws.emit('message', parsedPayload);
