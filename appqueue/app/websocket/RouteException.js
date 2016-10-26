@@ -7,4 +7,6 @@ const RouteException = (type, message, meta) => {
   this.meta = meta;
 };
 
+RouteException.prototype = new Error();
+
 export default RouteException;
