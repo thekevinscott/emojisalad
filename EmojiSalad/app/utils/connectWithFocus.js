@@ -30,6 +30,7 @@ const patchedConnect = (...args) => component => {
     const {
       scene,
     } = application.router;
+
     const {
       connected,
     } = application.connection;

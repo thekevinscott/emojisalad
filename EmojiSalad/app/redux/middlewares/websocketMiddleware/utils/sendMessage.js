@@ -4,7 +4,7 @@ import {
 
 const messages = [];
 
-const TIMEOUT_LENGTH = 5000;
+const TIMEOUT_LENGTH = 60000;
 
 const getMessageId = () => {
   const messageId = messages.length;

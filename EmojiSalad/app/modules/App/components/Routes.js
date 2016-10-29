@@ -65,7 +65,11 @@ class Routes extends Component {
   }
 
   render() {
-    const gamesTitle = `Games (${this.props.games.length})`;
+    // This fucks up the connectWithFocus activeComponent
+    // listener, since the active component name is Games (24),
+    // not Games
+    //const gamesTitle = `Games (${this.props.games.length})`;
+    const gamesTitle = 'Games';
     const scenes = Actions.create(
       <Scene key="root">
         <Scene

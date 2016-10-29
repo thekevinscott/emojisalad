@@ -62,6 +62,7 @@ const websocketMiddleware = ({
       payload,
       meta,
     }, () => {
+      debugger;
       dispatch({
         ...rest,
         type: REJECTED,

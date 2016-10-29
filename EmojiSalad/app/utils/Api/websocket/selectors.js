@@ -12,7 +12,12 @@ export function selectStatus({
     },
   },
 }, game = {}) {
-  if (game.loading) {
+  if (!connected) {
+    return {
+      text: 'Connecting to Server',
+      state: 1,
+    };
+  } else if (game.loading) {
     return {
       text: 'Fetching latest messages',
       state: 500,
@@ -36,11 +41,6 @@ export function selectStatus({
     return {
       text: 'Error fetching games',
       state: 401,
-    };
-  } else if (!connected) {
-    return {
-      text: 'Connecting to Server',
-      state: 1,
     };
   }
 
