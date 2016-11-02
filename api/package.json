@@ -22,7 +22,7 @@
     "dateformat": "^1.0.12",
     "email-validator": "^1.0.4",
     "emoji-data": "^0.2.0",
-    "emoji-exists": "^0.0.8",
+    "emoji-exists": "^1.0.0",
     "express": "^4.13.4",
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.0.3",
