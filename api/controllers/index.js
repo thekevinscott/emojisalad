@@ -2,8 +2,18 @@
 const express = require('express');
 //const _ = require('lodash');
 
-module.exports = function(app) {
+function catchErr(err, res) {
+  console.error('error', err);
+  if ( err.message ) {
+    res.status(400).json({ error: err.message });
+  } else {
+    res.status(400).json({ error: err });
+  }
+}
+
+module.exports = (app) => {
   [
+    'challenges',
     'games',
     'users',
     'emoji',
@@ -29,12 +39,12 @@ module.exports = function(app) {
               console.error('err 1');
               catchErr(err, res);
             });
-          } catch(err) {
+          } catch (err) {
             console.error('err 2');
             catchErr(err, res);
-          };
+          }
         });
-      } catch(err) {
+      } catch (err) {
         //console.error('err', err, route);
         throw new Error('There was an error setting up router');
       }
@@ -47,12 +57,3 @@ module.exports = function(app) {
     res.send('hello world');
   });
 };
-
-function catchErr(err, res) {
-  console.error('error', err);
-  if ( err.message ) {
-    res.status(400).json({ error: err.message });
-  } else {
-    res.status(400).json({ error: err });
-  }
-}

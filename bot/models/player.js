@@ -6,15 +6,15 @@ const User = require('models/user');
 const _ = require('lodash');
 const api = require('../service')('api');
 
-let Player = {
+const Player = {
   // create a new player
   create: (params) => {
     return api('players', 'create', {
       to: params.to,
       from: params.from
-    }); 
+    });
   },
-  get: function(params) {
+  get: (params) => {
     return api('players', 'get', params);
   }
   //getOne: function(params) {

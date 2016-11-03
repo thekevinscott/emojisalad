@@ -1,19 +1,6 @@
 'use strict';
 const Phrase = require('models/phrase');
 
-module.exports = [
-  {
-    path: '/',
-    method: 'get',
-    fn: find
-  },
-  {
-    path: '/',
-    method: 'post',
-    fn: create
-  }
-];
-
 function create(req) {
   return Phrase.create(req.body);
 }
@@ -21,3 +8,25 @@ function create(req) {
 function find(req) {
   return Phrase.find(req.query);
 }
+
+function guess(req) {
+  return Phrase.guess(req.body.guess, req.body.phrase);
+}
+
+module.exports = [
+  {
+    path: '/',
+    method: 'get',
+    fn: find,
+  },
+  {
+    path: '/',
+    method: 'post',
+    fn: create,
+  },
+  {
+    path: '/guess',
+    method: 'post',
+    fn: guess,
+  }
+];

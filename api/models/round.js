@@ -3,12 +3,10 @@ const squel = require('squel');
 const Promise = require('bluebird');
 const db = require('db');
 //const rule = require('config/rule');
-const levenshtein = require('levenshtein');
-const autosuggest = require('autosuggest');
 import setKey from 'setKey';
 
 const Player = require('./player');
-//const Game = require('./game');
+const Phrase = require('./phrase');
 let Game;
 
 const Round = {
@@ -22,111 +20,10 @@ const Round = {
       return game.round.clues_allowed - rows[0].cnt;
     });
   },
-  /*
-  getClue: Promise.coroutine(function* (game, player) {
-    const clue_query = squel
-                     .select()
-                     .field('clue_id')
-                     .from('round_clues')
-                     .where('round_id=?',game.round.id);
-
-    let select_query = squel
-                .select()
-                .field('c.id as clue_id')
-                .field('c.clue')
-                .field('c.phrase_id')
-                .from('clues', 'c')
-                .left_join('phrases','p','c.phrase_id=p.id')
-                .where('p.id=?', game.round.phrase_id)
-                .where('c.id NOT IN ?', clue_query)
-                .limit(1);
-
-
-    let rows = yield db.query(select_query.toString());
-    return rows[0];
-    //let clue = rows[0];
-
-    //if ( clue ) {
-      //return clue;
-    //} else {
-      //return null;
-    //}
-  }),
-  */
-
-  parsePhrase: (phrase) => {
-    const ignored_words = [
-      'the',
-      'of',
-      'a',
-      'an',
-      'for',
-      'and'
-    ];
-
-    const translate_words = {
-      dr: 'doctor',
-      mr: 'mister',
-      mrs: 'missus',
-      ms: 'miss'
-    };
-    return phrase.toLowerCase().replace(/[^\w\s]|_/g, '').split(' ').filter((word) => {
-      return ignored_words.indexOf(word.toLowerCase()) === -1 && word;
-    }).map((word) => {
-      if (translate_words[word]) {
-        return translate_words[word];
-      } else {
-        return word;
-      }
-    }).join(' ');
-  },
-  checkPhrase: (phrase, guess) => {
-    console.info('phrase and guess', phrase, guess);
-    // check distance of phrase
-    //const levenshtein_distance = levenshtein(phrase, guess);
-    const distance = levenshtein(phrase, guess) / phrase.length;
-    //const acceptable_distance = 6;
-    //return levenshtein_distance <= acceptable_distance;
-    return distance <= 0.31;
-  },
   guess: (round, player, original_guess) => {
     console.info('get ready to guess');
     return Round.findOne(round).then((foundRound) => {
-      console.info('the round guessing on', foundRound);
-      const phrase = Round.parsePhrase(foundRound.phrase);
-      const guess = Round.parsePhrase(original_guess);
-
-      if ( Round.checkPhrase(phrase, guess) ) {
-        return true;
-      } else if ( Round.checkPhrase(foundRound.phrase.split(' ').join('').toLowerCase(), guess) ) {
-        return true;
-      } else {
-        console.info('round check phrase, failed, next check', autosuggest, guess);
-        const autosuggest_timeout_length = (process.env.ENVIRONMENT === 'test') ? 5 : 1000;
-        // could also check bing here
-        //
-        // finally, ping google and see what they say about this phrase
-        // only check the first result though.
-        return autosuggest(guess).then((suggested_results) => {
-          console.info('suggested results', suggested_results);
-          if ( suggested_results.length ) {
-            const top_result = Round.parsePhrase(suggested_results[0].result);
-            return Round.checkPhrase(phrase, top_result);
-          } else {
-            return false;
-          }
-        }).timeout(autosuggest_timeout_length).then((result) => {
-          console.info('the final result of our guess', result);
-          return result;
-        }).catch(Promise.TimeoutError, () => {
-          console.info(`timed out at auto suggest at ${autosuggest_timeout_length} milliseconds`);
-          return false;
-        }).catch((err) => {
-          console.info('some other issue with autosuggest', err);
-          // swallow this silently
-          return false;
-        });
-      }
+      return Phrase.guess(original_guess, foundRound.phrase);
     }).then((result) => {
       console.info('result of the guess', result);
       const promises = [];

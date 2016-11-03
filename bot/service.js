@@ -4,13 +4,13 @@ const registry = require('microservice-registry');
 const Promise = require('bluebird');
 const req = Promise.promisify(require('request'));
 const request = function(options) {
-  //console.log('options', options);
   return req(options).then((response) => {
-    //console.log('re', response);
     let body = response.body;
     try {
       body = JSON.parse(body);
-    } catch(err) {}
+    } catch (err) {
+      // nada
+    }
 
     if ( body ) {
       return body;
@@ -64,7 +64,7 @@ const processEndpoint = (endpoint, params = {}) => {
 
 module.exports = function(name) {
   if ( ! name ) {
-    throw "You must provide a valid name for a service now";
+    throw new Error("You must provide a valid name for a service now");
   }
   return function(namespace, key, payload, params = {}) {
     //console.debug('make request');

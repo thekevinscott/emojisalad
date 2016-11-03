@@ -126,6 +126,10 @@ gulp.task('update-fixtures', (cb) => {
       table: 'game_numbers'
     },
     {
+      table: 'challenges',
+      data: false,
+    },
+    {
       data: false,
       table: 'games'
     },

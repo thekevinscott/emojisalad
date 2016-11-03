@@ -19,6 +19,13 @@ module.exports = [
     ]
   },
   {
+    table: 'challenges',
+    rows: [
+      { id: 1, phrase_id: 1, sender_id: 4, protocol: 'testqueue' },
+      { id: 2, phrase_id: 2, sender_id: 5, protocol: 'testqueue' }
+    ]
+  },
+  {
     table: 'clues',
     rows: [
       { phrase_id: 1, clue: 'MOVIE' },

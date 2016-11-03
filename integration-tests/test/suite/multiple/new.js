@@ -134,7 +134,7 @@ describe('New Game', () => {
 
     it('should create a player on the same number the user is texting on', () => {
       const player = getPlayers(1)[0];
-      player.to = game_numbers[game_numbers.length-1];
+      player.to = game_numbers[1];
       return setup([
         { player, msg: 'hello' },
         { player, msg: 'y' },

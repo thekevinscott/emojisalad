@@ -1,6 +1,8 @@
 'use strict';
 const squel = require('squel').useFlavour('mysql');
 const db = require('db');
+const levenshtein = require('levenshtein');
+const autosuggest = require('autosuggest');
 import setKey from 'setKey';
 
 const Phrase = {
@@ -69,7 +71,78 @@ const Phrase = {
     return db.query(query).then((phrase) => {
       return phrase;
     });
-  }
+  },
+  parsePhrase: (phrase) => {
+    const ignored_words = [
+      'the',
+      'of',
+      'a',
+      'an',
+      'for',
+      'and'
+    ];
+
+    const translate_words = {
+      dr: 'doctor',
+      mr: 'mister',
+      mrs: 'missus',
+      ms: 'miss'
+    };
+    return phrase.toLowerCase().replace(/[^\w\s]|_/g, '').split(' ').filter((word) => {
+      return ignored_words.indexOf(word.toLowerCase()) === -1 && word;
+    }).map((word) => {
+      if (translate_words[word]) {
+        return translate_words[word];
+      } else {
+        return word;
+      }
+    }).join(' ');
+  },
+  checkPhrase: (phrase, guess) => {
+    console.info('phrase and guess', phrase, guess);
+    // check distance of phrase
+    //const levenshtein_distance = levenshtein(phrase, guess);
+    const distance = levenshtein(phrase, guess) / phrase.length;
+    //const acceptable_distance = 6;
+    //return levenshtein_distance <= acceptable_distance;
+    return distance <= 0.31;
+  },
+  guess: (original_guess, original_phrase) => {
+    const phrase = Phrase.parsePhrase(original_phrase);
+    const guess = Phrase.parsePhrase(original_guess);
+
+    if ( Phrase.checkPhrase(phrase, guess) ) {
+      return true;
+    } else if ( Phrase.checkPhrase(original_phrase.split(' ').join('').toLowerCase(), guess) ) {
+      return true;
+    } else {
+      console.info('round check phrase, failed, next check', autosuggest, guess);
+      const autosuggest_timeout_length = (process.env.ENVIRONMENT === 'test') ? 5 : 1000;
+      // could also check bing here
+      //
+      // finally, ping google and see what they say about this phrase
+      // only check the first result though.
+      return autosuggest(guess).then((suggested_results) => {
+        console.info('suggested results', suggested_results);
+        if ( suggested_results.length ) {
+          const top_result = Phrase.parsePhrase(suggested_results[0].result);
+          return Phrase.checkPhrase(phrase, top_result);
+        } else {
+          return false;
+        }
+      }).timeout(autosuggest_timeout_length).then((result) => {
+        console.info('the final result of our guess', result);
+        return result;
+      }).catch(Promise.TimeoutError, () => {
+        console.info(`timed out at auto suggest at ${autosuggest_timeout_length} milliseconds`);
+        return false;
+      }).catch((err) => {
+        console.info('some other issue with autosuggest', err);
+        // swallow this silently
+        return false;
+      });
+    }
+  },
 };
 
 module.exports = Phrase;

@@ -34,3 +34,6 @@ require('./pass');
 
 // tests that pausing works correctly
 //require('./pause');
+
+// tests that challenges works correctly
+require('./challenge');

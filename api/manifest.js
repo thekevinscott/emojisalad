@@ -8,6 +8,12 @@ const getManifest = (port) => {
 
   const manifest = {
     base_url,
+    challenges: {
+      get: {
+        endpoint: `${base_url}challenges`,
+        method: 'GET'
+      }
+    },
     email: {
       parse: {
         endpoint: `${base_url}email/:email`,
@@ -107,6 +113,12 @@ const getManifest = (port) => {
         endpoint: `${base_url}users/:user_id`,
         method: 'PUT'
         //description: 'Update a user'
+      }
+    },
+    phrases: {
+      guess: {
+        endpoint: `${base_url}phrases/guess`,
+        method: 'POST'
       }
     },
     phones: {
