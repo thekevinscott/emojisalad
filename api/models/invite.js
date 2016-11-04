@@ -94,6 +94,7 @@ const Invite = {
           const players = game.players.map((player) => {
             return player.from;
           });
+          //console.log(invited_user, inviter_player);
           if ( invited_user.blacklist ) {
             return {
               error: `User has asked not to be contacted`,

@@ -291,6 +291,7 @@ const Round = {
             return obj;
           }, {});
         }).then((guesses_by_round_id) => {
+          console.info('guesses by roudn id', guesses_by_round_id);
           return Promise.all(
             rounds.map((round) => {
               return Promise.join(

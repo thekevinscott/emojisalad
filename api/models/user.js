@@ -33,7 +33,7 @@ const User = {
 
     let nickname = '';
     if ( params.nickname ) {
-      nickname = params.nickname.trim();
+      nickname = `${params.nickname}`.trim();
     }
 
     console.info('create user 1');
@@ -191,7 +191,6 @@ const User = {
 
           return Promise.all(users.map((user) => {
             user.players = players_by_id[user.id] || [];
-            //console.info('user', user);
             return Challenge.guesses({
               protocol: user.protocol,
               from: user.from,

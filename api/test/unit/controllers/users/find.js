@@ -7,6 +7,18 @@ let game_number;
 const from = ''+Math.random();
 const nickname = ''+Math.random();
 
+function createUser(userNickname) {
+  return post({ url: '/users', data: { from: Math.random(), to: game_number, protocol: 'testqueue', nickname: userNickname+Math.random() }}).then((res) => {
+    const user = res.body;
+    return post({
+      url: '/games',
+      data: { users: [{ id: user.id, to: 1 }] }
+    }).then(() => {
+      return user;
+    });
+  });
+}
+
 describe('Find', () => {
   before(() => {
     game_number = '+15559999999';
@@ -62,11 +74,11 @@ describe('Find', () => {
   });
 
   it('should return associated players with each user', () => {
-    const nickname = 'foobar';
-    return createUser(nickname).then((user) => {
-      return createUser(nickname);
+    const userNickname = 'foobar';
+    return createUser(userNickname).then((user) => {
+      return createUser(userNickname);
     }).then(() => {
-      return get({ url: '/users', data: { nickname }});
+      return get({ url: '/users', data: { nickname: userNickname }});
     }).then((res) => {
       res.statusCode.should.equal(200);
       res.body[0].should.have.property('players');
@@ -123,16 +135,3 @@ describe('Find', () => {
     });
   });
 });
-
-function createUser(nickname) {
-  return post({ url: '/users', data: { from: Math.random(), to: game_number, protocol: 'testqueue', nickname: nickname+Math.random() }}).then((res) => {
-    const user = res.body;
-    return post({
-      url: '/games',
-      data: { users: [{ id: user.id, to: 1 }] }
-    }).then(() => {
-      return user;
-    });
-  });
-}
-

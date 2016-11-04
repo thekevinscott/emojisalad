@@ -72,6 +72,9 @@ const Phrase = {
       return phrase;
     });
   },
+  contains: (phrase, guess) => {
+    return guess.toLowerCase().indexOf(phrase.toLowerCase()) !== -1;
+  },
   parsePhrase: (phrase) => {
     const ignored_words = [
       'the',
@@ -112,8 +115,13 @@ const Phrase = {
     const guess = Phrase.parsePhrase(original_guess);
 
     if ( Phrase.checkPhrase(phrase, guess) ) {
+      console.info('basic check pass');
       return Promise.resolve(1);
     } else if ( Phrase.checkPhrase(original_phrase.split(' ').join('').toLowerCase(), guess) ) {
+      console.info('split check pass');
+      return Promise.resolve(1);
+    } else if (Phrase.contains(phrase, guess)) {
+      console.info('contains pass');
       return Promise.resolve(1);
     } else {
       console.info('round check phrase, failed, next check', autosuggest, guess);

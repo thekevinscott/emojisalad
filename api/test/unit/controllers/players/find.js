@@ -22,13 +22,13 @@ describe('Find', () => {
     });
   });
 
-  it.only('should return a list of all players', () => {
+  it('should return a list of all players', () => {
     return get({ url: '/players' }).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.be.above(0);
       res.body[0].should.have.property('id');
       res.body[0].should.have.property('from');
-      res.body[0].should.have.property('to', game_number);
+      //res.body[0].should.have.property('to', game_number);
       res.body[0].should.have.property('avatar');
       res.body[0].should.have.property('created');
       res.body[0].should.have.property('nickname');
@@ -71,7 +71,7 @@ describe('Find', () => {
       });
     });
 
-    it.only('should return a single player', () => {
+    it('should return a single player', () => {
       return Player.find().then((players) => {
         const player = players[0];
         return get({ url: `/players/${player.id}` }).then((res) => {

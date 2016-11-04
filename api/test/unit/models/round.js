@@ -7,6 +7,7 @@ const User = require('models/User');
 const post = require('test/support/request').post;
 const Promise = require('bluebird');
 const protocol = 'testqueue';
+const Phrase = require('models/Phrase');
 const Round = proxyquire('models/Round', {
   autosuggest: () => {
     return new Promise((resolve) => {
@@ -35,10 +36,10 @@ describe('Round Model', () => {
 
   describe('parsePhrase', () => {
     it('should trim whitespace', () => {
-      Round.parsePhrase('         foo       ').should.equal('foo');
+      Phrase.parsePhrase('         foo       ').should.equal('foo');
     });
     it('should strip out ignored words', () => {
-      Round.parsePhrase('the of an foo an a for and ').should.equal('foo');
+      Phrase.parsePhrase('the of an foo an a for and ').should.equal('foo');
     });
   });
 
@@ -56,8 +57,8 @@ describe('Round Model', () => {
           from: user,
           protocol
         });
-      })).then((users) => {
-        const payload = { users };
+      })).then((theUsers) => {
+        const payload = { users: theUsers };
         return post({
           url: '/games',
           data: payload
@@ -76,24 +77,26 @@ describe('Round Model', () => {
       }).then((result) => {
         round = result;
         return Round.guess(round, round.players[0], the_guess);
-      }).then((round) => {
-        round.should.have.property('winner');
-        round.should.have.property('guesses');
+      }).then((theRound) => {
+        console.info('the round', theRound);
+        theRound.should.have.property('winner');
+        theRound.should.have.property('guesses');
         if ( correct ) {
-          round.should.have.property('winner');
-          should.exist(round.winner);
-          round.winner.should.have.property('id', round.players[0].id);
+          theRound.should.have.property('winner');
+          should.exist(theRound.winner);
+          theRound.winner.should.have.property('id', theRound.players[0].id);
         } else {
-          round.should.have.property('winner', null);
+          theRound.should.have.property('winner', null);
         }
-        return round;
+        return theRound;
       });
     };
 
     it('should pass the exact guess', () => {
       const the_guess = round.phrase;
-      return guess(the_guess).then((round) => {
-        round.guesses.pop().should.have.property('guess', the_guess);
+      return guess(the_guess).then((theRound) => {
+        console.info(theRound.guesses);
+        theRound.guesses.pop().should.have.property('guess', the_guess);
       });
     });
 
@@ -151,7 +154,7 @@ describe('Round Model', () => {
     });
 
     it('should not accept an absurdly long phrase', () => {
-      const the_guess = 'SILENCE OF THE LAMBS i think';
+      const the_guess = 'SILENCE O THE LAMBS i think';
       return guess(the_guess, phrases['SILENCE OF THE LAMBS'], false).then((result) => {
         result.should.have.property('winner', null);
         result.should.have.property('guesses');
@@ -162,6 +165,11 @@ describe('Round Model', () => {
     it('should be able to parse doctor', () => {
       const the_guess = 'Dr who';
       return guess(the_guess, phrases['DOCTOR WHO'], true);
+    });
+
+    it('should accept Abraham Lincoln for Lincoln', () => {
+      const the_guess = 'Abraham Lincoln';
+      return guess(the_guess, phrases.LINCOLN, true);
     });
   });
 });
