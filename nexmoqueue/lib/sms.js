@@ -38,15 +38,15 @@ const sms = Promise.coroutine(function* (params) {
       newParams.body,
       {}
     );
-    console.info('message sent successfully');
+    console.info('message sent successfully', result);
     //console.info('sms 6');
-    if ( result.status === 'queued' ) {
+    if ( result.status === 0 ) {
       return {
-        status: 2
+        status: 0
       };
     } else {
       return {
-        status: 3
+        status: 1
       };
     }
   } else {
@@ -57,24 +57,5 @@ const sms = Promise.coroutine(function* (params) {
 module.exports = sms;
 
 const validNumber = Promise.coroutine(function* (number) {
-  const lng = number.replace(/\+/,'').length;
-  if ( lng === 11 || lng === 10 ) {
-    // this is a valid number we can handle.
-    if ( number.length === 12 && number[0] === '+' ) {
-      // totally legit number
-      return number;
-    } else if ( number.length === 11 ) {
-      if ( number[0] === '+' ) {
-        // only US numbers supported for now
-        return '+1' + number.substring(1);
-      } else {
-        return '+' + number;
-      }
-    } else if ( number.length === 10 && number[0] !== '+' ) {
-      // only US numbers supported for now
-      return '+1' + number;
-    }
-  }
-
   return yield phone(number);
 });
