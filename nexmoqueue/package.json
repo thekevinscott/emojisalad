@@ -9,7 +9,7 @@
     "app-module-path": "^1.0.5",
     "babel-plugin-transform-object-rest-spread": "^6.16.0",
     "babel-polyfill": "^6.6.0",
-    "babel-register": "^6.3.13",
+    "babel-register": "^6.18.0",
     "bluebird": "^3.3.3",
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.0.6",
