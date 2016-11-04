@@ -22,7 +22,7 @@ describe('Find', () => {
     });
   });
 
-  it('should return a list of all players', () => {
+  it.only('should return a list of all players', () => {
     return get({ url: '/players' }).then((res) => {
       res.statusCode.should.equal(200);
       res.body.length.should.be.above(0);

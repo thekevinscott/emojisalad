@@ -10,37 +10,37 @@ const rule = require('config/rule');
 
 module.exports = (player, message) => {
   if ( rule('invite').test(message) ) {
-    console.log('game invite');
+    console.info('game invite');
     return require('./invite')(player, message);
   } else if ( rule('clue').test(message) ) {
-    console.log('game clue');
+    console.info('game clue');
     return require('./clue')(player, message);
   } else if ( rule('new-game').test(message) ) {
-    console.log('game new game');
+    console.info('game new game');
     const user = { id: player.user_id, to: player.to };
     return require('./new_game')(user);
   } else if ( rule('help').test(message) ) {
-    console.log('game help');
+    console.info('game help');
     return require('./help')(player, message);
   } else {
-    console.log('game else', player);
+    console.info('game else', player);
     return Game.get({ player_id: player.id }).then((games) => {
       const game = games[0];
-      console.log('got game', game);
+      console.info('got game', game);
 
       if ( game.round ) {
-        console.log('game round exists');
+        console.info('game round exists');
         if ( player.id !== game.round.submitter.id ) {
-          console.log('gameguess', player, message);
+          console.info('gameguess', player, message);
           return require('./guess')(game, player, message);
         } else {
-          console.log('game round else');
+          console.info('game round else');
           if ( rule('pass').test(message) ) {
-            console.log('game round pass');
+            console.info('game round pass');
             return require('./pass')(game, player, message);
           } else {
             if ( ! game.round.submission ) {
-              console.log('game round no submission');
+              console.info('game round no submission');
               // listen for an emoji submission
               return Emoji.checkInput(message).then((result) => {
                 if ( result.type === 'emoji' || result.type === 'mixed' ) {
@@ -50,7 +50,7 @@ module.exports = (player, message) => {
                 }
               });
             } else {
-              console.log('game round say');
+              console.info('game round say');
               return require('./say')(game, player, message);
             }
           }
@@ -63,12 +63,12 @@ module.exports = (player, message) => {
         /*
         return Phone.parse(message).then((result) => {
           if ( result && result.phone ) {
-            console.log('1');
+            console.info('1');
             return require('./invite')(player, message);
-            //console.log('phones', phones);
+            //console.info('phones', phones);
           } else {
             // see if the input is a valid phone number
-            console.log('game round chillind');
+            console.info('game round chillind');
             return [{
               player,
               key: 'invited-chilling'

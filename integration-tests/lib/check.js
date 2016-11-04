@@ -182,13 +182,14 @@ const inlineCheck = (actions, expecteds) => {
     return checkBody(action, expecteds[i]);
   });
 
-  actions.map((action) => {
-    delete action.body;
-    return action;
-  }).should.deep.equal(expecteds.map((expected) => {
-    //delete expected.body;
-    delete expected.variants;
-    return expected;
+  actions.map((msg) => {
+    delete msg.body;
+    msg.game_number = `${msg.game_number}`;
+    return msg;
+  }).should.deep.equal(expecteds.map((msg) => {
+    delete msg.variants;
+    msg.game_number = `${msg.game_number}`;
+    return msg;
   }));
 };
 

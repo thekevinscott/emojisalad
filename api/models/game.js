@@ -46,12 +46,16 @@ const getSender = (user, result) => {
       return player.to;
     });
 
+    const challenge_sender_ids = Object.keys(user.challenge_guesses || {});
+
+    const exclude = player_sender_ids.concat(challenge_sender_ids).join(',');
+
     const service = registry.get(result.protocol);
     const options = {
       url: service.api.senders.get.endpoint,
       method: service.api.senders.get.method,
       qs: {
-        exclude: player_sender_ids.join(',')
+        exclude,
       }
     };
 

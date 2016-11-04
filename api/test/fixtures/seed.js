@@ -21,8 +21,27 @@ module.exports = [
   {
     table: 'challenges',
     rows: [
-      { id: 1, phrase_id: 1, sender_id: 4, protocol: 'testqueue' },
-      { id: 2, phrase_id: 2, sender_id: 5, protocol: 'testqueue' }
+      {
+        id: 1,
+        phrase_id: 1,
+        sender_id: 4,
+        protocol: 'testqueue',
+        prompt: '💩',
+      },
+      {
+        id: 2,
+        phrase_id: 2,
+        sender_id: 5,
+        protocol: 'testqueue',
+        prompt: '🐟',
+      },
+      {
+        id: 3,
+        phrase_id: 3,
+        sender_id: 3,
+        protocol: 'testqueue',
+        prompt: '👾',
+      }
     ]
   },
   {

@@ -10,7 +10,11 @@ function find(req) {
 }
 
 function guess(req) {
-  return Phrase.guess(req.body.guess, req.body.phrase);
+  return Phrase.guess(req.body.guess, req.body.phrase).then(result => {
+    return {
+      result,
+    };
+  });
 }
 
 module.exports = [

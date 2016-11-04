@@ -71,6 +71,20 @@ describe('Signup', () => {
       });
     });
 
+    it('should trim a users nickname of whitespace', () => {
+      const player = getPlayers(1)[0];
+      return setup([
+        { player, msg: 'hello' },
+        { player, msg: rule('yes').example() }
+      ]).then(() => {
+        return check(
+          { player, msg: `    ${player.nickname}  ` },
+          [
+            { key: 'intro_3', options: [ player.nickname, '*' ], to: player }
+          ]);
+      });
+    });
+
     it('should allow the player to accept the emoji', () => {
       const player = getPlayers(1)[0];
       return setup([

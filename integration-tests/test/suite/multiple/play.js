@@ -17,33 +17,15 @@ const parseSenderIDs = require('lib/parseSenderIDs');
 //const Round = require('models/round');
 //const Message = require('models/Message');
 
+const setupTwoGames = require('flows/twoGames');
 const EMOJI = '😀';
 const game_numbers = require('../../../../testqueue/config/numbers');
-
-const setupTwoGames = (players, invitee) => {
-  const inviter = players[0];
-  return playGame(players).then(() => {
-    return setup([
-      { player: inviter, msg: rule('new-game').example() }
-    ]);
-  }).then(() => {
-    if ( invitee ) {
-      return setup([
-        { player: inviter, msg: rule('invite').example()+invitee.number, to: game_numbers[1] }
-      ]);
-    } else {
-      return setup(players.slice(1).map((player) => {
-        return { player: inviter, msg: rule('invite').example()+player.number, to: game_numbers[1] };
-      }));
-    }
-  });
-};
 
 describe('Play', () => {
   describe('Existing Player', () => {
     it('should onboard an existing user to a new pending game', () => {
       const players = getPlayers(2);
-      return setupTwoGames(players).then(() => {
+      return setupTwoGames(2)(players).then(() => {
         return check(
           { player: players[1], msg: 'yes', to: game_numbers[1] },
           [

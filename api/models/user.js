@@ -3,6 +3,7 @@ const squel = require('squel').useFlavour('mysql');
 const db = require('db');
 const Promise = require('bluebird');
 const Emoji = require('models/emoji');
+const Challenge = require('models/challenge');
 import setKey from 'setKey';
 
 let Player;
@@ -32,7 +33,7 @@ const User = {
 
     let nickname = '';
     if ( params.nickname ) {
-      nickname = params.nickname;
+      nickname = params.nickname.trim();
     }
 
     console.info('create user 1');
@@ -42,12 +43,14 @@ const User = {
       console.info('create user 3', params);
       const number = params.from;
       console.info('parsed the number', number);
+      const confirmed = params.confirmed || 0;
       const query = squel
       .insert({ autoQuoteFieldNames: true })
       .into('users')
       .setFields({
         created: squel.fval('NOW(3)'),
         last_activity: squel.fval('NOW(3)'),
+        confirmed,
         from: number,
         avatar,
         nickname,
@@ -185,11 +188,20 @@ const User = {
               to: player.to
             };
           });
-          return users.map((user) => {
+
+          return Promise.all(users.map((user) => {
             user.players = players_by_id[user.id] || [];
-            console.info('user', user);
-            return user;
-          });
+            //console.info('user', user);
+            return Challenge.guesses({
+              protocol: user.protocol,
+              from: user.from,
+            }).then(challenge_guesses => {
+              return {
+                ...user,
+                challenge_guesses,
+              };
+            });
+          }));
         });
       } else {
         return [];

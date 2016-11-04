@@ -44,7 +44,7 @@ module.exports = ({
           //});
         //});
       } else if ( parseInt(user.number_of_players, 10) > 0 ) {
-        return require('../game/new_game')(user);
+        return require('../game/new_game')(user, message);
       } else {
         console.info('start the game');
         return require('../game/start')(user, message);

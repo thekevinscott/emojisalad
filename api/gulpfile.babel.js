@@ -120,6 +120,7 @@ gulp.task('update-fixtures', (cb) => {
   const tables = [
     'categories',
     'clues',
+    'challenge_guesses',
     'emojis',
     {
       data: false,

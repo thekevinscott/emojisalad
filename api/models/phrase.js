@@ -105,16 +105,16 @@ const Phrase = {
     const distance = levenshtein(phrase, guess) / phrase.length;
     //const acceptable_distance = 6;
     //return levenshtein_distance <= acceptable_distance;
-    return distance <= 0.31;
+    return distance <= 0.31 ? 1 : 0;
   },
   guess: (original_guess, original_phrase) => {
     const phrase = Phrase.parsePhrase(original_phrase);
     const guess = Phrase.parsePhrase(original_guess);
 
     if ( Phrase.checkPhrase(phrase, guess) ) {
-      return true;
+      return Promise.resolve(1);
     } else if ( Phrase.checkPhrase(original_phrase.split(' ').join('').toLowerCase(), guess) ) {
-      return true;
+      return Promise.resolve(1);
     } else {
       console.info('round check phrase, failed, next check', autosuggest, guess);
       const autosuggest_timeout_length = (process.env.ENVIRONMENT === 'test') ? 5 : 1000;
@@ -128,18 +128,18 @@ const Phrase = {
           const top_result = Phrase.parsePhrase(suggested_results[0].result);
           return Phrase.checkPhrase(phrase, top_result);
         } else {
-          return false;
+          return 0;
         }
       }).timeout(autosuggest_timeout_length).then((result) => {
         console.info('the final result of our guess', result);
         return result;
       }).catch(Promise.TimeoutError, () => {
         console.info(`timed out at auto suggest at ${autosuggest_timeout_length} milliseconds`);
-        return false;
+        return 0;
       }).catch((err) => {
         console.info('some other issue with autosuggest', err);
         // swallow this silently
-        return false;
+        return 0;
       });
     }
   },

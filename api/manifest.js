@@ -9,6 +9,14 @@ const getManifest = (port) => {
   const manifest = {
     base_url,
     challenges: {
+      guess: {
+        endpoint: `${base_url}challenges`,
+        method: 'POST'
+      },
+      guesses: {
+        endpoint: `${base_url}challenges/guesses`,
+        method: 'GET'
+      },
       get: {
         endpoint: `${base_url}challenges`,
         method: 'GET'

@@ -13,8 +13,8 @@ function getSenders(req, res) {
                 .limit(1);
 
   db.query(query).then((rows) => {
-    if ( rows && rows.length ) {
-      res.json( rows[0] );
+    if (rows && rows.length) {
+      res.json(rows[0]);
     } else {
       res.json({ });
     }
@@ -30,7 +30,7 @@ function getSenderID(req, res) {
                 .where('sender=?', sender);
 
   db.query(query).then((rows) => {
-    if ( rows && rows.length ) {
+    if (rows && rows.length) {
       res.json({ id: rows[0].id });
     } else {
       res.json({ });
