@@ -17,6 +17,7 @@ export class Header extends React.Component {
           <li><Link to="users">Users</Link></li>
           <li><Link to="messages">Messages</Link></li>
           <li><Link to="phrases">Phrases</Link></li>
+          <li><Link to="challenges">Challenges</Link></li>
           <li><Link to="logs">Logs</Link></li>
         </ul>
       );

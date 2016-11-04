@@ -40,12 +40,12 @@ DROP TABLE IF EXISTS `challenges`;
 CREATE TABLE `challenges` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `phrase_id` int(11) DEFAULT NULL,
-  `prompt` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  `prompt` text,
   `sender_id` int(11) DEFAULT NULL,
-  `protocol` varchar(255) DEFAULT NULL,
+  `protocol` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -194,7 +194,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-04 10:12:09
+-- Dump completed on 2016-11-04 11:26:01
 -- MySQL dump 10.13  Distrib 5.6.29, for osx10.11 (x86_64)
 --
 -- Host: 45.55.41.73    Database: emojinary
@@ -278,13 +278,13 @@ CREATE TABLE `challenge_guesses` (
   `user_id` int(11) DEFAULT NULL,
   `phrase_id` int(11) DEFAULT NULL,
   `sender_id` int(11) DEFAULT NULL,
-  `protocol` varchar(255) DEFAULT NULL,
-  `from` varchar(255) DEFAULT NULL,
-  `guess` text CHARACTER SET utf8mb4,
+  `protocol` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `from` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `guess` text,
   `correct` tinyint(1) DEFAULT NULL,
   `created` timestamp(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000' ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -293,6 +293,7 @@ CREATE TABLE `challenge_guesses` (
 
 LOCK TABLES `challenge_guesses` WRITE;
 /*!40000 ALTER TABLE `challenge_guesses` DISABLE KEYS */;
+INSERT INTO `challenge_guesses` VALUES (1,NULL,NULL,2,'sms','+15125222183','super mario',0,'2016-11-04 18:10:11.275000'),(2,NULL,NULL,2,'sms','+15125222183','bugga',0,'2016-11-04 18:10:32.443000');
 /*!40000 ALTER TABLE `challenge_guesses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -387,4 +388,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-04 10:12:17
+-- Dump completed on 2016-11-04 11:26:11

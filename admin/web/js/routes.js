@@ -9,6 +9,7 @@ import { Game, Games } from './games';
 import { User, Users } from './users';
 import { Messages } from './messages';
 import { Phrases } from './phrases';
+import { Challenges } from './challenges';
 import { Log, Logs } from './logs';
 
 const DefaultRoute = Router.DefaultRoute;
@@ -30,6 +31,7 @@ export const routes = (
     <Route name="user" path="/users/:user_id" handler={User}/>
     <Route handler={Messages} name="messages" />
     <Route handler={Phrases} name="phrases" />
+    <Route handler={Challenges} name="challenges" />
     <Route handler={Logs} name="logs" />
     <Route name="log" path="/logs/:log" handler={Log}/>
     <NotFoundRoute handler={NotFound} />

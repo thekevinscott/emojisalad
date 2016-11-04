@@ -2,15 +2,26 @@ const db = require('../db');
 const squel = require('squel');
 
 function getSenders(req, res) {
-  const exclude = (req.query.exclude || '').split(',');
+  var query = squel
+  .select()
+  .field('id')
+  .field('sender')
+  .from('senders')
+  .limit(1);
 
-  const query = squel
-                .select()
-                .field('id')
-                .field('sender')
-                .from('senders')
-                .where('id NOT IN ?', exclude)
-                .limit(1);
+  console.log(req.body);
+  console.log(req.params);
+
+  if (req.query.exclude) {
+    const exclude = (req.query.exclude || '').split(',');
+    query = query.where('id NOT IN ?', exclude);
+  }
+
+  if (req.query.sender_id) {
+    query = query.where('id=?', req.query.sender_id);
+  }
+  console.log(req.query);
+  console.log(query.toString());
 
   db.query(query).then((rows) => {
     if (rows && rows.length) {

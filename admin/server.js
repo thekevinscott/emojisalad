@@ -12,11 +12,11 @@ const SOCKET_HOST = process.env.SOCKET_HOST || '127.0.0.1';
 server.listen(SOCKET_PORT);
 
 const registry = require('microservice-registry');
-registry.register('admin',{
+registry.register('admin', {
   services: ['api']
 });
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(`${__dirname}/public`));
 
 // set up handlebars
 const exphbs = require('express-handlebars');
@@ -47,15 +47,24 @@ const timer = setTimeout(() => {
 registry.ready(() => {
   clearTimeout(timer);
   app.listen(app.get('port'), () => {
-    console.log("Admin is running on " + app.get('port'));
+    console.log(`Admin is running on ${app.get('port')}`);
   });
 });
 
 // routes
+const fetch = require('./fetch');
+const getFetch = (route, method, res, body) => {
+  fetch(route, method, body).then((response) => {
+    res.json(response);
+  }).catch((err) => {
+    res.json({ err: err.message });
+  });
+};
 require('./api/routes/account')(app);
 require('./api/routes/dashboard')(app);
 require('./api/routes/logs')(app, io);
 require('./api/routes/games')(app, io);
+require('./api/routes/challenges')(app);
 
 app.get('/api/games', (req, res) => {
   getFetch('games', 'get', res);
@@ -82,12 +91,3 @@ app.get('/api/games/:game_id/messages', getMessages);
 app.get('*', (req, res) => {
   res.render('app', { SOCKET_PORT, SOCKET_HOST });
 });
-
-const fetch = require('./fetch');
-const getFetch = (route, method, res, body) => {
-  fetch(route, method, body).then((response) => {
-    res.json(response);
-  }).catch((err) => {
-    res.json({ err: err.message });
-  });
-};
