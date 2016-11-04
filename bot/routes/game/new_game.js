@@ -5,9 +5,9 @@ const _ = require('lodash');
 //const rule = require('config/rule');
 const Game = require('models/game');
 const User = require('models/user');
+//const Challenge = require('models/challenge');
 
 module.exports = (user_params) => {
-  console.info('new game', user_params);
   return new Promise((resolve) => {
     if ( user_params.number_of_players ) {
       resolve(user_params);
@@ -19,16 +19,16 @@ module.exports = (user_params) => {
       });
     }
   }).then((user) => {
-    console.info('user', user);
-    console.info('number of players', user.number_of_players);
-    console.info('maximum games', user.maximum_games);
+    console.log('user', user);
+    console.log('number of players', user.number_of_players);
+    console.log('maximum games', user.maximum_games);
     if ( parseInt(user.number_of_players, 10) < parseInt(user.maximum_games, 10) ) {
       return Game.create([user]).then((game) => {
-        console.info('created game', game);
+        console.log('created game', game);
         const new_player = game.players.filter((game_player) => {
           return game_player.user_id === user.id;
         }).pop();
-        console.info('new player', new_player);
+        console.log('new player', new_player);
 
         return [{
           player: new_player,
@@ -41,7 +41,7 @@ module.exports = (user_params) => {
         }];
       });
     } else {
-      console.info('dont create the game');
+      console.log('dont create the game');
       return [{
         player: _.assign({
           to: user_params.to

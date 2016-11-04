@@ -49,7 +49,10 @@ const Router = ({ game_key, from, message, to, protocol }) => {
           if ( user.blacklist ) {
             return;
           } else {
-            return require('./onboarding')(user, message);
+            return require('./onboarding')({
+              user,
+              message,
+            });
           }
         } else {
           // This might be a challenge request - a user texting
@@ -57,13 +60,23 @@ const Router = ({ game_key, from, message, to, protocol }) => {
           //
           // Check to see if the number has an associated challenge
           // with it.
+          console.info('prepare to get challenge', to, protocol);
           return Challenge.get({
             sender_id: to,
             protocol,
           }).then(phrases => {
+            console.info('phrases back', phrases);
             if (phrases && phrases.length > 0) {
-              const phrase = phrases.shift.phrase;
-              return require('./challenge')(from, message, to, protocol, phrase);
+              const phrase = phrases.shift();
+              return require('./challenge')({
+                user: {
+                  from,
+                  to,
+                  protocol,
+                },
+                message,
+                phrase,
+              });
             }
 
             // otherwise, create a user normally

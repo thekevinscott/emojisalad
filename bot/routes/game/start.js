@@ -4,12 +4,39 @@ const Promise = require('bluebird');
 //const Player = require('models/player');
 const Round = require('models/round');
 const Invite = require('models/invite');
+const Challenge = require('models/challenge');
 //const User = require('models/user');
 const Game = require('models/game');
 //const Emoji = require('models/emoji');
 //const rule = require('config/rule');
 
-module.exports = (user) => {
+const getInviteAcceptedMessages = (game, invite, invited, invited_key) => {
+  const inviter = invite.inviter_player;
+
+  return game.players.map((player) => {
+    let message;
+
+    if ( player.id === invited.id ) {
+      message = {
+        key: invited_key,
+        options: [invited.nickname, invited.avatar, game.round.submitter.nickname, game.round.submitter.avatar]
+      };
+    } else if ( player.id === inviter.id ) {
+      message = {
+        key: 'accepted-invited', options: [invited.nickname, invited.avatar]
+      };
+    } else {
+      message = {
+        key: 'join-game', options: [invited.nickname, invited.avatar]
+      };
+    }
+    return _.assign({
+      player
+    }, message);
+  });
+};
+
+module.exports = (user, message) => {
   console.info('start the game route');
   return Invite.get({
     invited_id: user.id,
@@ -26,8 +53,25 @@ module.exports = (user) => {
           });
         });
       } else {
-        console.info('create game', user);
-        resolve(Game.create([user]));
+        console.info('this user has players already, see if challenge or not');
+        resolve(Challenge.get({
+          sender_id: user.to,
+          protocol: user.protocol,
+        }).then(phrases => {
+          console.info('phrases back', phrases);
+          if (phrases && phrases.length > 0) {
+            const phrase = phrases.shift();
+            return require('../challenge')({
+              user,
+              message,
+              phrase,
+            });
+          }
+
+          console.info('start a new game, no associated challenges');
+          console.info('create game', user);
+          return Game.create([user]);
+        }));
       }
     }).then((game) => {
       console.info('game is back', game);
@@ -93,32 +137,5 @@ module.exports = (user) => {
         });
       }
     });
-  });
-};
-
-const getInviteAcceptedMessages = (game, invite, player, invited_key) => {
-  const inviter = invite.inviter_player;
-  const invited = player; // just a renaming, to make this clearer
-
-  return game.players.map((player) => {
-    let message;
-
-    if ( player.id === invited.id ) {
-      message = {
-        key: invited_key,
-        options: [invited.nickname, invited.avatar, game.round.submitter.nickname, game.round.submitter.avatar]
-      };
-    } else if ( player.id === inviter.id ) {
-      message = {
-        key: 'accepted-invited', options: [invited.nickname, invited.avatar]
-      };
-    } else {
-      message = {
-        key: 'join-game', options: [invited.nickname, invited.avatar]
-      };
-    }
-    return _.assign({
-      player
-    }, message);
   });
 };

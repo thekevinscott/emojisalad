@@ -9,6 +9,29 @@ const Player = require('models/player');
 const _ = require('lodash');
 const User = require('models/user');
 
+function getNextSenderID(protocol, player_sender_ids) {
+  const service = registry.get(protocol);
+  const options = {
+    url: service.api.senders.get.endpoint,
+    method: service.api.senders.get.method,
+    qs: {
+      exclude: (player_sender_ids) ? player_sender_ids.join(',') : null
+    }
+  };
+
+  return request(options).then(response => {
+    try {
+      return JSON.parse(response.body);
+    } catch (err) {
+      console.error('error parsing json response', response.body);
+      throw new Error('Error getting sender');
+    }
+  }).then(response => {
+    if ( response && response.id ) {
+      return response.id;
+    }
+  });
+}
 const Router = (phone) => {
   console.info(`===========Web Index: ${phone}`);
   const protocol = 'sms';
@@ -61,27 +84,3 @@ const Router = (phone) => {
 };
 
 module.exports = Router;
-
-function getNextSenderID(protocol, player_sender_ids) {
-  const service = registry.get(protocol);
-  const options = {
-    url: service.api.senders.get.endpoint,
-    method: service.api.senders.get.method,
-    qs: {
-      exclude: (player_sender_ids) ? player_sender_ids.join(',') : null
-    }
-  };
-
-  return request(options).then(response => {
-    try {
-      return JSON.parse(response.body);
-    } catch(err) {
-      console.error('error parsing json response', response.body);
-      throw new Error('Error getting sender');
-    }
-  }).then(response => {
-    if ( response && response.id ) {
-      return response.id;
-    }
-  });
-}
