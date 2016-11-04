@@ -17,7 +17,7 @@ module.exports = (user, nickname) => {
         url: `${service.base_url}users/${user.id}`,
         method: 'put',
         body: {
-          nickname
+          nickname,
         }
       },
       callback: [{
@@ -27,7 +27,7 @@ module.exports = (user, nickname) => {
           message: {
             key: 'intro_3_b',
             options: {
-              nickname,
+              nickname: nickname.trim(),
               avatar: user.avatar
             }
           },
