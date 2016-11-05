@@ -9,7 +9,7 @@ import {
 
 import * as styles from './styles';
 
-const timeoutDuration = 1000;
+const timeoutDuration = 5000;
 const animationDuration = 350;
 
 const animatedValues = [
@@ -34,29 +34,37 @@ export default class Status extends Component {
     }), {});
   }
 
+  handleAnimations() {
+    clearTimeout(this.timeout);
+
+    if (loadingStates.indexOf(this.props.status.state) !== -1) {
+      this.timeout = setTimeout(() => {
+        animatedValues.forEach(key => {
+          Animated.timing(this.state[key], {
+            toValue: 0,
+            duration: animationDuration,
+          }).start();
+        });
+      }, timeoutDuration);
+    } else {
+      this.timeout = setTimeout(() => {
+        animatedValues.forEach(key => {
+          Animated.timing(this.state[key], {
+            toValue: styles.status[key],
+            duration: animationDuration,
+          }).start();
+        });
+      }, 0);
+    }
+  }
+
+  componentDidMount() {
+    this.handleAnimations();
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.status.state !== this.props.status.state) {
-      clearTimeout(this.timeout);
-
-      if (loadingStates.indexOf(this.props.status.state) !== -1) {
-        this.timeout = setTimeout(() => {
-          animatedValues.forEach(key => {
-            Animated.timing(this.state[key], {
-              toValue: 0,
-              duration: animationDuration,
-            }).start();
-          });
-        }, timeoutDuration);
-      } else {
-        this.timeout = setTimeout(() => {
-          animatedValues.forEach(key => {
-            Animated.timing(this.state[key], {
-              toValue: styles.status[key],
-              duration: animationDuration,
-            }).start();
-          });
-        }, 0);
-      }
+      this.handleAnimations();
     }
   }
 
@@ -70,12 +78,14 @@ export default class Status extends Component {
       [key]: this.state[key],
     }), {});
 
+    const containerStyle = {
+      ...styles.status,
+      ...styleValues,
+    };
+
     return (
       <Animated.View
-        style={{
-          ...styles.status,
-          ...styleValues,
-        }}
+        style={containerStyle}
       >
         {loadingStates.indexOf(status.state) === -1 ? (
           <ActivityIndicator style={styles.spinner} />

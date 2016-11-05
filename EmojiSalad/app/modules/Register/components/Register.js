@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Status } from '../../../components/Status';
 //import Button from 'react-native-button';
 import {
   Text,
@@ -18,46 +19,9 @@ import styles from '../styles';
 //} from '../../App/styles';
 
 import {
-  submitClaim,
-  updateText,
-  updateError,
-  goToGames,
-} from '../actions';
-
-import {
-  selectRegisterSlice,
+  mapStateToProps,
+  mapDispatchToProps,
 } from '../selectors';
-
-import {
-  selectMe,
-} from '../../App/selectors';
-
-function mapStateToProps(state) {
-  return {
-    ...selectRegisterSlice(state),
-    me: selectMe(state),
-    logger: state.ui.Games.logger,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: {
-      updateError: (error) => {
-        return dispatch(updateError(error));
-      },
-      updateText: (text) => {
-        return dispatch(updateText(text));
-      },
-      submitClaim: (text) => {
-        return dispatch(submitClaim(text));
-      },
-      goToGames: () => {
-        return goToGames();
-      },
-    },
-  };
-}
 
 class Register extends Component {
   constructor(props) {
@@ -141,8 +105,10 @@ class Register extends Component {
         Welcome, {this.props.me.nickname}! Please wait while we migrate your games and texts over.
       </Animated.Text>
     ) : null;
+
     return (
       <Animated.View style={containerStyle}>
+        <Status status={this.props.status} />
         <View style={styles.textContainer}>
           <Animated.Text style={headerStyle}>
             Welcome to the Emoji Salad App Beta!

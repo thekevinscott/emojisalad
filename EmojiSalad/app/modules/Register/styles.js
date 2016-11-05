@@ -1,11 +1,16 @@
-//import {
-  //StyleSheet,
-//} from 'react-native';
+import {
+  Platform,
+} from 'react-native';
 import {
   constants,
 } from '../App/styles';
 
 const textContainerMargin = 50;
+
+const header = Platform.select({
+  ios: 64,
+  android: 33,
+});
 
 const styles = {
   container: {
@@ -13,9 +18,10 @@ const styles = {
     alignItems: 'center',
     padding: 0,
     margin: 0,
+    marginTop: header,
   },
   textContainer: {
-    marginTop: 90,
+    marginTop: 140 - header,
     marginLeft: textContainerMargin,
     marginRight: textContainerMargin,
   },

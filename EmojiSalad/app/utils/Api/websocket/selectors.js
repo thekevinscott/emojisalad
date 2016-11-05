@@ -47,7 +47,7 @@ export function selectStatus({
   const t = moment(lastConnected);
   const time = t.format('HH:mm:ss a');
   return {
-    text: `Complete at ${time}`,
+    text: `Connected at ${time}`,
     state: 0,
   };
 }
