@@ -67,4 +67,4 @@ app.get('/', (req, res) => {
 });
 
 app.post('/delivery', require('./delivery'));
-//app.get('/jungle', require('./jungle'));
+app.get('/jungle', require('./jungle'));

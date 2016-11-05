@@ -5,7 +5,7 @@ import squel from 'squel';
 module.exports = function jungle(req, res) {
   const query = squel
   .select()
-  .from('jungle');
+  .from('jungle_messages');
 
   return db.query(query).then((rows) => {
     res.json(rows);
