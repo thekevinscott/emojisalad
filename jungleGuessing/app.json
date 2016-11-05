@@ -1,6 +1,6 @@
 [{
   "name"      : "jungle",
-  "script"    : "./dist/bundle.js",
+  "script"    : "./index.js",
   "env": {
     "LOG_LEVEL": "info",
     "PORT": "5020",
