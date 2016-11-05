@@ -1,23 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import {
+  mapStateToProps,
+  mapDispatchToProps,
+} from '../selectors';
+
 function App({
 }) {
   return (
-    <div className="main-app-container">
+    <div className="app">
       Sup
     </div>
   );
-}
-
-function mapStateToProps(state) {
-  return {
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-  };
 }
 
 export default connect(
