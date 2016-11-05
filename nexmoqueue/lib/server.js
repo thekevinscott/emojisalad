@@ -56,8 +56,9 @@ const whitelist = [
 ];
 app.use(cors({
   origin: (origin, callback) => {
-    const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-    callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
+    return true;
+    //const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+    //callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
   }
 }));
 
