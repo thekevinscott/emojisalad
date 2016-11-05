@@ -54,6 +54,7 @@ const app = queue({
 const whitelist = [
   'http://localhost:3000',
   'http://jungle.emojisalad.com',
+  'http://nexmo.emojisalad.com',
 ];
 app.use(cors({
   origin: (origin, callback) => {
