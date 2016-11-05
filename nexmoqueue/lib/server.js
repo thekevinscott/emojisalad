@@ -83,6 +83,7 @@ app.get('/', (req, res) => {
 app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
+console.log('queue', queue);
 queue.getServer(server => {
   console.log('server', server);
   const io = require('socket.io').listen(server);
