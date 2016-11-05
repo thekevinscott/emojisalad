@@ -1,4 +1,4 @@
-import phoneFormatter from 'node-phone-formatter';
+import phoneFormatter from 'phone-formatter';
 import db from '../db';
 import squel from 'squel';
 
