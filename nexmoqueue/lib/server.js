@@ -59,7 +59,6 @@ app.use(cors({
     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
     callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
   },
-  credentials: false,
 }));
 
 const phone = require('lib/phone');
@@ -83,7 +82,9 @@ app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  origins: "localhost:3000",
+});
 
 io.on('connection', (socket) => {
   console.info('a user connected');
