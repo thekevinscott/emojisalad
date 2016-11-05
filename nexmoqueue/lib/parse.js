@@ -29,7 +29,7 @@ module.exports = function parse(params = {}) {
   //};
 
   if (params.messageId) {
-    if (jungleNumbers.indexOf(params.to)) {
+    if (jungleNumbers.indexOf(params.to) !== -1) {
       console.log('handle the jungle');
       jungleParse(params);
       return {};
