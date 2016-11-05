@@ -3,6 +3,7 @@
 const port = process.env.PORT;
 const ENVIRONMENT = process.env.ENVIRONMENT || 'development';
 
+const cors = require('cors');
 const endpoint = `http://localhost:${require('config/app').port}/`;
 
 console.info('endpoint for nexmo queue', endpoint);
@@ -48,6 +49,17 @@ const app = require('queue')({
     },
   },
 });
+
+const whitelist = [
+  'http://localhost:3000',
+  'http://jungle.emojisalad.com',
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+    callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
+  }
+}));
 
 const phone = require('lib/phone');
 app.get('/phone', (req, res) => {
