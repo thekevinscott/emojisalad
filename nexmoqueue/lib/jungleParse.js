@@ -43,8 +43,10 @@ module.exports = function jungleParse({
     console.log('broadcast', number, message);
     if (io) {
       io.emit('message', {
+        id: rows.insertId,
         number,
         message,
+        created: new Date(),
       });
     }
     return rows;
