@@ -1,0 +1,10 @@
+[{
+  "name"      : "jungle",
+  "script"    : "./dist/bundle.js",
+  "env": {
+    "LOG_LEVEL": "info",
+    "PORT": "5020",
+    "ENVIRONMENT": "production"
+  }
+}]
+
