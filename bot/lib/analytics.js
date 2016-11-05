@@ -67,6 +67,8 @@ function incoming(messages) {
         message.protocol,
         'user'
       ));
+    }).catch(err => {
+      console.log('No user found', err);
     });
   }));
 }
