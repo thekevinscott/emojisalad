@@ -72,7 +72,7 @@ form
   flex-direction row
 
 .module
-  padding 0 10%
+  padding 0 10% 10% 10%
 
 .bg-dark
   background-color dark-accent
@@ -136,7 +136,7 @@ form
     transform rotate(-7deg)
     margin-left -15px
   h2
-    margin-top 100px
+    margin-top 15%
   .box
     -ms-transform rotate(3deg) /* IE 9 */
     -webkit-transform rotate(3deg) /* Chrome, Safari, Opera */
@@ -154,13 +154,21 @@ form
       left 15px
   
 .cta
-  height auto
   display flex
-  padding-bottom 5%
+  flex-direction row
 .explainer
-  flex 1.8
+  padding-left 10%
+  flex-grow 1
+  flex-shrink 1
+  flex-basis auto
+  display flex
+  align-items center
+  justify-content center
   & > *
     width 90%
+  h4
+    flex 1
+     
 .bg-arrow
   flex 0.2
   width 0
@@ -169,12 +177,12 @@ form
   border-bottom 148px solid transparent
   border-left 80px solid dark-accent
 .signup
+  padding-left 10%
+  padding-right 10%
   flex 1
   position relative
   transition-duration: duration
-  
 .footer
-  height 300px
   display flex
 .siblings
   flex 2
@@ -307,8 +315,14 @@ offset = 15px
   .bg-yellow
     .bg-arrow, .inner-arrow
       border-color: accent-yellow accent-yellow transparent transparent;
-
+@media screen and (max-width: 791px)
+  .kill
+    display none
+  .signup
+    padding-bottom 5%
 @media screen and (max-width: 581px)
+  .signup
+    padding 5% 5% 5% 5%
   h1
     font-size 80px
     line-height 80px
@@ -326,6 +340,11 @@ offset = 15px
     margin-right 0px
     padding-left 0px
     padding-right 0px
+  .kill
+    display none
+   .cta
+     background-color white
+     display flex
   .box-white
     margin-left 0px
     margin-right 0px
@@ -337,3 +356,5 @@ offset = 15px
     margin-right 0px
     padding-left 0px
     padding-right 0px
+  .module
+    padding 5% 5% 5% 5%
