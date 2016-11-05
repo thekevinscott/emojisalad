@@ -4,6 +4,7 @@ const squel = require('squel');
 
 module.exports = function delivery(req, res) {
   const params = req.body;
+  console.info('delivery', params);
 
   if (!params.status || !params.messageId) {
     console.info('This is not a delivery receipt');
