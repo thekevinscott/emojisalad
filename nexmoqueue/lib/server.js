@@ -13,7 +13,8 @@ const options = {
   db: require(`config/database/${ENVIRONMENT}`),
 };
 
-const app = require('queue')({
+const queue = require('queue');
+const app = queue({
   name: require('config/app').name,
   options,
   parse: require('lib/parse'),
@@ -82,7 +83,7 @@ app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
 //const http = require('http').Server(app);
-const io = require('socket.io').listen(app);
+const io = require('socket.io').listen(queue.server);
 
 io.on('connection', (socket) => {
   console.info('a user connected');
