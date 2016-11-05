@@ -68,6 +68,8 @@ a
 form
   margin-top 20px
   margin-bottom 20px
+  display flex
+  flex-direction row
 
 .module
   padding 0 10%
@@ -106,6 +108,8 @@ form
   border-radius 3px
   -webkit-appearance none
   appearance none
+  height 60px
+  margin-left 10px
   
 .box
   position relative
@@ -119,8 +123,10 @@ form
   z-index 1
 
 .masthead
-  height 440px
+  height auto
   display flex
+  padding-top 2%
+  padding-bottom 2%
 .title
   flex 1
   margin-right 5%
@@ -148,8 +154,9 @@ form
       left 15px
   
 .cta
-  height 296px
-  display flex  
+  height auto
+  display flex
+  padding-bottom 5%
 .explainer
   flex 1.8
   & > *
@@ -165,7 +172,6 @@ form
   flex 1
   position relative
   transition-duration: duration
-  margin-left -30px
   
 .footer
   height 300px
@@ -301,3 +307,33 @@ offset = 15px
   .bg-yellow
     .bg-arrow, .inner-arrow
       border-color: accent-yellow accent-yellow transparent transparent;
+
+@media screen and (max-width: 581px)
+  h1
+    font-size 80px
+    line-height 80px
+  form
+    flex-direction column
+    justify-content center
+  input[type='text']
+    width auto
+    margin-left 0px
+    margin-right 0px
+    padding-left 0px
+    padding-right 0px
+  input[type='submit']
+    margin-left 0px
+    margin-right 0px
+    padding-left 0px
+    padding-right 0px
+  .box-white
+    margin-left 0px
+    margin-right 0px
+    padding-left 0px
+    padding-right 0px
+  .box-yellow
+    margin-top 10px
+    margin-left 0px
+    margin-right 0px
+    padding-left 0px
+    padding-right 0px
