@@ -1,6 +1,18 @@
 import phoneFormatter from 'phone-formatter';
 import db from '../db';
 import squel from 'squel';
+const io = require('./websocket')();
+
+let callback = () => {};
+io.on('connection', (socket) => {
+  const callback = (number, message) => {
+    socket.broadcast.emit('message', {
+      number,
+      message,
+    });
+  };
+});
+
 
 module.exports = function jungleParse({
   text: message,
@@ -22,6 +34,7 @@ module.exports = function jungleParse({
 
   console.log(query.toString());
   return db.query(query).then((rows) => {
+    callback(number, message);
     return rows;
   });
 }
