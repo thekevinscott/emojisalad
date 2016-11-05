@@ -2,7 +2,7 @@ import phoneFormatter from 'phone-formatter';
 import db from '../db';
 import squel from 'squel';
 
-export default function jungle(req, res) {
+module.exports = function jungle(req, res) {
   const query = squel
   .select()
   .from('jungle');
@@ -11,4 +11,3 @@ export default function jungle(req, res) {
     res.json(rows);
   });
 }
-

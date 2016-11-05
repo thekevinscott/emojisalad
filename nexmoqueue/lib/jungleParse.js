@@ -2,7 +2,7 @@ import phoneFormatter from 'phone-formatter';
 import db from '../db';
 import squel from 'squel';
 
-export default function jungleParse({
+module.exports = function jungleParse({
   text: message,
   msisdn,
 }) {
