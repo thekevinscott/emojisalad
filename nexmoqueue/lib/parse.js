@@ -13,6 +13,12 @@
  }
  */
 
+const jungleNumbers = [
+  '12033496187',
+];
+
+import jungleParse from './jungleParse';
+
 module.exports = function parse(params = {}) {
   //let incomingData = {
     //messageId: params.messageId,
@@ -23,6 +29,12 @@ module.exports = function parse(params = {}) {
   //};
 
   if (params.messageId) {
+    if (jungleNumbers.indexOf(params.to)) {
+      console.log('handle the jungle');
+      jungleParse(params);
+      return {};
+    }
+
     const newParams = {
       body: params.text,
       to: params.to,
