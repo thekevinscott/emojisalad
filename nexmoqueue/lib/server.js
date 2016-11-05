@@ -66,4 +66,4 @@ app.get('/', (req, res) => {
   res.send('I am the nexmo');
 });
 
-app.post('/delivery', require('./delivery');
+app.post('/delivery', require('./delivery'));
