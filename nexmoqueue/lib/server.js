@@ -84,6 +84,8 @@ app.get('/jungle', require('./jungle'));
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+console.log('io', io);
+
 io.on('connection', (socket) => {
   console.info('a user connected');
 
