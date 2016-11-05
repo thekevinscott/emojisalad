@@ -11,7 +11,6 @@ import parse, {
 
 module.exports = (user, nickname) => {
   return getService('api').then(service => {
-    console.log('nickname route', nickname);
     if ( !rule('yes').test(nickname) ) {
       const to = user.to;
       return parse([{

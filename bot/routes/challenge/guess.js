@@ -92,6 +92,9 @@ module.exports = ({
         player: user,
         key: 'challenge_is_incorrect',
         protocol: user.protocol,
+        options: {
+          prompt: phrase.prompt,
+        },
       }];
     });
   });
