@@ -81,10 +81,8 @@ app.get('/', (req, res) => {
 app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
-const http = require('http').Server(app);
-const io = require('socket.io')(http, {
-  origins: "localhost:3000",
-});
+//const http = require('http').Server(app);
+const io = require('socket.io')(app);
 
 io.on('connection', (socket) => {
   console.info('a user connected');
