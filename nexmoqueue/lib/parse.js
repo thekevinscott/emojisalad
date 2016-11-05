@@ -13,7 +13,7 @@
  }
  */
 
-module.exports = function parse(params) {
+module.exports = function parse(params = {}) {
   //let incomingData = {
     //messageId: params.messageId,
     //from: params.msisdn,
@@ -22,7 +22,7 @@ module.exports = function parse(params) {
     //timestamp: params['message-timestamp']
   //};
 
-  if (params) {
+  if (params.messageId) {
     const newParams = {
       body: params.text,
       to: params.to,
