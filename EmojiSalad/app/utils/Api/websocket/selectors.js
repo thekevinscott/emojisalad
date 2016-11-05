@@ -1,5 +1,9 @@
 import moment from 'moment';
 
+import {
+  API_PORT,
+  API_HOST,
+} from '../../../../config';
 
 export function selectStatus({
   ui: {
@@ -14,7 +18,7 @@ export function selectStatus({
 }, game = {}) {
   if (!connected) {
     return {
-      text: 'Connecting to Server',
+      text: `Connecting to Server at ${API_HOST}:${API_PORT}`,
       state: 1,
     };
   } else if (game.loading) {

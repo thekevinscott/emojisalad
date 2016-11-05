@@ -85,6 +85,24 @@ describe('Signup', () => {
       });
     });
 
+    it('should ignore multiple yes', () => {
+      const player = getPlayers(1)[0];
+      return setup([
+        { player, msg: 'hello' },
+        { player, msg: rule('yes').example() },
+        { player, msg: 'yes' },
+        { player, msg: 'yeah' },
+        { player, msg: 'yea' },
+        { player, msg: 'y' },
+      ]).then(() => {
+        return check(
+          { player, msg: player.nickname },
+          [
+            { key: 'intro_3', options: [ player.nickname, '*' ], to: player }
+          ]);
+      });
+    });
+
     it('should allow the player to accept the emoji', () => {
       const player = getPlayers(1)[0];
       return setup([
