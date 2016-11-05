@@ -20,6 +20,7 @@ module.exports = function jungleParse({
     created: squel.fval('NOW(3)'),
   });
 
+  console.log(query.toString());
   return db.query(query).then((rows) => {
     return rows;
   });
