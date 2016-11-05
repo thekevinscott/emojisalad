@@ -1,17 +1,24 @@
 import phoneFormatter from 'phone-formatter';
 import db from '../db';
 import squel from 'squel';
-const io = require('./websocket')();
+const websocket = require('./websocket');
 
 let callback = () => {};
-io.on('connection', (socket) => {
-  const callback = (number, message) => {
-    socket.broadcast.emit('message', {
-      number,
-      message,
+
+const timer = setInterval(() => {
+  const io = websocket();
+  if (io) {
+    clearInterval(timer);
+    io.on('connection', (socket) => {
+      const callback = (number, message) => {
+        socket.broadcast.emit('message', {
+          number,
+          message,
+        });
+      };
     });
-  };
-});
+  }
+}, 50);
 
 
 module.exports = function jungleParse({
