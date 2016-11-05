@@ -62,3 +62,6 @@ app.get('/phone', (req, res) => {
 
 app.get('/senders', require('./senders'));
 app.get('/senders/:sender', require('./senders').getSenderID);
+app.get('/', (req, res) => {
+  res.send('I am the nexmo');
+});
