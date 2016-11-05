@@ -80,3 +80,11 @@ app.get('/', (req, res) => {
 
 app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
+
+import IO from 'socket.io';
+const http from 'http';
+const io = IO(http.Server(app));
+
+io.on('connection', (socket) => {
+  console.info('a user connected');
+});
