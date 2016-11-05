@@ -22,10 +22,13 @@ module.exports = function parse(params) {
     //timestamp: params['message-timestamp']
   //};
 
-  return {
+  const newParams = {
     body: params.text,
     to: params.to,
     from: `+${params.msisdn}`,
     data: JSON.stringify(params)
   };
+
+  console.log('parsed params', newParams);
+  return newParams;
 };
