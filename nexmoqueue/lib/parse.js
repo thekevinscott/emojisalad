@@ -22,13 +22,18 @@ module.exports = function parse(params) {
     //timestamp: params['message-timestamp']
   //};
 
-  const newParams = {
-    body: params.text,
-    to: params.to,
-    from: `+${params.msisdn}`,
-    data: JSON.stringify(params)
-  };
+  if (params) {
+    const newParams = {
+      body: params.text,
+      to: params.to,
+      from: `+${params.msisdn}`,
+      data: JSON.stringify(params)
+    };
 
-  console.log('parsed params', newParams);
-  return newParams;
+    console.info('parsed params', newParams);
+    return newParams;
+  }
+
+  console.info('no incoming params, maybe a test');
+  return {};
 };
