@@ -25,7 +25,7 @@ module.exports = function parse(params) {
   return {
     body: params.text,
     to: params.to,
-    from: params.msisdn,
+    from: `+${params.msisdn}`,
     data: JSON.stringify(params)
   };
 };

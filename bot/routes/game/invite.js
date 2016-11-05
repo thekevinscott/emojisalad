@@ -18,14 +18,6 @@ const getDefaultPlayerProtocol = player => {
   return 'sms';
 };
 
-const parsePhone = (phone, protocol) => {
-  if (protocol === 'nexmo') {
-    return phone.slice(1);
-  }
-
-  return phone;
-};
-
 module.exports = (player, message) => {
   let existing_user;
   let parsed_invitee;
@@ -57,10 +49,9 @@ module.exports = (player, message) => {
       });
     } else {
       console.info('it is a valid phone');
-      const protocol = getDefaultPlayerProtocol(player);
       return {
-        protocol,
-        from: parsePhone(response.phone, protocol)
+        protocol: getDefaultPlayerProtocol(player),
+        from: response.phone
       };
     }
   }).then((invitee) => {
