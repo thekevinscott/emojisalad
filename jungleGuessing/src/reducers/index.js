@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import messages from './messages';
+import guesses from './guesses';
 import phrases from './phrases';
 import user from './user';
 
 const rootReducer = combineReducers({
-  messages,
+  guesses,
   phrases,
   user,
 });

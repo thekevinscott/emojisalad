@@ -7,7 +7,7 @@ export default function Phrase({
 }) {
   return (
     <div className="prompt">
-      {prompt}
+      <h1>{prompt}</h1>
     </div>
   );
 }

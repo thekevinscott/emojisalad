@@ -1,8 +1,13 @@
+import {
+  fetchGuesses,
+} from './actions';
+
 export function mapStateToProps({
   phrases,
   user: {
     currentPhrase,
   },
+  guesses,
 }) {
   const {
     phrase,
@@ -12,11 +17,12 @@ export function mapStateToProps({
   return {
     phrase,
     prompt,
-    guesses: [],
+    guesses,
   };
 }
 
-export function mapDispatchToProps() {
+export function mapDispatchToProps(dispatch) {
   return {
+    fetchGuesses: () => dispatch(fetchGuesses()),
   };
 }
