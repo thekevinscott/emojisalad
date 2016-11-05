@@ -57,8 +57,9 @@ const whitelist = [
 app.use(cors({
   origin: (origin, callback) => {
     const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-    callback(originIsWhitelisted ? null : 'Bad Request', origin);
-  }
+    callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
+  },
+  credentials: false,
 }));
 
 const phone = require('lib/phone');
