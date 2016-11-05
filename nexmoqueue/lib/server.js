@@ -14,7 +14,10 @@ const options = {
 };
 
 const queue = require('queue');
-const app = queue({
+const {
+  app,
+  server,
+} = queue({
   name: require('config/app').name,
   options,
   parse: require('lib/parse'),
