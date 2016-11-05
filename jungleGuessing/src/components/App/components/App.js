@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Phrase } from '../../Phrase';
+import { Guesses } from '../../Guesses';
 
 import {
   mapStateToProps,
@@ -7,10 +9,16 @@ import {
 } from '../selectors';
 
 function App({
+  prompt,
+  guesses,
+}: {
+  prompt: string,
+  guesses: Array,
 }) {
   return (
     <div className="app">
-      Poops
+      <Phrase prompt={prompt} />
+      <Guesses guesses={guesses} />
     </div>
   );
 }
