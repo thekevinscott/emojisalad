@@ -84,6 +84,8 @@ app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
 console.log('queue', queue);
+console.log('queue', queue.server);
+console.log('queue', queue.getServer);
 queue.getServer(server => {
   console.log('server', server);
   const io = require('socket.io').listen(server);
