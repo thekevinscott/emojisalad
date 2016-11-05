@@ -82,12 +82,4 @@ app.get('/', (req, res) => {
 app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
-console.log(queue.server);
-//const http = require('http').Server(app);
 const io = require('socket.io').listen(queue.server);
-
-io.on('connection', (socket) => {
-  console.info('a user connected');
-
-  io.emit('some event', { for: 'everyone' });
-});
