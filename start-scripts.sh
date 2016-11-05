@@ -13,6 +13,9 @@
  cd /var/www/smsqueue
  pm2 start app.json
 
+# cd /var/www/fbqueue
+# pm2 start app.json
+
  cd /var/www/webqueue
  pm2 start app.json
 
