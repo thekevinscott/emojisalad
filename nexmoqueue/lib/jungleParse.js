@@ -8,9 +8,12 @@ let callback = () => {};
 const timer = setInterval(() => {
   const io = websocket();
   if (io) {
+    console.log('io now exists');
     clearInterval(timer);
     io.on('connection', (socket) => {
+      console.log('got connection');
       const callback = (number, message) => {
+        console.log('broadcast', number, message);
         socket.broadcast.emit('message', {
           number,
           message,
