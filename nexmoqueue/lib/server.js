@@ -86,8 +86,4 @@ app.get('/', (req, res) => {
 app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
-const io = require('socket.io').listen(server);
-io.on('connection', (socket) => {
-  console.log('huzzah');
-  //socket.emit('state', store.getState().toJS());
-});
+require('./websocket')(server);
