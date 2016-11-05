@@ -62,25 +62,25 @@ const getChallenge = (user) => {
 };
 
 module.exports = (user, message) => {
-  console.log('start the game route');
+  console.info('start the game route');
   return Invite.get({
     invited_id: user.id,
     used: 0
   }).then((invites) => {
-    console.log('invites');
+    console.info('invites');
     return new Promise((resolve) => {
       if ( invites.length && invites[0].game ) {
-        console.log('add to game');
+        console.info('add to game');
         return Game.add(invites[0].game, [user]).then((game) => {
-          //console.log('USE INVITE 2');
+          //console.info('USE INVITE 2');
           return Invite.use(_.assign({ game_id: game.id },invites[0])).then(() => {
             resolve(game);
           });
         });
       } else {
-        console.log('this user has players already, see if challenge or not');
+        console.info('this user has players already, see if challenge or not');
         resolve(getChallenge(user).then(phrases => {
-          console.log('phrases back', phrases);
+          console.info('phrases back', phrases);
           if (phrases && phrases.length > 0) {
             const phrase = phrases.shift();
             return require('../challenge')({
@@ -90,13 +90,13 @@ module.exports = (user, message) => {
             });
           }
 
-          console.log('start a new game, no associated challenges');
-          console.log('create game', user);
+          console.info('start a new game, no associated challenges');
+          console.info('create game', user);
           return Game.create([user]);
         }));
       }
     }).then((game) => {
-      console.log('game is back', game);
+      console.info('game is back', game);
       // now, our "user" now is a "player"; that means they
       // are assigned to a game and have a particular game number
       // associated with them.
@@ -104,7 +104,7 @@ module.exports = (user, message) => {
         return game_player.user_id === user.id;
       }).pop();
 
-      console.log('the player', player);
+      console.info('the player', player);
 
       if ( ! player ) {
         console.error('error: no player found for game: ', game);
@@ -112,7 +112,7 @@ module.exports = (user, message) => {
       }
 
       if ( game.players.length === 1 ) {
-        console.log('there is one player in this game');
+        console.info('there is one player in this game');
         // this is brand new game; invite some people
         return [{
           player,
@@ -120,7 +120,7 @@ module.exports = (user, message) => {
           options: [player.nickname, player.avatar]
         }];
       } else if ( game.round_count > 0 ) {
-        console.log('there are multiple players in this game. game is in progress!');
+        console.info('there are multiple players in this game. game is in progress!');
         const invite = invites[0];
         if ( game.round.submission ) {
           // round is in progress
@@ -140,16 +140,16 @@ module.exports = (user, message) => {
         }
 
       } else {
-        console.log('create a new round, and start the game!');
+        console.info('create a new round, and start the game!');
         const invite = invites[0];
         const inviter = invite.inviter_player;
         const invited = player; // just a renaming, to make this clearer
 
-        console.log('invite', invite);
-        console.log('invited', invited);
-        console.log('inviter', inviter);
+        console.info('invite', invite);
+        console.info('invited', invited);
+        console.info('inviter', inviter);
         return Round.create(game).then((round) => {
-          console.log('round', round);
+          console.info('round', round);
           // start the game
           return [
             { key: 'accepted-invited', options: [invited.nickname, invited.avatar], player: inviter },
