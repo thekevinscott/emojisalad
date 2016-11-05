@@ -1,9 +1,10 @@
 [{
-  "name"      : "webqueue",
+  "name"      : "jungle",
   "script"    : "./index.js",
   "env": {
     "LOG_LEVEL": "info",
-    "PORT": "5014",
+    "PORT": "5020",
     "ENVIRONMENT": "production"
   }
 }]
+

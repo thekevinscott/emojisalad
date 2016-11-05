@@ -36,6 +36,31 @@ const getInviteAcceptedMessages = (game, invite, invited, invited_key) => {
   });
 };
 
+const getChallenge = (user) => {
+  const promises = [
+    Challenge.get({
+      sender_id: user.to,
+      protocol: user.protocol,
+    }),
+    Challenge.guesses({
+      user_id: user.id,
+      from: user.from,
+      sender_id: user.to,
+      protocol: user.protocol,
+    }),
+  ];
+  return Promise.all(promises).then(response => {
+    const phrases = response[0];
+    const guesses = response[1];
+    if (guesses[user.to] && guesses[user.to].length) {
+      // this means they've already guessed on this number
+      return [];
+    }
+
+    return phrases;
+  });
+};
+
 module.exports = (user, message) => {
   console.info('start the game route');
   return Invite.get({
@@ -54,10 +79,7 @@ module.exports = (user, message) => {
         });
       } else {
         console.info('this user has players already, see if challenge or not');
-        resolve(Challenge.get({
-          sender_id: user.to,
-          protocol: user.protocol,
-        }).then(phrases => {
+        resolve(getChallenge(user).then(phrases => {
           console.info('phrases back', phrases);
           if (phrases && phrases.length > 0) {
             const phrase = phrases.shift();

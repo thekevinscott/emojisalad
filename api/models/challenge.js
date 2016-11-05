@@ -21,6 +21,10 @@ const Challenge = {
       query = query.where('c.from=?', params.from);
     }
 
+    if (params.user_id) {
+      query = query.where('c.user_id=?', params.user_id);
+    }
+
     return db.query(query).then(guesses => {
       return guesses.reduce((obj, guess) => {
         return {

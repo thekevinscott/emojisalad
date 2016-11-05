@@ -12,9 +12,14 @@ function getAPI(environment) {
   const API_PORT = '5012';
   if (environment === 'production') {
     return {
-      API_HOST: '45.55.41.73',
-      API_PORT,
+      API_HOST: 'http://app.emojisalad.com',
+      API_PORT: '80',
+      //http://app.emojisalad.com/
     };
+    //return {
+      //API_HOST: '45.55.41.73',
+      //API_PORT,
+    //};
   } else if (environment === 'development-device') {
     return {
       API_HOST: LOCAL_IP,

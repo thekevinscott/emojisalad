@@ -17,15 +17,16 @@ const parseSenderIDs = require('lib/parseSenderIDs');
 //const Round = require('models/round');
 //const Message = require('models/Message');
 
-const setupTwoGames = require('flows/twoGames');
+//const setupNGames = require('flows/twoGames');
+import setupNGames from 'flows/twoGames';
 const EMOJI = '😀';
 const game_numbers = require('../../../../testqueue/config/numbers');
 
-describe('Play', () => {
+describe.only('Play', () => {
   describe('Existing Player', () => {
     it('should onboard an existing user to a new pending game', () => {
       const players = getPlayers(2);
-      return setupTwoGames(2)(players).then(() => {
+      return setupNGames(2)(players).then(() => {
         return check(
           { player: players[1], msg: 'yes', to: game_numbers[1] },
           [
@@ -39,7 +40,7 @@ describe('Play', () => {
 
     it('should onboard an existing user to a new game where the submitter has yet to submit', () => {
       const players = getPlayers(3);
-      return setupTwoGames(players).then(() => {
+      return setupNGames(players).then(() => {
         return setup([
           { player: players[1], msg: 'yes', to: game_numbers[1] }
         ]);
@@ -60,7 +61,7 @@ describe('Play', () => {
     it('should onboard a new user to a new pending game', () => {
       const players = getPlayers(2);
       const invitee = getPlayers(1).pop();
-      return setupTwoGames(players, invitee).then(() => {
+      return setupNGames(players, invitee).then(() => {
         return setup([
           { player: invitee, msg: rule('yes').example(), to: game_numbers[1] },
           { player: invitee, msg: invitee.nickname, to: game_numbers[1] }
@@ -80,7 +81,7 @@ describe('Play', () => {
     it('should onboard a new user to a new game where the submitter has yet to submit', () => {
       const players = getPlayers(2);
       const invitee = getPlayers(4).pop();
-      return setupTwoGames(players).then(() => {
+      return setupNGames(players).then(() => {
         return setup([
 
           { player: players[1], msg: rule('yes').example(), to: game_numbers[1] },

@@ -6,7 +6,6 @@
 //const client = new LookupsClient(config.accountSid, config.authToken);
 const validate = require('phone');
 
-
 const Phone = {
   parse: (passed_number) => {
     return new Promise((resolve, reject) => {

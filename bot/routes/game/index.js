@@ -60,22 +60,6 @@ module.exports = (player, message) => {
           player,
           key: 'invited-chilling'
         }];
-        /*
-        return Phone.parse(message).then((result) => {
-          if ( result && result.phone ) {
-            console.info('1');
-            return require('./invite')(player, message);
-            //console.info('phones', phones);
-          } else {
-            // see if the input is a valid phone number
-            console.info('game round chillind');
-            return [{
-              player,
-              key: 'invited-chilling'
-            }];
-          }
-        });
-        */
       }
     });
   }

@@ -132,7 +132,7 @@ const Player = {
     }
 
     if ( params.nickname ) {
-      query = query.where('u.nickname LIKE ?',params.nickname+'%');
+      query = query.where('u.nickname LIKE ?',`${params.nickname}%`);
     }
 
     if ( params.to && params.to !== 0 ) {
@@ -141,7 +141,7 @@ const Player = {
     }
 
     if ( params.from ) {
-      query = query.where('u.`from` LIKE ?',params.from+'%');
+      query = query.where('u.`from` LIKE ?',`${params.from}%`);
     }
 
     if ( params.user_id ) {
@@ -192,7 +192,7 @@ const Player = {
       if ( rows && rows.affectedRows ) {
         return {};
       } else {
-        throw new Error("Player was not deleted: " + player_id);
+        throw new Error(`Player was not deleted: ${player_id}`);
       }
     });
   }

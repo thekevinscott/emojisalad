@@ -13,7 +13,13 @@
  }
  */
 
-module.exports = function parse(params) {
+const jungleNumbers = [
+  '12033496187',
+];
+
+import jungleParse from './jungleParse';
+
+module.exports = function parse(params = {}) {
   //let incomingData = {
     //messageId: params.messageId,
     //from: params.msisdn,
@@ -22,10 +28,24 @@ module.exports = function parse(params) {
     //timestamp: params['message-timestamp']
   //};
 
-  return {
-    body: params.text,
-    to: params.to,
-    from: params.msisdn,
-    data: JSON.stringify(params)
-  };
+  if (params.messageId) {
+    if (jungleNumbers.indexOf(params.to) !== -1) {
+      console.log('handle the jungle');
+      jungleParse(params);
+      return {};
+    }
+
+    const newParams = {
+      body: params.text,
+      to: params.to,
+      from: `+${params.msisdn}`,
+      data: JSON.stringify(params)
+    };
+
+    console.info('parsed params', newParams);
+    return newParams;
+  }
+
+  console.info('no incoming params, maybe a test');
+  return {};
 };

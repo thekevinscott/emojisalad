@@ -33,7 +33,7 @@ const sms = Promise.coroutine(function* (params) {
     };
     console.info('new params', newParams);
     const result = yield nexmo.sendSms(
-      newParams.from,
+      newParams.from.split('+').pop(),
       newParams.to,
       newParams.body,
       {}

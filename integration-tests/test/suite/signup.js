@@ -203,7 +203,6 @@ describe('Signup', () => {
       });
     });
 
-
     it('should chide a player who tries to invite players before entering an avatar', () => {
       const player = getPlayers(1)[0];
       return setup([

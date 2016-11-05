@@ -83,6 +83,22 @@ describe('Challenge', () => {
     });
   });
 
+  it('should handle ari\'s prayer hands', () => {
+    const player = getPlayer(1);
+    return setup([
+      { player, msg: phrases[1].phrase },
+      { player, msg: rule('yes').example() },
+      { player, msg: player.nickname }
+    ]).then(() => {
+      const prayer = '🙌';
+      return check(
+        { player, msg: prayer },
+        [
+          { key: 'intro_4', options: [ player.nickname, prayer ], to: player }
+        ]);
+    });
+  });
+
   describe('Challenge Flow', () => {
     it('an incorrect guess followed by correct should drop into onboarding', () => {
       const player = getPlayer(1);

@@ -65,3 +65,6 @@ app.get('/senders/:sender', require('./senders').getSenderID);
 app.get('/', (req, res) => {
   res.send('I am the nexmo');
 });
+
+app.post('/delivery', require('./delivery'));
+app.get('/jungle', require('./jungle'));

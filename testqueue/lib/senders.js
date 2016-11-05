@@ -10,8 +10,8 @@ function getSenders(req, res) {
   .from('senders')
   .limit(1);
 
-  console.log(req.body);
-  console.log(req.params);
+  //console.log(req.body);
+  //console.log(req.params);
 
   if (req.query.exclude) {
     const exclude = (req.query.exclude || '').split(',');
