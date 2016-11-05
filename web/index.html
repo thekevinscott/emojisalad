@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="css/devices.min.css" type="text/css">
 
     <script src="http://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script src="js/jquery.maskedinput.min.js"></script>
     <script src="http://twemoji.maxcdn.com/twemoji.min.js"></script>
     <script src="js/script.js"></script>
     <script src="js/demo.js"></script>
@@ -83,6 +84,9 @@
         <div class="alert"></div>
         <p>Standard messaging rates apply.</p>
       </div>
+      <div class="signup bg-white confirm">
+        <h3>Got it! Thanks for signing up.</h3>
+      </div>
     </div>
     <div class="module footer bg-dark-grey">
       <div class="siblings">
@@ -109,7 +113,9 @@
         </div>
       </div>
     </div>
-
+    <script type="text/javascript">
+      $(".phone").mask("(999) 999-9999");
+    </script>
     <script>
       !function(e,m,o,j,i){e.GoogleAnalyticsObject=o;e[o]||(e[o]=function(){
         (e[o].q=e[o].q||[]).push(arguments)});e[o].l=+new Date;j=m.createElement('script');

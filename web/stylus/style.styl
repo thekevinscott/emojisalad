@@ -70,7 +70,11 @@ form
   margin-bottom 20px
   display flex
   flex-direction row
-
+input:focus,
+select:focus,
+textarea:focus,
+button:focus
+  outline none
 .module
   padding 0 10% 10% 10%
 
@@ -110,6 +114,8 @@ form
   appearance none
   height 60px
   margin-left 10px
+.hover-box
+  background-color (accent-yellow)/2
   
 .box
   position relative
@@ -168,6 +174,16 @@ form
     width 90%
   h4
     flex 1
+    
+.confirm
+  display none
+  flex-grow 1
+  flex-shrink 1
+  flex-basis auto
+  align-items center
+  justify-content center
+  h3
+    flex 1
      
 .bg-arrow
   flex 0.2
@@ -196,8 +212,10 @@ input[type='text']
   padding 10px 0 13px 0
   font 400 1.75rem/1.75rem body-font
   text-align center
+  transition all 0.5s ease-out
   &:focus
     border-color dark-accent
+    transition all 0.5s ease-out
 
 input[type='submit']
   display inline-block
@@ -205,8 +223,14 @@ input[type='submit']
   font 400 1.125rem/1.125rem sans-font
   text-align center
   text-transform uppercase
+  transition all 0.2s ease-out
   &:focus
     border-color dark-accent
+    transition all 0.2s ease-out
+  &:hover
+    background-color (accent-yellow*1.5)
+    transition all 0.2s ease-out
+    cursor pointer
 
 
 .demo
@@ -315,6 +339,8 @@ offset = 15px
   .bg-yellow
     .bg-arrow, .inner-arrow
       border-color: accent-yellow accent-yellow transparent transparent;
+
+    
 @media screen and (max-width: 791px)
   .kill
     display none
