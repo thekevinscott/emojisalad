@@ -87,4 +87,6 @@ const io = require('socket.io')(http);
 
 io.on('connection', (socket) => {
   console.info('a user connected');
+
+  io.emit('some event', { for: 'everyone' });
 });
