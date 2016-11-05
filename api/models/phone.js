@@ -6,13 +6,17 @@
 //const client = new LookupsClient(config.accountSid, config.authToken);
 const validate = require('phone');
 
-
 const Phone = {
   parse: (passed_number) => {
     return new Promise((resolve, reject) => {
       const parsed_number = validate(passed_number);
       if ( parsed_number && parsed_number.length ) {
-        resolve(parsed_number.shift());
+        // for twilio, pass the +
+        if (passed_number.indexOf(0) === '+') {
+          resolve(parsed_number.shift());
+        } else {
+          resolve(parsed_number.shift().slice(1));
+        }
       } else {
         if ( process.env.ENVIRONMENT === 'test' ) {
           //console.log('this is test!', passed_number);

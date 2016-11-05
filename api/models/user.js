@@ -145,7 +145,7 @@ const User = {
 
     let query = squel
                 .select()
-                .field('(' + number_of_players.toString() + ')', 'number_of_players')
+                .field(`(${number_of_players.toString()})`, 'number_of_players')
                 .field('u.*')
                 .left_join('players', 'p', 'u.id=p.user_id')
                 .from('users', 'u');
@@ -157,11 +157,11 @@ const User = {
     }
 
     if ( params.nickname ) {
-      query = query.where('u.nickname LIKE ?',params.nickname+'%');
+      query = query.where('u.nickname LIKE ?',`${params.nickname}%`);
     }
 
     if ( params.from ) {
-      query = query.where('u.`from` LIKE ?',params.from+'%');
+      query = query.where('u.`from` LIKE ?',`${params.from}%`);
     }
 
     if ( params.protocol ) {
@@ -230,7 +230,7 @@ const User = {
       if ( rows && rows.affectedRows ) {
         return {};
       } else {
-        throw new Error("User was not deleted: " + user_id);
+        throw new Error(`User was not deleted: ${user_id}`);
       }
     });
   },

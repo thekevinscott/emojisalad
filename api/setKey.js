@@ -2,16 +2,6 @@ const squel = require('squel').useFlavour('mysql');
 import db from 'db';
 //import crypto from 'crypto';
 import uuid from 'node-uuid';
-//const algorithm = 'aes-256-ctr';
-//const salt = 'dd6F3Efed6F3d6F3Efeqd6F3Efd6F3Efd6F3Efeqd6F3Efe';
-
-//function encrypt(text) {
-  //const payload = new Buffer(text + password).toString('base64');
-  //const cipher = crypto.createCipher(algorithm,password);
-  //let crypted = cipher.update(payload,'utf8','hex');
-  //crypted += cipher.final('hex');
-  //return crypted.substring(0, 32);
-//}
 
 export default function setKey(table, obj, where) {
   if (! table || typeof table !== 'string') {
