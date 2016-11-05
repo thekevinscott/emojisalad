@@ -30,6 +30,7 @@
     "phone-formatter": "0.0.2",
     "pmx": "^0.6.0",
     "queue": "git+ssh://git@bitbucket.org/slipper-siblings/queue.git",
+    "socket.io": "^1.5.1",
     "squel": "^4.3.1"
   },
   "devDependencies": {
