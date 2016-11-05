@@ -11,12 +11,7 @@ const Phone = {
     return new Promise((resolve, reject) => {
       const parsed_number = validate(passed_number);
       if ( parsed_number && parsed_number.length ) {
-        // for twilio, pass the +
-        if (passed_number.indexOf(0) === '+') {
-          resolve(parsed_number.shift());
-        } else {
-          resolve(parsed_number.shift().slice(1));
-        }
+        resolve(parsed_number.shift());
       } else {
         if ( process.env.ENVIRONMENT === 'test' ) {
           //console.log('this is test!', passed_number);
