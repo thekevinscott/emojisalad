@@ -86,14 +86,9 @@ app.get('/', (req, res) => {
 app.post('/delivery', require('./delivery'));
 app.get('/jungle', require('./jungle'));
 
-console.log('queue', queue);
-console.log('queue', queue.server);
-console.log('queue', queue.getServer);
-queue.getServer(server => {
-  console.log('server', server);
-  const io = require('socket.io').listen(server);
-  io.on('connection', (socket) => {
-    console.log('huzzah');
-    //socket.emit('state', store.getState().toJS());
-  });
+console.log('server', server);
+const io = require('socket.io').listen(server);
+io.on('connection', (socket) => {
+  console.log('huzzah');
+  //socket.emit('state', store.getState().toJS());
 });
