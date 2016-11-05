@@ -55,10 +55,10 @@ const whitelist = [
   'http://jungle.emojisalad.com',
 ];
 app.use(cors({
-  //origin: (origin, callback) => {
-    //const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-    //callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
-  //}
+  origin: (origin, callback) => {
+    const originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+    callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
+  }
 }));
 
 const phone = require('lib/phone');
