@@ -62,7 +62,6 @@ const websocketMiddleware = ({
       payload,
       meta,
     }, () => {
-      debugger;
       dispatch({
         ...rest,
         type: REJECTED,
@@ -78,6 +77,9 @@ const websocketMiddleware = ({
     return next({
       ...rest,
       type: REJECTED,
+      data: {
+        message: 'Server is not connected',
+      },
       payload,
       meta,
     });
