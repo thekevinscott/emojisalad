@@ -9,6 +9,10 @@ function guess(req) {
   return Challenge.guess(req.body);
 }
 
+function guesses(req) {
+  return Challenge.guesses(req.body);
+}
+
 module.exports = [
   {
     path: '/',
@@ -19,5 +23,10 @@ module.exports = [
     path: '/',
     method: 'post',
     fn: guess,
-  }
+  },
+  {
+    path: '/guesses',
+    method: 'get',
+    fn: guesses,
+  },
 ];

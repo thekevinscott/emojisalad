@@ -17,12 +17,12 @@ const bootstrapSocket = (dispatch) => {
   });
 
   socket.on('connect', () => {
-    //console.log('connected!');
+    console.log('connected!');
     dispatch(updateStatus(true));
   });
 
   socket.on('disconnect', () => {
-    //console.log('disconnected!');
+    console.log('disconnected!');
     dispatch(updateStatus(false));
   });
 

@@ -36,29 +36,51 @@ const getInviteAcceptedMessages = (game, invite, invited, invited_key) => {
   });
 };
 
+const getChallenge = (user) => {
+  const promises = [
+    Challenge.get({
+      sender_id: user.to,
+      protocol: user.protocol,
+    }),
+    Challenge.guesses({
+      user_id: user.id,
+      from: user.from,
+      sender_id: user.to,
+      protocol: user.protocol,
+    }),
+  ];
+  return Promise.all(promises).then(response => {
+    const phrases = response[0];
+    const guesses = response[1];
+    if (guesses[user.to] && guesses[user.to].length) {
+      // this means they've already guessed on this number
+      return [];
+    }
+
+    return phrases;
+  });
+};
+
 module.exports = (user, message) => {
-  console.info('start the game route');
+  console.log('start the game route');
   return Invite.get({
     invited_id: user.id,
     used: 0
   }).then((invites) => {
-    console.info('invites');
+    console.log('invites');
     return new Promise((resolve) => {
       if ( invites.length && invites[0].game ) {
-        console.info('add to game');
+        console.log('add to game');
         return Game.add(invites[0].game, [user]).then((game) => {
-          //console.info('USE INVITE 2');
+          //console.log('USE INVITE 2');
           return Invite.use(_.assign({ game_id: game.id },invites[0])).then(() => {
             resolve(game);
           });
         });
       } else {
-        console.info('this user has players already, see if challenge or not');
-        resolve(Challenge.get({
-          sender_id: user.to,
-          protocol: user.protocol,
-        }).then(phrases => {
-          console.info('phrases back', phrases);
+        console.log('this user has players already, see if challenge or not');
+        resolve(getChallenge(user).then(phrases => {
+          console.log('phrases back', phrases);
           if (phrases && phrases.length > 0) {
             const phrase = phrases.shift();
             return require('../challenge')({
@@ -68,13 +90,13 @@ module.exports = (user, message) => {
             });
           }
 
-          console.info('start a new game, no associated challenges');
-          console.info('create game', user);
+          console.log('start a new game, no associated challenges');
+          console.log('create game', user);
           return Game.create([user]);
         }));
       }
     }).then((game) => {
-      console.info('game is back', game);
+      console.log('game is back', game);
       // now, our "user" now is a "player"; that means they
       // are assigned to a game and have a particular game number
       // associated with them.
@@ -82,7 +104,7 @@ module.exports = (user, message) => {
         return game_player.user_id === user.id;
       }).pop();
 
-      console.info('the player', player);
+      console.log('the player', player);
 
       if ( ! player ) {
         console.error('error: no player found for game: ', game);
@@ -90,7 +112,7 @@ module.exports = (user, message) => {
       }
 
       if ( game.players.length === 1 ) {
-        console.info('there is one player in this game');
+        console.log('there is one player in this game');
         // this is brand new game; invite some people
         return [{
           player,
@@ -98,7 +120,7 @@ module.exports = (user, message) => {
           options: [player.nickname, player.avatar]
         }];
       } else if ( game.round_count > 0 ) {
-        console.info('there are multiple players in this game. game is in progress!');
+        console.log('there are multiple players in this game. game is in progress!');
         const invite = invites[0];
         if ( game.round.submission ) {
           // round is in progress
@@ -118,16 +140,16 @@ module.exports = (user, message) => {
         }
 
       } else {
-        console.info('create a new round, and start the game!');
+        console.log('create a new round, and start the game!');
         const invite = invites[0];
         const inviter = invite.inviter_player;
         const invited = player; // just a renaming, to make this clearer
 
-        console.info('invite', invite);
-        console.info('invited', invited);
-        console.info('inviter', inviter);
+        console.log('invite', invite);
+        console.log('invited', invited);
+        console.log('inviter', inviter);
         return Round.create(game).then((round) => {
-          console.info('round', round);
+          console.log('round', round);
           // start the game
           return [
             { key: 'accepted-invited', options: [invited.nickname, invited.avatar], player: inviter },
