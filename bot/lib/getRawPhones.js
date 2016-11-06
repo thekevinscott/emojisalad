@@ -2,7 +2,7 @@
 const getWebSubmissions = require('lib/getWebSubmissions');
 const getJungleSubmissions = require('lib/getJungleSubmissions');
 
-const INCLUDE_JUNGLE = true;
+const INCLUDE_JUNGLE = false;
 
 module.exports = ({
   web,
