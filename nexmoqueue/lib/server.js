@@ -37,6 +37,10 @@ const {
   preprocessSend: require('lib/preprocessSend'),
   POST_LIMIT: '60mb',
   api: {
+    jungle: {
+      endpoint: `${endpoint}jungle`,
+      method: 'GET',
+    },
     phone: {
       endpoint: `${endpoint}phone`,
       method: 'GET',
