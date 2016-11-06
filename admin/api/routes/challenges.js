@@ -41,7 +41,7 @@ const getSenders = challenges => {
   }, []);
 
   return Promise.all(promises).then(result => {
-    console.log('result', result);
+    //console.log('result', result);
     return result.reduce((obj, r) => {
       return Object.assign({}, obj, {
         [r.protocol]: Object.assign({}, (obj[r.protocol] || {}), {
@@ -72,7 +72,7 @@ const getChallenges = () => {
 
   return db.query(query).then(result => {
     return getSenders(result).then(senders => {
-      console.log('senders', senders);
+      //console.log('senders', senders);
       const challenges = result.map(challenge => {
         return Object.assign({}, challenge, {
           phone: senders[challenge.protocol][challenge.sender_id],
@@ -102,7 +102,7 @@ module.exports = (app) => {
       getChallenges(),
       getPhrases(),
     ]).then(result => {
-      console.log('result', result);
+      //console.log('result', result);
       const challenges = result[0];
       res.json({
         challenges,
