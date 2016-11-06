@@ -18,6 +18,10 @@ export default function Phrase({
           {phrase}
         </span>
       </h2>
+      <h3>
+        Text to <span>(203) 349-6187</span>
+      </h3>
+
     </div>
   );
 }
