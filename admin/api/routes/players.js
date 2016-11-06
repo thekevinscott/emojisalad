@@ -55,7 +55,7 @@ module.exports = function(app) {
           });
           user.attributes = attributes;
         });
-        console.log('users', users);
+        //console.log('users', users);
         //attributes.map(function(attribute) {
           //user
         //});
