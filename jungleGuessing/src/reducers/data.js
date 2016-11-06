@@ -51,7 +51,7 @@ const phrases = [
     phrase: 'Brave Little Toaster',
   },
   {
-    prompt: '☮️❤️🇬🇧👦🏻👦🏻👦🏻',
+    prompt: '☮️❤️🇬🇧👦🏻🏻👦🏻👦🏻',
     phrase: 'The Beatles',
   },
   {
