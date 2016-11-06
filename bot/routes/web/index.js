@@ -33,6 +33,10 @@ function getNextSenderID(protocol, player_sender_ids) {
   });
 }
 const Router = (phone) => {
+  if (!phone) {
+    return Promise.resolve([]);
+  }
+
   console.info(`===========Web Index: ${phone}`);
   const protocol = 'sms';
   return User.get({
