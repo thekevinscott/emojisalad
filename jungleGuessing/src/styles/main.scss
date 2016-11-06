@@ -1,4 +1,5 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway:100,400);
+@import url(https://fonts.googleapis.com/css?family=Paytone+One%7CCandal);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata:400,700);
 
 $main-bg-color: #f1f2f0;
 $accent-blue: #37bbe4;
@@ -14,11 +15,14 @@ html, body {
 }
 
 body {
-  background-color: $main-bg-color;
   color: $accent-black;
   display: flex;
   justify-content: center;
-  font-family: 'Raleway', sans-serif;
+  font-family: Inconsolata, Courier, 'Courier New', serif;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Candal', sans-serif;
 }
 
 #root {
@@ -27,15 +31,19 @@ body {
 }
 
 .app {
-  width: 800px;
   margin: 0 auto;
   height: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .prompt {
-  margin-top: 20px;
+  margin: 20px;
+  width: 600px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   text-align: center;
   margin-bottom: 0px;
@@ -43,25 +51,52 @@ body {
   h1 {
     font-size: 120px;
     margin: 0;
+    line-height: 120px;
   }
-}
 
-h2 {
-  border-bottom: 1px solid #CCC;
-
-  span {
-    $width: 450px;
-    margin: 0 auto;
-    display: block;
-    position: absolute;
-    text-align: center;
-    left: 50%;
-    width: $width;
-    margin-left: -($width / 2);
+  h2 {
     font-size: 30px;
-    margin-top: -45px;
-    background-color: $main-bg-color;
-    color: #333;
+    margin: 20px auto 40px auto;
+    padding: 10px 50px;
+    width: 400px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 90px;
+    display: inline-block;
+    text-align: center;
+    background: white;
+
+    span {
+      transition: all 0.5s;
+    }
+
+    span.blurred {
+      transition: all 0.0s;
+      filter: blur(10px);
+      font-weight: bold;
+      letter-spacing: 10px;
+    }
+  }
+
+  h3 {
+    flex: 0;
+    margin: 0;
+    color: #ffd464;
+    font-size: 30px;
+
+    .number {
+      background: #ffd464; 
+      color: black;
+      /*$width: 450px;*/
+      margin: 0 auto;
+      /*position: absolute;*/
+      padding: 0 10px;
+      text-align: center;
+      /*left: 50%;*/
+      /*width: $width;*/
+      /*margin-left: -($width / 2);*/
+      /*margin-top: -45px;*/
+      color: #333;
+    }
   }
 }
 
@@ -70,32 +105,57 @@ h2 {
   display: flex;
   flex-direction: column;
 
-  h2 {
-    flex: 0;
-  }
 }
 
 .guess-container {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
   flex: 1;
-  background: white;
-  margin: 30px 0 40px 0;
+  background: rgba(255,255,255,0.7);
+  margin: 30px 20px 40px 0;
 }
 
 .guess {
+  padding: 10px;
   display: flex;
-  font-size: 20px;
+  flex-direction: column;
+  font-size: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  &.correct {
+    background: #ffd464;
+  }
+
+  .header {
+    display: flex;
+    font-size: 74%;
+
+    .time {
+      flex: 1;
+      display: flex;
+
+      .duration {
+        flex: 1;
+      }
+    }
+  }
 
   .number {
     margin-right: 20px;
+    width: 140px;
   }
 
-  .guess {
+  .message {
     flex: 1;
   }
 
-  .created {
+  .duration {
     margin-left: 20px;
     text-align: right;
+    margin-right: 10px;
+  }
+
+  .durationString {
+    text-align: left;
+    width: 100px;
   }
 }

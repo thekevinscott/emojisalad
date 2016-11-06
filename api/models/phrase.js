@@ -72,10 +72,10 @@ const Phrase = {
       return phrase;
     });
   },
-  contains: (phrase, guess) => {
+  contains: (phrase = '', guess = '') => {
     return guess.toLowerCase().indexOf(phrase.toLowerCase()) !== -1;
   },
-  parsePhrase: (phrase) => {
+  parsePhrase: (phrase = '') => {
     const ignored_words = [
       'the',
       'of',
@@ -91,7 +91,7 @@ const Phrase = {
       mrs: 'missus',
       ms: 'miss'
     };
-    return phrase.toLowerCase().replace(/[^\w\s]|_/g, '').split(' ').filter((word) => {
+    return phrase.toLowerCase().replace(/[^\w\s]|_/g, '').split(' ').filter((word = '') => {
       return ignored_words.indexOf(word.toLowerCase()) === -1 && word;
     }).map((word) => {
       if (translate_words[word]) {

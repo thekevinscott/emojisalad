@@ -4,16 +4,27 @@ const request = Promise.promisify(require('request'));
 const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
 
-const getWebSubmissions = (ids) => {
-  const protocol = 'web';
+const getPhones = messages => {
+  const phones = messages.reduce((obj, message) => {
+    return {
+      ...obj,
+      [message.number]: true,
+    };
+  }, {});
+
+  return Object.keys(phones).map(phone => phone);
+};
+
+const getJungleSubmissions = (ids) => {
+  const protocol = 'nexmo';
   const service = registry.get(protocol);
-  if ( service ) {
+  if ( service && service.api && service.api.jungle ) {
     const payload = {
-      url: service.api.received.endpoint,
-      method: service.api.received.method,
-      qs: {
-        id: ids[protocol]
-      }
+      url: service.api.jungle.endpoint,
+      method: service.api.jungle.method,
+      //qs: {
+        //id: ids[protocol]
+      //}
     };
     return request(payload).then((response) => {
       if ( ! response || ! response.body ) {
@@ -26,7 +37,7 @@ const getWebSubmissions = (ids) => {
         // nada
       }
 
-      return body;
+      return getPhones(body);
     }).catch((err) => {
       console.error(err);
       throw err;
@@ -34,4 +45,4 @@ const getWebSubmissions = (ids) => {
   }
 };
 
-module.exports = getWebSubmissions;
+module.exports = getJungleSubmissions;

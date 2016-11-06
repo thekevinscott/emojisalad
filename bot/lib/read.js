@@ -7,7 +7,7 @@ const runTime = 5;
 
 const Timer = require('models/timer');
 const getMessages = require('lib/getMessages');
-const getWebSubmissions = require('lib/getWebSubmissions');
+const getRawPhones = require('lib/getRawPhones');
 const processMessage = require('lib/processMessage');
 const processWebMessage = require('lib/processWebMessage');
 const sendMessages = require('lib/sendMessages');
@@ -105,7 +105,9 @@ const runRead = () => {
   }).then(() => {
     //console.info('run read 5');
     return getLastProtocolMessageIDs(['web']).then(last_protocol_message_ids => {
-      return getWebSubmissions(last_protocol_message_ids);
+      return getRawPhones({
+        web: last_protocol_message_ids,
+      });
     }).then(responses => {
       if (responses && responses.length > 0) {
         const key = 'web_queue_id';

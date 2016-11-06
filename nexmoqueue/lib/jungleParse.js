@@ -10,10 +10,10 @@ let io;
 const timer = setInterval(() => {
   io = websocket();
   if (io) {
-    console.log('io now exists');
+    console.info('io now exists');
     clearInterval(timer);
     io.on('connection', (socket) => {
-      console.log('got connection');
+      console.info('got connection');
     });
 
   }
@@ -38,9 +38,9 @@ module.exports = function jungleParse({
     created: squel.fval('NOW(3)'),
   });
 
-  console.log(query.toString());
+  console.info(query.toString());
   return db.query(query).then((rows) => {
-    console.log('broadcast', number, message);
+    console.info('broadcast', number, message);
     if (io) {
       io.emit('message', {
         id: rows.insertId,
