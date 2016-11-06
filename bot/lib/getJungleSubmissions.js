@@ -18,7 +18,7 @@ const getPhones = messages => {
 const getJungleSubmissions = (ids) => {
   const protocol = 'nexmo';
   const service = registry.get(protocol);
-  if ( service ) {
+  if ( service && service.api && service.api.jungle ) {
     const payload = {
       url: service.api.jungle.endpoint,
       method: service.api.jungle.method,
