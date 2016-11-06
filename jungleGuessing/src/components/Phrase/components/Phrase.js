@@ -19,7 +19,7 @@ export default function Phrase({
         </span>
       </h2>
       <h3>
-        Text to <span>(203) 349-6187</span>
+        Text to <span className="number">(203) 349-6187</span>
       </h3>
 
     </div>
