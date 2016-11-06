@@ -14,7 +14,6 @@ module.exports = function(req, res) {
                 .from('numbers')
                 .where('id > ?', req.query.id);
 
-  console.log(query.toString());
   return db.query(query).then(response => {
     res.json(response);
   });
