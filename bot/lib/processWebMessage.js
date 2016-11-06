@@ -5,10 +5,7 @@ const Message = require('models/message');
 const concatenate = require('lib/concatenateMessages');
 
 module.exports = (entry) => {
-  return router({
-    from: entry.phone,
-    protocol: 'sms',
-  }).then(responses => {
+  return router(entry.phone).then(responses => {
     if ( responses && _.isArray(responses) && responses.length ) {
       return Message.parse(responses, {});
     }
