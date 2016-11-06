@@ -46,33 +46,36 @@ const selectGuesses = (guesses, {
   id: phraseId,
 }) => {
   let foundCorrect = false;
-  const guessObj = guesses.filter(guess => {
-    return guess.phraseId === phraseId;
-  }).reduce((obj, guess) => {
-    if (validGuess(guess, obj, phrase, true)) {
-      const correct = !foundCorrect && isCorrect(guess, phrase);
+  //const guessObj = guesses.filter(guess => {
+    //return guess.phraseId === phraseId;
+  //}).reduce((obj, guess) => {
+    //if (validGuess(guess, obj, phrase, true)) {
+      //const correct = !foundCorrect && isCorrect(guess, phrase);
 
-      if (correct) {
-        foundCorrect = true;
-      }
+      //if (correct) {
+        //foundCorrect = true;
+      //}
 
-      return {
-        ...obj,
-        [guess.number]: {
-          ...guess,
-          correct,
-        },
-      };
-    }
+      //return {
+        //...obj,
+        //[guess.number]: {
+          //...guess,
+          //correct,
+        //},
+      //};
+    //}
 
-    return obj;
-  }, {});
+    //return obj;
+  //}, {});
 
   //const orderedGuesses = Object.keys(guessObj).map(number => {
     //return guessObj[number];
   //});
 
-  const orderedGuesses = guesses;
+  const orderedGuesses = guesses.map(guess => ({
+    ...guess,
+    correct: isCorrect(guess, phrase),
+  }));
   return {
     correct: foundCorrect,
     guesses: orderedGuesses.sort((a, b) => {
