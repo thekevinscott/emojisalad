@@ -10,7 +10,7 @@ module.exports = ({
     const phones = getWebSubmissions(web);
     console.info('should we include jungle', INCLUDE_JUNGLE);
     if (INCLUDE_JUNGLE) {
-      return phones.concat(getJungleSubmissions());
+      return (phones || []).concat(getJungleSubmissions());
     }
 
     return phones;
