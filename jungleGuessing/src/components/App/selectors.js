@@ -77,14 +77,13 @@ const selectGuesses = (guesses, {
   //});
 
   const orderedGuesses = guesses.map(guess => {
-    const correct = !foundCorrect && isCorrect(guess, phrase);
-
-    if (correct) {
-      foundCorrect = true;
-    }
-
-
     if (guess.phraseId === phraseId) {
+      const correct = !foundCorrect && isCorrect(guess, phrase);
+
+      if (correct) {
+        foundCorrect = true;
+      }
+
       return {
         ...guess,
         correct,
