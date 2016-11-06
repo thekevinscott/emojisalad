@@ -22,10 +22,10 @@ class App extends Component {
     this.props.fetchGuesses();
     window.addEventListener('keydown', e => {
       if ([
-        'ArrowLeft',
-        'ArrowRight',
+        'KeyN',
+        'KeyB',
       ].indexOf(e.code) !== -1) {
-        this.props.goToNextPhrase(e.code === 'ArrowRight');
+        this.props.goToNextPhrase(e.code === 'KeyN');
       }
     });
   }
