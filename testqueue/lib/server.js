@@ -4,7 +4,7 @@ const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
 
 const base_url = 'http://localhost:' + process.env.PORT + '/';
-const app = queue({
+const { app } = queue({
   name: 'testqueue',
   options: {
     port: require('config/app').port,

@@ -12,6 +12,7 @@ $(document).ready(function() {
     $('input').attr('disabled', 'disabled');
     message.html('Submitting...');
     $.post('/submit', body, function(data) {
+      console.log('back', data);
       $('input').removeAttr('disabled');
       if (data.error) {
         message.html(data.error);

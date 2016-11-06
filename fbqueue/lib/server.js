@@ -13,7 +13,7 @@ const options = {
   db: require('config/db')
 };
 
-const app = require('queue')({
+const { app } = require('queue')({
   name: require('config/app').name,
   options,
   parse: require('lib/parse'),

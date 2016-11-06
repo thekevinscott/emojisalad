@@ -18,7 +18,7 @@ const options = {
   }
 };
 
-const app = queue({
+const { app } = queue({
   name: 'mail',
   options,
   parse: require('lib/parse'),
