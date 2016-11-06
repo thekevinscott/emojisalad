@@ -19,7 +19,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.props.fetchGuesses();
+    //this.props.fetchGuesses();
     window.addEventListener('keydown', e => {
       if ([
         'KeyZ',
