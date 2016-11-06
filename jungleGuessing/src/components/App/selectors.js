@@ -68,11 +68,14 @@ const selectGuesses = (guesses, {
     return obj;
   }, {});
 
+  //const orderedGuesses = Object.keys(guessObj).map(number => {
+    //return guessObj[number];
+  //});
+
+  const orderedGuesses = guesses;
   return {
     correct: foundCorrect,
-    guesses: Object.keys(guessObj).map(number => {
-      return guessObj[number];
-    }).sort((a, b) => {
+    guesses: orderedGuesses.sort((a, b) => {
       if (a.correct) {
         return -1;
       }
