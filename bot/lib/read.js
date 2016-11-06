@@ -103,6 +103,7 @@ const runRead = () => {
       }
     });
   }).then(() => {
+    /*
     //console.info('run read 5');
     return getLastProtocolMessageIDs(['web']).then(last_protocol_message_ids => {
       return getRawPhones({
@@ -129,6 +130,7 @@ const runRead = () => {
         });
       }
     });
+    */
   });
 };
 
