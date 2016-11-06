@@ -12,7 +12,8 @@ export default function Guess({
   created: any,
   correct: any,
 }) {
-  const createdString = moment(new Date(created)).format('h:mm:ss A');
+  //const createdString = moment(new Date(created)).format('h:mm:ss A');
+  const createdString = moment(new Date(created)).fromNow(true);
   const className = [
     'guess',
     correct ? 'correct' : null,
