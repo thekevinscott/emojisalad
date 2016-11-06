@@ -21,25 +21,29 @@ const parsePhrase = phrase => {
 const isCorrect = ({
   message: guess,
 }, phrase) => {
-  const distance = new Levenshtein(parsePhrase(guess), parsePhrase(phrase));
+  const distance = new Levenshtein(parsePhrase(guess), parsePhrase(phrase)) / phrase.length;
 
-  return distance < 5;
+  console.log(guess, distance);
+  return distance < 0.15;
+  //console.log(distance / phrase.length);
+
+  //return distance < 5;
 };
 
-const validGuess = (guess, obj, phrase, isPossibleToWin) => {
-  if (!obj[guess.number]) {
-    return true;
-  }
+//const validGuess = (guess, obj, phrase, isPossibleToWin) => {
+  //if (!obj[guess.number]) {
+    //return true;
+  //}
 
-  const currentDate = new Date(obj[guess.number].created);
-  const newDate = new Date(guess.created);
+  //const currentDate = new Date(obj[guess.number].created);
+  //const newDate = new Date(guess.created);
 
-  if (isPossibleToWin && currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
-    return true;
-  }
+  //if (isPossibleToWin && currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
+    //return true;
+  //}
 
-  return false;
-};
+  //return false;
+//};
 
 const selectGuesses = (guesses, {
   phrase,
@@ -79,11 +83,16 @@ const selectGuesses = (guesses, {
       foundCorrect = true;
     }
 
-    return {
-      ...guess,
-      correct,
-    };
-  });
+
+    if (guess.phraseId === phraseId) {
+      return {
+        ...guess,
+        correct,
+      };
+    }
+
+    return null;
+  }).filter(el => el);
   return {
     correct: foundCorrect,
     guesses: orderedGuesses.sort((a, b) => {
