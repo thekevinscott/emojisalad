@@ -27,6 +27,7 @@ module.exports = (user_params, message) => {
         sender_id: user_params.to,
         protocol: user_params.protocol,
       }).then(phrases => {
+        /*
         console.info('phrases back', phrases);
         if (phrases && phrases.length > 0) {
           const phrase = phrases.shift();
@@ -36,6 +37,7 @@ module.exports = (user_params, message) => {
             phrase,
           });
         }
+        */
 
         //console.log('create a new game!');
         // not a challenge number

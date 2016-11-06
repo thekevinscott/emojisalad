@@ -2,7 +2,6 @@
 //const Promise = require('bluebird');
 //const Player = require('models/player');
 const Invite = require('models/invite');
-const Challenge = require('models/challenge');
 //const User = require('models/user');
 //const Round = require('models/round');
 //const Invite = require('models/invite');

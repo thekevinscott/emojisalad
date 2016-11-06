@@ -65,6 +65,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
             sender_id: to,
             protocol,
           }).then(phrases => {
+            /*
             console.info('phrases back', phrases);
             if (phrases && phrases.length > 0) {
               const phrase = phrases.shift();
@@ -78,6 +79,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
                 phrase,
               });
             }
+            */
 
             // otherwise, create a user normally
             console.info('create user');
