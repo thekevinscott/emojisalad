@@ -19,11 +19,13 @@ export default function Guesses({
           message,
           number,
           created,
+          correct,
         }, key) => (
           <Guess
             key={key}
             number={number}
             message={message}
+            correct={correct}
             created={created}
           />
         ))}

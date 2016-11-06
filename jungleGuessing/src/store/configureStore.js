@@ -4,6 +4,11 @@
  * The code is envify'd - using 'DefinePlugin' in Webpack.
  */
 
+//import io from 'socket.io-client';
+//const socket = io('http://nexmo.emojisalad.com');
+//socket.on('state', () => {
+  //debugger;
+//});
 let loadedStore = null;
 
 if (process.env.NODE_ENV === 'production') {

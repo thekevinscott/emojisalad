@@ -17,6 +17,9 @@ class App extends Component {
 
   componentDidMount() {
     this.props.fetchGuesses();
+    window.on('keydown', () => {
+      debugger;
+    });
   }
 
   render() {

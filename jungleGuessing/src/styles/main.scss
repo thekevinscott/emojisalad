@@ -83,14 +83,23 @@ h2 {
 }
 
 .guess {
+  padding: 10px;
   display: flex;
   font-size: 20px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 5px;
+
+  &.correct {
+    background: yellow;
+  }
 
   .number {
     margin-right: 20px;
+    width: 180px;
   }
 
-  .guess {
+  .message {
     flex: 1;
   }
 
