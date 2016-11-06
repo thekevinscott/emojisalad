@@ -135,7 +135,7 @@ button:focus {
   flex: 1;
 }
 .title .commentArea {
-  flex: 1;
+  flex: 15px;
 }
 .title h1 {
   -ms-transform: rotate(-7deg) /* IE 9 */;
@@ -366,6 +366,7 @@ input[type='submit']:hover {
   position: relative;
 }
 .bubbledLeft {
+  display: none;
   float: left;
   margin-right: auto;
   -webkit-border-radius: 8px 8px 8px 0px;
@@ -385,6 +386,7 @@ input[type='submit']:hover {
   content: "";
 }
 .bubbledRight {
+  display: none;
   float: right;
   margin-left: auto;
   text-align: right;
