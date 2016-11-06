@@ -13,7 +13,7 @@ const isCorrect = ({
   return distance < 5;
 };
 
-const validGuess = (guess, obj, phrase) => {
+const validGuess = (guess, obj, phrase, foundCorrect) => {
   if (!obj[guess.number]) {
     return true;
   }
@@ -21,7 +21,7 @@ const validGuess = (guess, obj, phrase) => {
   const currentDate = new Date(obj[guess.number].created);
   const newDate = new Date(guess.created);
 
-  if (currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
+  if (!foundCorrect && currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
     return true;
   }
 
@@ -36,8 +36,8 @@ const selectGuesses = (guesses, {
   const guessObj = guesses.filter(guess => {
     return guess.phraseId === phraseId;
   }).reduce((obj, guess) => {
-    if (validGuess(guess, obj, phrase)) {
-      const correct = isCorrect(guess, phrase);
+    if (validGuess(guess, obj, phrase, foundCorrect)) {
+      const correct = !foundCorrect && isCorrect(guess, phrase);
 
       if (correct) {
         foundCorrect = true;
