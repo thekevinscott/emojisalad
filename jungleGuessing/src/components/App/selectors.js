@@ -1,35 +1,53 @@
+import Levenshtein from 'levenshtein';
+
 import {
   fetchGuesses,
+  goToNextPhrase,
 } from './actions';
 
-const isCorrect = (guess, phrase) => {
-  return guess.message === phrase;
+const isCorrect = ({
+  message: guess,
+}, phrase) => {
+  const distance = new Levenshtein(guess.toLowerCase(), phrase.toLowerCase());
+
+  return distance < 5;
 };
 
-const selectGuesses = (guesses, phrase) => {
-  const validGuess = (guess, obj) => {
-    if (!obj[guess.number]) {
-      return true;
-    }
+const validGuess = (guess, obj, phrase) => {
+  if (!obj[guess.number]) {
+    return true;
+  }
 
-    const currentDate = new Date(obj[guess.number].created);
-    const newDate = new Date(guess.created);
+  const currentDate = new Date(obj[guess.number].created);
+  const newDate = new Date(guess.created);
 
-    if (currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
-      return true;
-    }
+  if (currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
+    return true;
+  }
 
-    return false;
-  };
+  return false;
+};
 
-  const guessObj = guesses.reduce((obj, guess) => {
-    if (validGuess(guess, obj)) {
-      //console.log(guess, obj[guess.number]);
+const selectGuesses = (guesses, {
+  phrase,
+  id: phraseId,
+}) => {
+  let foundCorrect = false;
+  const guessObj = guesses.filter(guess => {
+    return guess.phraseId === phraseId;
+  }).reduce((obj, guess) => {
+    if (validGuess(guess, obj, phrase)) {
+      const correct = isCorrect(guess, phrase);
+
+      if (correct) {
+        foundCorrect = true;
+      }
+
       return {
         ...obj,
         [guess.number]: {
           ...guess,
-          correct: isCorrect(guess, phrase),
+          correct,
         },
       };
     }
@@ -37,35 +55,55 @@ const selectGuesses = (guesses, phrase) => {
     return obj;
   }, {});
 
-  console.log(guessObj);
-  return Object.keys(guessObj).map(number => {
-    return guessObj[number];
-  }).sort((a, b) => {
-    return new Date(b.created) - new Date(a.created);
-  });
+  return {
+    correct: foundCorrect,
+    guesses: Object.keys(guessObj).map(number => {
+      return guessObj[number];
+    }).sort((a, b) => {
+      if (a.correct) {
+        return -1;
+      }
+      if (b.correct) {
+        return 1;
+      }
+      return new Date(b.created) - new Date(a.created);
+    }),
+  };
 };
 
 export function mapStateToProps({
-  phrases,
-  user: {
+  data: {
+    phrases,
     currentPhrase,
+    guesses: originalGuesses,
   },
-  guesses,
 }) {
   const {
     phrase,
+    id,
     prompt,
   } = phrases[currentPhrase];
+
+  const {
+    guesses,
+    correct,
+  } = selectGuesses(originalGuesses, {
+    phrase,
+    id,
+  });
 
   return {
     phrase,
     prompt,
-    guesses: selectGuesses(guesses, phrase),
+    guesses,
+    correct,
+    phrases,
   };
 }
 
 export function mapDispatchToProps(dispatch) {
   return {
     fetchGuesses: () => dispatch(fetchGuesses()),
+    goToNextPhrase: (phrases, direction) => dispatch(goToNextPhrase(phrases, direction)),
   };
 }

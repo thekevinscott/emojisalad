@@ -1,12 +1,8 @@
 import { combineReducers } from 'redux';
-import guesses from './guesses';
-import phrases from './phrases';
-import user from './user';
+import data from './data';
 
 const rootReducer = combineReducers({
-  guesses,
-  phrases,
-  user,
+  data,
 });
 
 export default rootReducer;

@@ -43,25 +43,29 @@ body {
   h1 {
     font-size: 120px;
     margin: 0;
+    line-height: 120px;
   }
-}
 
-h2 {
-  border-bottom: 1px solid #CCC;
-
-  span {
-    $width: 450px;
-    margin: 0 auto;
-    display: block;
-    position: absolute;
-    text-align: center;
-    left: 50%;
-    width: $width;
-    margin-left: -($width / 2);
+  h2 {
     font-size: 30px;
-    margin-top: -45px;
-    background-color: $main-bg-color;
-    color: #333;
+    margin: 0 0 40px 0;
+    padding: 10px 50px;
+    width: 400px;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 90px;
+    display: inline-block;
+
+    span {
+      transition: all 0.5s;
+    }
+
+    span.blurred {
+      transition: all 0.0s;
+      filter: blur(10px);
+      font-weight: bold;
+      letter-spacing: 10px;
+    }
   }
 }
 
@@ -72,6 +76,22 @@ h2 {
 
   h2 {
     flex: 0;
+    border-bottom: 1px solid #CCC;
+
+    span {
+      $width: 450px;
+      margin: 0 auto;
+      display: block;
+      position: absolute;
+      text-align: center;
+      left: 50%;
+      width: $width;
+      margin-left: -($width / 2);
+      font-size: 30px;
+      margin-top: -45px;
+      background-color: $main-bg-color;
+      color: #333;
+    }
   }
 }
 
@@ -91,7 +111,7 @@ h2 {
   padding-bottom: 5px;
 
   &.correct {
-    background: yellow;
+    background: rgba(255, 200, 100, 1);
   }
 
   .number {

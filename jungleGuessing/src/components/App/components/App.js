@@ -12,24 +12,39 @@ class App extends Component {
   static propTypes = {
     guesses: PropTypes.array,
     prompt: PropTypes.string,
+    phrase: PropTypes.string,
     fetchGuesses: PropTypes.func,
+    goToNextPhrase: PropTypes.func,
+    correct: PropTypes.bool,
   };
 
   componentDidMount() {
     this.props.fetchGuesses();
-    window.on('keydown', () => {
-      debugger;
+    window.addEventListener('keydown', e => {
+      if ([
+        'ArrowLeft',
+        'ArrowRight',
+      ].indexOf(e.code) !== -1) {
+        this.props.goToNextPhrase(e.code === 'ArrowRight');
+      }
     });
   }
 
   render() {
     const {
       prompt,
+      phrase,
       guesses,
+      correct,
     } = this.props;
+
     return (
       <div className="app">
-        <Phrase prompt={prompt} />
+        <Phrase
+          prompt={prompt}
+          phrase={phrase}
+          blurred={!correct}
+        />
         <Guesses guesses={guesses} />
       </div>
     );
