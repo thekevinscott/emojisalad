@@ -4,7 +4,7 @@ import {
   RECEIVED_MESSAGE,
 } from '../websocket/types';
 
-const ACTIVE = false;
+const ACTIVE = true;
 
 const NUMBER_OF_PLAYERS = 10;
 const NUMBER_OF_GUESSES = 100;

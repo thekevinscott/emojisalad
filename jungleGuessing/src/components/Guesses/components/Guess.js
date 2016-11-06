@@ -72,10 +72,14 @@ export default class Guess extends Component {
 
     return (
       <div className={className}>
-        <span className="number">{number}</span>
+        <div className="header">
+          <span className="number">{number}</span>
+          <div className="time">
+            <span className="duration">{this.state.duration}</span>
+            <span className="durationString">{this.state.timeString}</span>
+          </div>
+        </div>
         <span className="message">{message}</span>
-        <span className="duration">{this.state.duration}</span>
-        <span className="durationString">{this.state.timeString}</span>
       </div>
     );
   }

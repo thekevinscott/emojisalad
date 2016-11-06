@@ -117,16 +117,31 @@ h1, h2, h3, h4, h5 {
 .guess {
   padding: 10px;
   display: flex;
-  font-size: 20px;
+  flex-direction: column;
+  font-size: 24px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 
   &.correct {
     background: #ffd464;
   }
 
+  .header {
+    display: flex;
+    font-size: 74%;
+
+    .time {
+      flex: 1;
+      display: flex;
+
+      .duration {
+        flex: 1;
+      }
+    }
+  }
+
   .number {
     margin-right: 20px;
-    width: 180px;
+    width: 140px;
   }
 
   .message {
@@ -141,6 +156,6 @@ h1, h2, h3, h4, h5 {
 
   .durationString {
     text-align: left;
-    width: 160px;
+    width: 100px;
   }
 }
