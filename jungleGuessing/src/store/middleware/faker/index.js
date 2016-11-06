@@ -52,7 +52,7 @@ const setDispatch = dispatch => {
 export default function websocketMiddleware({
   dispatch,
 }) {
-  //setDispatch(dispatch);
+  setDispatch(dispatch);
   return next => action => {
     return next(action);
   };

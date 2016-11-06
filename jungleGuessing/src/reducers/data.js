@@ -11,16 +11,56 @@ import {
 
 const phrases = [
   {
-    prompt: '👱👱🍄🌟',
-    phrase: 'Super Mario Bros',
+    prompt: '🎮 😡🐧🐦🐤',
+    phrase: 'Angry Birds',
   },
   {
-    prompt: '👧🍄🍵🎩🐰',
-    phrase: 'Alice in Wonderland',
+    prompt: '🌪👠🐶     🛣     🙀💭🤖❤️🦁😨     🗿👴       ✈️🐵🐵🐵🐵🐵👺',
+    phrase: 'Wizard of Oz',
   },
   {
-    prompt: '👽📞🏠',
-    phrase: 'ET',
+    prompt: '🎬 ⭐️⚔  🛰  ◾️💀◾️',
+    phrase: 'Star Wars',
+  },
+  {
+    prompt: '🎤 🚫✋🙏',
+    phrase: 'Don\'t Stop Believing',
+  },
+  {
+    prompt: '👑⚔👁💍🔥',
+    phrase: 'Lord of the Rings',
+  },
+  {
+    prompt: '📽👩🏼➕🐠🍴🐙🐟🦀🏝💏',
+    phrase: 'The Little Mermaid',
+  },
+  //{
+    //prompt: '📽👻👻👊👊🚓',
+    //phrase: 'Ghostbusters',
+  //},
+  {
+    prompt: '🎮🛡⚔🍃👸',
+    phrase: 'The Legend of Zelda',
+  },
+  {
+    prompt: '🎬  🇮🇹🇺🇸👨🏻🚬\n  💀🐴🛏',
+    phrase: 'The Godfather',
+  },
+  {
+    prompt: '👨‍👩‍👧‍👦📽  💪🍞📺',
+    phrase: 'Brave Little Toaster',
+  },
+  {
+    prompt: '☮️❤️🇬🇧👦🏻👦🏻👦🏻',
+    phrase: 'The Beatles',
+  },
+  {
+    prompt: '👱👹⚔🐢  🐀   🍕🍕🍕🍕🍕',
+    phrase: 'Teenage Mutant Ninja Turtles',
+  },
+  {
+    prompt: '🎤🌶🙅🏾🙋🏼💁🏻🙎🏼',
+    phrase: 'Spice Girls',
   },
 ];
 

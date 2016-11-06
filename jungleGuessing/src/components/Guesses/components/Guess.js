@@ -43,7 +43,7 @@ export default class Guess extends Component {
   static propTypes = {
     number: PropTypes.string,
     message: PropTypes.string,
-    created: PropTypes.date,
+    created: PropTypes.any,
     correct: PropTypes.bool,
   };
 

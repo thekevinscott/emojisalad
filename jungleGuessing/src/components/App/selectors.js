@@ -5,10 +5,23 @@ import {
   goToNextPhrase,
 } from './actions';
 
+const parsePhrase = phrase => {
+  const ignore = [
+    'the',
+    'an',
+    'a',
+    'for',
+    'of',
+  ];
+  return phrase.toLowerCase().split(' ').filter(el => {
+    return ignore.indexOf(el) === -1;
+  }).join(' ');
+};
+
 const isCorrect = ({
   message: guess,
 }, phrase) => {
-  const distance = new Levenshtein(guess.toLowerCase(), phrase.toLowerCase());
+  const distance = new Levenshtein(parsePhrase(guess), parsePhrase(phrase));
 
   return distance < 5;
 };
