@@ -21,35 +21,63 @@ const parsePhrase = phrase => {
 const isCorrect = ({
   message: guess,
 }, phrase) => {
-  const distance = new Levenshtein(parsePhrase(guess), parsePhrase(phrase));
+  const distance = new Levenshtein(parsePhrase(guess), parsePhrase(phrase)) / phrase.length;
 
-  return distance < 5;
+  console.log(guess, distance);
+  return distance < 0.15;
+  //console.log(distance / phrase.length);
+
+  //return distance < 5;
 };
 
-const validGuess = (guess, obj, phrase, isPossibleToWin) => {
-  if (!obj[guess.number]) {
-    return true;
-  }
+//const validGuess = (guess, obj, phrase, isPossibleToWin) => {
+  //if (!obj[guess.number]) {
+    //return true;
+  //}
 
-  const currentDate = new Date(obj[guess.number].created);
-  const newDate = new Date(guess.created);
+  //const currentDate = new Date(obj[guess.number].created);
+  //const newDate = new Date(guess.created);
 
-  if (isPossibleToWin && currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
-    return true;
-  }
+  //if (isPossibleToWin && currentDate < newDate && !isCorrect(obj[guess.number], phrase)) {
+    //return true;
+  //}
 
-  return false;
-};
+  //return false;
+//};
 
 const selectGuesses = (guesses, {
   phrase,
   id: phraseId,
 }) => {
   let foundCorrect = false;
-  const guessObj = guesses.filter(guess => {
-    return guess.phraseId === phraseId;
-  }).reduce((obj, guess) => {
-    if (validGuess(guess, obj, phrase, true)) {
+  //const guessObj = guesses.filter(guess => {
+    //return guess.phraseId === phraseId;
+  //}).reduce((obj, guess) => {
+    //if (validGuess(guess, obj, phrase, true)) {
+      //const correct = !foundCorrect && isCorrect(guess, phrase);
+
+      //if (correct) {
+        //foundCorrect = true;
+      //}
+
+      //return {
+        //...obj,
+        //[guess.number]: {
+          //...guess,
+          //correct,
+        //},
+      //};
+    //}
+
+    //return obj;
+  //}, {});
+
+  //const orderedGuesses = Object.keys(guessObj).map(number => {
+    //return guessObj[number];
+  //});
+
+  const orderedGuesses = guesses.map(guess => {
+    if (guess.phraseId === phraseId) {
       const correct = !foundCorrect && isCorrect(guess, phrase);
 
       if (correct) {
@@ -57,22 +85,16 @@ const selectGuesses = (guesses, {
       }
 
       return {
-        ...obj,
-        [guess.number]: {
-          ...guess,
-          correct,
-        },
+        ...guess,
+        correct,
       };
     }
 
-    return obj;
-  }, {});
-
+    return null;
+  }).filter(el => el);
   return {
     correct: foundCorrect,
-    guesses: Object.keys(guessObj).map(number => {
-      return guessObj[number];
-    }).sort((a, b) => {
+    guesses: orderedGuesses.sort((a, b) => {
       if (a.correct) {
         return -1;
       }

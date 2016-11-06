@@ -53,9 +53,13 @@ export default class Guess extends Component {
   }
 
   componentDidMount() {
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.setState(getTime(this.props.created));
     }, 100);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   render() {

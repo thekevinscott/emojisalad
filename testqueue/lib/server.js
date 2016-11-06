@@ -1,7 +1,7 @@
 'use strict';
 const queue = require('queue');
 const Promise = require('bluebird');
-const request = Promise.promisify(require('request'));
+//const request = Promise.promisify(require('request'));
 
 const base_url = 'http://localhost:' + process.env.PORT + '/';
 const { app } = queue({

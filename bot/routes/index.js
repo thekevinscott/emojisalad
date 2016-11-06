@@ -12,7 +12,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
     game_key,
     from,
     to,
-    protocol
+    protocol,
   }).then((players) => {
     console.info('players', players);
     if (players.length > 1) {
@@ -36,7 +36,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
       console.info(`prepare to get users by from, ${from}, ${protocol}`);
       return User.get({
         from,
-        protocol
+        protocol,
       }).then((users) => {
         //console.info('users back', users);
         // if user exists, we are being onboarded
@@ -65,6 +65,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
             sender_id: to,
             protocol,
           }).then(phrases => {
+            /*
             console.info('phrases back', phrases);
             if (phrases && phrases.length > 0) {
               const phrase = phrases.shift();
@@ -78,6 +79,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
                 phrase,
               });
             }
+            */
 
             // otherwise, create a user normally
             console.info('create user');

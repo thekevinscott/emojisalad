@@ -80,6 +80,7 @@ module.exports = (user, message) => {
       } else {
         console.info('this user has players already, see if challenge or not');
         resolve(getChallenge(user).then(phrases => {
+          /*
           console.info('phrases back', phrases);
           if (phrases && phrases.length > 0) {
             const phrase = phrases.shift();
@@ -89,6 +90,7 @@ module.exports = (user, message) => {
               phrase,
             });
           }
+          */
 
           console.info('start a new game, no associated challenges');
           console.info('create game', user);

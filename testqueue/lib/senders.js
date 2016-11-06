@@ -10,8 +10,6 @@ function getSenders(req, res) {
   .from('senders')
   .limit(1);
 
-  //console.log(req.body);
-  //console.log(req.params);
 
   if (req.query.exclude) {
     const exclude = (req.query.exclude || '').split(',');
@@ -21,8 +19,6 @@ function getSenders(req, res) {
   if (req.query.sender_id) {
     query = query.where('id=?', req.query.sender_id);
   }
-  console.log(req.query);
-  console.log(query.toString());
 
   db.query(query).then((rows) => {
     if (rows && rows.length) {
