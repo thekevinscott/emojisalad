@@ -6,11 +6,6 @@
     "transform-decorators-legacy",
     "transform-react-display-name",
     "transform-flow-strip-types"
-  ],
-  "env": {
-    "development": {
-      "presets": ["react-hmre"]
-    }
-  }
+  ]
 }
 
