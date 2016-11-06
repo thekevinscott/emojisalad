@@ -7,13 +7,12 @@ module.exports = ({
   web,
 }) => {
   return store('include_jungle').then(INCLUDE_JUNGLE => {
-    const phones = getWebSubmissions(web);
-    console.info('should we include jungle', INCLUDE_JUNGLE);
-    if (INCLUDE_JUNGLE) {
-      console.info('phones', phones);
-      return (phones || []).concat(getJungleSubmissions());
-    }
+    return getWebSubmissions(web).then((phones = []) => {
+      if (INCLUDE_JUNGLE) {
+        return phones.concat(getJungleSubmissions());
+      }
 
-    return phones;
+      return phones;
+    });
   });
 };
