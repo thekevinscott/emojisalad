@@ -72,10 +72,18 @@ const selectGuesses = (guesses, {
     //return guessObj[number];
   //});
 
-  const orderedGuesses = guesses.map(guess => ({
-    ...guess,
-    correct: isCorrect(guess, phrase),
-  }));
+  const orderedGuesses = guesses.map(guess => {
+    const correct = !foundCorrect && isCorrect(guess, phrase);
+
+    if (correct) {
+      foundCorrect = true;
+    }
+
+    return {
+      ...guess,
+      correct,
+    };
+  });
   return {
     correct: foundCorrect,
     guesses: orderedGuesses.sort((a, b) => {
