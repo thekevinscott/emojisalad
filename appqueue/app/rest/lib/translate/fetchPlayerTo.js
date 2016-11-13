@@ -11,7 +11,6 @@ export default function fetchPlayerTo(userKey, gameKey) {
     user_key: userKey,
     game_key: gameKey,
   };
-  //console.log('body', body);
   console.info('get players', qs);
   return fetchFromService({
     service: 'api',

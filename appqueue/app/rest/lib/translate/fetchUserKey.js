@@ -12,7 +12,10 @@ export default function fetchUserKey(phoneNumber) {
       throw new Error(`No user key found for ${phoneNumber}`);
     }
 
-    return (row || {}).user_key;
+    const userKey = (row || {}).user_key;
+
+    console.info('user key is', userKey);
+    return userKey;
   });
 }
 
