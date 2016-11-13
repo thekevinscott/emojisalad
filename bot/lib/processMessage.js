@@ -26,7 +26,7 @@ module.exports = (message) => {
   return router({
     game_key: message.game_key,
     from: message.from,
-    message: message.body,
+    message: message.body.trim(),
     to: message.to,
     protocol: message.protocol,
   }).then((responses) => {
