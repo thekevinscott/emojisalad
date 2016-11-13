@@ -26,14 +26,18 @@ class Page extends Component {
       page: PageContents,
     } = this.props;
 
+    //console.log('Page render', this.props);
+
     return (
       <View style={{
         ...styles.page,
       }}>
-      <Status
-        {...this.props.status}
-      />
-        <PageContents />
+        <Status
+          {...this.props.status}
+        />
+        <PageContents
+          {...this.props}
+        />
       </View>
     );
   }

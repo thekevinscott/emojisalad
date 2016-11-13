@@ -40,8 +40,9 @@ function selectCompose(state, gameKey) {
 }
 
 export function mapStateToProps(state, props) {
+  //console.log(props.game, state.data.games);
   const gameKey = props.game.key;
-  const game = state.data.games[gameKey];
+  const game = state.data.games[gameKey] || {};
   const {
     seen,
     loading,

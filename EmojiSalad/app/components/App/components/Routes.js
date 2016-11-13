@@ -101,6 +101,7 @@ class Routes extends Component {
           title="Game"
           leftTitle="Games"
           onLeft={() => {
+            //console.log('action games 1');
             Actions.games();
           }}
         />

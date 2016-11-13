@@ -46,6 +46,7 @@ export function mapDispatchToProps(dispatch) {
         return dispatch(submitClaim(text));
       },
       goToGames: () => {
+        //console.log('go to dem games');
         return goToGames();
       },
     },

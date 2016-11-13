@@ -48,6 +48,7 @@ export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
 }
 
 export function goToGames() {
+  //console.log('action games 2');
   Actions.games();
   return {
     type: TRANSITION_TO_GAMES,

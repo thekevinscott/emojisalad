@@ -10,6 +10,8 @@ import {
   updateStatus,
 } from './actions';
 
+import lib, { WEBSOCKET } from './lib';
+
 let socket;
 const bootstrapSocket = (dispatch) => {
   socket = io(`${API_HOST}:${API_PORT}`, {
@@ -29,54 +31,21 @@ const bootstrapSocket = (dispatch) => {
   socket.on('message', onMessage(dispatch));
 };
 
-const networkMiddleware = ({
-  getState,
+const websocket = ({
+  userKey,
+  connected,
+  type,
+  payload,
+  meta,
+  params,
+}, {
   dispatch,
-}) => next => action => {
-  if (!socket) {
-    bootstrapSocket(dispatch);
-  }
-
-  const connected = getState().application.connection.connected;
-
-  const {
-    payload,
-    type,
-    meta,
-    ...rest,
-  } = action;
-
-  if (!payload) {
-    //console.log('there is no payload, move to next action');
-    return next(action);
-  }
-
-  const PENDING = `${type}_PENDING`;
-  const REJECTED = `${type}_REJECTED`;
-
-  const userKey = getState().data.me.key;
-  if (connected) {
-    const packet = sendMessage(socket, {
-      userKey,
-      type,
-      payload,
-      meta,
-    }, () => {
-      dispatch({
-        ...rest,
-        type: REJECTED,
-        data: {
-          message: 'Failed to reach the server',
-        },
-        meta,
-      });
-    });
-    const messageId = packet.meta.id;
-    console.log('sent message id', messageId);
-  } else {
+  next,
+}, types) => {
+  if (!connected) {
     return next({
-      ...rest,
-      type: REJECTED,
+      ...params,
+      type: types.REJECTED,
       data: {
         message: 'Server is not connected',
       },
@@ -85,10 +54,123 @@ const networkMiddleware = ({
     });
   }
 
+  const packet = sendMessage(socket, {
+    userKey,
+    type,
+    payload,
+    meta,
+  }, () => {
+    dispatch({
+      ...params,
+      type: types.REJECTED,
+      data: {
+        message: 'Failed to reach the server',
+      },
+      meta,
+    });
+  });
+
+  const messageId = packet.meta.id;
+  console.log('sent message id', messageId);
+};
+
+const rest = ({
+  type,
+  payload,
+  meta,
+  params,
+}, {
+  dispatch,
+}, types) => {
+  const url = `${API_HOST}:${API_PORT}/${payload.route}`;
+
+  fetch(url, {
+    method: payload.method || 'get',
+    payload,
+    meta,
+    ...params,
+  }).then(response => response.json()).then(response => {
+    dispatch({
+      type: types.FULFILLED,
+      data: response,
+      meta,
+      ...params,
+    });
+  }).catch(err => {
+    dispatch({
+      type: types.REJECTED,
+      err,
+    });
+  });
+};
+
+const networkMiddleware = ({
+  getState,
+  dispatch,
+}) => next => action => {
+  if (!socket) {
+    bootstrapSocket(dispatch);
+  }
+
+  const {
+    payload,
+    type,
+    meta,
+    ...params,
+  } = action;
+
+  if (!payload) {
+    return next(action);
+  }
+
+  const types = {
+    PENDING: `${type}_PENDING`,
+    FULFILLED: `${type}_FULFILLED`,
+    REJECTED: `${type}_REJECTED`,
+  };
+
+  const fns = {
+    next,
+    dispatch,
+  };
+
+  // all websocket, all the time
+  if (lib[type] === WEBSOCKET || 1) {
+    const {
+      data,
+      application: {
+        connection: {
+          connected,
+        },
+      },
+    } = getState();
+
+    const res = websocket({
+      userKey: data.me.key,
+      connected,
+      type,
+      payload,
+      meta,
+      params,
+    }, fns, types);
+
+    if (res) {
+      return res;
+    }
+  } else {
+    // otherwise, fetch it
+    rest({
+      type,
+      payload,
+      meta,
+      params,
+    }, fns, types);
+  }
+
   // continue on through the middleware stack
   return next({
-    ...rest,
-    type: PENDING,
+    ...params,
+    type: types.PENDING,
     payload,
     meta,
   });

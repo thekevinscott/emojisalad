@@ -23,6 +23,7 @@ export function updateText(text) {
 }
 
 export function goToGames() {
+  //console.log('action games 3');
   Actions.games();
   return {
     type: TRANSITION_TO_GAMES,

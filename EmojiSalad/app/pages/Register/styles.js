@@ -19,7 +19,7 @@ const styles = {
     alignItems: 'center',
     padding: 0,
     margin: 0,
-    marginTop: header,
+    //marginTop: header,
   },
   textContainer: {
     marginTop: 140 - header,

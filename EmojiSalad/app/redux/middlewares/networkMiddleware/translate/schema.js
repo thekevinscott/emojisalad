@@ -22,7 +22,7 @@ import {
 
 import {
   HANDSHAKE,
-} from 'middlewares/websocketMiddleware/types';
+} from '../types';
 
 // TODO: How to keep this up to date with the server?
 const TYPES = {

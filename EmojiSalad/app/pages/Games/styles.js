@@ -3,24 +3,25 @@ const ROW_HEADER_HEIGHT = 20;
 const ROW_HEIGHT = 100;
 const MESSAGE_TOP = ROW_HEADER_HEIGHT + 20;
 const ROW_PADDING = 20;
+const BG_COLOR = '#fff';
 export const MESSAGE_FADEIN_DURATION = 200;
 export const MESSAGE_SLIDE_DURATION = 500;
 
-import {
-  HEADER_HEIGHT,
-} from '../../themes/constants';
+//import {
+  //HEADER_HEIGHT,
+//} from '../../themes/constants';
 
 export const container = {
   //paddingTop: HEADER_HEIGHT,
 };
 
 export const games = {
-  paddingTop: HEADER_HEIGHT,
+  //paddingTop: HEADER_HEIGHT,
   flex: 1,
 };
 
 export const game = {
-  backgroundColor: '#FFF',
+  backgroundColor: BG_COLOR,
   padding: ROW_PADDING,
   paddingTop: 0,
   overflow: 'hidden',
@@ -48,7 +49,7 @@ export const rowHeader = {
   flexDirection: 'row',
   height: ROW_HEADER_HEIGHT + ROW_PADDING,
   paddingTop: ROW_PADDING,
-  backgroundColor: 'white',
+  backgroundColor: BG_COLOR,
   overflow: 'hidden',
 };
 
@@ -71,6 +72,7 @@ export const unread = {
   paddingTop: 25,
   paddingLeft: 10,
   width: 30,
+  backgroundColor: BG_COLOR,
 };
 
 export const unreadDot = {
@@ -86,5 +88,5 @@ export const messagesContainer = {
   left: ROW_PADDING,
   right: ROW_PADDING,
   top: MESSAGE_TOP,
-  backgroundColor: 'white',
+  backgroundColor: BG_COLOR,
 };

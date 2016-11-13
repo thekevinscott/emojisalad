@@ -1,9 +1,9 @@
-import {
-  HEADER_HEIGHT,
-} from '../../themes/constants';
+//import {
+  //HEADER_HEIGHT,
+//} from '../../themes/constants';
 
 export const container = {
-  paddingTop: HEADER_HEIGHT,
+  //paddingTop: HEADER_HEIGHT,
   flex: 1,
 };
 

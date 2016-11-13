@@ -50,16 +50,18 @@ class Register extends Component {
       ).start();
     }
 
-    if (nextProps.migration === 'complete') {
+    if (nextProps.migration === 'complete' && this.props.migration !== 'complete') {
       // take at least x seconds
       const migrationTime = 2500;
       const timePassed = new Date() - this.state.fakeMigration;
       if (timePassed < migrationTime) {
         setTimeout(() => {
-          console.log('go to next game!');
+          //console.log('go to next game!');
+          //console.log('go to games 1');
           this.props.actions.goToGames();
         }, migrationTime - timePassed);
       } else {
+        //console.log('go to games 2');
         this.props.actions.goToGames();
       }
     }

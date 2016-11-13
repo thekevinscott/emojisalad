@@ -3,7 +3,7 @@
 //} from '../../themes/constants';
 
 export const status = {
-  //backgroundColor: 'yellow',
+  backgroundColor: 'yellow',
   height: 40,
   flexDirection: 'row',
   overflow: 'hidden',
