@@ -78,7 +78,6 @@ export default typeToReducer({
     }),
     REJECTED: (state, action) => {
       console.log('action from fetch games', action);
-      debugger;
       return {
         ...state,
         fetching: false,
