@@ -43,6 +43,7 @@ const websocket = ({
   next,
 }, types) => {
   if (!connected) {
+    console.log('websocket is not connected and thus will be rejected for', types.REJECTED);
     return next({
       ...params,
       type: types.REJECTED,
@@ -60,6 +61,7 @@ const websocket = ({
     payload,
     meta,
   }, () => {
+    console.log('this is from the secon arg to send message', types.REJECTED);
     dispatch({
       ...params,
       type: types.REJECTED,

@@ -35,8 +35,6 @@ function selectStatus({
         loading: true,
       };
     }
-
-    return {};
   } else if (name === 'games') {
     if (!connected) {
       return {

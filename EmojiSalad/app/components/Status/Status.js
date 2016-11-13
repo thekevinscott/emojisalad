@@ -13,22 +13,30 @@ const loadingStates = [
   0,
 ];
 
-const timeoutDuration = 5000;
+const timeoutDuration = 3500;
 const animationDuration = 350;
 
-const animatedValues = [
-  //'height',
-  //'opacity',
-  //'borderBottomWidth',
-];
+const animatedValues = {
+  height: {
+    defaultVal: 0,
+    css: 'status',
+  },
+  opacity: {
+    defaultVal: 0,
+    css: 'status',
+  },
+  //backgroundColor: {
+    //defaultVal: 'rgb(255, 0, 0)',
+    //css: 'status',
+  //},
+};
 
 export default class Status extends Component {
   constructor(props) {
     super(props);
-    this.state = animatedValues.reduce((state, key) => ({
+    this.state = Object.keys(animatedValues).reduce((state, key) => ({
       ...state,
       [key]: new Animated.Value(0),
-      //[key]: new Animated.Value(styles.status[key]),
     }), {});
   }
 
@@ -37,7 +45,8 @@ export default class Status extends Component {
 
     if (loadingStates.indexOf(this.props.code) !== -1) {
       this.timeout = setTimeout(() => {
-        animatedValues.forEach(key => {
+        Object.keys(animatedValues).forEach(key => {
+          //console.log('free bird', animatedValues[key]);
           Animated.timing(this.state[key], {
             toValue: 0,
             duration: animationDuration,
@@ -46,9 +55,11 @@ export default class Status extends Component {
       }, timeoutDuration);
     } else {
       this.timeout = setTimeout(() => {
-        animatedValues.forEach(key => {
+        Object.keys(animatedValues).forEach(key => {
+          console.log('we are loading', styles.status[key]);
           Animated.timing(this.state[key], {
-            toValue: styles.status[key],
+            toValue: 1,
+            //toValue: styles.status[key],
             duration: animationDuration,
           }).start();
         });
@@ -72,10 +83,26 @@ export default class Status extends Component {
       text,
     } = this.props;
 
-    const styleValues = animatedValues.reduce((state, key) => ({
-      ...state,
-      [key]: this.state[key],
-    }), {});
+    const styleValues = Object.keys(animatedValues).reduce((state, key) => {
+      const {
+        defaultVal,
+        css,
+      } = animatedValues[key];
+      if (!defaultVal === undefined) {
+        throw new Error(`You must provide a default val for ${key}`);
+      }
+      if (!css === undefined) {
+        throw new Error(`You must provide a css for ${key}`);
+      }
+
+      return {
+        ...state,
+        [key]: this.state[key].interpolate({
+          inputRange: [0, 1],
+          outputRange: [defaultVal, styles[css][key]],
+        }),
+      };
+    }, {});
 
     const containerStyle = {
       ...styles.status,

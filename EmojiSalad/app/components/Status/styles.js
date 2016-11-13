@@ -3,7 +3,7 @@
 //} from '../../themes/constants';
 
 export const status = {
-  backgroundColor: 'yellow',
+  //backgroundColor: 'rgb(0, 255, 0)',
   height: 40,
   flexDirection: 'row',
   overflow: 'hidden',
@@ -12,7 +12,7 @@ export const status = {
   opacity: 1,
   alignItems: 'center',
   justifyContent: 'center',
-  //position: 'absolute',
+  //position: 'relative',
   left: 0,
   right: 0,
   zIndex: 10,
