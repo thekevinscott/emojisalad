@@ -4,17 +4,17 @@ import {
   Vibration,
 } from 'react-native';
 
-import translateTimestampFromDatabase from '../../utils/translateTimestampFromDatabase';
+import translateTimestampFromDatabase from 'app/utils/translateTimestampFromDatabase';
 
 import {
   FETCH_GAMES,
-} from '../../modules/Games/types';
+} from 'app/pages/Games/types';
 
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
-} from '../../modules/Game/types';
+} from 'app/pages/Game/types';
 
 export const initialState = {};
 

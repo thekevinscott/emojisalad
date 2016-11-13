@@ -66,15 +66,19 @@ export default typeToReducer({
     }),
     FULFILLED: (state, { data }) => ({
       ...state,
-      games: data.reduce((obj, game) => ({
-        ...obj,
-        [game.key]: setStartingMessage(game, game.messages[0].key),
-      }), {}),
+      games: data.reduce((obj, game) => {
+        //console.log('game', game);
+        return {
+          ...obj,
+          [game.key]: setStartingMessage(game, (game.messages[0] || []).key),
+        };
+      }, {}),
       fetching: false,
       error: false,
     }),
     REJECTED: (state, action) => {
       console.log('action from fetch games', action);
+      debugger;
       return {
         ...state,
         fetching: false,

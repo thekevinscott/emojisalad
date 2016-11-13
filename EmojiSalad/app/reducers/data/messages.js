@@ -4,13 +4,13 @@ import translateTimestampFromDatabase from '../../utils/translateTimestampFromDa
 
 import {
   FETCH_GAMES,
-} from '../../modules/Games/types';
+} from 'app/pages/Games/types';
 
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
-} from '../../modules/Game/types';
+} from 'app/pages/Game/types';
 
 const initialState = {};
 

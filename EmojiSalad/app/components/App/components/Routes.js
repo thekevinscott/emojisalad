@@ -13,15 +13,15 @@ import {
 
 import {
   Register,
-} from '../../Register';
+} from 'app/pages/Register';
 
 import {
   Games,
-} from '../../Games';
+} from 'app/pages/Games';
 
 import {
   Game,
-} from '../../Game';
+} from 'app/pages/Game';
 
 class Routes extends Component {
   componentDidMount() {

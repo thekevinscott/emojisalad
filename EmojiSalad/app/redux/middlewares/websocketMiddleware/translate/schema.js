@@ -1,28 +1,28 @@
 import {
   SUBMIT_CLAIM,
   MIGRATE_USER,
-} from '../../../../modules/Register/types';
+} from 'pages/Register/types';
 
 import {
   FETCH_GAMES,
-} from '../../../../modules/Games/types';
+} from 'pages/Games/types';
 
 import {
   SEND_MESSAGE,
   FETCH_MESSAGES,
   RECEIVE_MESSAGE,
-} from '../../../../modules/Game/types';
+} from 'pages/Game/types';
 
 import {
   REQUEST_DEVICE_INFO,
   REQUEST_DEVICE_TOKEN,
   SEND_DEVICE_INFO,
   SEND_DEVICE_TOKEN,
-} from '../../../../redux/middlewares/appqueueMiddleware/types';
+} from 'middlewares/appqueueMiddleware/types';
 
 import {
   HANDSHAKE,
-} from '../../../../redux/middlewares/websocketMiddleware/types';
+} from 'middlewares/websocketMiddleware/types';
 
 // TODO: How to keep this up to date with the server?
 const TYPES = {

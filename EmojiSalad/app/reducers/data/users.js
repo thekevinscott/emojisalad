@@ -2,7 +2,7 @@ import typeToReducer from 'type-to-reducer';
 
 import {
   FETCH_GAMES,
-} from '../../modules/Games/types';
+} from 'app/pages/Games/types';
 
 const initialState = {};
 

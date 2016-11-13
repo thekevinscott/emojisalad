@@ -1,10 +1,10 @@
 import {
   selectStatus,
-} from '../../utils/Api/websocket/selectors';
+} from 'app/utils/Api/websocket/selectors';
 
 import {
   selectMe,
-} from '../App/selectors';
+} from 'app/components/App/selectors';
 
 import {
   submitClaim,

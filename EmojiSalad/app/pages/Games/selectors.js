@@ -6,20 +6,20 @@ import {
 
 import {
   updateDeviceToken,
-} from '../../utils/pushNotificationListeners/actions';
+} from 'app/utils/pushNotificationListeners/actions';
 
 
 import {
   sortBy,
-} from '../../utils/sort';
+} from 'utils/sort';
 
 import {
   selectMe,
-} from '../App/selectors';
+} from 'components/App/selectors';
 
 import {
   selectStatus,
-} from '../../utils/Api/websocket/selectors';
+} from 'utils/Api/websocket/selectors';
 
 export function selectUser(state, userKey) {
   return state.data.users[userKey];

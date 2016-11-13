@@ -16,6 +16,7 @@ export function selectStatus({
     },
   },
 }, game = {}) {
+  console.log(connected, game, Games);
   if (!connected) {
     return {
       text: `Connecting to Server at ${API_HOST}:${API_PORT}`,

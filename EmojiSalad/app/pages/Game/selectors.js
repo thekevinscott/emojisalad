@@ -1,13 +1,13 @@
 import {
   selectMe,
-} from '../App/selectors';
+} from 'components/App/selectors';
 import {
   selectStatus,
-} from '../../utils/Api/websocket/selectors';
+} from 'utils/Api/websocket/selectors';
 
 import {
   update as updateLogger,
-} from '../../components/Logger/actions';
+} from 'components/Logger/actions';
 
 import {
   fetchMessages,
@@ -17,7 +17,7 @@ import {
 
 import {
   sortBy,
-} from '../../utils/sort';
+} from 'utils/sort';
 
 export const MESSAGES_PER_PAGE = 20;
 

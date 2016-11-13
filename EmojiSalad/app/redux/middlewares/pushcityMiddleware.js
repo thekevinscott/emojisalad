@@ -2,15 +2,15 @@ import pushcity from 'pushcity';
 
 import {
   PUSHCITY_API_KEY,
-} from '../../../config';
+} from 'config';
 
 import {
   getStore,
-} from '../../utils/storage';
+} from 'app/utils/storage';
 
 import {
   SUBMIT_CLAIM,
-} from '../../modules/Register/types';
+} from 'app/pages/Register/types';
 
 getStore().then(initialState => {
   if (initialState && initialState.data && initialState.data.me && initialState.data.me.key) {

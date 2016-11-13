@@ -1,9 +1,10 @@
 import {
   Platform,
 } from 'react-native';
+
 import {
   constants,
-} from '../App/styles';
+} from 'components/App/styles';
 
 const textContainerMargin = 50;
 

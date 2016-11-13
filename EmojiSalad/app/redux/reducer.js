@@ -2,15 +2,15 @@ import {
   combineReducers,
 } from 'redux';
 
-import Register from '../modules/Register/reducer';
-import App from '../modules/App/reducer';
-import Games from '../modules/Games/reducer';
-import Game from '../modules/Game/reducer';
-import Logger from '../components/Logger/reducer';
+import App from 'app/components/App/reducer';
+import Register from 'app/pages/Register/reducer';
+import Games from 'app/pages/Games/reducer';
+import Game from 'app/pages/Game/reducer';
+import Logger from 'app/components/Logger/reducer';
 
-import data from '../reducers/data';
+import data from 'app/reducers/data';
 
-import application from '../reducers/application';
+import application from 'app/reducers/application';
 
 export default combineReducers({
   ui: combineReducers({

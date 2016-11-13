@@ -2,7 +2,7 @@ import typeToReducer from 'type-to-reducer';
 
 import {
   SEND_MESSAGE,
-} from '../../modules/Game/types';
+} from 'app/pages/Game/types';
 
 const initialState = [];
 

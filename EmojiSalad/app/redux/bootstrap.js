@@ -8,13 +8,14 @@ import {
 
 import {
   getStore,
-} from '../utils/storage';
+} from 'utils/storage';
+
 import configureStore from './configureStore';
 
 import {
   App,
   Loading,
-} from '../modules/App';
+} from 'components/App';
 
 const style = {
   flex: 1,
