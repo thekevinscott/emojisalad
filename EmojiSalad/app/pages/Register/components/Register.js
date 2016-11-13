@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Status } from '../../../components/Status';
 //import Button from 'react-native-button';
 import {
   Text,
@@ -108,7 +107,6 @@ class Register extends Component {
 
     return (
       <Animated.View style={containerStyle}>
-        <Status status={this.props.status} />
         <View style={styles.textContainer}>
           <Animated.Text style={headerStyle}>
             Welcome to the Emoji Salad App Beta!

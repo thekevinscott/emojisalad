@@ -1,8 +1,4 @@
 import {
-  selectStatus,
-} from 'app/utils/Api/websocket/selectors';
-
-import {
   selectMe,
 } from 'app/components/App/selectors';
 
@@ -34,7 +30,6 @@ export function mapStateToProps(state) {
     ...selectRegisterSlice(state),
     me: selectMe(state),
     //logger: state.ui.Games.logger,
-    status: selectStatus(state),
   };
 }
 

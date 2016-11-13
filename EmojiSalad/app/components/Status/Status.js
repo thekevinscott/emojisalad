@@ -9,19 +9,17 @@ import {
 
 import * as styles from './styles';
 
+const loadingStates = [
+  0,
+];
+
 const timeoutDuration = 5000;
 const animationDuration = 350;
 
 const animatedValues = [
-  'height',
-  'opacity',
-  'borderBottomWidth',
-];
-
-const loadingStates = [
-  0,
-  //401,
-  //501,
+  //'height',
+  //'opacity',
+  //'borderBottomWidth',
 ];
 
 export default class Status extends Component {
@@ -37,7 +35,7 @@ export default class Status extends Component {
   handleAnimations() {
     clearTimeout(this.timeout);
 
-    if (loadingStates.indexOf(this.props.status.state) !== -1) {
+    if (loadingStates.indexOf(this.props.code) !== -1) {
       this.timeout = setTimeout(() => {
         animatedValues.forEach(key => {
           Animated.timing(this.state[key], {
@@ -63,14 +61,15 @@ export default class Status extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.status.state !== this.props.status.state) {
+    if (prevProps.code !== this.props.code) {
       this.handleAnimations();
     }
   }
 
   render() {
     const {
-      status,
+      loading,
+      text,
     } = this.props;
 
     const styleValues = animatedValues.reduce((state, key) => ({
@@ -85,12 +84,20 @@ export default class Status extends Component {
 
     return (
       <Animated.View
-        style={containerStyle}
+        style={{
+          ...containerStyle,
+        }}
       >
-        {loadingStates.indexOf(status.state) === -1 ? (
+        {loading ? (
           <ActivityIndicator style={styles.spinner} />
           ) : null}
-          <Text>{status.text}</Text>
+          <Text
+            style={{
+              ...styles.textStyle,
+            }}
+          >
+            {text}
+          </Text>
       </Animated.View>
     );
   }

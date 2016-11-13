@@ -17,10 +17,6 @@ import {
   selectMe,
 } from 'components/App/selectors';
 
-import {
-  selectStatus,
-} from 'utils/Api/websocket/selectors';
-
 export function selectUser(state, userKey) {
   return state.data.users[userKey];
 }
@@ -85,7 +81,6 @@ export function mapStateToProps(state) {
     me: selectMe(state),
     ui: selectUI(state),
     logger: loggerMessages,
-    status: selectStatus(state),
   };
 }
 

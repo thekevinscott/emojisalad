@@ -4,7 +4,7 @@ import io from './socketio';
 import {
   API_PORT,
   API_HOST,
-} from '../../../../config';
+} from 'config';
 
 import {
   updateStatus,
@@ -29,7 +29,7 @@ const bootstrapSocket = (dispatch) => {
   socket.on('message', onMessage(dispatch));
 };
 
-const websocketMiddleware = ({
+const networkMiddleware = ({
   getState,
   dispatch,
 }) => next => action => {
@@ -94,4 +94,4 @@ const websocketMiddleware = ({
   });
 };
 
-export default websocketMiddleware;
+export default networkMiddleware;

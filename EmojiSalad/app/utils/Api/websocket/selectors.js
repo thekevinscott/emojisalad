@@ -3,7 +3,7 @@ import moment from 'moment';
 import {
   API_PORT,
   API_HOST,
-} from '../../../../config';
+} from 'config';
 
 export function selectStatus({
   ui: {
@@ -16,36 +16,37 @@ export function selectStatus({
     },
   },
 }, game = {}) {
-  console.log(connected, game, Games);
+  //console.log(connected, game, Games);
   if (!connected) {
     return {
       text: `Connecting to Server at ${API_HOST}:${API_PORT}`,
-      state: 1,
+      code: 1,
+      loading: true,
     };
   } else if (game.loading) {
     return {
       text: 'Fetching latest messages',
-      state: 500,
+      code: 500,
     };
   } else if (game.sending) {
     return {
       text: 'Sending message',
-      state: 502,
+      code: 502,
     };
   } else if (game.error) {
     return {
       text: 'Error fetching latest messages',
-      state: 501,
+      code: 501,
     };
   } else if (Games.fetching) {
     return {
       text: 'Fetching latest games',
-      state: 400,
+      code: 400,
     };
   } else if (Games.error) {
     return {
       text: 'Error fetching games',
-      state: 401,
+      code: 401,
     };
   }
 
@@ -53,6 +54,6 @@ export function selectStatus({
   const time = t.format('HH:mm:ss a');
   return {
     text: `Connected at ${time}`,
-    state: 0,
+    code: 0,
   };
 }

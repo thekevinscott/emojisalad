@@ -12,16 +12,20 @@ import {
 } from 'react-native-router-flux';
 
 import {
+  Page,
+} from 'components/Page';
+
+import {
   Register,
-} from 'app/pages/Register';
+} from 'pages/Register';
 
 import {
   Games,
-} from 'app/pages/Games';
+} from 'pages/Games';
 
 import {
   Game,
-} from 'app/pages/Game';
+} from 'pages/Game';
 
 class Routes extends Component {
   componentDidMount() {
@@ -74,7 +78,8 @@ class Routes extends Component {
       <Scene key="root">
         <Scene
           key="register"
-          component={Register}
+          component={Page}
+          page={Register}
           initial={this.isInitial('register')}
           title="User Registration"
           navigationBarStyle={{
@@ -83,13 +88,15 @@ class Routes extends Component {
         />
         <Scene
           key="games"
-          component={Games}
+          component={Page}
+          page={Games}
           initial={this.isInitial('games')}
           title={gamesTitle}
         />
         <Scene
           key="game"
-          component={Game}
+          component={Page}
+          page={Game}
           initial={this.isInitial('game')}
           title="Game"
           leftTitle="Games"

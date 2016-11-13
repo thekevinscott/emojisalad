@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
 //import Spinner from 'react-native-loading-spinner-overlay';
-import { Status } from '../../../components/Status';
 //import { Logger } from '../../../components/Logger';
 
 import {
@@ -146,7 +145,6 @@ class Games extends Component {
       <View
         style={styles.games}
       >
-        <Status status={this.props.status} />
         {this.getContent()}
       </View>
     );

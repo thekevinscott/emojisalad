@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
-import { Status } from '../../../components/Status';
 //import Spinner from 'react-native-loading-spinner-overlay';
 import { Messenger } from '../../../components/Messenger';
 //import { Logger } from '../../../components/Logger';
@@ -76,7 +75,6 @@ class Game extends Component {
       <View
         style={styles.container}
       >
-        <Status status={this.props.status} />
         <View style={{
           flex: 1,
         }}>
