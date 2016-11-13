@@ -10,8 +10,8 @@ import {
 } from './lib/translate';
 
 export default function (req, res) {
-  //console.info('\n================queue received=================\n');
-  //console.info('queue received, query', req.query);
+  console.info('\n================queue received=================\n');
+  console.info('queue received, query', req.query);
 
   const maxLimit = 100;
   let limit = req.query.limit || maxLimit;
