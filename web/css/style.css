@@ -350,7 +350,8 @@ input[type='submit']:hover {
   border-color: #ffd464 #ffd464 transparent transparent;
 }
 .commentArea {
-  display: flex;
+  display: none;
+  background: #f00;
   flex-direction: column;
   align-items: center;
   justify-content: center;
