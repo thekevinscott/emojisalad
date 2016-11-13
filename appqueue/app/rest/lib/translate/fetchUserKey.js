@@ -1,6 +1,7 @@
 import fetchFromDevice from './fetchFromDevice';
 
 export default function fetchUserKey(phoneNumber) {
+  console.info('fetch user key from phone number', phoneNumber);
   return fetchFromDevice([
     'user_key',
   ], {
