@@ -56,7 +56,6 @@ export default class Status extends Component {
     } else {
       this.timeout = setTimeout(() => {
         Object.keys(animatedValues).forEach(key => {
-          console.log('we are loading', styles.status[key]);
           Animated.timing(this.state[key], {
             toValue: 1,
             //toValue: styles.status[key],

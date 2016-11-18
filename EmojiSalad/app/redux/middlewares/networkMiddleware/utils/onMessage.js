@@ -32,7 +32,7 @@ const onMessage = dispatch => e => {
     meta,
   };
 
-  console.log('meta', meta);
+  //console.log('meta', meta);
   if (meta && meta.id) {
     clearTimer(meta.id);
   }

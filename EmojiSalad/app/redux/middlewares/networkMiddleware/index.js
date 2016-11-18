@@ -44,7 +44,7 @@ const websocket = ({
 }, types) => {
   if (!connected) {
     console.log('websocket is not connected and thus will be rejected for', types.REJECTED);
-    return next({
+    next({
       ...params,
       type: types.REJECTED,
       data: {
@@ -53,27 +53,27 @@ const websocket = ({
       payload,
       meta,
     });
-  }
-
-  const packet = sendMessage(socket, {
-    userKey,
-    type,
-    payload,
-    meta,
-  }, () => {
-    console.log('this is from the secon arg to send message', types.REJECTED);
-    dispatch({
-      ...params,
-      type: types.REJECTED,
-      data: {
-        message: 'Failed to reach the server',
-      },
+  } else {
+    sendMessage(socket, {
+      userKey,
+      type,
+      payload,
       meta,
+    }, () => {
+      console.log('this is from the secon arg to send message', types.REJECTED);
+      dispatch({
+        ...params,
+        type: types.REJECTED,
+        data: {
+          message: 'Failed to reach the server',
+        },
+        meta,
+      });
     });
-  });
 
-  const messageId = packet.meta.id;
-  console.log('sent message id', messageId);
+    //const messageId = packet.meta.id;
+    //console.log('sent message id', messageId);
+  }
 };
 
 const rest = ({
@@ -103,6 +103,26 @@ const rest = ({
       type: types.REJECTED,
       err,
     });
+  });
+};
+
+const getConnectedStatus = (getState, count = 0) => {
+  const {
+    application: {
+      connection: {
+        connected,
+      },
+    },
+  } = getState();
+
+  if (connected || count >= 4) {
+    return Promise.resolve(connected);
+  }
+
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(getConnectedStatus(getState, count + 1));
+    }, 1000);
   });
 };
 
@@ -138,27 +158,20 @@ const networkMiddleware = ({
 
   // all websocket, all the time
   if (lib[type] === WEBSOCKET || 1) {
-    const {
-      data,
-      application: {
-        connection: {
-          connected,
-        },
-      },
-    } = getState();
+    getConnectedStatus(getState).then(connected => {
+      const {
+        data,
+      } = getState();
 
-    const res = websocket({
-      userKey: data.me.key,
-      connected,
-      type,
-      payload,
-      meta,
-      params,
-    }, fns, types);
-
-    if (res) {
-      return res;
-    }
+      websocket({
+        userKey: data.me.key,
+        connected,
+        type,
+        payload,
+        meta,
+        params,
+      }, fns, types);
+    });
   } else {
     // otherwise, fetch it
     rest({

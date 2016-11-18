@@ -1,5 +1,5 @@
 import typeToReducer from 'type-to-reducer';
-//import Sound from 'react-native-sound';
+import Sound from 'react-native-simple-sound';
 
 import translateTimestampFromDatabase from '../../utils/translateTimestampFromDatabase';
 
@@ -13,28 +13,32 @@ import {
   RECEIVE_MESSAGE,
 } from 'app/pages/Game/types';
 
-//const sounds = [
-  //{
-    //key: 'send',
-    //path: 'send.wav',
-  //},
-  //{
-    //key: 'received',
-    //path: 'received.wav',
-  //},
-//].reduce((obj, {
-  //key,
-  //path,
-//}) => {
-  //return {
-    //...obj,
-    //[key]: new Sound(path, Sound.MAIN_BUNDLE, (error) => {
-      //if (error) {
-        //console.log('failed to load the sound', key, path, error);
-      //}
-    //}),
-  //};
-//}, {});
+Sound.enable(true);
+const sounds = [
+  {
+    key: 'send',
+    path: 'send.aif',
+  },
+  {
+    key: 'received',
+    path: 'receive.aif',
+  },
+  {
+    key: 'welcome',
+    path: 'welcome.aif',
+  },
+].reduce((obj, {
+  key,
+  path,
+}) => {
+  Sound.prepare(path);
+  return {
+    ...obj,
+    [key]: {
+      play: () => Sound.play(path),
+    },
+  };
+}, {});
 
 const initialState = {};
 
@@ -68,6 +72,9 @@ export default typeToReducer({
   [FETCH_MESSAGES]: {
     FULFILLED: (state, { data }) => {
       const messages = data.messages;
+      if (messages.length !== Object.keys(state).length) {
+        sounds.received.play();
+      }
       return buildMessageObj(state, messages);
     },
   },
@@ -80,26 +87,16 @@ export default typeToReducer({
   },
   [SEND_MESSAGE]: {
     FULFILLED: (state, action) => {
-      //sounds.send.play();
+      sounds.send.play();
       return buildMessageObj(state, [action.data]);
     },
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, action) => {
-      //sounds.received.play();
+      sounds.received.play();
       return buildMessageObj(state, [action.data]);
     },
   },
 }, initialState);
 
-//console.log('play sound', sounds);
-//sounds.send.play(success => {
-  //console.log('whu', success);
-//});
-//const w = new Sound('send.wav', Sound.MAIN_BUNDLE, (error) => {
-  //console.log('err', error);
-//});
-//w.play(success => {
-  //console.log('whu', success);
-//});
-//console.log('afterwards');
+sounds.welcome.play();
