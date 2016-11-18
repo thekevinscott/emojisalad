@@ -105,20 +105,15 @@ const runRead = () => {
   }).then(() => {
     //console.info('run read 5');
     return getLastProtocolMessageIDs(['web']).then(last_protocol_message_ids => {
-      console.log('last_protocol_message_ids', last_protocol_message_ids);
       return getRawPhones({
         web: last_protocol_message_ids,
       });
     }).then(responses => {
-      console.info('responses', responses);
       if (responses && responses.length > 0) {
         const key = 'web_queue_id';
         const message_id = responses[responses.length - 1].id;
-        console.info('we have repsonses', message_id);
-        /*
         return store(key, message_id).then(() => {
           return Promise.all(responses.reduce((messages, response) => {
-            console.info("response", response);
             return processWebMessage(response).then(output => {
               if (output) {
                 return messages.concat(output);
@@ -128,10 +123,9 @@ const runRead = () => {
             });
           }, []));
         }).then(messages => {
-          //console.info('messages', messages);
-          return sendMessages(messages);
+          console.info('messages', messages);
+          //return sendMessages(messages);
         });
-        */
       }
     });
   });
