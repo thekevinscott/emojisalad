@@ -3,7 +3,7 @@ import Raven from 'raven-js';
 require('raven-js/plugins/react-native')(Raven);
 
 Raven.config('https://32267e621577475095319f5baf4c837b@sentry.io/115596', {
-  //release: '0.4.16',
+  release: '0.4.17',
 }).install();
 
 import {
