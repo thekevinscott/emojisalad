@@ -44,6 +44,10 @@ const Router = (phone) => {
     //protocol
   }).then((users) => {
     if (users.length) {
+      console.info('users exist, dont ping them', users);
+      return null;
+
+      /*
       const user = users.pop();
       //console.info('user exists', user);
       if (user.number_of_players > 0) {
@@ -75,6 +79,7 @@ const Router = (phone) => {
         // currently onboarding, ignore
         return null;
       }
+      */
     } else {
       console.info('lets create that user');
       return User.create({ from: phone, protocol }).then(response => {
