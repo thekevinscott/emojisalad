@@ -4,7 +4,7 @@ import {
 
 const messages = [];
 
-const TIMEOUT_LENGTH = 60000;
+const TIMEOUT_LENGTH = 30000;
 
 const getMessageId = () => {
   const messageId = messages.length;
@@ -35,6 +35,7 @@ const sendMessage = (socket, payload, error) => {
   messages[packet.meta.id] = setTimeout(() => {
     error(packet);
   }, TIMEOUT_LENGTH);
+
   socket.send(JSON.stringify(packet), () => {
     clearTimeout(messages[packet.meta.id]);
   });
