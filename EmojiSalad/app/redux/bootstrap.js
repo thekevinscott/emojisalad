@@ -41,6 +41,11 @@ class EmojiSalad extends Component {
   getStore() {
     return getStore().then(initialState => {
       if (!this.state.store) {
+        Raven.setUser({
+          key: initialState.data.me.key,
+          nickname: initialState.data.me.nickname,
+        });
+
         this.setState({
           store: configureStore(initialState),
         });

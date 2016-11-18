@@ -1,4 +1,5 @@
 import typeToReducer from 'type-to-reducer';
+import Raven from 'raven-js';
 
 import {
   UPDATE_DEVICE_TOKEN,
@@ -53,10 +54,17 @@ const translateMe = (payload) => {
 
 export default typeToReducer({
   [SUBMIT_CLAIM]: {
-    FULFILLED: (state, action) => ({
-      ...state,
-      ...translateMe(action.data),
-    }),
+    FULFILLED: (state, action) => {
+      Raven.setUser({
+        key: action.key,
+        nickname: action.nickname,
+      });
+
+      return {
+        ...state,
+        ...translateMe(action.data),
+      };
+    },
   },
   [UPDATE_DEVICE_TOKEN]: (state, { deviceToken }) => ({
     ...state,
