@@ -47,18 +47,28 @@ const Router = (phone) => {
       const user = users.pop();
       //console.info('user exists', user);
       if (user.number_of_players > 0) {
-        console.info('user has players');
+        console.info('user has players', user.number_of_players);
         if (user.number_of_players < user.maximum_games) {
+          console.info('user has less than the max games');
           const exclude_ids = user.players.map(player => {
             return player.to;
           });
-          return getNextSenderID(user.protocol, exclude_ids).then(to => {
-            console.log('the to', to);
+          console.info('excluded ids', exclude_ids);
+          return new Promise(resolve => {
+            if (user.protocol === 'appqueue') {
+              return resolve();
+            }
+
+            return resolve(getNextSenderID(user.protocol, exclude_ids));
+          }).then(to => {
+            console.info('the to', to);
             // new game
             return require('../game/new_game')(Object.assign({}, user, {
               to
             }));
           });
+        } else {
+          console.info('user has more than the max games', user);
         }
       } else {
         console.info('user has no players');
