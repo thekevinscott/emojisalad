@@ -105,6 +105,7 @@ const runRead = () => {
   }).then(() => {
     //console.info('run read 5');
     return getLastProtocolMessageIDs(['web']).then(last_protocol_message_ids => {
+      console.log('last_protocol_message_ids', last_protocol_message_ids);
       return getRawPhones({
         web: last_protocol_message_ids,
       });
