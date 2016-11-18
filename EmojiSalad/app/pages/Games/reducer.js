@@ -81,7 +81,7 @@ export default typeToReducer({
       return {
         ...state,
         fetching: false,
-        error: true,
+        error: action.data.message || true,
       };
     },
   },

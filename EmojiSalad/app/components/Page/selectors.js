@@ -49,7 +49,7 @@ function selectStatus({
       };
     } else if (Games.error) {
       return {
-        text: 'Error fetching games',
+        text: `Error fetching games: ${Games.error}`,
         code: 401,
       };
     }

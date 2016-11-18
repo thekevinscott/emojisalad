@@ -1,4 +1,3 @@
-//console.log('this line should be re-enabled');
 import { Actions } from 'react-native-router-flux';
 import {
   update as updateLogger,

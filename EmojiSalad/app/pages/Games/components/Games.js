@@ -15,7 +15,9 @@ import {
   TouchableHighlight,
   ListView,
   PushNotificationIOS,
+  //RefreshControl,
 } from 'react-native';
+
 import Messages from './Messages';
 import RowHeader from './RowHeader';
 

@@ -1,4 +1,5 @@
 import typeToReducer from 'type-to-reducer';
+//import Sound from 'react-native-sound';
 
 import translateTimestampFromDatabase from '../../utils/translateTimestampFromDatabase';
 
@@ -11,6 +12,29 @@ import {
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
 } from 'app/pages/Game/types';
+
+//const sounds = [
+  //{
+    //key: 'send',
+    //path: 'send.wav',
+  //},
+  //{
+    //key: 'received',
+    //path: 'received.wav',
+  //},
+//].reduce((obj, {
+  //key,
+  //path,
+//}) => {
+  //return {
+    //...obj,
+    //[key]: new Sound(path, Sound.MAIN_BUNDLE, (error) => {
+      //if (error) {
+        //console.log('failed to load the sound', key, path, error);
+      //}
+    //}),
+  //};
+//}, {});
 
 const initialState = {};
 
@@ -56,12 +80,26 @@ export default typeToReducer({
   },
   [SEND_MESSAGE]: {
     FULFILLED: (state, action) => {
+      //sounds.send.play();
       return buildMessageObj(state, [action.data]);
     },
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, action) => {
+      //sounds.received.play();
       return buildMessageObj(state, [action.data]);
     },
   },
 }, initialState);
+
+//console.log('play sound', sounds);
+//sounds.send.play(success => {
+  //console.log('whu', success);
+//});
+//const w = new Sound('send.wav', Sound.MAIN_BUNDLE, (error) => {
+  //console.log('err', error);
+//});
+//w.play(success => {
+  //console.log('whu', success);
+//});
+//console.log('afterwards');
