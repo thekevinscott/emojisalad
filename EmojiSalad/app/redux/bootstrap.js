@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Raven from 'raven-js';
+require('raven-js/plugins/react-native')(Raven);
+Raven.config('___PUBLIC_DSN___', { release: '0.4.16' }).install();
 
 import {
   AppRegistry,

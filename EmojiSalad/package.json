@@ -15,6 +15,7 @@
     "moment": "2.14.1",
     "pushcity": "^0.0.27",
     "ramda": "0.21.0",
+    "raven-js": "^3.8.1",
     "react": "15.3.1",
     "react-native": "^0.33.0",
     "react-native-button": "1.6.0",
