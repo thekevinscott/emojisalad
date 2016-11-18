@@ -124,7 +124,7 @@ const runRead = () => {
           }, []));
         }).then(messages => {
           console.info('messages', messages);
-          //return sendMessages(messages);
+          return sendMessages(messages);
         });
       }
     });
