@@ -92,7 +92,7 @@ const Router = (phone) => {
           return getNextSenderID(user.protocol).then(to => {
             const player = _.extend(user, { to });
             return [{
-              key: 'intro',
+              key: 'intro_web',
               player
             }];
           });
