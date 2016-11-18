@@ -41,7 +41,7 @@ const Router = (phone) => {
   const protocol = 'sms';
   return User.get({
     from: phone,
-    protocol
+    //protocol
   }).then((users) => {
     if (users.length) {
       const user = users.pop();
