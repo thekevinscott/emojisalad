@@ -119,7 +119,7 @@ const runRead = () => {
               console.info('output?', output);
               if (output) {
                 console.info('there is output to concat', output);
-                return messages.concat(output);
+                return messages.then(msg => msg.concat(output));
               } else {
                 console.info('no output');
                 return messages;
