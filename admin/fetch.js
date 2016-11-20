@@ -16,6 +16,10 @@ module.exports = (route, method, body, protocol, endpointCallback) => {
   }
   route = `${endpoint}${route}`;
 
+  if (!body) {
+    body = {};
+  }
+
   if (method.toLowerCase() === 'get') {
     const qs = Object.keys(body).map(key => {
       return `${key}=${body[key]}`;
