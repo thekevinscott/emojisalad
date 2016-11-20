@@ -8,6 +8,7 @@ const getDevice = userKey => {
   const getDeviceQuery = squel
   .select()
   .from('devices')
+  .where('number IS NOT NULL')
   .where('user_key = ?', userKey);
 
   return db.query(getDeviceQuery).then(devices => {
