@@ -13,6 +13,11 @@ export function setClient(ws, { userKey }) {
 }
 
 export function getClient(userKey) {
-  console.info('get the client', userKey, clients);
+  console.info('get the client', userKey, Object.keys(clients).map(clientKey => {
+    return {
+      key: clientKey,
+      exists: !!clients[clientKey],
+    };
+  }));
   return clients[userKey];
 }
