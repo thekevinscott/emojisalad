@@ -14,7 +14,7 @@ const RECEIVE_MESSAGE_FULFILLED = 'RECEIVE_MESSAGE_FULFILLED';
 
 export default function send(message) {
   console.info('send message', message);
-  const ws = getClient(message.userKey);
+  const connections = getClient(message.userKey);
 
   // When sending a notification, it will only appear
   // if the app is not currently visible.
@@ -30,16 +30,19 @@ export default function send(message) {
   });
 
   // now send the message if it exists
-  if (ws) {
+  console.info('number of connections for', message.userKey, connections.size);
+
+  const sentMessagesPromises = connections.forEach((value, ws) => {
     console.info('ws exists, send it', message.key);
     return sendMessage(ws)({
       type: RECEIVE_MESSAGE_FULFILLED,
       data: message,
-    }).then(() => {
-      //console.info('now update status delivered');
-      return updateStatus(message.key, 'delivered');
     });
-  }
+  });
+
+  Promise.all(sentMessagesPromises).then(() => {
+    return updateStatus(message.key, 'delivered');
+  });
 
   return updateStatus(message.key, 'notified');
 }

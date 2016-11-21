@@ -14,13 +14,11 @@ import parseMessage from './parseMessage';
 //const routes = require('./routes');
 //const getMessages = require('../utils/getMessages');
 export default function bootstrapWebsocket(server) {
+  console.info('bootstrap websocket');
   const io = new SocketIO(server);
   //const wss = new WebSocketServer({ server });
   io.on('connection', socket => {
-  //wss.on('connection', ws => {
-    //const location = url.parse(ws.upgradeReq.url, true);
-    // you might use location.query.access_token to authenticate or share sessions
-    // or ws.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
+    console.info('made a new connection');
 
     socket.on('message', json => {
       //console.log(new Date(), 'we got a message');

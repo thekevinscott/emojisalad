@@ -22,13 +22,13 @@ registry.register(NAME, {
 
 console.info('Waiting for', REQUIRED_SERVICES);
 registry.ready(() => {
-  console.info(`Starting up EmojinaryFriend App Queue: ${PORT}`);
+  console.info(`Started up EmojinaryFriend App Queue: ${PORT}`);
   server.on('request', app);
   bootstrapREST(app);
   bootstrapWebsocket(server);
 
   server.listen(PORT, () => {
-    console.info(NAME, PORT);
+    console.info(NAME, 'running on', PORT);
     registry.ready();
   });
 });

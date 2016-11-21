@@ -1,23 +1,22 @@
-const clients = {};
+const users = {};
 
 export function setClient(ws, { userKey }) {
-  if (userKey && !clients[userKey]) {
-    console.info('attached client', userKey);
-    clients[userKey] = ws;
+  if (userKey) {
+    if (!users[userKey]) {
+      users[userKey] = new Map();
+      console.info('set up initial map for user key', userKey);
+    }
+
+    users[userKey].set(ws, ws);
 
     ws.on('close', () => {
-      console.info('close the client', userKey);
-      clients[userKey] = null;
+      console.info('remove websocket for user', userKey);
+      users[userKey].delete(ws);
     });
   }
 }
 
 export function getClient(userKey) {
-  console.info('get the client', userKey, Object.keys(clients).map(clientKey => {
-    return {
-      key: clientKey,
-      exists: !!clients[clientKey],
-    };
-  }));
-  return clients[userKey];
+  console.info('get the client', userKey, Object.keys(users));
+  return users[userKey];
 }
