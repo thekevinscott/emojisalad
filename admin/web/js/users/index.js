@@ -7,39 +7,38 @@ import { auth } from '../auth';
 import { Base } from '../base';
 const Link = Router.Link;
 
-export var Users = React.createClass({
+export const Users = React.createClass({
   mixins: [Base], // Use the mixin
   url: '/api/users',
   render: function () {
-    var content;
+    let content;
     if ( this.state.loading ) {
       content = "Loading";
     } else if ( this.state.error ) {
       content = this.state.error;
     } else {
-      var users = this.state.data.reverse().map((user) => {
+      const users = this.state.data.reverse().map((user) => {
         return (
-          <tr><td>{user.id}</td><td><Link to="user" params={{user_id: user.id}}>{user.nickname}</Link></td><td>{user.from}</td><td>{user.created}</td></tr>
+          <tr><td>{user.id}</td><td><Link to="user" params={{user_id: user.id}}>{user.nickname}</Link></td><td>{user.avatar}</td><td>{user.from}</td><td>{user.players.length}</td><td>{user.confirmed}</td><td>{user.confirmed_avatar}</td><td>{user.protocol}</td><td>{user.created}</td></tr>
         );
       });
-      content = (<table><thead><tr><td>ID</td><td>Nickname</td><td>Number</td><td>Created</td></tr></thead>{users}</table>);
+      content = (<table><thead><tr><td>ID</td><td>Nickname</td><td>Avatar</td><td>Number</td><td>Games</td><td>Confirmed</td><td>Confirmed Avatar</td><td>Protocol</td><td>Created</td></tr></thead>{users}</table>);
     }
     return (
       <div className="users page">
       {content}
       </div>
     );
-  }
+  },
 });
 
-export var User = React.createClass({
+export const User = React.createClass({
   mixins: [Base], // Use the mixin
   url: function() {
     return `/api/users/${this.props.params.user_id}`;
   },
   render: function () {
-    console.log(this.props);
-    var content;
+    let content;
     if ( this.state.loading ) {
       content = "Loading";
     } else if ( this.state.error ) {
@@ -47,7 +46,7 @@ export var User = React.createClass({
     } else {
       content = (
         <div className="user-container">
-          <h1>{this.state.data.nickname}</h1>
+          <h1>{this.state.data.nickname} {this.state.data.avatar}</h1>
           <p>{this.state.data.created}</p>
         </div>
       );
@@ -57,6 +56,6 @@ export var User = React.createClass({
         {content}
       </div>
     );
-  }
+  },
 });
 
