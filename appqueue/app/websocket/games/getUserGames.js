@@ -25,10 +25,11 @@ export default function getUserGames(userKey) {
       },
     }),
   ];
-  return Promise.all(promises).then(([
-    games,
-    invites,
-  ]) => {
+  return Promise.all(promises).then(response => {
+    console.info('response back from promises', response);
+    const games = response[0];
+    const invites = response[1];
+    console.info(games, invites);
     return games.concat(invites);
   });
 }
