@@ -350,14 +350,13 @@ offset = 15px
    
 ////////////SOME BULLSHIT BELOW
 .commentArea
-  display none
-  background red
   flex-direction column
   align-items center
   justify-content center
   font 14px Arial
   padding-left 5%
   margin-top 20px
+  flex 1
 
 .bubbledLeft,.bubbledRight
   margin-top 20px
@@ -365,9 +364,9 @@ offset = 15px
   // max-width 50%
   clear both
   position relative
+  visibility hidden
 
 .bubbledLeft
-  display none
   float left
   margin-right auto
   -webkit-border-radius 8px 8px 8px 0px
@@ -386,7 +385,6 @@ offset = 15px
     content ""
 
 .bubbledRight
-  display none
   float right
   margin-left auto
   text-align right

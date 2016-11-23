@@ -25,8 +25,8 @@ var content = [
 
 // Brings in the chat convo animation.
 // Predelay is the number of milliseconds before the animation, id is the element id, and direction is left or right
-function BringIn(predelay,id,direction){
-  var bounceInDirection = 'bounceIn'+direction;
+function BringIn(predelay,id){
+  var bounceInDirection = 'bounceInUp';
   setTimeout(function() {
     $(id).addClass(bounceInDirection);
     $(id).css("visibility", "visible");
@@ -35,9 +35,9 @@ function BringIn(predelay,id,direction){
 
 // Takes out the chat convo with an animation.
 // Predelay is the number of milliseconds before the animation, id is the element id, and direction is left or right
-function TakeOut(predelay,id,direction){
-  var bounceInDirection = 'bounceIn'+direction;
-  var bounceOutDirection = 'bounceOut'+direction;
+function TakeOut(predelay,id){
+  var bounceInDirection = 'bounceInUp';
+  var bounceOutDirection = 'bounceOutUp';
   // debugger;
   setTimeout(function() {
     $(id).addClass(bounceOutDirection);
@@ -71,14 +71,15 @@ function chatContent(){
 
 // Loop through the chat convo, and then run chatContent to switch the content
 function loopChat(){
-    BringIn(500,'#chat1-1','Right');
-    BringIn(1500,'#chat1-2','Left');
-    BringIn(3000,'#chat1-3','Left');
-    TakeOut(8000,'#chat1-1','Right');
-    TakeOut(8000,'#chat1-2','Left');
-    TakeOut(8000,'#chat1-3','Left');
+    BringIn(500,'#chat1-1','Up');
+    BringIn(2500,'#chat1-2','Up');
+    BringIn(3000,'#chat1-3','Up');
+    TakeOut(8000,'#chat1-1','Up');
+    TakeOut(8000,'#chat1-2','Up');
+    TakeOut(8000,'#chat1-3','Up');
     chatContent(); //
     setTimeout(function(){
       setInterval(loopChat(),8500);
     },8500);
 }
+
