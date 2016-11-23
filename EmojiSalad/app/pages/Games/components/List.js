@@ -108,6 +108,7 @@ export default function List({
     <View style={styles.list}>
       <View style={styles.listContainer}>
         <Text>You have no games. That's really weird.</Text>
+        <Text>Contact kevin@scottdesignllc.com for more help.</Text>
       </View>
     </View>
   );
