@@ -17,21 +17,27 @@ export default function getUserGames(userKey) {
         },
       },
     }),
-    //fetchFromService({
-      //service: 'api',
-      //route: 'invites.get',
-      //options: {
-        //body: {
-          //invited_from_key: userKey,
-        //},
-      //},
-    //}),
+    fetchFromService({
+      service: 'api',
+      route: 'invites.get',
+      options: {
+        body: {
+          invited_from_key: userKey,
+        },
+      },
+    }),
   ];
   return Promise.all(promises).then(response => {
     console.info('response back from promises', response);
     const games = response[0] || [];
     const invites = response[1] || [];
     console.info(games, invites);
-    return games.concat(invites);
+    return games.map(game => ({
+      ...game,
+      type: 'game',
+    })).concat(invites.map(invite => ({
+      ...invite,
+      type: 'invite',
+    })));
   });
 }

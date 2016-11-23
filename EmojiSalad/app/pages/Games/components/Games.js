@@ -48,9 +48,9 @@ class Games extends Component {
   }
 
   componentWillAppear({
-    //type,
+    type,
   }) {
-    //console.log('Games Overview Component componentWillAppear called', type);
+    console.log('Games Overview Component componentWillAppear called', type);
     this.props.actions.fetchGames(this.props.me.key);
   }
 
