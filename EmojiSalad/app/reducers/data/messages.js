@@ -27,6 +27,10 @@ const sounds = [
     key: 'welcome',
     path: 'welcome.aif',
   },
+  {
+    key: 'airhorn',
+    path: 'airhorn.mp3',
+  },
 ].reduce((obj, {
   key,
   path,
@@ -72,9 +76,9 @@ export default typeToReducer({
   [FETCH_MESSAGES]: {
     FULFILLED: (state, { data }) => {
       const messages = data.messages;
-      if (messages.length !== Object.keys(state).length) {
-        sounds.received.play();
-      }
+      //if (messages.length !== Object.keys(state).length) {
+        //sounds.received.play();
+      //}
       return buildMessageObj(state, messages);
     },
   },
@@ -87,13 +91,21 @@ export default typeToReducer({
   },
   [SEND_MESSAGE]: {
     FULFILLED: (state, action) => {
-      sounds.send.play();
+      if (action.data.body.toLowerCase() === 'airhorn') {
+        sounds.airhorn.play();
+      } else {
+        sounds.send.play();
+      }
       return buildMessageObj(state, [action.data]);
     },
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, action) => {
-      sounds.received.play();
+      if (action.data.body.toLowerCase() === 'airhorn') {
+        sounds.airhorn.play();
+      } else {
+        sounds.received.play();
+      }
       return buildMessageObj(state, [action.data]);
     },
   },

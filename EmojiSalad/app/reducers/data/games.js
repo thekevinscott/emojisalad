@@ -59,7 +59,7 @@ export default typeToReducer({
   [FETCH_GAMES]: {
     FULFILLED: (state, { data }) => {
       return {
-        ...state,
+        //...state,
         ...data.reduce((obj, game) => ({
           ...obj,
           [game.key]: translateGame(state[game.key], game),

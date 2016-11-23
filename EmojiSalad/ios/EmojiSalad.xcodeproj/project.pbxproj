@@ -28,6 +28,7 @@
 		3426472C1DDEAC9F00FA9E63 /* send.aif in Resources */ = {isa = PBXBuildFile; fileRef = 3426472A1DDEAC8200FA9E63 /* send.aif */; };
 		3426472E1DDEACF700FA9E63 /* welcome.aif in Resources */ = {isa = PBXBuildFile; fileRef = 3426472D1DDEACF300FA9E63 /* welcome.aif */; };
 		347C9CE71D8F710600FC8489 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 347C9CE11D8F70F800FC8489 /* libRCTPushNotification.a */; };
+		34B31E521DE24B6500C8169B /* airhorn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 34B31E511DE24B6500C8169B /* airhorn.mp3 */; };
 		4676BE3E8C9E4F399A9B0612 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AD1E3ED1435F47FFBEB88880 /* libCodePush.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		F9B622A7DF6440ADA2C4E873 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C5FE781CC424D069F12E06C /* libz.tbd */; };
@@ -178,6 +179,7 @@
 		347C9D031D8F72BB00FC8489 /* EmojiSalad.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = EmojiSalad.entitlements; path = EmojiSalad/EmojiSalad.entitlements; sourceTree = "<group>"; };
 		34999F931DBAD8EB00D7038D /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		34A0F41F1DBE78B0008F274E /* Candal.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Candal.ttf; sourceTree = "<group>"; };
+		34B31E511DE24B6500C8169B /* airhorn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = airhorn.mp3; path = "../Audio/third party/airhorn.mp3"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		9EAE7BECD1FA455A9885F6D1 /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
@@ -306,6 +308,7 @@
 				34A0F41F1DBE78B0008F274E /* Candal.ttf */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
+				34B31E511DE24B6500C8169B /* airhorn.mp3 */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = EmojiSalad;
@@ -695,6 +698,7 @@
 				3426472B1DDEAC9F00FA9E63 /* receive.aif in Resources */,
 				3426472C1DDEAC9F00FA9E63 /* send.aif in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				34B31E521DE24B6500C8169B /* airhorn.mp3 in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

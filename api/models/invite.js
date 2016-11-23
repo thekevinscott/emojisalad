@@ -231,6 +231,12 @@ const Invite = {
               .where('u.from=?', params.invited_from);
     }
 
+    if (params.invited_from_key) {
+      query = query
+              .left_join('users', 'uk', 'uk.id=i.invited_id')
+              .where('uk.key=?',params.invited_from_key);
+    }
+
     if ( params.used !== undefined ) {
       query = query.where('i.used = ?',params.used);
     }

@@ -297,6 +297,7 @@ const Round = {
               return Promise.join(
                 Player.find({ game_id: round.game_id }),
                 (players) => {
+                  console.info('players for round', players);
                   const submitter = players.filter((player) => {
                     return player.id === round.submitter_id;
                   })[0];
