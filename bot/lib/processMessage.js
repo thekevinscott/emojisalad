@@ -19,7 +19,7 @@ module.exports = (message) => {
   if ( ! message.body ) {
     // this might be an mms
     console.error('No body provided, but it might be an mms', message);
-    throw new Error("No body provided");
+    throw new Error("No body provided", JSON.stringify(message));
   }
 
   // responses comes back as an array of messages
