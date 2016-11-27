@@ -259,12 +259,13 @@ const Invite = {
 
             return invites.map((invite) => {
               return {
+                key: invite.key,
                 id: invite.id,
                 game: games[invite.game_id],
                 //invited_user: _.assign({ to: invite.game_number }, users[invite.invited_id]),
                 invited_user: _.assign({ to: invite.sender }, users[invite.invited_id]),
                 inviter_player: players[invite.inviter_id],
-                used: invite.used
+                used: invite.used,
               };
             });
           }

@@ -9,9 +9,9 @@ import {
   UPDATE_STARTING_MESSAGE,
 } from './types';
 
-export function fetchGames(userKey) {
+export function fetchData(userKey) {
   return dispatch => {
-    dispatch(updateLogger(`fetch games with user key: ${userKey}`));
+    dispatch(updateLogger(`fetch data with user key: ${userKey}`));
     return dispatch({
       type: FETCH_GAMES,
       payload: {

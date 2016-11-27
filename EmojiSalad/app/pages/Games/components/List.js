@@ -82,7 +82,7 @@ export default function List({
       <View style={styles.list}>
         <View style={styles.listContainer}>
           <ActivityIndicator style={styles.activityIndicator} />
-          <Text>Loading Games</Text>
+          <Text style={styles.text}>Loading Games</Text>
         </View>
       </View>
     );
@@ -107,8 +107,8 @@ export default function List({
   return (
     <View style={styles.list}>
       <View style={styles.listContainer}>
-        <Text>You have no games. That's really weird.</Text>
-        <Text>Contact kevin@scottdesignllc.com for more help.</Text>
+        <Text style={styles.text}>You have no games. That's really weird.</Text>
+        <Text style={styles.text}>Contact kevin@scottdesignllc.com for more help.</Text>
       </View>
     </View>
   );

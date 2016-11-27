@@ -21,8 +21,16 @@ export const list = {
 
 export const listContainer = {
   flex: 1,
-  flexDirection: 'row',
+  flexDirection: 'column',
   justifyContent: 'center',
+};
+
+export const text = {
+  textAlign: 'center',
+  padding: 10,
+  paddingLeft: 40,
+  paddingRight: 40,
+  fontSize: 18,
 };
 
 export const games = {

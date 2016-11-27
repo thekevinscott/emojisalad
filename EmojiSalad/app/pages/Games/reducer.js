@@ -66,8 +66,9 @@ export default typeToReducer({
     }),
     FULFILLED: (state, { data }) => ({
       ...state,
-      games: data.reduce((obj, game) => {
-        //console.log('game', game);
+      games: data.filter(({
+        type,
+      }) => type === 'game').reduce((obj, game) => {
         return {
           ...obj,
           [game.key]: setStartingMessage(game, (game.messages[0] || []).key),

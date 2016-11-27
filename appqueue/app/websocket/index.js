@@ -18,7 +18,7 @@ export default function bootstrapWebsocket(server) {
   const io = new SocketIO(server);
   //const wss = new WebSocketServer({ server });
   io.on('connection', socket => {
-    console.info('made a new connection');
+    //console.info('made a new connection');
 
     socket.on('message', json => {
       //console.log(new Date(), 'we got a message');

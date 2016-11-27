@@ -13,7 +13,7 @@ function getPlayersWithUserKeys(players) {
 }
 
 function getUsers(games) {
-  return games.reduce((gameObj, game) => ({
+  return games.filter(({ type }) => type === 'game').reduce((gameObj, game) => ({
     ...gameObj,
     ...getPlayersWithUserKeys(game.players).reduce((playerObj, player) => ({
       ...playerObj,

@@ -1,8 +1,5 @@
 import typeToReducer from 'type-to-reducer';
 import R from 'ramda';
-import {
-  Vibration,
-} from 'react-native';
 
 import translateTimestampFromDatabase from 'app/utils/translateTimestampFromDatabase';
 
@@ -59,8 +56,9 @@ export default typeToReducer({
   [FETCH_GAMES]: {
     FULFILLED: (state, { data }) => {
       return {
-        //...state,
-        ...data.reduce((obj, game) => ({
+        ...data.filter(obj => {
+          return obj.type === 'game';
+        }).reduce((obj, game) => ({
           ...obj,
           [game.key]: translateGame(state[game.key], game),
         }), {}),
@@ -127,7 +125,6 @@ export default typeToReducer({
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, { data }) => {
-      Vibration.vibrate();
       const gameKey = data.gameKey;
       const message = data;
       const messages = translateMessages(state[gameKey], {

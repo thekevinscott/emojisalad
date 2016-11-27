@@ -3,6 +3,7 @@ import {
 } from 'redux';
 
 import games from './games';
+import invites from './invites';
 import users from './users';
 import messages from './messages';
 import pendingMessages from './pendingMessages';
@@ -14,4 +15,5 @@ export default combineReducers({
   pendingMessages,
   games,
   users,
+  invites,
 });

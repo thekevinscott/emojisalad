@@ -28,7 +28,7 @@ const ds = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 !== r2,
 });
 
-class Games extends Component {
+class Overview extends Component {
   constructor(props) {
     super(props);
     this.onRegister = this.onRegister.bind(this);
@@ -50,11 +50,12 @@ class Games extends Component {
   componentWillAppear({
     type,
   }) {
-    console.log('Games Overview Component componentWillAppear called', type);
-    this.props.actions.fetchGames(this.props.me.key);
+    console.log('Overview Component componentWillAppear called', type);
+    this.props.actions.fetchData(this.props.me.key);
   }
 
-  getGames() {
+  getData() {
+    //console.log('get games', this.props.games);
     return ds.cloneWithRows(this.props.games);
   }
 
@@ -66,7 +67,7 @@ class Games extends Component {
         <List
           fetching={this.props.ui.fetching}
           games={this.props.games}
-          dataSource={this.getGames()}
+          dataSource={this.getData()}
           updateStartingMessage={this.props.actions.updateStartingMessage}
           openGame={this.props.actions.openGame}
         />
@@ -78,4 +79,4 @@ class Games extends Component {
 export default connectWithFocus(
   mapStateToProps,
   mapDispatchToProps
-)(Games);
+)(Overview);

@@ -1,5 +1,8 @@
 import typeToReducer from 'type-to-reducer';
 import Sound from 'react-native-simple-sound';
+import {
+  Vibration,
+} from 'react-native';
 
 import translateTimestampFromDatabase from '../../utils/translateTimestampFromDatabase';
 
@@ -57,7 +60,7 @@ const translateMessage = (message) => {
 };
 
 function getMessagesFromGames(games) {
-  return games.reduce((arr, game) => {
+  return games.filter(({ type }) => type === 'game').reduce((arr, game) => {
     return arr.concat(game.messages);
   }, []);
 }
@@ -101,6 +104,7 @@ export default typeToReducer({
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, action) => {
+      Vibration.vibrate();
       if (action.data.body.toLowerCase() === 'airhorn') {
         sounds.airhorn.play();
       } else {
