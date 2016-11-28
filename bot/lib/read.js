@@ -125,7 +125,7 @@ const runRead = () => {
                 return messages;
               }
             });
-          }, []));
+          }, new Promise(resolve => resolve())));
         }).then(messages => {
           console.info('messages', messages);
           return sendMessages(messages);
