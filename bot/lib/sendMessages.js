@@ -42,7 +42,7 @@ function hasBodyError(options, body, byteLength) {
   return true;
 }
 
-const sendMessages = (messages, options = {}) => {
+const sendMessages = (messages = [], options = {}) => {
   //console.info('send 1');
   console.info('messages to send', messages);
 

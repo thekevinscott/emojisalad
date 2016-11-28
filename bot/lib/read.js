@@ -122,13 +122,15 @@ const runRead = () => {
                 return messages.then(msg => msg.concat(output));
               } else {
                 console.info('no output');
-                return messages;
+                return [].concat(messages);
               }
             });
           }, new Promise(resolve => resolve()));
         }).then(messages => {
-          console.info('messages', messages);
-          return sendMessages(messages);
+          if (messages && messages.length) {
+            console.info('messages', messages);
+            return sendMessages(messages);
+          }
         });
       }
     });
