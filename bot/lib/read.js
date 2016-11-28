@@ -117,7 +117,7 @@ const runRead = () => {
             console.info('messages', messagePromiseObject);
             return processWebMessage(response).then((output = []) => {
               console.info('output?', output);
-              return messagePromiseObject.then(msg => msg.concat(output));
+              return messagePromiseObject.then((msg = []) => msg.concat(output));
             });
           }, new Promise(resolve => resolve()));
         }).then(messages => {
