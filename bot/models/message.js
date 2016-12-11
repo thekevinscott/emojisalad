@@ -132,7 +132,7 @@ const Message = {
           // was the 'from' field, is now the number
           // we send to, aka the 'to' field.
           return _.assign({
-            key: response.key,
+            message_key: response.key,
             body: messages[response.key],
             to: from,
             from: to,

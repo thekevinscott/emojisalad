@@ -33,7 +33,7 @@ module.exports = (message) => {
     //console.info('responses back', responses);
     if ( responses && _.isArray(responses) && responses.length ) {
       return Message.parse(responses, message).then((response) => {
-        //console.info('response from router', response);
+        console.info('response from router', response);
         return response;
       });
     }
