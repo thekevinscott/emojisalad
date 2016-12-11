@@ -7,6 +7,7 @@ function getFields(table) {
   return squel
   .select()
   .field('body')
+  .field('message_key')
   .field(`'${table}'`, 'type')
   .field('UNIX_TIMESTAMP(created)', 'timestamp')
   .field('`key`')
