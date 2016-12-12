@@ -7,7 +7,7 @@ export default function translateIncomingMessage(message) {
   }) => {
     console.info('incoming data translated', userKey, gameKey);
     return {
-      message_key: message.message_key,
+      messageKey: message.message_key,
       body: message.body,
       initiated_id: message.initiated_id || null,
       userKey,
