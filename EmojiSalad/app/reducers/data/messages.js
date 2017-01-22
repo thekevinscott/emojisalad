@@ -1,5 +1,8 @@
 import typeToReducer from 'type-to-reducer';
 import Sound from 'react-native-simple-sound';
+import {
+  Vibration,
+} from 'react-native';
 
 import translateTimestampFromDatabase from '../../utils/translateTimestampFromDatabase';
 
@@ -27,6 +30,10 @@ const sounds = [
     key: 'welcome',
     path: 'welcome.aif',
   },
+  {
+    key: 'airhorn',
+    path: 'airhorn.mp3',
+  },
 ].reduce((obj, {
   key,
   path,
@@ -53,7 +60,7 @@ const translateMessage = (message) => {
 };
 
 function getMessagesFromGames(games) {
-  return games.reduce((arr, game) => {
+  return games.filter(({ type }) => type === 'game').reduce((arr, game) => {
     return arr.concat(game.messages);
   }, []);
 }
@@ -72,9 +79,9 @@ export default typeToReducer({
   [FETCH_MESSAGES]: {
     FULFILLED: (state, { data }) => {
       const messages = data.messages;
-      if (messages.length !== Object.keys(state).length) {
-        sounds.received.play();
-      }
+      //if (messages.length !== Object.keys(state).length) {
+        //sounds.received.play();
+      //}
       return buildMessageObj(state, messages);
     },
   },
@@ -87,13 +94,22 @@ export default typeToReducer({
   },
   [SEND_MESSAGE]: {
     FULFILLED: (state, action) => {
-      sounds.send.play();
+      if (action.data.body.toLowerCase() === 'airhorn') {
+        sounds.airhorn.play();
+      } else {
+        sounds.send.play();
+      }
       return buildMessageObj(state, [action.data]);
     },
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, action) => {
-      sounds.received.play();
+      Vibration.vibrate();
+      if (action.data.body.toLowerCase() === 'airhorn') {
+        sounds.airhorn.play();
+      } else {
+        sounds.received.play();
+      }
       return buildMessageObj(state, [action.data]);
     },
   },

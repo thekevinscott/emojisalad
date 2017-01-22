@@ -37,6 +37,7 @@ function saveIncomingMessage(message, attempts = 0) {
   .into('sent')
   .setFields({
     body: message.body,
+    message_key: message.message_key,
     //from: message.from,
     //to: message.to,
     initiated_id: message.initiated_id,

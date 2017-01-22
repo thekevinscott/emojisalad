@@ -19,12 +19,12 @@ const bootstrapSocket = (dispatch) => {
   });
 
   socket.on('connect', () => {
-    console.log('connected!');
+    console.log('**** connected!');
     dispatch(updateStatus(true));
   });
 
   socket.on('disconnect', () => {
-    console.log('disconnected!');
+    console.log('**** disconnected!');
     dispatch(updateStatus(false));
   });
 
@@ -115,7 +115,7 @@ const getConnectedStatus = (getState, count = 0) => {
     },
   } = getState();
 
-  if (connected || count >= 4) {
+  if (connected || count >= 59) {
     return Promise.resolve(connected);
   }
 

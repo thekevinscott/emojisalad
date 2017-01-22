@@ -20,7 +20,7 @@ import {
 } from 'pages/Register';
 
 import {
-  Games,
+  Overview,
 } from 'pages/Games';
 
 import {
@@ -89,7 +89,7 @@ class Routes extends Component {
         <Scene
           key="games"
           component={Page}
-          page={Games}
+          page={Overview}
           initial={this.isInitial('games')}
           title={gamesTitle}
         />

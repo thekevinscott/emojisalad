@@ -1,6 +1,6 @@
 /* API */
-export const ENVIRONMENT = 'production';
-//export const ENVIRONMENT = 'development';
+//export const ENVIRONMENT = 'production';
+export const ENVIRONMENT = 'development';
 //export const ENVIRONMENT = 'development-device';
 
 const LOCAL_IP = '192.168.0.8';
@@ -47,3 +47,6 @@ if (ENVIRONMENT === 'production' && !PERSIST_DATA) {
 
 /* Push City */
 export const PUSHCITY_API_KEY = '94065890d025a5989ddf0b67862d62739e77ef64af0c9e6050a46a9796380d43';
+
+/* Loggin */
+export const LOGGING = 2;

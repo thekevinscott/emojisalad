@@ -113,22 +113,20 @@ const runRead = () => {
         const key = 'web_queue_id';
         const message_id = responses[responses.length - 1].id;
         return store(key, message_id).then(() => {
-          return Promise.all(responses.reduce((messages, response) => {
-            console.info('messages', messages);
-            return processWebMessage(response).then(output => {
+          return responses.reduce((messagePromiseObject, response) => {
+            console.info('messages', messagePromiseObject);
+            return processWebMessage(response).then((output = []) => {
               console.info('output?', output);
-              if (output) {
-                console.info('there is output to concat', output);
-                return messages.then(msg => msg.concat(output));
-              } else {
-                console.info('no output');
-                return messages;
-              }
+              return messagePromiseObject.then((msg = []) => {
+                return msg.concat(output);
+              });
             });
-          }, []));
+          }, new Promise(resolve => resolve()));
         }).then(messages => {
-          console.info('messages', messages);
-          return sendMessages(messages);
+          if (messages && messages.length) {
+            console.info('messages', messages);
+            return sendMessages(messages);
+          }
         });
       }
     });

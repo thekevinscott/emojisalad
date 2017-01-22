@@ -18,6 +18,7 @@ const parsePayload = (e) => {
 };
 
 const onMessage = dispatch => e => {
+  console.log('**** on message');
   const {
     type,
     data,
@@ -31,6 +32,8 @@ const onMessage = dispatch => e => {
     data,
     meta,
   };
+
+  console.log('payload', payload);
 
   if (meta && meta.id !== undefined) {
     clearTimer(meta.id);

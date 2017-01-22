@@ -198,6 +198,7 @@ const Invite = {
     });
   },
   find: (params = {}) => {
+    console.info('params', params);
     let query = squel
                 .select()
                 .field('i.game_number_id', 'sender')
@@ -231,11 +232,16 @@ const Invite = {
               .where('u.from=?', params.invited_from);
     }
 
+    if (params.invited_from_key) {
+      query = query
+              .left_join('users', 'uk', 'uk.id=i.invited_id')
+              .where('uk.key=?',params.invited_from_key);
+    }
+
     if ( params.used !== undefined ) {
       query = query.where('i.used = ?',params.used);
     }
 
-    console.info('params', params);
     console.info('invite query', query.toString());
     return db.query(query).then((invites) => {
       console.info('got invite back');
@@ -253,12 +259,13 @@ const Invite = {
 
             return invites.map((invite) => {
               return {
+                key: invite.key,
                 id: invite.id,
                 game: games[invite.game_id],
                 //invited_user: _.assign({ to: invite.game_number }, users[invite.invited_id]),
                 invited_user: _.assign({ to: invite.sender }, users[invite.invited_id]),
                 inviter_player: players[invite.inviter_id],
-                used: invite.used
+                used: invite.used,
               };
             });
           }

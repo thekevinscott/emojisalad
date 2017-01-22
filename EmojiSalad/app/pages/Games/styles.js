@@ -15,6 +15,24 @@ export const container = {
   //paddingTop: HEADER_HEIGHT,
 };
 
+export const list = {
+  paddingTop: 80,
+};
+
+export const listContainer = {
+  flex: 1,
+  flexDirection: 'column',
+  justifyContent: 'center',
+};
+
+export const text = {
+  textAlign: 'center',
+  padding: 10,
+  paddingLeft: 40,
+  paddingRight: 40,
+  fontSize: 18,
+};
+
 export const games = {
   //paddingTop: HEADER_HEIGHT,
   flex: 1,
@@ -89,4 +107,8 @@ export const messagesContainer = {
   right: ROW_PADDING,
   top: MESSAGE_TOP,
   backgroundColor: BG_COLOR,
+};
+
+export const activityIndicator = {
+  marginRight: 10,
 };
