@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import {
   Text,
   View,
 } from 'react-native';
+
+import {
+  mapStateToProps,
+  mapDispatchToProps,
+} from './selectors';
 
 const getText = messages => {
   return (messages || []).map(message => {
@@ -16,9 +22,10 @@ const getText = messages => {
   }).join('\n\n');
 };
 
-export default class Logger extends Component {
+class Logger extends Component {
   render() {
-    const text = getText(this.props.logger);
+    //const text = getText(this.props.logger);
+    const text = 'booyah';
     return (
       <View
         style={{
@@ -33,3 +40,8 @@ export default class Logger extends Component {
     );
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Logger);

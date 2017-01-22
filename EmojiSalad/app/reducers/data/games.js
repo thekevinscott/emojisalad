@@ -56,12 +56,23 @@ export default typeToReducer({
   [FETCH_GAMES]: {
     FULFILLED: (state, { data }) => {
       return {
-        ...data.filter(obj => {
-          return obj.type === 'game';
-        }).reduce((obj, game) => ({
-          ...obj,
-          [game.key]: translateGame(state[game.key], game),
-        }), {}),
+        ...data.reduce((obj, el) => {
+          if (el.type === 'invite') {
+            const game = {
+              ...el.game,
+              messages: el.messages,
+            };
+            return {
+              ...obj,
+              [game.key]: translateGame(state[game.key], game),
+            };
+          }
+
+          return {
+            ...obj,
+            [el.key]: translateGame(state[el.key], el),
+          };
+        }, {}),
       };
     },
   },
@@ -125,12 +136,25 @@ export default typeToReducer({
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, { data }) => {
+      const messageKey = data.messageKey;
       const gameKey = data.gameKey;
       const message = data;
       const messages = translateMessages(state[gameKey], {
         messages: [message],
       });
       const game = state[gameKey] || {};
+
+      if (messageKey === 'invite') {
+        return {
+          ...state,
+          [gameKey]: {
+            ...game,
+            messages,
+            totalMessages: (game.totalMessages || 0) + 1,
+          },
+        };
+      }
+
       return {
         ...state,
         [gameKey]: {

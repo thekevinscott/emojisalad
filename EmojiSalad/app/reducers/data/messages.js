@@ -50,7 +50,9 @@ const sounds = [
 const initialState = {};
 
 const translateMessage = (message) => {
+  console.log('message', message);
   return {
+    //messageKey: message.message_key,
     body: message.body,
     userKey: message.user_key,
     gameKey: message.game_key,
@@ -59,9 +61,11 @@ const translateMessage = (message) => {
   };
 };
 
-function getMessagesFromGames(games) {
-  return games.filter(({ type }) => type === 'game').reduce((arr, game) => {
-    return arr.concat(game.messages);
+function getMessagesFromGames(rows) {
+  return rows.map(row => {
+    return row.messages;
+  }).reduce((arr, messages) => {
+    return arr.concat(messages);
   }, []);
 }
 
@@ -78,6 +82,7 @@ function buildMessageObj(state, messages) {
 export default typeToReducer({
   [FETCH_MESSAGES]: {
     FULFILLED: (state, { data }) => {
+      console.log('fa1');
       const messages = data.messages;
       //if (messages.length !== Object.keys(state).length) {
         //sounds.received.play();

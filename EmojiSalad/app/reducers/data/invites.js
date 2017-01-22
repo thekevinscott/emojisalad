@@ -1,3 +1,4 @@
+/*
 import typeToReducer from 'type-to-reducer';
 
 //import translateTimestampFromDatabase from 'app/utils/translateTimestampFromDatabase';
@@ -27,6 +28,7 @@ export default typeToReducer({
   [FETCH_GAMES]: {
     FULFILLED: (state, { data }) => {
       return {
+        ...state,
         ...data.filter(obj => {
           return obj.type === 'invite';
         }).reduce((obj, invite) => ({
@@ -39,23 +41,17 @@ export default typeToReducer({
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, { data }) => {
       console.log('handle this ****** invite reducer ', data);
-      /*
-      const inviteKey = data.gameKey;
-      const message = data;
-      const messages = translateMessages(state[gameKey], {
-        messages: [message],
-      });
-      const game = state[gameKey] || {};
-      return {
-        ...state,
-        [gameKey]: {
-          ...game,
-          messages,
-          totalMessages: (game.totalMessages || 0) + 1,
-        },
-      };
-      */
+      if (data.messageKey === 'invite') {
+        const key = 'unknown';
+        return {
+          ...state,
+          [key]: translateInvite(state[key], data),
+        };
+      }
+
+      return state;
     },
   },
 }, initialState);
 
+*/

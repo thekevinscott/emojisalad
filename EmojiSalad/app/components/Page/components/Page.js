@@ -8,10 +8,10 @@ import {
 
 import styles from '../styles';
 
-import {
-  mapStateToProps,
-  mapDispatchToProps,
-} from '../selectors';
+//import {
+  //mapStateToProps,
+  //mapDispatchToProps,
+//} from '../selectors';
 
 class Page extends Component {
   constructor(props) {
@@ -44,6 +44,6 @@ class Page extends Component {
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  //mapStateToProps,
+  //mapDispatchToProps
 )(Page);

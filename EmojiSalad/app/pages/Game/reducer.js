@@ -112,11 +112,15 @@ export default typeToReducer({
         },
       });
     },
-    REJECTED: (state, { meta }) => {
-      return updateGame(state, meta.gameKey, {
-        loading: false,
-        error: true,
-      });
+    REJECTED: (state, action) => {
+      if (action.meta.gameKey) {
+        return updateGame(state, action.meta.gameKey, {
+          loading: false,
+          error: true,
+        });
+      }
+
+      return state;
     },
   },
   [UPDATE_COMPOSE]: (state, { gameKey, text }) => {

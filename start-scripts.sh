@@ -30,3 +30,6 @@
 
  cd /var/www/admin
  pm2 start app.json
+
+ cd /var/www/jungle
+ pm2 start app.json

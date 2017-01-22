@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {
+  constants,
+} from '../styles';
 import {
   Linking,
 } from 'react-native';
@@ -26,6 +30,10 @@ import {
 import {
   Game,
 } from 'pages/Game';
+
+import {
+  NewGame,
+} from 'pages/NewGame';
 
 class Routes extends Component {
   componentDidMount() {
@@ -69,6 +77,7 @@ class Routes extends Component {
   }
 
   render() {
+    const newGame = (<FontAwesome name="pencil-square-o" size={30} color={constants.purple} />);
     // This fucks up the connectWithFocus activeComponent
     // listener, since the active component name is Games (24),
     // not Games
@@ -92,6 +101,23 @@ class Routes extends Component {
           page={Overview}
           initial={this.isInitial('games')}
           title={gamesTitle}
+          rightTitle={newGame}
+          onRight={() => {
+            Actions.newGame();
+          }}
+        />
+        <Scene
+          key="newGame"
+          component={NewGame}
+          title="New Game"
+          leftTitle="Cancel"
+          onLeft={() => {
+            Actions.games();
+          }}
+          leftTitle="Invite"
+          onLeft={() => {
+            console.log('invite!');
+          }}
         />
         <Scene
           key="game"

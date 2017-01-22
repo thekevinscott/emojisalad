@@ -8,7 +8,6 @@ import {
   updateDeviceToken,
 } from 'app/utils/pushNotificationListeners/actions';
 
-
 import {
   sortBy,
 } from 'utils/sort';
@@ -32,15 +31,25 @@ export function selectPlayers(state, userKeys = []) {
   //return Number(game.messages[game.messages.length - 1].timestamp);
 //}
 
-export function selectMessages(state, messageKeys, startingMessage) {
+const getMessageIndex = (sortedMessages, startingMessage) => {
+  const index = sortedMessages.map(message => message.key).indexOf(startingMessage);
+
+  if (index === -1) {
+    return 1;
+  }
+
+  return index + 1;
+};
+
+export function selectMessages(state, messageKeys = [], startingMessage) {
   const sortedMessages = messageKeys.map(key => ({
     ...state.data.messages[key],
     key,
   })).sort(sortBy('oldestFirst', a => a.timestamp));
 
-  const index = sortedMessages.map(message => message.key).indexOf(startingMessage) + 1;
+  const index = getMessageIndex(sortedMessages, startingMessage);
 
-  return sortedMessages.slice(0, index !== -1 ? index : null).reverse();
+  return sortedMessages.slice(0, index).reverse().slice(0, 1);
 }
 
 export function selectLastRead(state, gameKey) {
@@ -61,35 +70,48 @@ const getStartingMessage = ({
   return (games[gameKey] || {}).startingMessage;
 };
 
+function noop() {}
+
+function updateAndReduce(arr = {}, fn = noop) {
+  return Object.keys(arr).reduce((obj, key) => ({
+    ...obj,
+    ...fn(key, arr[key]),
+  }), {});
+}
+
 export function selectGames(state) {
-  const invites = Object.keys(state.data.invites || {}).reduce((obj, inviteKey) => {
-    const invite = state.data.invites[inviteKey];
-    return {
-      ...obj,
-      [invite.game.key]: {
-        type: 'invite',
-        ...invite.game,
-        invite,
-      },
-    };
-  }, {});
+  //const invites = updateAndReduce(state.data.invites, (key, invite) => ({
+    //[invite.game.key]: {
+      //type: 'invite',
+      //...invite.game,
+      //invite,
+    //},
+  //}));
+
+  const games = updateAndReduce(state.data.games, (key, game) => ({
+    [key]: {
+      type: 'game',
+      ...game,
+    },
+  }));
 
   const data = {
-    ...state.data.games,
-    ...invites,
+    ...games,
+    //...invites,
   };
 
-  console.log(data);
-
-  const rows = Object.keys(data).map(gameKey => {
-    const game = state.data.games[gameKey];
-    const startingMessage = getStartingMessage(state, gameKey);
-    console.log('row', game, startingMessage);
+  const rows = Object.keys(data).map(key => {
+    const row = data[key];
+    const startingMessage = getStartingMessage(state, key);
+    const players = selectPlayers(state, row.players);
+    const messages = selectMessages(state, row.messages, startingMessage);
+    const lastRead = selectLastRead(state, key);
     return {
-      ...game,
-      players: selectPlayers(state, game.players),
-      messages: selectMessages(state, game.messages, startingMessage),
-      lastRead: selectLastRead(state, gameKey),
+      key,
+      ...row,
+      players,
+      messages,
+      lastRead,
     };
   });
 

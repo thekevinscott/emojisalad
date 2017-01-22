@@ -13,13 +13,28 @@ function getPlayersWithUserKeys(players) {
 }
 
 function getUsers(games) {
-  return games.filter(({ type }) => type === 'game').reduce((gameObj, game) => ({
-    ...gameObj,
-    ...getPlayersWithUserKeys(game.players).reduce((playerObj, player) => ({
-      ...playerObj,
-      [player.user_key]: player,
-    }), {}),
-  }), {});
+  return games.reduce((gameObj, el) => {
+    if (el.type === 'game') {
+      const game = el;
+      return {
+        ...gameObj,
+        ...getPlayersWithUserKeys(game.players).reduce((playerObj, player) => ({
+          ...playerObj,
+          [player.user_key]: player,
+        }), {}),
+      };
+    }
+
+    const game = el.game;
+
+    return {
+      ...gameObj,
+      ...getPlayersWithUserKeys(game.players).reduce((playerObj, player) => ({
+        ...playerObj,
+        [player.user_key]: player,
+      }), {}),
+    };
+  }, {});
 }
 
 function translateUser(user) {

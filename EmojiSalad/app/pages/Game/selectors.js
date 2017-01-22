@@ -60,10 +60,11 @@ export function mapStateToProps(state, props) {
 
   const loggerMessages = state.ui.Logger.messages;
 
+  const me = selectMe(state);
   return {
     game,
     messages,
-    me: selectMe(state),
+    me,
     logger: loggerMessages,
     compose,
     seen,
