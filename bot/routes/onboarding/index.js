@@ -33,7 +33,7 @@ module.exports = ({
       invited_id: user.id,
       used: 0
     }).then((invites) => {
-      console.info('invites back', invites);
+      console.info('invites back', invites.length);
       if ( invites.length && invites[0].game ) {
         console.info('start the game!');
         return require('../game/start')(user, message);
@@ -42,7 +42,8 @@ module.exports = ({
           //return Invite.use(_.assign({ game_id: game.id },invites[0])).then(() => {
           //});
         //});
-      } else if ( parseInt(user.number_of_players, 10) > 0 ) {
+      } else if (parseInt(user.number_of_players, 10) > 0) {
+        console.info('start a new game');
         return require('../game/new_game')(user, message);
       } else {
         console.info('start the game');
