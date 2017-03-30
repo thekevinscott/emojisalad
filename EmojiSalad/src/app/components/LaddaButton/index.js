@@ -1,0 +1,1 @@
+export LaddaButton from './Button';

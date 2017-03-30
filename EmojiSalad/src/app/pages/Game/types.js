@@ -1,0 +1,9 @@
+const KEY = '@Game/';
+
+export const FETCH_MESSAGES = `${KEY}FETCH_MESSAGES`;
+export const TRANSITION_TO_GAMES = `${KEY}TRANSITION_TO_GAMES`;
+export const INCREMENT_PAGE = `${KEY}INCREMENT_PAGE`;
+export const SEND_MESSAGE = `${KEY}SEND_MESSAGE`;
+export const UPDATE_COMPOSE = `${KEY}UPDATE_COMPOSE`;
+export const RECEIVE_MESSAGE = `${KEY}RECEIVE_MESSAGE`;
+export const LOAD_EARLIER = `${KEY}LOAD_EARLIER`;

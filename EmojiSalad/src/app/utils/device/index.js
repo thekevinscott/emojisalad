@@ -1,0 +1,1 @@
+export INFO from './info';
