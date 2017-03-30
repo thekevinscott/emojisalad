@@ -3,6 +3,7 @@ import {
   createStore,
 } from 'redux';
 
+
 import middleware from './middlewares';
 import devTools from 'remote-redux-devtools';
 
@@ -10,7 +11,7 @@ import reducer from './reducer';
 
 import {
   updateDeviceInfo,
-} from '../utils/device/actions';
+} from 'utils/device/actions';
 
 export default function configureStore(initialState = {}) {
   const enhancer = compose(
@@ -30,4 +31,3 @@ export default function configureStore(initialState = {}) {
 
   return store;
 }
-

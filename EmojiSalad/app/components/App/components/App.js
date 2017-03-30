@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import codePush from 'react-native-code-push';
+//import codePush from 'react-native-code-push';
 
 import AppProvider from '../../../redux/AppProvider';
 
@@ -9,10 +9,10 @@ import {
   selectGames,
 } from '../selectors';
 
-const codePushOptions = {
-  updateDialog: true,
-  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
-};
+//const codePushOptions = {
+  //updateDialog: true,
+  //checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+//};
 
 class App extends Component {
   shouldComponentUpdate() {
@@ -35,4 +35,5 @@ class App extends Component {
   }
 }
 
-export default codePush(codePushOptions)(App);
+//export default codePush(codePushOptions)(App);
+export default App;
