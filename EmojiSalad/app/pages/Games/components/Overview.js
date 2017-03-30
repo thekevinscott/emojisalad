@@ -35,7 +35,7 @@ class Overview extends Component {
   }
 
   componentDidMount() {
-    PushNotificationIOS.requestPermissions();
+    //PushNotificationIOS.requestPermissions();
     PushNotificationIOS.addEventListener('register', this.onRegister);
   }
 

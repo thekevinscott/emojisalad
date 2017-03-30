@@ -6,7 +6,7 @@ target 'EmojiSalad' do
   # use_frameworks!
 
   # Pods for EmojiSalad
-  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+  #pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
   target 'EmojiSaladTests' do
     inherit! :search_paths

@@ -1,4 +1,4 @@
-const DeviceInfo = require('react-native-device-info');
+import DeviceInfo from 'react-native-device-info';
 
 const INFO = (function getInfo() {
   const deviceInfo = {
