@@ -38,9 +38,6 @@
 		2DCD954D1E0B4F2C00145EB5 /* EmojiSaladTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EmojiSaladTests.m */; };
 		346079B91E8DBCE200E60745 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 346079B81E8DBCE200E60745 /* FontAwesome.ttf */; };
 		346079FF1E8DC46A00E60745 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 346079FC1E8DC44D00E60745 /* libRCTPushNotification.a */; };
-		34607A341E8DC5C900E60745 /* receive.aif in Resources */ = {isa = PBXBuildFile; fileRef = 34607A311E8DC5C900E60745 /* receive.aif */; };
-		34607A351E8DC5C900E60745 /* send.aif in Resources */ = {isa = PBXBuildFile; fileRef = 34607A321E8DC5C900E60745 /* send.aif */; };
-		34607A361E8DC5C900E60745 /* welcome.aif in Resources */ = {isa = PBXBuildFile; fileRef = 34607A331E8DC5C900E60745 /* welcome.aif */; };
 		34607A381E8DC5DE00E60745 /* airhorn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 34607A371E8DC5DE00E60745 /* airhorn.mp3 */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		6E921234A2D84377B3F7324C /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A336542904594CE183F5C82D /* libRNDeviceInfo.a */; };
@@ -302,10 +299,10 @@
 		2D02E4901E0B4A5D006451C7 /* EmojiSalad-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EmojiSalad-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		346079B81E8DBCE200E60745 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		346079F61E8DC44D00E60745 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
-		34607A311E8DC5C900E60745 /* receive.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = receive.aif; sourceTree = "<group>"; };
-		34607A321E8DC5C900E60745 /* send.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = send.aif; sourceTree = "<group>"; };
-		34607A331E8DC5C900E60745 /* welcome.aif */ = {isa = PBXFileReference; lastKnownFileType = file; path = welcome.aif; sourceTree = "<group>"; };
 		34607A371E8DC5DE00E60745 /* airhorn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = airhorn.mp3; path = "../../../../../../../www/emojisalad/EmojiSalad/Audio/third party/airhorn.mp3"; sourceTree = "<group>"; };
+		34972EBA1E8EFDD0001ACCC8 /* receive.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = receive.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/receive.aif; sourceTree = "<group>"; };
+		34972EBB1E8EFDD0001ACCC8 /* send.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = send.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/send.aif; sourceTree = "<group>"; };
+		34972EBC1E8EFDD0001ACCC8 /* welcome.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = welcome.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/welcome.aif; sourceTree = "<group>"; };
 		36F8D46B56A04BF29A662B82 /* RNSimpleSound.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleSound.xcodeproj; path = "../node_modules/react-native-simple-sound/RNSimpleSound.xcodeproj"; sourceTree = "<group>"; };
 		370D0567BEC94FC3A87A07C5 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		426C4952B7E34767AB974FA2 /* libRNSimpleSound.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleSound.a; sourceTree = "<group>"; };
@@ -518,9 +515,9 @@
 			isa = PBXGroup;
 			children = (
 				34607A371E8DC5DE00E60745 /* airhorn.mp3 */,
-				34607A311E8DC5C900E60745 /* receive.aif */,
-				34607A321E8DC5C900E60745 /* send.aif */,
-				34607A331E8DC5C900E60745 /* welcome.aif */,
+				34972EBA1E8EFDD0001ACCC8 /* receive.aif */,
+				34972EBB1E8EFDD0001ACCC8 /* send.aif */,
+				34972EBC1E8EFDD0001ACCC8 /* welcome.aif */,
 			);
 			name = sound;
 			path = ../../../../Volumes/Backup/www/emojisalad/EmojiSalad/Audio/outputs;
@@ -1039,13 +1036,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34607A341E8DC5C900E60745 /* receive.aif in Resources */,
 				34607A381E8DC5DE00E60745 /* airhorn.mp3 in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				34607A361E8DC5C900E60745 /* welcome.aif in Resources */,
 				346079B91E8DBCE200E60745 /* FontAwesome.ttf in Resources */,
-				34607A351E8DC5C900E60745 /* send.aif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1476,7 +1470,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1514,7 +1508,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
