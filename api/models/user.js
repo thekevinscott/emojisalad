@@ -150,34 +150,49 @@ const User = {
                 .left_join('players', 'p', 'u.id=p.user_id')
                 .from('users', 'u');
 
+    let someWhereStatement = false;
     if ( params.id ) {
+      someWhereStatement = true;
       query = query.where('u.id=?',params.id);
     } else if ( params.ids ) {
+      someWhereStatement = true;
       query = query.where('u.id IN ?',params.ids);
     }
 
     if ( params.nickname ) {
+      someWhereStatement = true;
       query = query.where('u.nickname LIKE ?',`${params.nickname}%`);
     }
 
     if ( params.from ) {
+      someWhereStatement = true;
       query = query.where('u.`from` LIKE ?',`${params.from}%`);
     }
 
     if ( params.protocol ) {
+      someWhereStatement = true;
       query = query.where('u.`protocol` = ?',params.protocol);
     }
 
     if ( params.player_id ) {
+      someWhereStatement = true;
       query = query
               .where('p.id=?',params.player_id);
+    }
+
+    if ( params.key ) {
+      someWhereStatement = true;
+      query = query.where('u.key=?',params.key);
     }
 
     const archived = params.archived || 0;
     query = query.where('u.archived=?', archived);
     query = query.group('u.id');
 
-    console.info('find user', query.toString());
+    if (!someWhereStatement) {
+      throw new Error('You must select a user by something');
+    }
+
     return db.query(query).then((users) => {
       if ( users.length ) {
         return Player.find({ user_ids: users.map(user => user.id ) }).then((players) => {
