@@ -3,6 +3,7 @@ import sendMessage from '../routes/messages/receive';
 import fetchFromService from '../../../utils/fetchFromService';
 
 export default function sendUserInviteMessage(userKey, gameKey, phone) {
+  console.log('sendUserInviteMessage');
   if (!userKey) {
     throw new Error('You must provide a user key');
   }
@@ -12,9 +13,13 @@ export default function sendUserInviteMessage(userKey, gameKey, phone) {
 
   const message = `Invite ${phone}`;
 
-  sendMessage(_, {
+  const payload = {
     userKey,
     gameKey,
     message,
-  });
+  };
+
+  console.log('here we go', payload);
+
+  return sendMessage(_, payload);
 }
