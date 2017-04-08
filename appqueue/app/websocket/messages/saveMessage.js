@@ -3,6 +3,12 @@ import db from 'db';
 import getUUID from '../../../utils/getUUID';
 
 export default function saveMessage(table, userKey, gameKey, message, attempts = 0) {
+  if (!message) {
+    throw new Error('No message');
+  } else if (!message.body) {
+    throw new Error('No message body provided');
+  }
+
   if (attempts > 5) {
     throw new Error(`too many attempts trying to generate random ID with ${table} and message ${message.body}`);
   }
