@@ -27,7 +27,9 @@ squel.registerValueHandler(Date, (date) => {
 });
 
 function getValidUsers(users) {
-  return users.filter(user => parseInt(user.id));
+  return users.filter(user => {
+    return parseInt(user.id) || user.key;
+  });
 }
 
 const getSender = (user, result) => {
@@ -89,10 +91,10 @@ const Game = {
       // check that every user is valid
       return Promise.all(users.map((user) => {
         console.info('check that this user is valid', user);
-        return User.findOne(user.id).then((result) => {
+        return User.findOne(user).then((result) => {
           return getSender(user, result).then(sender => {
             return Object.assign({}, result, {
-              to: sender
+              to: sender,
             });
           });
         });
