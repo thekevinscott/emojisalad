@@ -2,7 +2,8 @@ import pingBot from '../../../rest/pingBot';
 import saveMessage from '../../messages/saveMessage';
 
 export default function receive(ws, { userKey, gameKey, message }) {
-  console.log('i am receive');
+  console.log('i am receive !!!!');
+
   if (! userKey) {
     console.info('no user key');
     return new Promise((resolve, reject) => {

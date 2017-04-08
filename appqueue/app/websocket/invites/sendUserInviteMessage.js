@@ -21,5 +21,7 @@ export default function sendUserInviteMessage(userKey, gameKey, phone) {
 
   console.log('here we go', receive);
 
-  return receive(_, payload);
+  const response = receive(_, payload);
+  console.log('response', response);
+  return response;
 }
