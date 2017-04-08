@@ -12,7 +12,7 @@ export const FETCH_MESSAGES = 'FETCH_MESSAGES';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const SEND_DEVICE_INFO = 'SEND_DEVICE_INFO';
 export const SEND_DEVICE_TOKEN = 'SEND_DEVICE_TOKEN';
-export const START_NEW_GAME = 'START_NEW_GAME';
+export const START_NEW_GAME = '@NewGame/START_NEW_GAME';
 
 const ROUTES = {
   [CLAIM]: claim,
