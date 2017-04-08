@@ -4,7 +4,7 @@ import sendUserInviteMessage from '../../invites/sendUserInviteMessage';
 export default function start(ws, { userKey, phones }) {
   console.info('start new game', userKey, phones);
 
-  return startSingleNewGame(userKey).then(game => {
+  return startNewGame(userKey).then(game => {
     console.info('game', game);
     console.info('now invite everybody');
 
