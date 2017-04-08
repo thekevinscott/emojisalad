@@ -42,6 +42,7 @@ export default function fetchFromService({
   routeParams,
   options,
 }) {
+  console.log('fetchFromService', service);
   return new Promise((resolve, reject) => {
     try {
       const {
@@ -58,9 +59,10 @@ export default function fetchFromService({
         ...options,
       };
 
-      //console.info('fetching with', url, payload);
+      console.info('fetching with', url, payload);
       return fetch(url, payload).then(resolve).catch(resolve);
     } catch (err) {
+      console.error('err', err);
       reject(err.message);
     }
   });
