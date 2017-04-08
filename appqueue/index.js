@@ -1,6 +1,5 @@
 'use strict';
 
-return 'foo';
 require('babel-register', { });
 
 // set require path
