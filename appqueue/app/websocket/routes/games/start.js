@@ -4,6 +4,10 @@ import sendUserInviteMessage from '../../invites/sendUserInviteMessage';
 export default function start(ws, { userKey, phones }) {
 
   return startNewGame(userKey).then(game => {
+    if (game.error) {
+      throw new Error(game.error);
+    }
+
     console.info('game', game);
     console.info('now invite everybody');
 

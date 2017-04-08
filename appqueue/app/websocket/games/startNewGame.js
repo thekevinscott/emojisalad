@@ -1,7 +1,7 @@
 import fetchFromService from '../../../utils/fetchFromService';
 
-export default function startNewGame(userKey) {
-  if (!userKey) {
+export default function startNewGame(key) {
+  if (!key) {
     throw new Error('You must provide a user key');
   }
 
@@ -10,7 +10,11 @@ export default function startNewGame(userKey) {
     route: 'games.create',
     options: {
       body: {
-        user_key: userKey,
+        users: [
+          {
+            key,
+          },
+        ],
       },
     },
   }).then(resp => resp.json());
