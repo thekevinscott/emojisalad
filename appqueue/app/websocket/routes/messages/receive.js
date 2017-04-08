@@ -19,6 +19,8 @@ export default function sendMessage(ws, { userKey, gameKey, message }) {
     });
   }
 
+  console.log('we passed the gauntlet');
+
   // first, we save the message to the database.
   // second, alert the user the message went through.
   // third, we ping the bot.
