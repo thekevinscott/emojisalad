@@ -1,5 +1,5 @@
 
-import sendMessage from '../../routes/messages/receive';
+import sendMessage from '../routes/messages/receive';
 import fetchFromService from '../../../utils/fetchFromService';
 
 export default function sendUserInviteMessage(userKey, gameKey, phone) {
