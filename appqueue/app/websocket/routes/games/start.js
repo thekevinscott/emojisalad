@@ -2,7 +2,6 @@ import startNewGame from '../../games/startNewGame';
 import sendUserInviteMessage from '../../invites/sendUserInviteMessage';
 
 export default function start(ws, { userKey, phones }) {
-  console.info('start new game', userKey, phones);
 
   return startNewGame(userKey).then(game => {
     console.info('game', game);

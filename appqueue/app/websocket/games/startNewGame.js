@@ -13,5 +13,5 @@ export default function startNewGame(userKey) {
         user_key: userKey,
       },
     },
-  });
+  }).then(resp => resp.json());
 }
