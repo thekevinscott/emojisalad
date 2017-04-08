@@ -22,7 +22,7 @@ export default function receive(ws, { userKey, gameKey, message }) {
   // first, we save the message to the database.
   // second, alert the user the message went through.
   // third, we ping the bot.
-  console.info('received outgoing message, save it');
+  console.info('received outgoing message, save it', userKey, gameKey, message);
   return saveMessage('received', userKey, gameKey, message).then(response => {
     console.info('now ping bot async');
     pingBot();
