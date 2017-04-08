@@ -1,5 +1,5 @@
 
-import sendMessage from '../routes/messages/receive';
+import receive from '../routes/messages/receive';
 import fetchFromService from '../../../utils/fetchFromService';
 
 export default function sendUserInviteMessage(userKey, gameKey, phone) {
@@ -21,5 +21,5 @@ export default function sendUserInviteMessage(userKey, gameKey, phone) {
 
   console.log('here we go', payload);
 
-  return sendMessage(_, payload);
+  return receive(_, payload);
 }
