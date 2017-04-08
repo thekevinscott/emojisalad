@@ -2,18 +2,19 @@ import pingBot from '../../../rest/pingBot';
 import saveMessage from '../../messages/saveMessage';
 
 export default function sendMessage(ws, { userKey, gameKey, message }) {
+  console.info('top o the pops');
   if (! userKey) {
-    console.error('no user key');
+    console.info('no user key');
     return new Promise((resolve, reject) => {
       reject('You must provide a user key');
     });
   } else if (! gameKey) {
-    console.error('no game key');
+    console.info('no game key');
     return new Promise((resolve, reject) => {
       reject('You must provide a game key');
     });
   } else if (! message) {
-    console.error('no message');
+    console.info('no message');
     return new Promise((resolve, reject) => {
       reject('You must provide a message');
     });

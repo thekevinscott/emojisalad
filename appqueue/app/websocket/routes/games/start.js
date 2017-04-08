@@ -12,7 +12,10 @@ export default function start(ws, { userKey, phones }) {
     console.info('game', game);
     console.info('now invite everybody');
 
-    return Promise.all(phones.map(phone => sendUserInviteMessage(userKey, game.key, phone)));
+    return Promise.all(phones.map(phone => {
+      console.info('inviting this phone', phone);
+      return sendUserInviteMessage(userKey, game.key, phone);
+    }));
   }).then(resp => {
     console.info('all users invited');
   }).error(err => {
