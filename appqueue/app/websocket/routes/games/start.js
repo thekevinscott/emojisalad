@@ -17,5 +17,6 @@ export default function start(ws, { userKey, phones }) {
     console.info('all users invited');
   }).error(err => {
     console.info('some error', err);
+    return err;
   });
 };

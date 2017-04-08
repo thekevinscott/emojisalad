@@ -17,5 +17,5 @@ export default function startNewGame(key) {
         ],
       },
     },
-  }).then(resp => resp.json());
+  });
 }
