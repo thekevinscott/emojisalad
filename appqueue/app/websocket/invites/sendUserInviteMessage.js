@@ -11,15 +11,15 @@ export default function sendUserInviteMessage(userKey, gameKey, phone) {
     throw new Error('You must provide a phone');
   }
 
-  const message = `Invite ${phone}`;
+  const message = {
+    body: `Invite ${phone}`,
+  };
 
   const payload = {
     userKey,
     gameKey,
     message,
   };
-
-  console.log('payload', payload);
 
   return receive({}, payload);
 }

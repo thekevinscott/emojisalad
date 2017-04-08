@@ -6,6 +6,7 @@ export default function saveMessage(table, userKey, gameKey, message, attempts =
   if (attempts > 5) {
     throw new Error(`too many attempts trying to generate random ID with ${table} and message ${message.body}`);
   }
+
   const key = getUUID();
 
   const query = squel
@@ -18,6 +19,8 @@ export default function saveMessage(table, userKey, gameKey, message, attempts =
     game_key: gameKey,
     '`key`': key,
   });
+
+  console.log(query.toString());
 
   return db.query(query).then(result => {
     if (!result || !result.insertId) {
