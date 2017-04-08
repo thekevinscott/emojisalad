@@ -1,6 +1,6 @@
 import fetchFromService from '../../../utils/fetchFromService';
 
-export default startNewGame(userKey) {
+export default function startNewGame(userKey) {
   if (!userKey) {
     throw new Error('You must provide a user key');
   }
