@@ -19,7 +19,7 @@ export default function sendUserInviteMessage(userKey, gameKey, phone) {
     message,
   };
 
-  console.log('here we go', payload);
+  console.log('here we go', receive);
 
   return receive(_, payload);
 }
