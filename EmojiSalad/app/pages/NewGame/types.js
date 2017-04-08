@@ -1,5 +1,5 @@
-const KEY = '@Games/';
+const KEY = '@NewGame/';
 
-export const FETCH_GAMES = `${KEY}FETCH_GAMES`;
-export const OPEN_GAME = `${KEY}OPEN_GAME`;
-export const UPDATE_STARTING_MESSAGE = `${KEY}UPDATE_STARTING_MESSAGE`;
+export const INVITE_PHONE = `${KEY}INVITE_PHONE`;
+export const REMOVE_PHONE = `${KEY}REMOVE_PHONE`;
+export const START_NEW_GAME = `${KEY}START_NEW_GAME`;

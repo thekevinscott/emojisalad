@@ -1,137 +1,53 @@
 import typeToReducer from 'type-to-reducer';
+import R from 'ramda';
 
 import {
-  ActionConst,
-} from 'react-native-router-flux';
-
-import {
-  FETCH_GAMES,
-  OPEN_GAME,
-  UPDATE_STARTING_MESSAGE,
+  INVITE_PHONE,
+  REMOVE_PHONE,
+  START_NEW_GAME,
 } from './types';
 
-import {
-  SEND_MESSAGE,
-  RECEIVE_MESSAGE,
-} from '../Game/types';
-
-import mapState from './utils/mapState';
-
 const initialState = {
-  fetching: true,
-  error: false,
-  logger: '',
-  games: {},
-  active: false,
+  invitedPlayers: {},
 };
 
-const getActive = (name) => {
-  return name === 'games';
+const invitedPlayer = phone => {
+  return {
+    phone,
+    added: new Date(),
+  };
 };
 
-const setStartingMessage = (game, key) => ({
-  startingMessage: key,
-});
-
-export default typeToReducer({
-  [OPEN_GAME]: (state, { games }) => ({
-    ...state,
-    games: games.reduce((obj, game) => {
-      const messageKey = ((game.messages || [])[0] || {}).key;
-      return {
-        ...obj,
-        [game.key]: setStartingMessage(game, messageKey),
-      };
-    }, {}),
-  }),
-  [ActionConst.FOCUS]: (state, { scene }) => ({
-    ...state,
-    active: getActive(scene.name),
-  }),
-  [UPDATE_STARTING_MESSAGE]: (state, { game }) => {
-    const message = game.messages[game.messages.length - 1];
+const invitePhone = (state, { phone }) => {
+  if (phone !== '') {
     return {
       ...state,
-      games: {
-        ...state.games,
-        [game.key]: setStartingMessage(game, (message || {}).key),
+      invitedPlayers: {
+        ...state.invitedPlayers,
+        [phone]: invitedPlayer(phone),
       },
     };
-  },
-  [FETCH_GAMES]: {
-    PENDING: (state) => ({
-      ...state,
-      fetching: true,
-      error: false,
-    }),
-    FULFILLED: (state, { data }) => {
-      return {
-        ...state,
-        games: data.reduce((obj, el) => {
-          if (el.type === 'invite') {
-            const game = el.game;
-            return {
-              ...obj,
-              [game.key]: setStartingMessage(game, (el.messages[0] || []).key),
-            };
-          }
+  }
 
-          const game = el;
-          return {
-            ...obj,
-            [game.key]: setStartingMessage(game, (game.messages[0] || []).key),
-          };
-        }, {}),
-        fetching: false,
-        error: false,
-      };
-    },
-    REJECTED: (state, action) => {
-      console.log('action from fetch games', action);
-      return {
-        ...state,
-        fetching: false,
-        error: action.data.message || true,
-      };
-    },
-  },
-  [SEND_MESSAGE]: {
-    FULFILLED: (state, { data: message }) => {
-      return {
-        ...state,
-        games: mapState(state.games, (game, gameKey) => {
-          if (gameKey === message.gameKey) {
-            return setStartingMessage(game, message.key);
-          }
+  return state;
+};
 
-          return game;
-        }),
-      };
-    },
-  },
-  [RECEIVE_MESSAGE]: {
-    FULFILLED: (state, { data: message }) => {
-      const active = state.active;
-      if (active) {
-        return {
-          ...state,
-        };
-      }
-
-      return {
-        ...state,
-        games: mapState(state.games, (game, gameKey) => {
-          if (gameKey === message.gameKey) {
-            return setStartingMessage(game, message.key);
-          }
-
-          return game;
-        }),
-      };
-    },
-  },
-  UPDATE_LOGGER: (state, action) => ({
+const removePhone = (state, { player }) => {
+  return {
     ...state,
-    logger: action.logger,
-  }),
+    invitedPlayers: R.dissoc(player.phone, state.invitedPlayers),
+  };
+};
+
+const startNewGame = (state) => {
+  return {
+    ...state,
+    invitedPlayers: {},
+  };
+};
+
+export default typeToReducer({
+  [INVITE_PHONE]: invitePhone,
+  [REMOVE_PHONE]: removePhone,
+  [START_NEW_GAME]: startNewGame,
 }, initialState);

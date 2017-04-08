@@ -81,8 +81,8 @@ export default function List({
     return (
       <View style={styles.list}>
         <View style={styles.listContainer}>
-          <ActivityIndicator style={styles.activityIndicator} />
           <Text style={styles.text}>Loading Games</Text>
+          <ActivityIndicator style={styles.activityIndicator} />
         </View>
       </View>
     );

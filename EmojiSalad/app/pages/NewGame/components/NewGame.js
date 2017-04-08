@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import connectWithFocus from '../../../utils/connectWithFocus';
+import { connect } from 'react-redux';
 import {
-  //Text,
+  Text,
   View,
   ListView,
   PushNotificationIOS,
@@ -14,28 +14,48 @@ import {
 
 import * as styles from '../styles';
 
+import Body from './Body';
+import InvitePlayers from './InvitePlayers/InvitePlayers';
+
 import {
   mapStateToProps,
   mapDispatchToProps,
 } from '../selectors';
 
 class NewGame extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
+    const {
+      actions,
+      me,
+      invitedPlayers,
+    } = this.props;
+
+    const {
+      invitePhoneNumber,
+      removePhoneNumber,
+      startGame,
+    } = actions;
+
     return (
       <View
         style={styles.newGame}
       >
-        <Text>New game!</Text>
+        <InvitePlayers
+          invitePlayer={invitePhoneNumber}
+        />
+        <Body
+          invitedPlayers={invitedPlayers}
+          removePlayer={removePhoneNumber}
+          startGame={() => {
+            startGame(me.key, invitedPlayers.map(player => player.phone));
+          }}
+        />
       </View>
     );
   }
 }
 
-export default connectWithFocus(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(NewGame);

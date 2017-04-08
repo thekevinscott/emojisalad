@@ -44,10 +44,16 @@ export default typeToReducer({
       };
     }, {}),
   }),
-  [ActionConst.FOCUS]: (state, { scene }) => ({
-    ...state,
-    active: getActive(scene.name),
-  }),
+  [ActionConst.FOCUS]: (state, { scene }) => {
+    if (scene) {
+      return {
+        ...state,
+        active: getActive(scene.name),
+      };
+    }
+
+    return state;
+  },
   [UPDATE_STARTING_MESSAGE]: (state, { game }) => {
     const message = game.messages[game.messages.length - 1];
     return {

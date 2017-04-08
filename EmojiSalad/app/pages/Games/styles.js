@@ -17,12 +17,13 @@ export const container = {
 
 export const list = {
   paddingTop: 80,
+  flex: 1,
 };
 
 export const listContainer = {
   flex: 1,
   flexDirection: 'column',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
 };
 
 export const text = {

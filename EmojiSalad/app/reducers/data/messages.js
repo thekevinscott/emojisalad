@@ -1,5 +1,5 @@
 import typeToReducer from 'type-to-reducer';
-import Sound from 'react-native-simple-sound';
+//import Sound from 'react-native-simple-sound';
 import {
   Vibration,
 } from 'react-native';
@@ -16,7 +16,7 @@ import {
   RECEIVE_MESSAGE,
 } from 'app/pages/Game/types';
 
-Sound.enable(true);
+//Sound.enable(true);
 const sounds = [
   {
     key: 'send',
@@ -38,11 +38,11 @@ const sounds = [
   key,
   path,
 }) => {
-  Sound.prepare(path);
+  //Sound.prepare(path);
   return {
     ...obj,
     [key]: {
-      play: () => Sound.play(path),
+      //play: () => Sound.play(path),
     },
   };
 }, {});
@@ -82,7 +82,6 @@ function buildMessageObj(state, messages) {
 export default typeToReducer({
   [FETCH_MESSAGES]: {
     FULFILLED: (state, { data }) => {
-      console.log('fa1');
       const messages = data.messages;
       return buildMessageObj(state, messages);
     },
@@ -97,9 +96,9 @@ export default typeToReducer({
   [SEND_MESSAGE]: {
     FULFILLED: (state, action) => {
       if (action.data.body.toLowerCase() === 'airhorn') {
-        sounds.airhorn.play();
+        //sounds.airhorn.play();
       } else {
-        sounds.send.play();
+        //sounds.send.play();
       }
       return buildMessageObj(state, [action.data]);
     },
@@ -108,13 +107,13 @@ export default typeToReducer({
     FULFILLED: (state, action) => {
       Vibration.vibrate();
       if (action.data.body.toLowerCase() === 'airhorn') {
-        sounds.airhorn.play();
+        //sounds.airhorn.play();
       } else {
-        sounds.received.play();
+        //sounds.received.play();
       }
       return buildMessageObj(state, [action.data]);
     },
   },
 }, initialState);
 
-sounds.welcome.play();
+//sounds.welcome.play();

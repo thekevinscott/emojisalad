@@ -6,6 +6,7 @@ import App from 'app/components/App/reducer';
 import Register from 'app/pages/Register/reducer';
 import Games from 'app/pages/Games/reducer';
 import Game from 'app/pages/Game/reducer';
+import NewGame from 'app/pages/NewGame/reducer';
 import Logger from 'app/components/Logger/reducer';
 
 import data from 'app/reducers/data';
@@ -19,6 +20,7 @@ export default combineReducers({
     Games,
     Game,
     Logger,
+    NewGame,
   }),
   data,
   application,

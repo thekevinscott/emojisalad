@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   constants,
 } from '../styles';
@@ -10,6 +10,7 @@ import {
 
 import {
   Actions,
+  ActionConst,
   Reducer,
   Router,
   Scene,
@@ -76,8 +77,12 @@ class Routes extends Component {
     }
   }
 
+  /*
+  push: ActionConst.PUSH,
+  replace: ActionConst.REPLACE,
+  */
   render() {
-    const newGame = (<FontAwesome name="pencil-square-o" size={30} color={constants.purple} />);
+    const newGame = (<Icon name="pencil-square-o" size={30} color={constants.purple} />);
     // This fucks up the connectWithFocus activeComponent
     // listener, since the active component name is Games (24),
     // not Games
@@ -86,6 +91,7 @@ class Routes extends Component {
     const scenes = Actions.create(
       <Scene key="root">
         <Scene
+          passProps
           key="register"
           component={Page}
           page={Register}
@@ -96,6 +102,7 @@ class Routes extends Component {
           }}
         />
         <Scene
+          passProps
           key="games"
           component={Page}
           page={Overview}
@@ -107,8 +114,12 @@ class Routes extends Component {
           }}
         />
         <Scene
+          passProps
           key="newGame"
-          component={NewGame}
+          direction="vertical"
+          type={ActionConst.PUSH}
+          component={Page}
+          page={NewGame}
           title="New Game"
           leftTitle="Cancel"
           onLeft={() => {
@@ -120,6 +131,7 @@ class Routes extends Component {
           }}
         />
         <Scene
+          passProps
           key="game"
           component={Page}
           page={Game}

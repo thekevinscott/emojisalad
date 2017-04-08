@@ -8,11 +8,6 @@ import {
 
 import styles from '../styles';
 
-//import {
-  //mapStateToProps,
-  //mapDispatchToProps,
-//} from '../selectors';
-
 class Page extends Component {
   constructor(props) {
     super(props);
@@ -26,15 +21,10 @@ class Page extends Component {
       page: PageContents,
     } = this.props;
 
-    //console.log('Page render', this.props);
-
     return (
       <View style={{
         ...styles.page,
       }}>
-        <Status
-          {...this.props.status}
-        />
         <PageContents
           {...this.props}
         />
@@ -44,6 +34,4 @@ class Page extends Component {
 }
 
 export default connect(
-  //mapStateToProps,
-  //mapDispatchToProps
 )(Page);

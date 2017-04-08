@@ -1,114 +1,69 @@
-const PURPLE = '#bb27dd';
-const ROW_HEADER_HEIGHT = 20;
-const ROW_HEIGHT = 100;
-const MESSAGE_TOP = ROW_HEADER_HEIGHT + 20;
-const ROW_PADDING = 20;
-const BG_COLOR = '#fff';
-export const MESSAGE_FADEIN_DURATION = 200;
-export const MESSAGE_SLIDE_DURATION = 500;
+import {
+  constants,
+} from 'components/App/styles';
 
-//import {
-  //HEADER_HEIGHT,
-//} from '../../themes/constants';
-
-export const container = {
-  //paddingTop: HEADER_HEIGHT,
-};
-
-export const list = {
-  paddingTop: 80,
-};
-
-export const listContainer = {
+export const newGame = {
   flex: 1,
-  flexDirection: 'column',
-  justifyContent: 'center',
+};
+
+export const instructions = {
+  flex: 1,
+  padding: 60,
+  alignItems: 'center',
 };
 
 export const text = {
+  fontSize: 16,
+  color: '#666',
+  width: 160,
   textAlign: 'center',
+};
+
+const invitePlayersHeight = 40;
+
+export const invitePlayers = {
+  flex: 0,
   padding: 10,
-  paddingLeft: 40,
-  paddingRight: 40,
-  fontSize: 18,
-};
-
-export const games = {
-  //paddingTop: HEADER_HEIGHT,
-  flex: 1,
-};
-
-export const game = {
-  backgroundColor: BG_COLOR,
-  padding: ROW_PADDING,
-  paddingTop: 0,
-  overflow: 'hidden',
-  //justifyContent: 'center',
-  flex: 1,
   flexDirection: 'row',
+  backgroundColor: '#EEE',
 };
 
-export const players = {
+export const invitePlayer = {
+  color: constants.purple,
   flex: 1,
-  fontWeight: 'bold',
 };
 
-export const message = {
-  //height: 20,
-};
-
-export const timestamp = {
-  paddingLeft: 20,
-  textAlign: 'right',
-};
-
-export const rowHeader = {
-  flex: 1,
-  flexDirection: 'row',
-  height: ROW_HEADER_HEIGHT + ROW_PADDING,
-  paddingTop: ROW_PADDING,
-  backgroundColor: BG_COLOR,
-  overflow: 'hidden',
-};
-
-export const rowSeparator = (adjacentRowHighlighted) => ({
-  height: adjacentRowHighlighted ? 4 : 1,
-  backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
-});
-
-export const rowContainer = {
-  flex: 1,
-  flexDirection: 'row',
-  // if we don't specify explicit height,
-  // we'll need to expand this based on the
-  // length of the message
-  height: ROW_HEIGHT,
-};
-
-const dotSize = 10;
-export const unread = {
-  paddingTop: 25,
-  paddingLeft: 10,
-  width: 30,
-  backgroundColor: BG_COLOR,
-};
-
-export const unreadDot = {
-  width: dotSize,
-  height: dotSize,
-  borderRadius: dotSize,
-  backgroundColor: PURPLE,
-};
-
-export const messagesContainer = {
-  flex: 1,
-  position: 'absolute',
-  left: ROW_PADDING,
-  right: ROW_PADDING,
-  top: MESSAGE_TOP,
-  backgroundColor: BG_COLOR,
-};
-
-export const activityIndicator = {
+export const label = {
+  flex: 0,
   marginRight: 10,
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+export const labelText = {
+  color: '#999',
+};
+
+export const invitedPlayer = {
+  flex: 0,
+  flexDirection: 'row',
+  padding: 10,
+  alignItems: 'center',
+  borderBottomColor: '#DDD',
+  borderBottomWidth: 1,
+};
+
+export const invitedPlayerText = {
+  color: constants.purple,
+  paddingRight: 150,
+  flex: 1,
+};
+
+export const invitedPlayers = {
+  flex: 1,
+};
+
+export const startGame = {
+  padding: 20,
+  alignItems: 'center',
 };

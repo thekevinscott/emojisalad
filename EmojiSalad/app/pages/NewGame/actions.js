@@ -4,40 +4,35 @@ import {
 } from 'components/Logger/actions';
 
 import {
-  FETCH_GAMES,
-  OPEN_GAME,
-  UPDATE_STARTING_MESSAGE,
+  INVITE_PHONE,
+  REMOVE_PHONE,
+  START_NEW_GAME,
 } from './types';
 
-export function fetchData(userKey) {
-  return dispatch => {
-    dispatch(updateLogger(`fetch data with user key: ${userKey}`));
-    return dispatch({
-      type: FETCH_GAMES,
-      payload: {
-        userKey,
-      },
-    });
-  };
-}
-
-export function openGame(game, games) {
-  return dispatch => {
-    Actions.game({
-      game,
-    });
-
-    dispatch({
-      type: OPEN_GAME,
-      game,
-      games,
-    });
-  };
-}
-
-export function updateStartingMessage(game) {
+export const invitePhoneNumber = phone => {
   return {
-    type: UPDATE_STARTING_MESSAGE,
-    game,
+    type: INVITE_PHONE,
+    phone,
   };
-}
+};
+
+export const removePhoneNumber = player => {
+  return {
+    type: REMOVE_PHONE,
+    player,
+  };
+};
+
+export const startGame = (userKey, phones) => dispatch => dispatch(() => {
+  Actions.pop();
+
+  dispatch(updateLogger(`start new game with user key: ${userKey} and phones: ${JSON.stringify(phones)}`));
+
+  return dispatch({
+    type: START_NEW_GAME,
+    payload: {
+      userKey,
+      phones,
+    },
+  });
+});

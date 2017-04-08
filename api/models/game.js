@@ -296,6 +296,7 @@ const Game = {
                 .field('COUNT(r.id)', 'round_count')
                 .left_join(select_rounds_query, 'r', 'r.game_id=g.id')
                 .group('g.id')
+                .limit(50)
                 //.group('r.id')
                 .from('games', 'g');
 

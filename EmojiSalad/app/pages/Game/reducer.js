@@ -74,7 +74,11 @@ const updateGame = (state, gameKey, payload = {}) => ({
 
 export default typeToReducer({
   [ActionConst.FOCUS]: (state, { scene }) => {
-    return setActiveGame(state, scene.game);
+    if (scene) {
+      return setActiveGame(state, scene.game);
+    }
+
+    return state;
   },
   [FETCH_GAMES]: {
     FULFILLED: (state, action) => ({

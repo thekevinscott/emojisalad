@@ -141,7 +141,7 @@ gulp.task('server', () => {
   let PROTOCOLS = [
     'sms',
     'appqueue',
-    'nexmo',
+    //'nexmo',
   ].join(',');
 
   let PORT = '5000';
