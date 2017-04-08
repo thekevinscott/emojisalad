@@ -14,9 +14,12 @@ export default function start(ws, { userKey, phones }) {
       return sendUserInviteMessage(userKey, game.key, phone).catch(err => {
         console.info('an error', err);
       });
-    }));
-  }).then(resp => {
+    })).then(() => {
+      return game;
+    });
+  }).then(game => {
     console.info('all users invited');
+    return game;
   }).catch(err => {
     console.info('some error', err);
     return err;

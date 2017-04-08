@@ -26,8 +26,6 @@ export default function saveMessage(table, userKey, gameKey, message, attempts =
     '`key`': key,
   });
 
-  console.log(query.toString());
-
   return db.query(query).then(result => {
     if (!result || !result.insertId) {
       console.log('Error inserting message', query.toString());
