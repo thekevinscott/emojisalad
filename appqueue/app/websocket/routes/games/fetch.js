@@ -22,6 +22,7 @@ const fetchMessages = ({
 
 const getAllGamesForUser = userKey => {
   return getUserGames(userKey).then(games => {
+    console.info('fetchGames, games for user', userKey, games);
     return games.map(game => ({
       key: game.key,
       created: game.created,
@@ -38,6 +39,7 @@ const getAllGamesForUser = userKey => {
       totalMessages,
       messages,
     }) => {
+      console.info('fetchGames, messages', messages, totalMessages);
       return games.map(game => ({
         ...game,
         messages: messages[game.key],
@@ -49,6 +51,7 @@ const getAllGamesForUser = userKey => {
 
 const getAllInvitesForUser = userKey => {
   return getUserInvites(userKey).then(invites => {
+    console.info('fetchGames, invites', invites);
     const gameKeys = invites.map(invite => invite.game.key);
     return fetchMessages({
       userKey,
