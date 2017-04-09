@@ -119,7 +119,10 @@ export function selectGames(state) {
 }
 
 export function selectGamesByNewestFirst(state) {
-  return selectGames(state).reverse();
+  return selectGames(state).reverse().filter(game => {
+    return true;
+    //return game.messages.length > 0;
+  });
 }
 
 export function selectUI(state) {

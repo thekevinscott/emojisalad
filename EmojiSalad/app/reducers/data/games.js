@@ -4,6 +4,10 @@ import R from 'ramda';
 import translateTimestampFromDatabase from 'app/utils/translateTimestampFromDatabase';
 
 import {
+  START_NEW_GAME,
+} from 'app/pages/NewGame/types';
+
+import {
   FETCH_GAMES,
 } from 'app/pages/Games/types';
 
@@ -53,6 +57,14 @@ function translateGame(currentGame = {}, game = {}) {
 }
 
 export default typeToReducer({
+  [START_NEW_GAME]: {
+    FULFILLED: (state, { data }) => {
+      return {
+        ...state,
+        [data.key]: translateGame(state[data.key], data),
+      };
+    },
+  },
   [FETCH_GAMES]: {
     FULFILLED: (state, { data }) => {
       return {
@@ -142,18 +154,21 @@ export default typeToReducer({
       const messages = translateMessages(state[gameKey], {
         messages: [message],
       });
-      const game = state[gameKey] || {};
+      const game = {
+        key: gameKey,
+        ...state[gameKey],
+      };
 
-      if (messageKey === 'invite') {
-        return {
-          ...state,
-          [gameKey]: {
-            ...game,
-            messages,
-            totalMessages: (game.totalMessages || 0) + 1,
-          },
-        };
-      }
+      //if (messageKey === 'invite') {
+        //return {
+          //...state,
+          //[gameKey]: {
+            //...game,
+            //messages,
+            //totalMessages: (game.totalMessages || 0) + 1,
+          //},
+        //};
+      //}
 
       return {
         ...state,

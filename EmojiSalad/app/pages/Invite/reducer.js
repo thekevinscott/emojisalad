@@ -1,6 +1,8 @@
 import typeToReducer from 'type-to-reducer';
 
-const initialState = {};
+const initialState = {
+};
 
 export default typeToReducer({
 }, initialState);
+

@@ -36,6 +36,10 @@ import {
   NewGame,
 } from 'pages/NewGame';
 
+import {
+  Invite,
+} from 'pages/Invite';
+
 class Routes extends Component {
   componentDidMount() {
     Linking.addEventListener('url', this.handleOpenURL);
@@ -125,10 +129,20 @@ class Routes extends Component {
           onLeft={() => {
             Actions.games();
           }}
-          leftTitle="Invite"
+          leftTitle="Back"
           onLeft={() => {
             console.log('invite!');
           }}
+        />
+        <Scene
+          passProps
+          key="invite"
+          direction="vertical"
+          type={ActionConst.PUSH}
+          component={Page}
+          page={Invite}
+          title="Invite"
+          leftTitle="Back"
         />
         <Scene
           passProps
@@ -142,6 +156,12 @@ class Routes extends Component {
             //console.log('action games 1');
             Actions.games();
           }}
+          onRight={({ game }) => {
+            Actions.invite({
+              game,
+            });
+          }}
+          rightTitle="Invite"
         />
       </Scene>
     );

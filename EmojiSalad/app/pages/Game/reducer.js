@@ -117,6 +117,7 @@ export default typeToReducer({
       });
     },
     REJECTED: (state, action) => {
+      console.log('rejection 1', state, action);
       if (action.meta.gameKey) {
         return updateGame(state, action.meta.gameKey, {
           loading: false,

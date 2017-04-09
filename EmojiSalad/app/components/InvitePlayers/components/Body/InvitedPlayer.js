@@ -5,7 +5,7 @@ import {
   View,
 } from 'react-native';
 
-import * as styles from '../styles';
+import * as styles from '../../styles';
 import Remove from './Remove';
 
 const InvitedPlayer = ({

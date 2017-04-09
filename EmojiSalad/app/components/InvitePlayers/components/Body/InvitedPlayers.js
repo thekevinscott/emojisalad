@@ -4,15 +4,15 @@ import {
   View,
 } from 'react-native';
 
-import * as styles from '../styles';
+import * as styles from '../../styles';
 
 import InvitedPlayer from './InvitedPlayer';
-import StartGame from './StartGame';
+import Submit from './Submit';
 
 const InvitedPlayers = ({
   invitedPlayers,
   removePlayer,
-  startGame,
+  submit,
 }) => {
   return (
     <View style={styles.invitedPlayers}>
@@ -25,7 +25,7 @@ const InvitedPlayers = ({
           }}
         />
       ))}
-      <StartGame startGame={startGame} />
+      <Submit submit={submit} />
     </View>
   );
 }
@@ -33,7 +33,7 @@ const InvitedPlayers = ({
 InvitedPlayers.PropTypes = {
   invitedPlayers: PropTypes.array.isRequired,
   removePlayer: PropTypes.func.isRequired,
-  startGame: PropTypes.func.isRequired,
+  submit: PropTypes.func.isRequired,
 };
 
 export default InvitedPlayers;

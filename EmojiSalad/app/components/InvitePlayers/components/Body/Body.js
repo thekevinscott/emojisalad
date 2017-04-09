@@ -11,20 +11,21 @@ import Instructions from './Instructions';
 const Body = ({
   invitedPlayers,
   removePlayer,
-  startGame,
+  submit,
+  children,
 }) => {
   if (invitedPlayers.length) {
     return (
       <InvitedPlayers
         invitedPlayers={invitedPlayers}
         removePlayer={removePlayer}
-        startGame={startGame}
+        submit={submit}
       />
     );
   }
 
   return (
-    <Instructions />
+    <Instructions>{ children }</Instructions>
   );
 }
 
@@ -32,6 +33,7 @@ InvitedPlayers.PropTypes = {
   invitedPlayers: PropTypes.array.isRequired,
   removePlayer: PropTypes.func.isRequired,
   startGame: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default Body;

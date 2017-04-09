@@ -12,15 +12,15 @@ import {
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import * as styles from '../styles';
+import * as styles from '../../styles';
 
-const StartGame = ({
-  startGame,
+const Submit = ({
+  submit,
 }) => {
   return (
     <View style={styles.startGame}>
       <TouchableHighlight
-        onPress={startGame}
+        onPress={submit}
       >
         <Icon
           name="ios-checkmark-circle"
@@ -32,4 +32,4 @@ const StartGame = ({
   );
 };
 
-export default StartGame;
+export default Submit;

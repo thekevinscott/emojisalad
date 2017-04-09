@@ -4,21 +4,24 @@ import {
 } from 'components/App/selectors';
 
 import {
-  startGame,
+  invite,
 } from './actions';
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state, { game }) {
   const me = selectMe(state);
+  const gameKey = game.key;
 
   return {
     me,
+    gameKey,
   };
 }
 
 export function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      startGame: bindActionCreators(startGame, dispatch),
+      invite: bindActionCreators(invite, dispatch),
     },
   };
 }
+

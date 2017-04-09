@@ -1,4 +1,5 @@
 const getPlayerString = players => {
+  console.log('******** need to fix this: players', players);
   const playerString = players.map(player => `${player.nickname}`).join(', ');
 
   const characterLimit = 30;

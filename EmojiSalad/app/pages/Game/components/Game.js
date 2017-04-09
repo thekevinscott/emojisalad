@@ -37,6 +37,8 @@ class Game extends Component {
       seen,
     } = this.props;
 
+    console.log('this props', this.props);
+
     actions.fetchLatestMessages(me.key, game.key, {
       messages,
       seen,

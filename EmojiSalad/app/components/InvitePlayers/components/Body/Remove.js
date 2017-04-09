@@ -12,7 +12,7 @@ import {
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import * as styles from '../styles';
+import * as styles from '../../styles';
 
 const Remove = ({
   onPress,

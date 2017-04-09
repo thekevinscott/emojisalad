@@ -26,7 +26,7 @@ import {
   isValidPhoneNumber,
 } from './utils';
 
-class InvitePlayers extends Component {
+class InvitePlayersSearch extends Component {
   constructor(props) {
     super(props);
     this.onChangeText = this.onChangeText.bind(this);
@@ -78,8 +78,8 @@ class InvitePlayers extends Component {
   }
 }
 
-InvitePlayers.propTypes = {
+InvitePlayersSearch.propTypes = {
   invitePlayer: PropTypes.func.isRequired,
 };
 
-export default InvitePlayers;
+export default InvitePlayersSearch;
