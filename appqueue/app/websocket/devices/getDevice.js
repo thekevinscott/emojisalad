@@ -12,7 +12,7 @@ const getDevice = userKey => {
   .where('user_key = ?', userKey);
 
   return db.query(getDeviceQuery).then(devices => {
-    console.log('devices back', devices.length, devices);
+    //console.log('devices back', devices.length, devices);
     if (devices.length === 0) {
       console.error('Super weird, no devices found for user key', userKey, ' that shouldnt ever happen');
       console.error(getDeviceQuery.toString());
