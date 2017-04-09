@@ -22,7 +22,6 @@ const fetchMessages = ({
 
 const getAllGamesForUser = userKey => {
   return getUserGames(userKey).then(games => {
-    console.info('fetchGames, games for user', userKey, games);
     return games.map(game => ({
       key: game.key,
       created: game.created,
@@ -39,7 +38,6 @@ const getAllGamesForUser = userKey => {
       totalMessages,
       messages,
     }) => {
-      console.info('fetchGames, messages', messages, totalMessages);
       return games.map(game => ({
         ...game,
         messages: messages[game.key],
@@ -51,8 +49,16 @@ const getAllGamesForUser = userKey => {
 
 const getAllInvitesForUser = userKey => {
   return getUserInvites(userKey).then(invites => {
-    console.info('fetchGames, invites', invites);
-    const gameKeys = invites.map(invite => invite.game.key);
+    const gameKeys = invites.filter(invite => {
+      // sometimes, somebody (Kevin) will stroll
+      // into the database and delete games willy nilly.
+      // that can leave hanging invites around
+      // that don't have an attached game, and THAT
+      // will throw an error here.
+      // If a game is not present, assume
+      // this is a bum invite
+      return invite.game;
+    }).map(invite => invite.game.key);
     return fetchMessages({
       userKey,
       gameKeys,
