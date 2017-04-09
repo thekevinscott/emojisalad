@@ -205,6 +205,7 @@ const Invite = {
                 //.field('n.number', 'game_number')
                 .field('i.*')
                 .from('invites', 'i')
+                .where('g.id IS NOT NULL')
                 //.left_join('game_numbers', 'n', 'n.id=i.game_number_id')
                 .left_join('games', 'g', 'g.id=i.game_id');
 
