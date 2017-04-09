@@ -17,6 +17,10 @@ const composeEnhancers = composeWithDevTools({
   realtime: true,
   name: 'Emoji Salad App',
   sendOnError: 1,
+  //hostname: '127.0.0.1',
+  //port: '8000',
+  hostname: '104.131.180.22',
+  port: '5501',
 });
 
 export default function configureStore(initialState = {}) {
