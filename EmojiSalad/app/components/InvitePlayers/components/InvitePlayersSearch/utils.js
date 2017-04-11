@@ -1,6 +1,11 @@
-const getOnlyDigits = text => text.match(/\d+/g).join('');
+const getDigits = (text = '') => text.match(/\d+/g);
 
-const getSplitDigits = digits => [
+export const getOnlyDigits = (text = '') => {
+  const digits = getDigits(text);
+  return digits && digits.length ? digits.join('') : '';
+}
+
+export const getSplitDigits = (digits = '') => [
   digits.slice(0,3),
   digits.slice(3,6),
   digits.slice(6,10),
@@ -8,4 +13,7 @@ const getSplitDigits = digits => [
 
 export const parsePhoneNumber = text => getSplitDigits(getOnlyDigits(text)).join('-');
 
-export const isValidPhoneNumber = phone => phone.match(/\d+/g).join('').length === 10;
+export const isValidPhoneNumber = (text = '') => {
+  const digits = getDigits(text);
+  return digits && digits.join('').length === 10 ? true : false;
+};

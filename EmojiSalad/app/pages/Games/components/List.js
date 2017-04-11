@@ -9,9 +9,10 @@ import {
   ActivityIndicator,
   View,
   TouchableHighlight,
-  ListView,
+  //ListView,
   //RefreshControl,
 } from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 import Messages from './Messages';
 import RowHeader from './RowHeader';
@@ -90,7 +91,7 @@ export default function List({
 
   if (games.length) {
     return (
-      <ListView
+      <SwipeListView
         dataSource={dataSource}
         renderRow={renderRow({
           openGame,
@@ -100,6 +101,15 @@ export default function List({
         renderSeparator={renderSeperator}
         style={styles.container}
         enableEmptySections={true}
+
+        renderHiddenRow={ data => (
+          <View>
+            <Text>Left</Text>
+            <Text>Right</Text>
+          </View>
+        )}
+        leftOpenValue={75}
+        rightOpenValue={-75}
       />
     );
   }

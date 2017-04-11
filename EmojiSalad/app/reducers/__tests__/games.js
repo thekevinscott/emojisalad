@@ -1,6 +1,6 @@
-jest.unmock('../games');
-jest.unmock('../../modules/Games/types');
-jest.unmock('../../modules/Game/types');
+jest.unmock('../data/games');
+jest.unmock('../../pages/Games/types');
+jest.unmock('../../pages/Game/types');
 jest.unmock('moment');
 jest.unmock('type-to-reducer');
 jest.unmock('ramda');
@@ -14,17 +14,17 @@ import getFixture from '../../testUtils/getFixture';
 
 import {
   FETCH_GAMES,
-} from '../../modules/Games/types';
+} from '../../pages/Games/types';
 
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
-} from '../../modules/Game/types';
+} from '../../pages/Game/types';
 
 import games, {
   initialState,
-} from '../games';
+} from '../data/games';
 
 const FETCH_GAMES_FULFILLED = `${FETCH_GAMES}_FULFILLED`;
 const FETCH_MESSAGES_FULFILLED = `${FETCH_MESSAGES}_FULFILLED`;
@@ -97,37 +97,6 @@ describe('games reducer', () => {
         ...getExpectedResult('game', gameTwo),
       });
     });
-
-    /*
-    it('should sort a game\'s messages by date', () => {
-      const messages = [{
-        key: faker.random.uuid(),
-        created: daysAgo(1),
-      }, {
-        key: faker.random.uuid(),
-        created: daysAgo(3),
-      }, {
-        key: faker.random.uuid(),
-        created: daysAgo(2),
-      }];
-      const game = getFixture('game', {
-        messages,
-      });
-
-      expect(games(initialState, {
-        type: FETCH_GAMES_FULFILLED,
-        data: [game],
-      })).toEqual({
-        ...getExpectedResult('game', game, {
-          messages: [
-            messages[1].key,
-            messages[2].key,
-            messages[0].key,
-          ],
-        }),
-      });
-    });
-    */
   });
 
   describe('FETCH_MESSAGES', () => {

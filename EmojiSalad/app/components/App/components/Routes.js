@@ -87,6 +87,7 @@ class Routes extends Component {
   */
   render() {
     const newGame = (<Icon name="pencil-square-o" size={30} color={constants.purple} />);
+    const settings = (<Icon name="navicon" size={30} color={constants.purple} />);
     // This fucks up the connectWithFocus activeComponent
     // listener, since the active component name is Games (24),
     // not Games
@@ -112,6 +113,10 @@ class Routes extends Component {
           page={Overview}
           initial={this.isInitial('games')}
           title={gamesTitle}
+          leftTitle={settings}
+          onLeft={() => {
+            debugger;
+          }}
           rightTitle={newGame}
           onRight={() => {
             Actions.newGame();

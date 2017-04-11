@@ -1,6 +1,6 @@
 jest.unmock('../selectors');
 jest.unmock('../actions');
-jest.unmock('../../App/selectors');
+jest.unmock('../../../components/App/selectors');
 jest.unmock('faker');
 //jest.unmock('react-native-router-flux');
 jest.unmock('moment');
@@ -9,15 +9,11 @@ jest.unmock('../../../testUtils/getFixture');
 jest.unmock('../../../testUtils/generateState');
 jest.unmock('../../../testUtils/getState');
 
-//import faker from 'faker';
-
-//import daysAgo from '../../../testUtils/daysAgo';
 import getFixture from '../../../testUtils/getFixture';
 import getState from '../../../testUtils/getState';
 
 import {
   MESSAGES_PER_PAGE,
-
   selectMessages,
 } from '../selectors';
 

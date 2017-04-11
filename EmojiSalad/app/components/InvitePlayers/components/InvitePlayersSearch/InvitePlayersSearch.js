@@ -64,7 +64,6 @@ class InvitePlayersSearch extends Component {
           keyboardType="phone-pad"
           value={this.state.text}
           placeholder="555-555-5555"
-          maxLength={12}
           onChangeText={this.onChangeText}
           onSubmitEditing={this.addPlayer}
           autoFocus
