@@ -80,14 +80,6 @@ function updateAndReduce(arr = {}, fn = noop) {
 }
 
 export function selectGames(state) {
-  //const invites = updateAndReduce(state.data.invites, (key, invite) => ({
-    //[invite.game.key]: {
-      //type: 'invite',
-      //...invite.game,
-      //invite,
-    //},
-  //}));
-
   const games = updateAndReduce(state.data.games, (key, game) => ({
     [key]: {
       type: 'game',
@@ -118,12 +110,21 @@ export function selectGames(state) {
   return rows.sort(sortBy('newestFirst', getTimestampFromMessage));
 }
 
-export function selectGamesByNewestFirst(state) {
+const getMostRecentMessage = ({ messages }) => messages[messages.length - 1];
+
+export const selectGamesByNewestFirst = state => {
   return selectGames(state).reverse().filter(game => {
     return true;
     //return game.messages.length > 0;
+  }).map(game => {
+    const mostRecentMessage = getMostRecentMessage(game);
+
+    return {
+      ...game,
+      isUnread: mostRecentMessage && mostRecentMessage.key !== game.lastRead,
+    };
   });
-}
+};
 
 export function selectUI(state) {
   return {

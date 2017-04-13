@@ -28,6 +28,11 @@ const renderSeperator = (sectionID, rowID, adjacentRowHighlighted) => {
   );
 };
 
+const getUnreadStyle = ({ isUnread }) => ({
+  ...styles.unreadDot,
+  opacity: isUnread ? 1 : 0,
+});
+
 const renderRow = ({
   openGame,
   games,
@@ -35,10 +40,8 @@ const renderRow = ({
 }) => (game, sectionId, rowId) => {
   const messages = game.messages;
   const mostRecentMessage = messages[messages.length - 1] || {};
-  const unreadDotStyle = {
-    ...styles.unreadDot,
-    opacity: (mostRecentMessage.key !== game.lastRead) ? 1 : 0,
-  };
+
+  const unreadDotStyle = getUnreadStyle(game);
 
   return (
     <TouchableHighlight

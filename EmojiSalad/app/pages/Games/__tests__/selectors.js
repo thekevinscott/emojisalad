@@ -20,6 +20,7 @@ import {
   getLastMessage,
   selectMessages,
   selectGames,
+  selectGamesByNewestFirst,
 } from '../selectors';
 
 describe('Games selectors', () => {
@@ -139,7 +140,8 @@ describe('Games selectors', () => {
       });
     }));
 
-    fit('should return an array of games by most recent message timestamp', getState(state => {
+    /*
+    it('should return an array of games by most recent message timestamp', getState(state => {
       const gamesArray = Object.keys(state.data.games).map(key => {
         return state.data.games[key];
       });
@@ -166,5 +168,46 @@ describe('Games selectors', () => {
       expect(result[1].key).toEqual(gamesArray[2].key);
       expect(result[2].key).toEqual(gamesArray[1].key);
     }));
+    */
+  });
+
+  describe('selectGamesByNewestFirst', () => {
+    it.only('should return a sorted array of games with unread indicators', () => {
+      const gamesArray = [
+        getFixture('game', {
+          lastRead: 'foo',
+        }),
+        getFixture('game', {
+          lastRead: 'none',
+        }),
+      ];
+
+      const newMessages = [
+        getFixture('message', {
+          key: 'foo',
+          timestamp: daysAgo(3),
+        }),
+        getFixture('message', {
+          key: 'bar',
+          timestamp: daysAgo(1),
+        }),
+      ];
+
+      newMessages.forEach((message, index) => {
+        gamesArray[index].messages.push(message.key);
+      });
+
+      const result = selectGamesByNewestFirst({
+        data: {
+          games,
+        },
+      });
+
+      expect(result[0].key).toEqual(gamesArray[1].key);
+      expect(result[1].key).toEqual(gamesArray[0].key);
+
+      expect(result[0].isUnread).toEqual(false);
+      expect(result[1].isUnread).toEqual(true);
+    });
   });
 });
