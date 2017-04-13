@@ -1,4 +1,3 @@
-import startNewGame from '../../games/startNewGame';
 import sendUserInviteMessage from '../../invites/sendUserInviteMessage';
 
 export default function invite(ws, { userKey, gameKey, phones }) {

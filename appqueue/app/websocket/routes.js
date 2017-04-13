@@ -6,6 +6,8 @@ import setDeviceInfo from './routes/devices/setDeviceInfo';
 import setDeviceToken from './routes/devices/setDeviceToken';
 import startNewGame from './routes/games/start';
 import invite from './routes/games/invite';
+import pause from './routes/games/pause';
+import leave from './routes/games/leave';
 
 export const CLAIM = 'CLAIM';
 export const FETCH_GAMES = 'FETCH_GAMES';
@@ -15,6 +17,8 @@ export const SEND_DEVICE_INFO = 'SEND_DEVICE_INFO';
 export const SEND_DEVICE_TOKEN = 'SEND_DEVICE_TOKEN';
 export const START_NEW_GAME = '@NewGame/START_NEW_GAME';
 export const INVITE = '@Invite/INVITE';
+export const LEAVE = '@Games/LEAVE_GAME';
+export const PAUSE = '@Games/PAUSE_GAME';
 
 const ROUTES = {
   [CLAIM]: claim,
@@ -25,6 +29,8 @@ const ROUTES = {
   [SEND_DEVICE_TOKEN]: setDeviceToken,
   [START_NEW_GAME]: startNewGame,
   [INVITE]: invite,
+  [PAUSE]: pause,
+  [LEAVE]: leave,
 };
 
 export default ROUTES;
