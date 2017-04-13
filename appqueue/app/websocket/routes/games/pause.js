@@ -1,8 +1,8 @@
-import pauseGame from '../../games/pauseGame';
+import sendPauseGameMessage from '../../games/sendPauseGameMessage';
 
 export default function pause(ws, { userKey, gameKey }) {
   console.info('game', gameKey);
-  return pauseGame(userKey, gameKey).then(() => {
+  return sendPauseGameMessage(userKey, gameKey).then(() => {
     console.info('game paused', userKey, gameKey);
     return {};
   }).catch(err => {

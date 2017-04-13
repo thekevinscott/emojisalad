@@ -1,8 +1,8 @@
-import leaveGame from '../../games/leaveGame';
+import sendLeaveGameMessage from '../../games/sendLeaveGameMessage';
 
 export default function leave(ws, { userKey, gameKey }) {
   console.info('game', gameKey);
-  return leaveGame(userKey, gameKey).then(() => {
+  return sendLeaveGameMessage(userKey, gameKey).then(() => {
     console.info('game left', userKey, gameKey);
     return {};
   }).catch(err => {
