@@ -7,6 +7,8 @@ import {
   FETCH_GAMES,
   OPEN_GAME,
   UPDATE_STARTING_MESSAGE,
+  PAUSE_GAME,
+  LEAVE_GAME,
 } from './types';
 
 export function fetchData(userKey) {
@@ -41,3 +43,23 @@ export function updateStartingMessage(game) {
     game,
   };
 }
+
+export const pauseGame = (user, game) => dispatch => dispatch(() => {
+  return dispatch({
+    type: PAUSE_GAME,
+    payload: {
+      userKey: user.key,
+      gameKey: game.key,
+    },
+  });
+});
+
+export const leaveGame = (user, game) => dispatch => dispatch(() => {
+  return dispatch({
+    type: LEAVE_GAME,
+    payload: {
+      userKey: user.key,
+      gameKey: game.key,
+    }
+  });
+});

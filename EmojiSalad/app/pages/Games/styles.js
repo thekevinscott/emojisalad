@@ -113,3 +113,37 @@ export const messagesContainer = {
 export const activityIndicator = {
   marginRight: 10,
 };
+
+export const rowBehind = {
+  alignItems: 'center',
+  backgroundColor: '#DDD',
+  flex: 1,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  paddingLeft: 15,
+};
+
+export const buttonBehind = {
+  alignItems: 'center',
+  bottom: 0,
+  justifyContent: 'center',
+  position: 'absolute',
+  top: 0,
+  width: 100,
+};
+
+export const pause = {
+  ...buttonBehind,
+  backgroundColor: 'blue',
+  right: buttonBehind.width * 1,
+};
+
+export const leave = {
+  ...buttonBehind,
+  backgroundColor: 'red',
+  right: 0,
+};
+
+export const textBehind = {
+  color: 'white',
+};

@@ -1,7 +1,3 @@
-/**
- * @flow
- */
-
 import React from 'react';
 
 import {
@@ -13,66 +9,33 @@ import {
   //RefreshControl,
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
-
-import Messages from './Messages';
-import RowHeader from './RowHeader';
+import Game from './Game';
+import HiddenButtons from './HiddenButtons';
+import Separator from './Separator';
 
 import * as styles from '../styles';
 
-const renderSeperator = (sectionID, rowID, adjacentRowHighlighted) => {
-  return (
-    <View
-      key={`${sectionID}-${rowID}`}
-      style={styles.rowSeparator(adjacentRowHighlighted)}
-    />
-  );
-};
-
-const getUnreadStyle = ({ isUnread }) => ({
-  ...styles.unreadDot,
-  opacity: isUnread ? 1 : 0,
-});
+const renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => (
+  <Separator
+    sectionID={sectionID}
+    rowID={rowID}
+    adjacentRowHighlighted={adjacentRowHighlighted}
+  />
+);
 
 const renderRow = ({
   openGame,
   games,
   updateStartingMessage,
-}) => (game, sectionId, rowId) => {
-  const messages = game.messages;
-  const mostRecentMessage = messages[messages.length - 1] || {};
-
-  const unreadDotStyle = getUnreadStyle(game);
-
-  return (
-    <TouchableHighlight
-      onPress={() => {
-        openGame(game, games);
-      }}
-      key={`${rowId}`}
-    >
-      <View style={styles.rowContainer}>
-        <View
-          style={styles.unread}
-        >
-          <View style={unreadDotStyle} />
-        </View>
-        <View
-          style={styles.game}
-        >
-          <Messages
-            messages={messages}
-            game={game}
-            updateStartingMessage={updateStartingMessage}
-          />
-          <RowHeader
-            players={game.players}
-            timestamp={mostRecentMessage.timestamp}
-          />
-        </View>
-      </View>
-    </TouchableHighlight>
-  );
-};
+}) => (game, sectionID, rowID) => (
+  <Game
+    rowID={rowID}
+    game={game}
+    games={games}
+    openGame={openGame}
+    updateStartingMessage={updateStartingMessage}
+  />
+);
 
 export default function List({
   openGame,
@@ -80,8 +43,10 @@ export default function List({
   fetching,
   updateStartingMessage,
   dataSource,
+  pauseGame,
+  leaveGame,
 }) {
-  if (fetching) {
+  if (fetching && (!games || games.length === 0)) {
     return (
       <View style={styles.list}>
         <View style={styles.listContainer}>
@@ -95,24 +60,28 @@ export default function List({
   if (games.length) {
     return (
       <SwipeListView
+        disableRightSwipe={true}
+        style={styles.container}
+        enableEmptySections={true}
         dataSource={dataSource}
         renderRow={renderRow({
           openGame,
           games,
           updateStartingMessage,
         })}
-        renderSeparator={renderSeperator}
-        style={styles.container}
-        enableEmptySections={true}
+        renderSeparator={renderSeparator}
 
-        renderHiddenRow={ data => (
-          <View>
-            <Text>Left</Text>
-            <Text>Right</Text>
-          </View>
+        renderHiddenRow={ (game, sectionID, rowID, rows) => (
+          <HiddenButtons
+            game={game}
+            pauseGame={pauseGame}
+            leaveGame={leaveGame}
+            sectionID={sectionID}
+            rowID={rowID}
+            rows={rows}
+          />
         )}
-        leftOpenValue={75}
-        rightOpenValue={-75}
+        rightOpenValue={-1 * (2 * styles.buttonBehind.width)}
       />
     );
   }

@@ -1,7 +1,10 @@
+import { bindActionCreators } from 'redux'
 import {
   fetchData,
   openGame,
   updateStartingMessage,
+  leaveGame,
+  pauseGame,
 } from './actions';
 
 import {
@@ -158,6 +161,8 @@ export function mapDispatchToProps(dispatch) {
       updateDeviceToken: token => {
         dispatch(updateDeviceToken(token));
       },
+      pauseGame: bindActionCreators(pauseGame, dispatch),
+      leaveGame: bindActionCreators(leaveGame, dispatch),
     },
   };
 }

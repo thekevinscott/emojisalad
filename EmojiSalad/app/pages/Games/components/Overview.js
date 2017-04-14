@@ -70,6 +70,12 @@ class Overview extends Component {
           dataSource={this.getData()}
           updateStartingMessage={this.props.actions.updateStartingMessage}
           openGame={this.props.actions.openGame}
+          pauseGame={game => {
+            this.props.actions.pauseGame(this.props.me, game);
+          }}
+          leaveGame={game => {
+            this.props.actions.leaveGame(this.props.me, game);
+          }}
         />
       </View>
     );
