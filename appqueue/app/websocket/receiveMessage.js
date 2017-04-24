@@ -37,13 +37,13 @@ function processRoute({
       throw new RouteException(
         REJECTED,
         data.message,
-        meta,
+        meta
       );
     } else {
       console.error('route receiveMessage error without message', data);
       throw new RouteException(
         REJECTED,
-        'Unknown error',
+        'Unknown error'
       );
     }
   });

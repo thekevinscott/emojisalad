@@ -1,6 +1,6 @@
 module.exports = {
   PUSHCITY: {
-    URL: 'https://pushcityapp.com/api/v1/',
+    URL: 'https://api.pushcityapp.com/api/v1/',
     API_KEY: '94065890d025a5989ddf0b67862d62739e77ef64af0c9e6050a46a9796380d43',
   },
   ENVIRONMENT: process.env.ENVIRONMENT || 'development',
