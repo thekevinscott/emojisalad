@@ -127,6 +127,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-onesignal')
     compile project(':react-native-vector-icons')
     compile project(':react-native-ua')
     compile project(':react-native-code-push')

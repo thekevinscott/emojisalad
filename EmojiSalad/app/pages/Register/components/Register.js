@@ -1,7 +1,3 @@
-/**
- * @flow
- */
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 //import Button from 'react-native-button';
@@ -13,9 +9,6 @@ import {
 } from 'react-native';
 
 import styles from '../styles';
-//import {
-  //purple,
-//} from '../../App/styles';
 
 import {
   mapStateToProps,
@@ -133,7 +126,8 @@ class Register extends Component {
             enablesReturnKeyAutomatically={true}
             underlineColorAndroid="transparent"
             onSubmitEditing={this.submitClaim}
-            returnKeyType="join"
+            returnKeyType="send"
+            keyboardType="default"
             onChangeText={this.props.actions.updateText}
             //editable={!this.props.claiming}
             value={this.props.text}

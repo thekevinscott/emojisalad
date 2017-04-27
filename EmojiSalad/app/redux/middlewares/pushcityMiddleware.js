@@ -17,6 +17,8 @@ getStore().then(initialState => {
     pushcity.register({
       userID: initialState.data.me.key,
       apiKey: PUSHCITY_API_KEY,
+    }).then(params => {
+      console.log('**** pushcity 2', params);
     });
   }
 });

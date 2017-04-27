@@ -3,6 +3,7 @@ package com.emojisalad;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.globo.reactnativeua.ReactNativeUAPackage;
 import com.microsoft.codepush.react.CodePush;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeOneSignalPackage(),
             new VectorIconsPackage(),
             new ReactNativeUAPackage(),
             new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),

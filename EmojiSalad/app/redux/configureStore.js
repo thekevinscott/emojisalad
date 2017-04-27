@@ -7,8 +7,6 @@ import middleware from './middlewares';
 //import devTools from 'remote-redux-devtools';
 import { composeWithDevTools } from 'remote-redux-devtools';
 
-import { getReduxLoggingOptions } from 'config';
-
 import reducer from './reducer';
 
 import {
@@ -19,7 +17,6 @@ const devToolOptions = {
   realtime: true,
   name: 'Emoji Salad App',
   sendOnError: 1,
-  ...getReduxLoggingOptions(),
 };
 
 const composeEnhancers = composeWithDevTools(devToolOptions);

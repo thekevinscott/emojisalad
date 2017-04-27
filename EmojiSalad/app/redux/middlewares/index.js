@@ -1,3 +1,5 @@
+import LogRocket from 'logrocket';
+
 import {
   applyMiddleware,
 } from 'redux';
@@ -8,16 +10,19 @@ import storageMiddleware from './storageMiddleware';
 import networkMiddleware from './networkMiddleware';
 import appqueueMiddleware from './appqueueMiddleware';
 import pushcityMiddleware from './pushcityMiddleware';
-import logMiddleware from './logMiddleware';
 
-const middleware = applyMiddleware(
+LogRocket.init('q2wtwe/emoji-salad');
+
+const middlewares = [
   thunk,
   promiseMiddleware(),
   pushcityMiddleware,
   storageMiddleware,
   networkMiddleware,
   appqueueMiddleware,
-  logMiddleware,
-);
+  LogRocket.reduxMiddleware(),
+];
+
+const middleware = applyMiddleware(...middlewares);
 
 export default middleware;

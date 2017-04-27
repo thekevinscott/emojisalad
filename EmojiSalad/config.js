@@ -47,28 +47,3 @@ if (ENVIRONMENT === 'production' && !PERSIST_DATA) {
 
 /* Push City */
 export const PUSHCITY_API_KEY = '94065890d025a5989ddf0b67862d62739e77ef64af0c9e6050a46a9796380d43';
-
-/* Logging */
-export const REDUX_LOGGING_OPTIONS = {
-  REMOTE_DEV: 'REMOTEDEV',
-  SCOTTDESIGN: 'SCOTTDESIGN',
-  LOCAL: 'LOCAL',
-};
-export const LOGGING = 2;
-export const REDUX_LOGGING = REDUX_LOGGING_OPTIONS.REMOTE_DEV;
-
-export const getReduxLoggingOptions = () => {
-  if (REDUX_LOGGING === REDUX_LOGGING_OPTIONS.LOCAL) {
-    return {
-      hostname: '127.0.0.1',
-      port: '8000',
-    };
-  } else if (REDUX_LOGGING === REDUX_LOGGING_OPTIONS.SCOTTDESIGN) {
-    return {
-      hostname: '104.131.180.22',
-      port: '5501',
-    };
-  }
-
-  return {};
-};
