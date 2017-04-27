@@ -20,7 +20,7 @@ export const START_NEW_GAME = '@NewGame/START_NEW_GAME';
 export const INVITE = '@Invite/INVITE';
 export const LEAVE = '@Games/LEAVE_GAME';
 export const PAUSE = '@Games/PAUSE_GAME';
-export const UPDATE_PUSH_ID = 'UPDATE_PUSH_ID';
+export const UPDATE_PUSH_ID = '@Games/UPDATE_PUSH_ID';
 
 const ROUTES = {
   [CLAIM]: claim,
