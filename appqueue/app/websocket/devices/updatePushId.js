@@ -2,13 +2,14 @@ import db from 'db';
 import Squel from 'squel';
 const squel = Squel.useFlavour('mysql');
 
-const updatePushId = (userKey, { pushId }) => {
-  console.info('update push id', userKey, pushId);
+const updatePushId = (userKey, { pushId, pushToken }) => {
+  console.info('update push id', userKey, pushId, pushToken);
 
   const query = squel
   .update('devices')
   .set({
     push_id: pushId,
+    push_token: pushToken,
   })
   .where('user_key', userKey);
   console.info('update push id', query.toString());
