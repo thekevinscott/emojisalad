@@ -11,6 +11,7 @@ import {
   PORT,
   REQUIRED_SERVICES,
 } from 'config/app';
+import pushNotification from 'utils/pushNotification';
 
 const server = http.createServer();
 const app = express();
@@ -32,4 +33,3 @@ registry.ready(() => {
     registry.ready();
   });
 });
-
