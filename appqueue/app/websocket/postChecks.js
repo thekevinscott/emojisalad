@@ -34,7 +34,7 @@ const postChecks = (ws, { payload }) => {
   //console.log('payload for post checks', payload);
 
   return getDevice(userKey).then(device => {
-    //console.info('the fetched device', device);
+    console.info('the fetched device', device);
     return Promise.all(getPromises(ws, device));
   }).then(requestsToMake => {
     console.info('requests to make', requestsToMake);
