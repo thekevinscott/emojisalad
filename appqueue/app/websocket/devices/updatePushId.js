@@ -11,7 +11,7 @@ const updatePushId = (userKey, { pushId, pushToken }) => {
     push_id: pushId,
     push_token: pushToken,
   })
-  .where('user_key', userKey);
+  .where('user_key = ?', userKey);
   console.info('update push id', query.toString());
   return db.query(query).then(() => {
     return {};
