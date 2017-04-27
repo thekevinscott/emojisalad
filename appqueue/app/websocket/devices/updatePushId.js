@@ -6,7 +6,8 @@ const updatePushId = (userKey, { pushId, pushToken }) => {
   console.info('update push id', userKey, pushId, pushToken);
 
   const query = squel
-  .update('devices')
+  .update()
+  .table('devices')
   .setFields({
     push_id: pushId,
     push_token: pushToken,
