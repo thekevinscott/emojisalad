@@ -7,7 +7,7 @@ const updatePushId = (userKey, { pushId, pushToken }) => {
 
   const query = squel
   .update('devices')
-  .set({
+  .setFields({
     push_id: pushId,
     push_token: pushToken,
   })
