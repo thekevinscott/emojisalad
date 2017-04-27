@@ -15,7 +15,6 @@ export const FETCH_GAMES = 'FETCH_GAMES';
 export const FETCH_MESSAGES = 'FETCH_MESSAGES';
 export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const SEND_DEVICE_INFO = 'SEND_DEVICE_INFO';
-export const SEND_DEVICE_TOKEN = 'SEND_DEVICE_TOKEN';
 export const SEND_DEVICE_PUSH_ID = 'SEND_DEVICE_PUSH_ID';
 export const START_NEW_GAME = '@NewGame/START_NEW_GAME';
 export const INVITE = '@Invite/INVITE';
@@ -28,7 +27,6 @@ const ROUTES = {
   [FETCH_MESSAGES]: fetchMessages,
   [SEND_MESSAGE]: receiveMessage,
   [SEND_DEVICE_INFO]: setDeviceInfo,
-  [SEND_DEVICE_TOKEN]: setDeviceToken,
   [SEND_DEVICE_PUSH_ID]: setDevicePushId,
   [START_NEW_GAME]: startNewGame,
   [INVITE]: invite,
