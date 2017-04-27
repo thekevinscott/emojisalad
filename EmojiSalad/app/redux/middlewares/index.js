@@ -9,14 +9,12 @@ import promiseMiddleware from 'redux-promise-middleware';
 import storageMiddleware from './storageMiddleware';
 import networkMiddleware from './networkMiddleware';
 import appqueueMiddleware from './appqueueMiddleware';
-import pushcityMiddleware from './pushcityMiddleware';
 
 LogRocket.init('q2wtwe/emoji-salad');
 
 const middlewares = [
   thunk,
   promiseMiddleware(),
-  pushcityMiddleware,
   storageMiddleware,
   networkMiddleware,
   appqueueMiddleware,
