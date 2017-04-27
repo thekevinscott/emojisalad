@@ -4,6 +4,7 @@ import fetchMessages from './routes/games/messages';
 import receiveMessage from './routes/messages/receive';
 import setDeviceInfo from './routes/devices/setDeviceInfo';
 import setDeviceToken from './routes/devices/setDeviceToken';
+import updatePushId from './routes/devices/updatePushId';
 import startNewGame from './routes/games/start';
 import invite from './routes/games/invite';
 import pause from './routes/games/pause';
@@ -19,6 +20,7 @@ export const START_NEW_GAME = '@NewGame/START_NEW_GAME';
 export const INVITE = '@Invite/INVITE';
 export const LEAVE = '@Games/LEAVE_GAME';
 export const PAUSE = '@Games/PAUSE_GAME';
+export const UPDATE_PUSH_ID = 'UPDATE_PUSH_ID';
 
 const ROUTES = {
   [CLAIM]: claim,
@@ -31,6 +33,7 @@ const ROUTES = {
   [INVITE]: invite,
   [PAUSE]: pause,
   [LEAVE]: leave,
+  [UPDATE_PUSH_ID]: updatePushId,
 };
 
 export default ROUTES;
