@@ -47,7 +47,7 @@ export default class Messenger extends Component {
       _id: 'right',
     };
 
-    console.log('messages', this.props.messages);
+    //console.log('messages', this.props.messages);
 
     return (
       <GiftedChat

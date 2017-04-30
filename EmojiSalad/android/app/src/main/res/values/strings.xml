@@ -1,4 +1,5 @@
 <resources>
+
     <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">VJ6OuXHL5Mjhjwmk3PS6W-ZBaLSwVJoZyFQ0-</string>
     <string name="app_name">EmojiSalad</string>
 </resources>

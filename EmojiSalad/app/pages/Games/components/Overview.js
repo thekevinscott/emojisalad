@@ -1,7 +1,3 @@
-/**
- * @flow
- */
-
 import React, { Component } from 'react';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import { connect } from 'react-redux';
@@ -14,6 +10,7 @@ import {
   View,
   ListView,
   PushNotificationIOS,
+  //Alert,
   //RefreshControl,
 } from 'react-native';
 
@@ -31,20 +28,6 @@ const ds = new ListView.DataSource({
 class Overview extends Component {
   constructor(props) {
     super(props);
-    this.onRegister = this.onRegister.bind(this);
-  }
-
-  componentDidMount() {
-    //PushNotificationIOS.requestPermissions();
-    PushNotificationIOS.addEventListener('register', this.onRegister);
-  }
-
-  componentWillUnmount() {
-    PushNotificationIOS.removeEventListener('register', this.onRegister);
-  }
-
-  onRegister(token) {
-    this.props.actions.updateDeviceToken(token);
   }
 
   componentWillAppear({

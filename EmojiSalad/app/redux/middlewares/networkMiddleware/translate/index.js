@@ -11,6 +11,7 @@ export const fromApiToType = (type) => {
   return API_TYPES[type] || type;
 };
 
+
 export const fromTypeToApi = (type) => {
   return TYPES[type] || type;
 };

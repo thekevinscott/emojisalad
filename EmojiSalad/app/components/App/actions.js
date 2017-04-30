@@ -1,12 +1,11 @@
 import {
-  UPDATE_DEVICE_TOKEN,
+  SAVE_PUSH_ID,
 } from './types';
 
-export function updateDeviceToken(token) {
+export const savePushId = (pushToken, pushId) => {
   return {
-    type: UPDATE_DEVICE_TOKEN,
-    payload: {
-      token,
-    },
+    type: SAVE_PUSH_ID,
+    pushToken,
+    pushId,
   };
-}
+};

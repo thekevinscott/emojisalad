@@ -1,3 +1,3 @@
 const KEY = '@app/';
 
-export const UPDATE_DEVICE_TOKEN = `${KEY}UPDATE_DEVICE_TOKEN`;
+export const SAVE_PUSH_ID = `${KEY}SAVE_PUSH_ID`;

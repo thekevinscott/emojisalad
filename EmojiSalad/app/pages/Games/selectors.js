@@ -1,15 +1,12 @@
-import { bindActionCreators } from 'redux'
+import { bindActionCreators } from 'redux';
 import {
   fetchData,
   openGame,
+  updatePushId,
   updateStartingMessage,
   leaveGame,
   pauseGame,
 } from './actions';
-
-import {
-  updateDeviceToken,
-} from 'app/utils/pushNotificationListeners/actions';
 
 import {
   sortBy,
@@ -157,9 +154,6 @@ export function mapDispatchToProps(dispatch) {
       },
       updateStartingMessage: game => {
         return dispatch(updateStartingMessage(game));
-      },
-      updateDeviceToken: token => {
-        dispatch(updateDeviceToken(token));
       },
       pauseGame: bindActionCreators(pauseGame, dispatch),
       leaveGame: bindActionCreators(leaveGame, dispatch),

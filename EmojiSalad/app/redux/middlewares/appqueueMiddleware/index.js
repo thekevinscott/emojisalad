@@ -11,24 +11,24 @@
 
 import {
   REQUEST_DEVICE_INFO,
-  REQUEST_DEVICE_TOKEN,
+  REQUEST_DEVICE_PUSH_ID,
 } from './types';
 
 import {
   sendDeviceInfo,
-  sendDeviceToken,
+  sendDevicePushId,
 } from './actions';
 
 const APPQUEUE_REQUESTS = [
   REQUEST_DEVICE_INFO,
-  REQUEST_DEVICE_TOKEN,
+  REQUEST_DEVICE_PUSH_ID,
 ];
 
 const getAppqueuePayload = (type, state) => {
   if (type === REQUEST_DEVICE_INFO) {
     return sendDeviceInfo(state);
-  } else if (type === REQUEST_DEVICE_TOKEN) {
-    return sendDeviceToken(state);
+  } else if (type === REQUEST_DEVICE_PUSH_ID) {
+    return sendDevicePushId(state);
   }
 
   return null;

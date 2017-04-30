@@ -14,9 +14,11 @@ import {
 } from 'utils/device/actions';
 
 const devToolOptions = {
-  realtime: true,
+  //realtime: true,
   name: 'Emoji Salad App',
-  sendOnError: 1,
+  //sendOnError: 1,
+  //hostname: 'localhost',
+  //port: '5501',
 };
 
 const composeEnhancers = composeWithDevTools(devToolOptions);

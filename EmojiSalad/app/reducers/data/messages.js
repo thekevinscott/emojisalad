@@ -50,7 +50,7 @@ const sounds = [
 const initialState = {};
 
 const translateMessage = (message) => {
-  console.log('message', message);
+  //console.log('message', message);
   return {
     //messageKey: message.message_key,
     body: message.body,

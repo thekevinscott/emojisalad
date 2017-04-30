@@ -1,8 +1,8 @@
-import { bindActionCreators } from 'redux'
+import { bindActionCreators } from 'redux';
 
 import {
-  invitePhoneNumber,
-  removePhoneNumber,
+  invitePlayer,
+  removePlayer,
   clearInvites,
 } from './actions';
 
@@ -25,8 +25,8 @@ export function mapStateToProps(state) {
 export function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      invitePhoneNumber: bindActionCreators(invitePhoneNumber, dispatch),
-      removePhoneNumber: bindActionCreators(removePhoneNumber, dispatch),
+      invitePlayer: bindActionCreators(invitePlayer, dispatch),
+      removePlayer: bindActionCreators(removePlayer, dispatch),
       clearInvites: bindActionCreators(clearInvites, dispatch),
     },
   };

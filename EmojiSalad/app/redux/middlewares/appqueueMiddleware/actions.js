@@ -1,10 +1,10 @@
 import {
   SEND_DEVICE_INFO,
-  SEND_DEVICE_TOKEN,
+  SEND_DEVICE_PUSH_ID,
 } from './types';
 
 import getDeviceInfo from './utils/getDeviceInfo';
-import getDeviceToken from './utils/getDeviceToken';
+import getDevicePushId from './utils/getDevicePushId';
 
 export function sendDeviceInfo(state) {
   return {
@@ -15,11 +15,11 @@ export function sendDeviceInfo(state) {
   };
 }
 
-export function sendDeviceToken(state) {
+export function sendDevicePushId(state) {
   return {
-    type: SEND_DEVICE_TOKEN,
+    type: SEND_DEVICE_PUSH_ID,
     payload: {
-      device_token: getDeviceToken(state),
+      ...getDevicePushId(state),
     },
   };
 }

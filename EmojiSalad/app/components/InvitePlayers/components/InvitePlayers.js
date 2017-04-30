@@ -33,8 +33,8 @@ class InvitePlayers extends Component {
     } = this.props;
 
     const {
-      invitePhoneNumber,
-      removePhoneNumber,
+      invitePlayer,
+      removePlayer,
       clearInvites,
     } = actions;
 
@@ -43,11 +43,11 @@ class InvitePlayers extends Component {
         style={styles.newGame}
       >
         <InvitePlayersSearch
-          invitePlayer={invitePhoneNumber}
+          invitePlayer={invitePlayer}
         />
         <Body
           invitedPlayers={invitedPlayers}
-          removePlayer={removePhoneNumber}
+          removePlayer={removePlayer}
           submit={() => {
             this.props.submit(invitedPlayers.map(player => player.phone));
             clearInvites();

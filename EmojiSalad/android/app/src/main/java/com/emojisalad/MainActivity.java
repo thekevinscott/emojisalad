@@ -1,6 +1,7 @@
 package com.emojisalad;
 
 import com.facebook.react.ReactActivity;
+import com.lynxit.contactswrapper.ContactsWrapperPackage;
 
 public class MainActivity extends ReactActivity {
 

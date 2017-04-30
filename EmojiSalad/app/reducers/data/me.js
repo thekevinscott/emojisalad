@@ -2,8 +2,8 @@ import typeToReducer from 'type-to-reducer';
 import Raven from 'raven-js';
 
 import {
-  UPDATE_DEVICE_TOKEN,
-} from 'app/utils/pushNotificationListeners/types';
+  SAVE_PUSH_ID,
+} from 'app/components/App/types';
 
 import {
   UPDATE_DEVICE_INFO,
@@ -66,9 +66,12 @@ export default typeToReducer({
       };
     },
   },
-  [UPDATE_DEVICE_TOKEN]: (state, { deviceToken }) => ({
+  [SAVE_PUSH_ID]: (state, { pushId, pushToken }) => ({
     ...state,
-    deviceToken,
+    pushData: {
+      pushToken,
+      pushId,
+    },
   }),
   [UPDATE_DEVICE_INFO]: (state, { info }) => ({
     ...state,

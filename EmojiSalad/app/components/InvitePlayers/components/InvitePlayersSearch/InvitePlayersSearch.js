@@ -1,7 +1,3 @@
-/**
- * @flow
- */
-
 import React, { PropTypes, Component } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -23,14 +19,14 @@ import * as styles from '../../styles';
 
 import {
   parsePhoneNumber,
-  isValidPhoneNumber,
+  //isValidPhoneNumber,
 } from './utils';
 
 class InvitePlayersSearch extends Component {
   constructor(props) {
     super(props);
     this.onChangeText = this.onChangeText.bind(this);
-    this.addPlayer = this.addPlayer.bind(this);
+    //this.addPlayer = this.addPlayer.bind(this);
   }
 
   state={
@@ -44,17 +40,6 @@ class InvitePlayersSearch extends Component {
     });
   }
 
-  addPlayer() {
-    if (isValidPhoneNumber(this.state.text)) {
-      this.props.invitePlayer(this.state.text);
-      this.setState({
-        text: '',
-      });
-    }
-
-    return false;
-  }
-
   render() {
     return (
       <View style={styles.invitePlayers}>
@@ -65,12 +50,11 @@ class InvitePlayersSearch extends Component {
           value={this.state.text}
           placeholder="555-555-5555"
           onChangeText={this.onChangeText}
-          onSubmitEditing={this.addPlayer}
           autoFocus
         />
         <Add
           disabled={this.state.text === ''}
-          onPress={this.addPlayer}
+          onPress={this.props.invitePlayer}
         />
       </View>
     );

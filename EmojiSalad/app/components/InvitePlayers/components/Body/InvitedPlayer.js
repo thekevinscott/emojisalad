@@ -9,7 +9,10 @@ import * as styles from '../../styles';
 import Remove from './Remove';
 
 const InvitedPlayer = ({
-  invitedPlayer,
+  invitedPlayer: {
+    phone,
+    name,
+  },
   removePlayer
 }) => {
   return (
@@ -17,7 +20,7 @@ const InvitedPlayer = ({
       <Text
         style={styles.invitedPlayerText}
       >
-        {invitedPlayer.phone}
+        {name || phone}
       </Text>
       <Remove onPress={removePlayer} />
     </View>

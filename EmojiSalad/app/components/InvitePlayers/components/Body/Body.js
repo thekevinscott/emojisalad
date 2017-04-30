@@ -27,7 +27,7 @@ const Body = ({
   return (
     <Instructions>{ children }</Instructions>
   );
-}
+};
 
 InvitedPlayers.PropTypes = {
   invitedPlayers: PropTypes.array.isRequired,

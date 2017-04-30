@@ -2,8 +2,8 @@ import typeToReducer from 'type-to-reducer';
 import R from 'ramda';
 
 import {
-  INVITE_PHONE,
-  REMOVE_PHONE,
+  INVITE_PLAYER,
+  REMOVE_PLAYER,
   CLEAR_INVITES,
 } from './types';
 
@@ -11,20 +11,20 @@ const initialState = {
   invitedPlayers: {},
 };
 
-const invitedPlayer = phone => {
+const invitedPlayer = player => {
   return {
-    phone,
+    ...player,
     added: new Date(),
   };
 };
 
-const invitePhone = (state, { phone }) => {
-  if (phone !== '') {
+const invitePlayer = (state, { player }) => {
+  if (player.phone !== '') {
     return {
       ...state,
       invitedPlayers: {
         ...state.invitedPlayers,
-        [phone]: invitedPlayer(phone),
+        [player.phone]: invitedPlayer(player),
       },
     };
   }
@@ -32,7 +32,7 @@ const invitePhone = (state, { phone }) => {
   return state;
 };
 
-const removePhone = (state, { player }) => {
+const removePlayer = (state, { player }) => {
   return {
     ...state,
     invitedPlayers: R.dissoc(player.phone, state.invitedPlayers),
@@ -47,7 +47,7 @@ const clearInvites = (state) => {
 };
 
 export default typeToReducer({
-  [INVITE_PHONE]: invitePhone,
-  [REMOVE_PHONE]: removePhone,
+  [INVITE_PLAYER]: invitePlayer,
+  [REMOVE_PLAYER]: removePlayer,
   [CLEAR_INVITES]: clearInvites,
 }, initialState);

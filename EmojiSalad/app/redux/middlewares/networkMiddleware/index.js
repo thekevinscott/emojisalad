@@ -163,14 +163,22 @@ const networkMiddleware = ({
         data,
       } = getState();
 
-      websocket({
-        userKey: data.me.key,
-        connected,
-        type,
-        payload,
-        meta,
-        params,
-      }, fns, types);
+      const args = [
+        {
+          userKey: data.me.key,
+          connected,
+          type,
+          payload,
+          meta,
+          params,
+        },
+        fns,
+        types,
+      ];
+
+      console.log('sending websocket', ...args);
+
+      websocket(...args);
     });
   } else {
     // otherwise, fetch it

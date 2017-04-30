@@ -44,6 +44,3 @@ export const PERSIST_DATA = true;
 if (ENVIRONMENT === 'production' && !PERSIST_DATA) {
   console.warn('RESET is set to true in a production environment; are you sure about that?');
 }
-
-/* Push City */
-export const PUSHCITY_API_KEY = '94065890d025a5989ddf0b67862d62739e77ef64af0c9e6050a46a9796380d43';
