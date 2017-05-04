@@ -22,10 +22,10 @@ const PROTOCOLS = process.env.PROTOCOLS.split(',');
 const tripwire_settings = {
   // if 10 or more messages are gotten or sent,
   // send us an email to let us know
-  alert: process.env.TRIPWIRE_ALERT || 10,
+  alert: process.env.TRIPWIRE_ALERT || 15,
   // if 20 or more messages are gotten or sent,
   // throw the tripwire and send us an email to know
-  trip: process.env.TRIPWIRE_TRIP || 20
+  trip: process.env.TRIPWIRE_TRIP || 30
 };
 
 let callbacks = [];

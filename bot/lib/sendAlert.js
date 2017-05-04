@@ -16,17 +16,17 @@ module.exports = function(responses, purpose = '', callee = '') {
   const subject = `Tripwire ${purpose} on Bot`;
   const body = `A tripwire was tripped on bot, at section ${callee}, at ${new Date()}. The messages are: ${JSON.stringify(responses, null, 2)}`;
   console.log('send message');
-  mg.sendText(sender,
-           recipients,
-           subject,
-           body,
-           (err) => {
-             console.log('callback');
-             if ( err ) {
-               console.error('Error sending email', err);
-             } else {
-               console.log('email sent successfully');
-             }
-           });
-}
-
+  mg.sendText(
+    sender,
+    recipients,
+    subject,
+    body,
+    (err) => {
+      console.log('callback');
+      if ( err ) {
+        console.error('Error sending email', err);
+      } else {
+        console.log('email sent successfully');
+      }
+    });
+};
