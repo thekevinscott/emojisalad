@@ -9,6 +9,8 @@ import {
   translateOutgoingMessage,
 } from './lib/translate';
 
+// This function returns a list of messages matching
+// some set of params.
 export default function (req, res) {
   //console.info('\n================queue received=================\n');
   //console.info('queue received, query', req.query);
@@ -60,9 +62,12 @@ export default function (req, res) {
     query = query.where(`${getPlayerWhereQuery(players, false)}`);
   }
 
-  //console.log(query.toString());
   return db.query(query).then((rows) => {
     return Promise.all((rows || []).map(row => {
+      // We pre-translate our outgoing messages
+      // before returning them. This is to aid
+      // the bot in consuming app-specific
+      // messages.
       return translateOutgoingMessage(row);
     }));
   }).then(rows => {

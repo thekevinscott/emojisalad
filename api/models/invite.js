@@ -213,6 +213,10 @@ const Invite = {
       query = query.where('i.id=?',params.id);
     }
 
+    if ( params.game_key ) {
+      query = query.where('g.key = ?',params.game_key);
+    }
+
     if ( params.game_id ) {
       query = query.where('i.game_id = ?',params.game_id);
     }

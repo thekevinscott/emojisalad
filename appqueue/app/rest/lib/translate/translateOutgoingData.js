@@ -18,6 +18,16 @@ function newPromise(payload) {
   return new Promise(resolve => resolve(payload));
 }
 
+// This function takes a user key and a game key,
+// representing a message received from the app (since every
+// message is attached to a particular user and game).
+//
+// This function will then first query the cache to see if translations
+// exist for the values passed in.
+//
+// If nothing is present in the cache, we'll fetch the phone number
+// that matches the user key, and we'll fetch the "sender id" that
+// matches the atom of the user and game keys.
 export default function translateOutgoingData({
   user_key: userKey,
   game_key: gameKey,

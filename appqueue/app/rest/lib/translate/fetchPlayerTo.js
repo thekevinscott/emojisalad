@@ -1,5 +1,9 @@
 import fetchFromService from '../../../../utils/fetchFromService';
 
+// This function will, given a user key and game key,
+// query the API for players matching those parameters.
+//
+// If no players are found, then check the invite log.
 export default function fetchPlayerTo(userKey, gameKey) {
   if (!userKey) {
     throw new Error('You must provide a user key');
@@ -20,9 +24,22 @@ export default function fetchPlayerTo(userKey, gameKey) {
     },
   }).then(players => {
     if (!players.length) {
-      //|| !players[0].to) {
-      console.info('no players found', players, qs);
-      throw new Error(`No sender Id found for user key ${userKey} and ${gameKey}`);
+      return fetchFromService({
+        service: 'api',
+        route: 'players.get',
+        options: {
+          invited_from_key: userKey,
+          game_key: gameKey,
+        },
+      }).then(invites => {
+        console.info('invites back', invites);
+        if (!invites.length) {
+          console.info('no players found', players, qs);
+          throw new Error(`No sender Id found for user key ${userKey} and ${gameKey}`);
+        }
+
+        return invites[0].invited_user.to;
+      });
     }
     return players[0].to;
   });
