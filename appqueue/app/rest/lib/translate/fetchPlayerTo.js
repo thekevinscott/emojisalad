@@ -28,9 +28,11 @@ export default function fetchPlayerTo(userKey, gameKey) {
         service: 'api',
         route: 'players.get',
         options: {
-          invited_from_key: userKey,
-          game_key: gameKey,
-          used: 0,
+          qs: {
+            invited_from_key: userKey,
+            game_key: gameKey,
+            used: 0,
+          },
         },
       }).then(invites => {
         console.info('invites back', invites);
