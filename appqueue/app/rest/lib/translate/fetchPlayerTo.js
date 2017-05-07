@@ -36,7 +36,7 @@ export default function fetchPlayerTo(userKey, gameKey) {
         },
       }).then(invites => {
         console.info('invites back', invites);
-        if (!invites.length) {
+        if (!invites.length || 1) {
           console.info('no players found', players, qs);
           throw new Error(`No sender Id found for user key ${userKey} and ${gameKey}`);
         }
