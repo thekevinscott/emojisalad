@@ -26,7 +26,7 @@ export default function fetchPlayerTo(userKey, gameKey) {
     if (!players.length) {
       return fetchFromService({
         service: 'api',
-        route: 'players.get',
+        route: 'invites.get',
         options: {
           qs: {
             invited_from_key: userKey,
