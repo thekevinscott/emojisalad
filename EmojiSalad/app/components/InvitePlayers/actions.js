@@ -1,5 +1,6 @@
 import ContactsWrapper from 'react-native-contacts-wrapper';
 
+/*
 import {
   update as updateLogger,
 } from 'components/Logger/actions';
@@ -38,3 +39,4 @@ export const removePlayer = player => {
     player,
   };
 };
+*/

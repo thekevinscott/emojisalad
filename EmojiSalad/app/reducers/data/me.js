@@ -12,6 +12,15 @@ import {
 import {
   types,
 } from 'app/pages/Register';
+
+import {
+  LOGIN,
+} from 'app/pages/Login/types';
+
+import {
+  UPDATE_USER,
+} from 'app/pages/Onboarding/types';
+
 const {
   SUBMIT_CLAIM,
 } = types;
@@ -49,10 +58,33 @@ const translateMe = (payload) => {
     confirmed: payload.confirmed,
     confirmed_avatar: payload.confirmed_avatar,
     protocol: payload.protocol,
+    facebookId: payload.facebookId,
+    facebookToken: payload.facebookToken,
   };
 };
 
 export default typeToReducer({
+  [UPDATE_USER]: {
+    FULFILLED: (state, action) => {
+      return {
+        ...state,
+        ...translateMe(action.data),
+      };
+    },
+  },
+  [LOGIN]: {
+    FULFILLED: (state, action) => {
+      Raven.setUser({
+        key: action.key,
+        nickname: action.nickname,
+      });
+
+      return {
+        ...state,
+        ...translateMe(action.data),
+      };
+    },
+  },
   [SUBMIT_CLAIM]: {
     FULFILLED: (state, action) => {
       Raven.setUser({

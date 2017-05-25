@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
@@ -20,27 +21,29 @@ import {
   Page,
 } from 'components/Page';
 
-import {
-  Register,
-} from 'pages/Register';
+//import {
+  //Register,
+//} from 'pages/Register';
 
-import {
-  Overview,
-} from 'pages/Games';
+import Games from 'pages/Games';
 
 import {
   Game,
 } from 'pages/Game';
 
-import {
-  NewGame,
-} from 'pages/NewGame';
+import NewGame from 'pages/NewGame';
 
-import {
-  Invite,
-} from 'pages/Invite';
+import Invite from 'pages/Invite';
+
+import Login from 'pages/Login';
+import Onboarding from 'pages/Onboarding';
 
 class Routes extends Component {
+  static propTypes = {
+    me: PropTypes.any,
+    dispatch: PropTypes.func.isRequired,
+  };
+
   componentDidMount() {
     Linking.addEventListener('url', this.handleOpenURL);
   }
@@ -97,25 +100,29 @@ class Routes extends Component {
       <Scene key="root">
         <Scene
           passProps
-          key="register"
+          key="login"
           component={Page}
-          page={Register}
+          page={Login}
           initial={this.isInitial('register')}
-          title="User Registration"
-          navigationBarStyle={{
-            backgroundColor: '#fafafa',
-          }}
+          title=""
+        />
+        <Scene
+          passProps
+          key="onboarding"
+          component={Page}
+          page={Onboarding}
+          title=""
         />
         <Scene
           passProps
           key="games"
           component={Page}
-          page={Overview}
+          page={Games}
           initial={this.isInitial('games')}
           title={gamesTitle}
           leftTitle={settings}
           onLeft={() => {
-            debugger;
+            //debugger;
           }}
           rightTitle={newGame}
           onRight={() => {
@@ -134,10 +141,6 @@ class Routes extends Component {
           onLeft={() => {
             Actions.games();
           }}
-          leftTitle="Back"
-          onLeft={() => {
-            console.log('invite!');
-          }}
         />
         <Scene
           passProps
@@ -146,7 +149,7 @@ class Routes extends Component {
           type={ActionConst.PUSH}
           component={Page}
           page={Invite}
-          title="Invite"
+          title="Add Player"
           leftTitle="Back"
         />
         <Scene

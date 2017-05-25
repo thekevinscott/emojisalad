@@ -1,12 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
   Text,
   ActivityIndicator,
   View,
-  TouchableHighlight,
-  //ListView,
-  //RefreshControl,
 } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Game from './Game';
@@ -27,7 +25,11 @@ const renderRow = ({
   openGame,
   games,
   updateStartingMessage,
-}) => (game, sectionID, rowID) => (
+}) => (
+  game,
+  sectionID,
+  rowID,
+) => (
   <Game
     rowID={rowID}
     game={game}
@@ -36,6 +38,10 @@ const renderRow = ({
     updateStartingMessage={updateStartingMessage}
   />
 );
+
+renderRow.propTypes = {
+  game: PropTypes.object.isRequired,
+};
 
 export default function List({
   openGame,
@@ -95,3 +101,13 @@ export default function List({
     </View>
   );
 }
+
+List.propTypes = {
+  openGame: PropTypes.func.isRequired,
+  games: PropTypes.array.isRequired,
+  fetching: PropTypes.bool.isRequired,
+  updateStartingMessage: PropTypes.func.isRequired,
+  dataSource: PropTypes.any,
+  pauseGame: PropTypes.func.isRequired,
+  leaveGame: PropTypes.func.isRequired,
+};

@@ -1,1 +1,1 @@
-export NewGame from './components/NewGame';
+export { default } from './components/NewGame';

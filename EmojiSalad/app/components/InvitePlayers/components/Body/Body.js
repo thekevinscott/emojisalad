@@ -1,39 +1,44 @@
-import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import PropTypes from 'prop-types';
+//import { connect } from 'react-redux';
 import {
-  Text,
-  View,
+  //Text,
+  //View,
 } from 'react-native';
 
-import InvitedPlayers from './InvitedPlayers';
+import Friends from './Friends';
 import Instructions from './Instructions';
+import { FriendsPropTypes } from 'app/components/InvitePlayers';
 
 const Body = ({
-  invitedPlayers,
-  removePlayer,
-  submit,
-  children,
+  friends,
+  invitableFriends,
+  addPlayer,
 }) => {
-  if (invitedPlayers.length) {
+  if (friends.length || invitableFriends.length) {
     return (
-      <InvitedPlayers
-        invitedPlayers={invitedPlayers}
-        removePlayer={removePlayer}
-        submit={submit}
+      <Friends
+        friends={friends}
+        invitableFriends={invitableFriends}
+        addPlayer={addPlayer}
       />
     );
   }
 
   return (
-    <Instructions>{ children }</Instructions>
+    <Instructions>
+      Loading friends
+    </Instructions>
   );
 };
 
-InvitedPlayers.PropTypes = {
-  invitedPlayers: PropTypes.array.isRequired,
-  removePlayer: PropTypes.func.isRequired,
-  startGame: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
+Body.propTypes = {
+  ...FriendsPropTypes,
+  addPlayer: PropTypes.func.isRequired,
+  //invitedPlayers: PropTypes.array.isRequired,
+  //removePlayer: PropTypes.func.isRequired,
+  //startGame: PropTypes.func.isRequired,
+  //children: PropTypes.node.isRequired,
 };
 
 export default Body;

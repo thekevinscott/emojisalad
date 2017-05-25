@@ -60,7 +60,12 @@ const Invite = {
    */
   create: (params) => {
     console.info('invite create 1', params);
-    return Player.findOne(params.inviter_id).then((player) => {
+    const playerParams = {
+      id: params.inviter_id,
+      key: params.inviter_key,
+    };
+    //console.info('player params', playerParams);
+    return Player.findOne(playerParams).then((player) => {
       console.info('the player found, who is the inviter', player);
       if ( player && player.id ) {
         return player;
@@ -80,6 +85,8 @@ const Invite = {
           [key]: params.invitee[key],
         };
       });
+
+      console.info('user find params', userFindParams);
       return User.findOne(userFindParams).then((user) => {
         if ( user && user.id ) {
           console.info('user exists and is', user);
@@ -143,13 +150,14 @@ const Invite = {
                   console.info('found sender id', senderId);
                   //const game_number = rows[0];
 
+                  //console.info('inviter player', inviter_player);
                   const query = squel
                   .insert()
                   .into('invites')
                   .set('game_id', game.id)
-                  .set('game_number_id', senderId)
+                  .set('game_number_id', senderId || 0)
                   .set('invited_id', invited_user.id)
-                  .set('inviter_id', params.inviter_id);
+                  .set('inviter_id', inviter_player.user_id);
 
                   console.info('invite query', query.toString());
                   return db.query(query.toString()).then(row => {

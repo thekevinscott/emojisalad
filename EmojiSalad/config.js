@@ -1,6 +1,6 @@
 /* API */
-export const ENVIRONMENT = 'production';
-//export const ENVIRONMENT = 'development';
+//export const ENVIRONMENT = 'production';
+export const ENVIRONMENT = 'development';
 //export const ENVIRONMENT = 'development-device';
 
 const LOCAL_IP = '192.168.0.8';
@@ -16,10 +16,11 @@ function getAPI(environment) {
       API_PORT: '80',
       //http://app.emojisalad.com/
     };
-    //return {
-      //API_HOST: '45.55.41.73',
-      //API_PORT,
-    //};
+  } else if (environment === 'development') {
+    return {
+      API_HOST: 'localhost',
+      API_PORT,
+    };
   } else if (environment === 'development-device') {
     return {
       API_HOST: LOCAL_IP,

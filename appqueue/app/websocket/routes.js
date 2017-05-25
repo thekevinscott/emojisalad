@@ -9,6 +9,9 @@ import startNewGame from './routes/games/start';
 import invite from './routes/games/invite';
 import pause from './routes/games/pause';
 import leave from './routes/games/leave';
+import login from './routes/users/login';
+import updateSettings from './routes/users/updateSettings';
+import fb from './routes/fb';
 
 export const CLAIM = 'CLAIM';
 export const FETCH_GAMES = 'FETCH_GAMES';
@@ -20,6 +23,10 @@ export const START_NEW_GAME = '@NewGame/START_NEW_GAME';
 export const INVITE = '@Invite/INVITE';
 export const LEAVE = '@Games/LEAVE_GAME';
 export const PAUSE = '@Games/PAUSE_GAME';
+export const LOGIN = '@Login/LOGIN';
+export const ONBOARDING_UPDATE_USER = '@Onboarding/UPDATE_USER';
+export const SETTINGS_UPDATE_USER = '@Settings/UPDATE_USER';
+export const FB = '@websocket/FB_API';
 
 const ROUTES = {
   [CLAIM]: claim,
@@ -32,6 +39,10 @@ const ROUTES = {
   [INVITE]: invite,
   [PAUSE]: pause,
   [LEAVE]: leave,
+  [LOGIN]: login,
+  [ONBOARDING_UPDATE_USER]: updateSettings,
+  [SETTINGS_UPDATE_USER]: updateSettings,
+  [FB]: fb,
 };
 
 export default ROUTES;

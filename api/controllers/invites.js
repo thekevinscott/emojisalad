@@ -17,17 +17,12 @@ module.exports = [
 
 function create(req) {
   const inviter_id = req.body.inviter_id;
+  const inviter_key = req.body.inviter_key;
   console.info('req body', req.body);
-  if ( ! inviter_id ) {
+  if ( ! inviter_id && ! inviter_key ) {
     throw new Error("You must provide an inviter_id");
-  } else if ( !parseInt(inviter_id) ) {
+  } else if ( !parseInt(inviter_id) && ! inviter_key ) {
     throw new Error("You must provide a valid inviter_id");
-  }
-
-  if ( ! req.body.invitee ) {
-    throw new Error("You must provide a valid invitee");
-  //} else if ( !_.isArray(req.body.invitee) ) {
-    //throw new Error("You must provide valid invitee");
   }
 
   //req.body.invitee = _.uniq(req.body.invitee);

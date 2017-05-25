@@ -23,9 +23,9 @@ function arrayToObj(arr, key, callback) {
 const User = {
   create: (params) => {
     console.info('API: User create', params);
-    if ( ! params.from ) {
-      throw new Error("You must provide a from field for a user");
-    }
+    //if ( ! params.from ) {
+      //throw new Error("You must provide a from field for a user");
+    //}
 
     if ( ! params.protocol ) {
       throw new Error("You must provide a protocol id for a user");
@@ -36,41 +36,108 @@ const User = {
       nickname = `${params.nickname}`.trim();
     }
 
+    let from = null;
+    if ( params.from) {
+      from = params.from;
+    }
+
+    let facebookId = null;
+    if (params.facebookId) {
+      facebookId = params.facebookId;
+    }
+
+    let facebookToken = null;
+    if (params.facebookToken) {
+      facebookToken = params.facebookToken;
+    }
+
     console.info('create user 1');
     return Emoji.getRandom().then((result) => {
       console.info('create user 2', result);
       const avatar = result.emoji;
       console.info('create user 3', params);
-      const number = params.from;
-      console.info('parsed the number', number);
+      console.info('parsed the number', from);
       const confirmed = params.confirmed || 0;
-      const query = squel
-      .insert({ autoQuoteFieldNames: true })
-      .into('users')
-      .setFields({
-        created: squel.fval('NOW(3)'),
-        last_activity: squel.fval('NOW(3)'),
-        confirmed,
-        from: number,
-        avatar,
-        nickname,
-        protocol: params.protocol,
-        maximum_games: default_maximum_games
-      });
-      console.info('user create query', query.toString());
-      return db.create(query.toString()).then((queryResult) => {
-        console.info('query result from inserting user', queryResult);
-        return setKey('users', {
-          ...params,
-          id: queryResult.insertId,
-        }).then(() => {
-          return User.findOne(queryResult.insertId);
-        }).then((user) => {
+
+      // If we're passing a facebook ID, we need to do
+      // a manual search to see if we've already inserted
+      // this user
+      if (facebookId) {
+        return User.findOne({ facebookId }).then(user => {
+          if (user) {
+            return {
+              key: user.key,
+              confirmed,
+              avatar,
+            };
+          }
+
           return {
-            ...user,
-            to: params.to
+            confirmed,
+            avatar,
           };
         });
+      }
+
+      return {
+        confirmed,
+        avatar,
+      };
+    }).then(({
+      key,
+      confirmed,
+      avatar,
+    }) => {
+      let query;
+      let method = 'create';
+      if (!key) {
+        query = squel
+        .insert({ autoQuoteFieldNames: true })
+        .into('users')
+        .setFields({
+          created: squel.fval('NOW(3)'),
+          //last_activity: squel.fval('NOW(3)'),
+          confirmed,
+          from,
+          avatar,
+          nickname,
+          protocol: params.protocol,
+          maximum_games: default_maximum_games,
+          facebookId,
+          facebookToken,
+        });
+      } else {
+        method = 'query';
+        query = squel
+        .update({ autoQuoteFieldNames: true })
+        .table('users')
+        .set('facebookToken', facebookToken)
+        //.set('updated', squel.fval('NOW(3)'))
+        .where('`key` = ?', key);
+      }
+
+      return db[method](query).then((queryResult) => {
+        if (method === 'create') {
+          return setKey('users', {
+            ...params,
+            id: queryResult.insertId,
+          }).then(() => {
+            return { queryResult };
+          });
+        }
+
+        return { queryResult, params };
+      }).then(({ queryResult, params }) => {
+        if (queryResult.insertId) {
+          return User.findOne(queryResult.insertId);
+        }
+
+        return User.findOne(params);
+      }).then(user => {
+        return {
+          ...user,
+          to: params.to,
+        };
       });
     });
   },
@@ -84,11 +151,18 @@ const User = {
       'confirmed',
       'confirmed_avatar',
       'protocol',
+      'registered',
+      'facebookToken',
     ];
-    const query = squel
+    let query = squel
                   .update()
-                  .table('users', 'u')
-                  .where('u.id=?', user.id);
+                  .table('users', 'u');
+
+    if (user.id) {
+      query = query.where('u.id=?', user.id);
+    } else if (user.key) {
+      query = query.where('u.key=?', user.key);
+    }
 
     let valid_query = false;
     whitelist.map((key) => {
@@ -103,8 +177,8 @@ const User = {
     }
 
     return db.query(query).then((rows) => {
-      if ( rows && rows.changedRows ) {
-        return User.findOne(user.id);
+      if ( rows && rows.affectedRows ) {
+        return User.findOne(user);
       } else {
         return null;
       }
@@ -162,6 +236,14 @@ const User = {
     if ( params.nickname ) {
       someWhereStatement = true;
       query = query.where('u.nickname LIKE ?',`${params.nickname}%`);
+    }
+
+    if ( params.facebookId ) {
+      someWhereStatement = true;
+      query = query.where('u.facebookId = ?',params.facebookId);
+    } else if ( params.facebookIds ) {
+      someWhereStatement = true;
+      query = query.where('u.facebookId IN (?)',params.facebookIds);
     }
 
     if ( params.from ) {

@@ -1,3 +1,4 @@
+/* globals Promise */
 import sendMessage from './utils/sendMessage';
 import onMessage from './utils/onMessage';
 import io from './socketio';
@@ -12,6 +13,7 @@ import {
 
 import lib, { WEBSOCKET } from './lib';
 
+const promises = {};
 let socket;
 const bootstrapSocket = (dispatch) => {
   socket = io(`${API_HOST}:${API_PORT}`, {
@@ -28,7 +30,20 @@ const bootstrapSocket = (dispatch) => {
     dispatch(updateStatus(false));
   });
 
-  socket.on('message', onMessage(dispatch));
+  socket.on('message', e => {
+    const payload = onMessage(e);
+    dispatch(payload);
+    if (payload.meta && payload.meta.id && promises[payload.meta.id]) {
+      const promise = promises[payload.meta.id];
+      if (payload.type.indexOf('_REJECTED') !== -1) {
+        console.log('throw error for', payload);
+        promise.reject(payload);
+      } else {
+        console.log('resolve payload for', payload);
+        promise.resolve(payload);
+      }
+    }
+  });
 };
 
 const websocket = ({
@@ -44,7 +59,7 @@ const websocket = ({
 }, types) => {
   if (!connected) {
     console.log('websocket is not connected and thus will be rejected for', types.REJECTED);
-    next({
+    return next({
       ...params,
       type: types.REJECTED,
       data: {
@@ -54,7 +69,7 @@ const websocket = ({
       meta,
     });
   } else {
-    sendMessage(socket, {
+    const packet = sendMessage(socket, {
       userKey,
       type,
       payload,
@@ -71,8 +86,9 @@ const websocket = ({
       });
     });
 
-    //const messageId = packet.meta.id;
-    //console.log('sent message id', messageId);
+    const messageId = packet.meta.id;
+    console.log('sent message id', messageId);
+    return messageId;
   }
 };
 
@@ -156,9 +172,16 @@ const networkMiddleware = ({
     dispatch,
   };
 
+  next({
+    ...params,
+    type: types.PENDING,
+    payload,
+    meta,
+  });
+
   // all websocket, all the time
   if (lib[type] === WEBSOCKET || 1) {
-    getConnectedStatus(getState).then(connected => {
+    return getConnectedStatus(getState).then(connected => {
       const {
         data,
       } = getState();
@@ -176,9 +199,23 @@ const networkMiddleware = ({
         types,
       ];
 
-      console.log('sending websocket', ...args);
+      const messageId = websocket(...args);
 
-      websocket(...args);
+      const promiseObj = {
+        reject: null,
+        resolve: null,
+      };
+      const promise = new Promise((resolve, reject) => {
+        promiseObj.reject = reject;
+        promiseObj.resolve = resolve;
+      });
+
+      promises[messageId] = {
+        promise,
+        ...promiseObj,
+      };
+
+      return promises[messageId].promise;
     });
   } else {
     // otherwise, fetch it
@@ -190,13 +227,6 @@ const networkMiddleware = ({
     }, fns, types);
   }
 
-  // continue on through the middleware stack
-  return next({
-    ...params,
-    type: types.PENDING,
-    payload,
-    meta,
-  });
 };
 
 export default networkMiddleware;

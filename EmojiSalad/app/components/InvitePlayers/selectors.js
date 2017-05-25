@@ -1,9 +1,10 @@
-import { bindActionCreators } from 'redux';
+//import { bindActionCreators } from 'redux';
 
 import {
-  invitePlayer,
-  removePlayer,
-  clearInvites,
+  //invitePlayer,
+  //removePlayer,
+  //clearInvites,
+  //addPlayer,
 } from './actions';
 
 const getInvitedPlayers = ({
@@ -22,12 +23,12 @@ export function mapStateToProps(state) {
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps() {
   return {
     actions: {
-      invitePlayer: bindActionCreators(invitePlayer, dispatch),
-      removePlayer: bindActionCreators(removePlayer, dispatch),
-      clearInvites: bindActionCreators(clearInvites, dispatch),
+      //invitePlayer: bindActionCreators(invitePlayer, dispatch),
+      //removePlayer: bindActionCreators(removePlayer, dispatch),
+      //clearInvites: bindActionCreators(clearInvites, dispatch),
     },
   };
 }

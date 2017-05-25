@@ -12,6 +12,9 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+
 @implementation AppDelegate
 @synthesize oneSignal = _oneSignal;
 
@@ -34,12 +37,20 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  return YES;
+//  return YES;
+  return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                  didFinishLaunchingWithOptions:launchOptions];
 }
-
-// Required for the notification event.
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification {
-  [RCTOneSignal didReceiveRemoteNotification:notification];
+  
+  // Facebook SDK
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+  [FBSDKAppEvents activateApp];
 }
-
+  
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+  return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                        openURL:url
+                                              sourceApplication:sourceApplication
+                                                     annotation:annotation];
+}
 @end

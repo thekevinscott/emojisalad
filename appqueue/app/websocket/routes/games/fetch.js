@@ -21,7 +21,8 @@ const fetchMessages = ({
 };
 
 const getAllGamesForUser = userKey => {
-  return getUserGames(userKey).then(games => {
+  return getUserGames(userKey).then((games = []) => {
+    //console.log('the games', games);
     return games.map(game => ({
       key: game.key,
       created: game.created,

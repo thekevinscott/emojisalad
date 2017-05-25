@@ -17,7 +17,7 @@ const parsePayload = (e) => {
   }
 };
 
-const onMessage = dispatch => e => {
+const onMessage = e => {
   const {
     type,
     data,
@@ -39,7 +39,7 @@ const onMessage = dispatch => e => {
     clearTimer(meta.id);
   }
 
-  return dispatch(payload);
+  return payload;
 };
 
 export default onMessage;

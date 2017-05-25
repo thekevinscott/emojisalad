@@ -1,10 +1,11 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Text,
+  //Text,
   View,
-  ListView,
-  PushNotificationIOS,
+  //ListView,
+  //PushNotificationIOS,
   //RefreshControl,
 } from 'react-native';
 
@@ -18,42 +19,42 @@ import {
   mapDispatchToProps,
 } from '../selectors';
 
+export const FriendPropType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+});
+
+export const FriendsPropTypes = {
+  friends: PropTypes.arrayOf(FriendPropType).isRequired,
+  invitableFriends: PropTypes.arrayOf(FriendPropType).isRequired,
+};
+
 class InvitePlayers extends Component {
   static propTypes = {
-    submit: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    addPlayer: PropTypes.func.isRequired,
+    ...FriendsPropTypes,
   };
 
   render() {
     const {
-      actions,
-      me,
-      invitedPlayers,
-      children,
+      friends,
+      invitableFriends,
+      addPlayer,
     } = this.props;
-
-    const {
-      invitePlayer,
-      removePlayer,
-      clearInvites,
-    } = actions;
 
     return (
       <View
         style={styles.newGame}
       >
         <InvitePlayersSearch
-          invitePlayer={invitePlayer}
+          invitePlayer={() => {
+          }}
         />
         <Body
-          invitedPlayers={invitedPlayers}
-          removePlayer={removePlayer}
-          submit={() => {
-            this.props.submit(invitedPlayers.map(player => player.phone));
-            clearInvites();
-          }}
+          friends={friends}
+          invitableFriends={invitableFriends}
+          addPlayer={addPlayer}
         >
-          { children }
         </Body>
       </View>
     );

@@ -1,21 +1,21 @@
 import startNewGame from '../../games/startNewGame';
-import sendUserInviteMessage from '../../invites/sendUserInviteMessage';
+import invitePlayers from '../../invites/invitePlayers';
 
-export default function start(ws, { userKey, phones }) {
+export default function start(ws, { userKey, players }) {
+  console.info('start!', userKey);
   return startNewGame(userKey).then(game => {
+    console.info('game', game);
+    console.info('now invite everybody', players);
     if (game.error) {
       throw new Error(game.error);
     }
 
-    console.info('now invite everybody');
-
-    return Promise.all(phones.map(phone => {
-      console.info('inviting this phone', phone);
-      return sendUserInviteMessage(userKey, game.key, phone).catch(err => {
-        console.info('an error', err);
-      });
-    })).then(() => {
-      return game;
+    return invitePlayers(game.players[0].key, game.key, players).then(invites => {
+      //console.log('result', res);
+      return {
+        ...game,
+        invites,
+      };
     });
   }).then(game => {
     console.info('all users invited');

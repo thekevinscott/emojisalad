@@ -1,30 +1,46 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  Text,
-  View,
+  //Text,
+  //View,
   //RefreshControl,
 } from 'react-native';
 
-import * as styles from '../styles';
+//import * as styles from '../styles';
 
 import {
   mapStateToProps,
   mapDispatchToProps,
 } from '../selectors';
 
-import InvitePlayers from 'app/components/InvitePlayers';
+import InvitePlayers, { FriendsPropTypes } from 'app/components/InvitePlayers';
 
 class Invite extends Component {
+  static propTypes = {
+    actions: PropTypes.shape({
+      getUserFriends: PropTypes.func.isRequired,
+    }).isRequired,
+    me: PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      facebookToken: PropTypes.string.isRequired,
+    }).isRequired,
+    addPlayer: PropTypes.func.isRequired,
+    gameKey: PropTypes.string,
+    ...FriendsPropTypes,
+  };
+
+  componentDidMount() {
+    this.props.actions.getUserFriends(this.props.me.facebookToken);
+  }
+
   render() {
     return (
       <InvitePlayers
-        submit={phones => {
-          this.props.actions.invite(this.props.me.key, this.props.gameKey, phones);
-        }}
-      >
-        Invite a player to this game by entering a phone number above.
-      </InvitePlayers>
+        friends={this.props.friends}
+        invitableFriends={this.props.invitableFriends}
+        addPlayer={this.props.addPlayer}
+      />
     );
   }
 }

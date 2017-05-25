@@ -13,14 +13,29 @@ function findOne(req) {
   }
   return User.findOne(user_id);
 }
+
 function create(req) {
-  console.info('create user');
   return User.create(req.body);
 }
+
+const getArgs = (user_id) => {
+  if ( /^\d+$/.test(user_id)) {
+    return {
+      id: user_id,
+    };
+  }
+
+  return {
+    key: user_id,
+  };
+};
+
 function update(req) {
-  //console.info('update user', req.params.user_id, req.body);
-  return User.update({ id: req.params.user_id }, req.body).then((response) => {
-    console.info('got a repsonse', response);
+  const user_id = req.params.user_id;
+
+  const args = getArgs(user_id);
+
+  return User.update(args, req.body).then((response) => {
     return response;
   });
 }

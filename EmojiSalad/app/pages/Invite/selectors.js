@@ -4,23 +4,27 @@ import {
 } from 'components/App/selectors';
 
 import {
-  invite,
+  //invite,
+  getUserFriends,
 } from './actions';
 
-export function mapStateToProps(state, { game }) {
+export function mapStateToProps(state) {
   const me = selectMe(state);
-  const gameKey = game.key;
+  //const gameKey = game.key;
 
   return {
     me,
-    gameKey,
+    friends: state.ui.Invite.friends,
+    invitableFriends: state.ui.Invite.invitableFriends,
+    //gameKey,
   };
 }
 
 export function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      invite: bindActionCreators(invite, dispatch),
+      //invite: bindActionCreators(invite, dispatch),
+      getUserFriends: bindActionCreators(getUserFriends, dispatch),
     },
   };
 }

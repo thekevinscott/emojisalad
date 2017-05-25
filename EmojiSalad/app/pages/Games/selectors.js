@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux';
 import {
   fetchData,
   openGame,
-  updatePushId,
+  //updatePushId,
   updateStartingMessage,
   leaveGame,
   pauseGame,
@@ -113,7 +113,7 @@ export function selectGames(state) {
 const getMostRecentMessage = ({ messages }) => messages[messages.length - 1];
 
 export const selectGamesByNewestFirst = state => {
-  return selectGames(state).reverse().filter(game => {
+  return selectGames(state).reverse().filter(() => {
     return true;
     //return game.messages.length > 0;
   }).map(game => {
@@ -126,19 +126,13 @@ export const selectGamesByNewestFirst = state => {
   });
 };
 
-export function selectUI(state) {
-  return {
-    fetching: state.ui.Games.fetching,
-  };
-}
-
 export function mapStateToProps(state) {
   const loggerMessages = state.ui.Logger.messages;
 
   return {
+    fetching: state.ui.Games.fetching || false,
     games: selectGamesByNewestFirst(state),
     me: selectMe(state),
-    ui: selectUI(state),
     logger: loggerMessages,
   };
 }

@@ -44,7 +44,7 @@ const Player = {
           return {
             game_id: game.id,
             user_id: user.id,
-            to: params.to
+            to: params.to,
           };
         }
       });
@@ -57,7 +57,7 @@ const Player = {
       .insert({ autoQuoteFieldNames: true })
       .into('players')
       .setFields({
-        to: player_params.to || '',
+        to: player_params.to || 0,
         created: squel.fval('NOW(3)'),
         user_id: player_params.user_id,
         game_id: player_params.game_id
@@ -129,6 +129,8 @@ const Player = {
       query = query.where('p.id=?',params.id);
     } else if ( params.ids ) {
       query = query.where('p.id IN ?',params.ids);
+    } else if ( params.key ) {
+      query = query.where('p.key = ?',params.key);
     }
 
     if ( params.nickname ) {

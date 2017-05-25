@@ -52,28 +52,37 @@ const getSender = (user, result) => {
 
     const exclude = player_sender_ids.concat(challenge_sender_ids).join(',');
 
-    const service = registry.get(result.protocol);
-    const options = {
-      url: service.api.senders.get.endpoint,
-      method: service.api.senders.get.method,
-      qs: {
-        exclude,
-      }
-    };
+    const BLACKLISTED_PROTOCOLS = [
+      'facebook',
+    ];
 
-    console.info('service options', options);
+    if (BLACKLISTED_PROTOCOLS.indexOf(result.protocol) === -1) {
+      const service = registry.get(result.protocol);
 
-    return request(options).then((response) => {
-      //console.info('response', response);
-      try {
-        return JSON.parse(response.body);
-      } catch (err) {
-        console.error('error parsing json response', response.body);
-        reject(new Error('Error getting sender'));
-      }
-    }).then((body) => {
-      resolve(body.id);
-    });
+      const options = {
+        url: service.api.senders.get.endpoint,
+        method: service.api.senders.get.method,
+        qs: {
+          exclude,
+        }
+      };
+
+      console.info('service options', options);
+
+      return request(options).then((response) => {
+        //console.info('response', response);
+        try {
+          return JSON.parse(response.body);
+        } catch (err) {
+          console.error('error parsing json response', response.body);
+          reject(new Error('Error getting sender'));
+        }
+      }).then((body) => {
+        resolve(body.id);
+      });
+    }
+
+    resolve();
   });
 };
 
@@ -92,7 +101,9 @@ const Game = {
       return Promise.all(users.map((user) => {
         console.info('check that this user is valid', user);
         return User.findOne(user).then((result) => {
+          console.log('get sender');
           return getSender(user, result).then(sender => {
+            console.log('got sender', sender);
             return Object.assign({}, result, {
               to: sender,
             });

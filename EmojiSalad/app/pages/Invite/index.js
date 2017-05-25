@@ -1,1 +1,1 @@
-export Invite from './components/Invite';
+export { default } from './components/Invite';

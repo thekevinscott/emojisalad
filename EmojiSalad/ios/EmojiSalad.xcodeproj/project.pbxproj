@@ -38,6 +38,10 @@
 		346079B91E8DBCE200E60745 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 346079B81E8DBCE200E60745 /* FontAwesome.ttf */; };
 		346079FF1E8DC46A00E60745 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 346079FC1E8DC44D00E60745 /* libRCTPushNotification.a */; };
 		34607A381E8DC5DE00E60745 /* airhorn.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 34607A371E8DC5DE00E60745 /* airhorn.mp3 */; };
+		346D3CDF1EBFD5E800D559C2 /* libRCTFBLogin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 346D3CDE1EBFD5BC00D559C2 /* libRCTFBLogin.a */; };
+		346D3CE31EBFD63F00D559C2 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 346D3CE01EBFD63F00D559C2 /* FBSDKCoreKit.framework */; };
+		346D3CE41EBFD63F00D559C2 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 346D3CE11EBFD63F00D559C2 /* FBSDKLoginKit.framework */; };
+		346D3CE51EBFD63F00D559C2 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 346D3CE21EBFD63F00D559C2 /* FBSDKShareKit.framework */; };
 		346F63F21E947393002D6DDB /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F786376FE18419D969F79B1 /* Ionicons.ttf */; };
 		34EF73231E9A855C00AEC4EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34EF73221E9A855C00AEC4EF /* Images.xcassets */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -159,6 +163,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 2B58405A1D10DE8700235F31;
 			remoteInfo = RCTContactsWrapper;
+		};
+		346D3CDD1EBFD5BC00D559C2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 346D3CD91EBFD5BC00D559C2 /* RCTFBLogin.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4F3A6B5B1ACFBCC500CA65F7;
+			remoteInfo = RCTFBLogin;
 		};
 		3474C4191E8D497D008112BC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -313,6 +324,10 @@
 		346079B81E8DBCE200E60745 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		346079F61E8DC44D00E60745 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		34607A371E8DC5DE00E60745 /* airhorn.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = airhorn.mp3; path = "../../../../../../../www/emojisalad/EmojiSalad/Audio/third party/airhorn.mp3"; sourceTree = "<group>"; };
+		346D3CD91EBFD5BC00D559C2 /* RCTFBLogin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTFBLogin.xcodeproj; path = "../node_modules/react-native-facebook-login/RCTFBLogin.xcodeproj"; sourceTree = "<group>"; };
+		346D3CE01EBFD63F00D559C2 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../node_modules/react-native-facebook-login/FacebookSDK/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
+		346D3CE11EBFD63F00D559C2 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../node_modules/react-native-facebook-login/FacebookSDK/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
+		346D3CE21EBFD63F00D559C2 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = "../node_modules/react-native-facebook-login/FacebookSDK/FBSDKShareKit.framework"; sourceTree = "<group>"; };
 		34972EBA1E8EFDD0001ACCC8 /* receive.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = receive.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/receive.aif; sourceTree = "<group>"; };
 		34972EBB1E8EFDD0001ACCC8 /* send.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = send.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/send.aif; sourceTree = "<group>"; };
 		34972EBC1E8EFDD0001ACCC8 /* welcome.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = welcome.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/welcome.aif; sourceTree = "<group>"; };
@@ -348,15 +363,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				346D3CDF1EBFD5E800D559C2 /* libRCTFBLogin.a in Frameworks */,
 				346079FF1E8DC46A00E60745 /* libRCTPushNotification.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
+				346D3CE31EBFD63F00D559C2 /* FBSDKCoreKit.framework in Frameworks */,
+				346D3CE51EBFD63F00D559C2 /* FBSDKShareKit.framework in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
+				346D3CE41EBFD63F00D559C2 /* FBSDKLoginKit.framework in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
@@ -556,6 +575,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		346D3CDA1EBFD5BC00D559C2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				346D3CDE1EBFD5BC00D559C2 /* libRCTFBLogin.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3474C4161E8D497D008112BC /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -585,6 +612,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				346D3CD91EBFD5BC00D559C2 /* RCTFBLogin.xcodeproj */,
 				346079F61E8DC44D00E60745 /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -653,6 +681,9 @@
 			isa = PBXGroup;
 			children = (
 				57242E6C89934A54BBC962EF /* libz.tbd */,
+				346D3CE01EBFD63F00D559C2 /* FBSDKCoreKit.framework */,
+				346D3CE11EBFD63F00D559C2 /* FBSDKLoginKit.framework */,
+				346D3CE21EBFD63F00D559C2 /* FBSDKShareKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -791,6 +822,10 @@
 				{
 					ProductGroup = 5E91572E1DD0AC6500FF2AA8 /* Products */;
 					ProjectRef = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
+				},
+				{
+					ProductGroup = 346D3CDA1EBFD5BC00D559C2 /* Products */;
+					ProjectRef = 346D3CD91EBFD5BC00D559C2 /* RCTFBLogin.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -952,6 +987,13 @@
 			fileType = archive.ar;
 			path = libRCTContactsWrapper.a;
 			remoteRef = 346C737A1EB67B690006D668 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		346D3CDE1EBFD5BC00D559C2 /* libRCTFBLogin.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTFBLogin.a;
+			remoteRef = 346D3CDD1EBFD5BC00D559C2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3474C41A1E8D497D008112BC /* libCodePush.a */ = {
@@ -1216,6 +1258,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1260,6 +1303,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
@@ -1304,6 +1348,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 92TG8V3QUG;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Frameworks/",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK\n$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK\n$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK\n/**",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
@@ -1334,6 +1382,10 @@
 				CODE_SIGN_ENTITLEMENTS = EmojiSalad/EmojiSalad.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 92TG8V3QUG;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Frameworks/",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK\n$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK\n$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK\n/**",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
@@ -1367,6 +1419,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1415,6 +1468,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				GCC_NO_COMMON_BLOCKS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1462,6 +1516,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "EmojiSalad-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1494,6 +1549,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "EmojiSalad-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1539,6 +1595,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1585,6 +1642,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  Text,
-  View,
-  ListView,
-  PushNotificationIOS,
-  //RefreshControl,
-} from 'react-native';
 
-import * as styles from '../styles';
-
-import InvitePlayers from '../../../components/InvitePlayers/';
+import GameSettings from 'components/GameSettings';
 
 import {
   mapStateToProps,
@@ -18,15 +10,20 @@ import {
 } from '../selectors';
 
 class NewGame extends Component {
+  static propTypes = {
+    actions: PropTypes.shape({
+      startGame: PropTypes.func.isRequired,
+    }).isRequired,
+    me: PropTypes.object.isRequired,
+  };
+
   render() {
     return (
-      <InvitePlayers
-        submit={phones => {
-          this.props.actions.startGame(this.props.me.key, phones);
+      <GameSettings
+        startGame={(players) => {
+          this.props.actions.startGame(this.props.me.key, players);
         }}
-      >
-        Start a new game by inviting players by their phone numbers above.
-      </InvitePlayers>
+      />
     );
   }
 }

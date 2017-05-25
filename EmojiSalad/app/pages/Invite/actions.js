@@ -5,7 +5,12 @@ import {
 } from 'components/Logger/actions';
 
 import {
+  FB_API,
+} from 'middlewares/networkMiddleware/types';
+
+import {
   INVITE,
+  GET_USER_FRIENDS,
 } from './types';
 
 export const invite = (userKey, gameKey, phones) => dispatch => dispatch(() => {
@@ -19,6 +24,22 @@ export const invite = (userKey, gameKey, phones) => dispatch => dispatch(() => {
       userKey,
       gameKey,
       phones,
+    },
+  });
+});
+
+export const getUserFriends = (token) => dispatch => dispatch(() => {
+  return dispatch({
+    type: FB_API,
+    meta: {
+      type: GET_USER_FRIENDS,
+    },
+    payload: {
+      token,
+      path: [
+        'me/friends',
+        'me/invitable_friends',
+      ],
     },
   });
 });
