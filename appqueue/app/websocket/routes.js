@@ -13,6 +13,7 @@ import login from './routes/users/login';
 import updateSettings from './routes/users/updateSettings';
 import confirmInvite from './routes/invites/confirm';
 import cancelInvite from './routes/invites/cancel';
+import inviteToGame from './routes/invites/create';
 import fb from './routes/fb';
 
 export const CLAIM = 'CLAIM';
@@ -27,6 +28,7 @@ export const LEAVE = '@Games/LEAVE_GAME';
 export const PAUSE = '@Games/PAUSE_GAME';
 export const CONFIRM_INVITE = '@Games/CONFIRM_INVITE';
 export const CANCEL_INVITE = '@Games/CANCEL_INVITE';
+export const INVITE_TO_GAME = '@GameDetails/INVITE_TO_GAME';
 export const LOGIN = '@Login/LOGIN';
 export const ONBOARDING_UPDATE_USER = '@Onboarding/UPDATE_USER';
 export const SETTINGS_UPDATE_USER = '@Settings/UPDATE_USER';
@@ -45,6 +47,7 @@ const ROUTES = {
   [LEAVE]: leave,
   [CONFIRM_INVITE]: confirmInvite,
   [CANCEL_INVITE]: cancelInvite,
+  [INVITE_TO_GAME]: inviteToGame,
   [LOGIN]: login,
   [ONBOARDING_UPDATE_USER]: updateSettings,
   [SETTINGS_UPDATE_USER]: updateSettings,

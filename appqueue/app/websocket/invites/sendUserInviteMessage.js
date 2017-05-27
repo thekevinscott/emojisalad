@@ -1,4 +1,3 @@
-
 import receive from '../routes/messages/receive';
 import fetchFromService from '../../../utils/fetchFromService';
 
