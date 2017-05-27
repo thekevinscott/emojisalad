@@ -5,15 +5,21 @@ import {
 } from 'app/pages/Settings/types';
 
 const initialState = {
-  saved: false,
+  pending: false,
 };
 
 export default typeToReducer({
   [UPDATE_USER]: {
+    PENDING: (state) => {
+      return {
+        ...state,
+        pending: true,
+      };
+    },
     FULFILLED: (state) => {
       return {
         ...state,
-        saved: true,
+        pending: false,
       };
     },
   },

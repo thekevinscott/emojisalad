@@ -7,9 +7,7 @@ import {
   START_NEW_GAME,
 } from './types';
 
-export const startGame = (userKey, players) => dispatch => dispatch(() => {
-  //dispatch(updateLogger(`start new game with user key: ${userKey} and phones: ${JSON.stringify(phones)}`));
-
+export const startGame = (userKey, players) => dispatch => {
   return dispatch({
     type: START_NEW_GAME,
     payload: {
@@ -21,5 +19,4 @@ export const startGame = (userKey, players) => dispatch => dispatch(() => {
   }).then(() => {
     Actions.pop();
   });
-});
-
+};

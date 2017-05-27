@@ -30,7 +30,6 @@ export const CONFIRM_INVITE = '@Games/CONFIRM_INVITE';
 export const CANCEL_INVITE = '@Games/CANCEL_INVITE';
 export const INVITE_TO_GAME = '@GameDetails/INVITE_TO_GAME';
 export const LOGIN = '@Login/LOGIN';
-export const ONBOARDING_UPDATE_USER = '@Onboarding/UPDATE_USER';
 export const SETTINGS_UPDATE_USER = '@Settings/UPDATE_USER';
 export const FB = '@websocket/FB_API';
 
@@ -49,7 +48,6 @@ const ROUTES = {
   [CANCEL_INVITE]: cancelInvite,
   [INVITE_TO_GAME]: inviteToGame,
   [LOGIN]: login,
-  [ONBOARDING_UPDATE_USER]: updateSettings,
   [SETTINGS_UPDATE_USER]: updateSettings,
   [FB]: fb,
 };

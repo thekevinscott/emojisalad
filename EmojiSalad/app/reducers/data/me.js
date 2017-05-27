@@ -19,7 +19,7 @@ import {
 
 import {
   UPDATE_USER,
-} from 'app/pages/Onboarding/types';
+} from 'app/pages/Settings/types';
 
 const {
   SUBMIT_CLAIM,
@@ -109,5 +109,4 @@ export default typeToReducer({
     ...state,
     deviceInfo: info,
   }),
-
 }, initialState);

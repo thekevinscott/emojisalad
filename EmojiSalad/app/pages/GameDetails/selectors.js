@@ -1,10 +1,10 @@
-import { bindActionCreators } from 'redux'
+//import { bindActionCreators } from 'redux'
 import {
   selectMe,
 } from 'components/App/selectors';
 
 import {
-  startGame,
+  inviteToGame,
 } from './actions';
 
 export function mapStateToProps(state) {
@@ -17,10 +17,12 @@ export function mapStateToProps(state) {
   };
 }
 
-export function mapDispatchToProps(dispatch) {
+export function mapDispatchToProps(dispatch, { game }) {
   return {
     actions: {
-      startGame: bindActionCreators(startGame, dispatch),
+      inviteToGame: (me, player) => {
+        return dispatch(inviteToGame(me.key, game, player));
+      },
     },
   };
 }

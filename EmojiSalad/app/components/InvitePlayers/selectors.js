@@ -7,19 +7,19 @@ import {
   //addPlayer,
 } from './actions';
 
-const getInvitedPlayers = ({
-  ui: {
-    InvitePlayers: {
-      invitedPlayers,
-    },
-  },
-}) => Object.keys(invitedPlayers).map(key => invitedPlayers[key]);
+//const getInvitedPlayers = ({
+  //ui: {
+    //InvitePlayers: {
+      //invitedPlayers,
+    //},
+  //},
+//}) => Object.keys(invitedPlayers).map(key => invitedPlayers[key]);
 
 export function mapStateToProps(state) {
-  const invitedPlayers = getInvitedPlayers(state);
+  //const invitedPlayers = getInvitedPlayers(state);
 
   return {
-    invitedPlayers,
+    //invitedPlayers,
   };
 }
 

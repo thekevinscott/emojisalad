@@ -1,11 +1,11 @@
 import typeToReducer from 'type-to-reducer';
 import R from 'ramda';
 
-import {
-  INVITE_PLAYER,
-  REMOVE_PLAYER,
-  CLEAR_INVITES,
-} from './types';
+//import {
+  //INVITE_PLAYER,
+  //REMOVE_PLAYER,
+  //CLEAR_INVITES,
+//} from './types';
 
 const initialState = {
   invitedPlayers: {},
@@ -22,10 +22,10 @@ const invitePlayer = (state, { player }) => {
   if (player.phone !== '') {
     return {
       ...state,
-      invitedPlayers: {
-        ...state.invitedPlayers,
-        [player.phone]: invitedPlayer(player),
-      },
+      //invitedPlayers: {
+        //...state.invitedPlayers,
+        //[player.phone]: invitedPlayer(player),
+      //},
     };
   }
 
@@ -35,19 +35,19 @@ const invitePlayer = (state, { player }) => {
 const removePlayer = (state, { player }) => {
   return {
     ...state,
-    invitedPlayers: R.dissoc(player.phone, state.invitedPlayers),
+    //invitedPlayers: R.dissoc(player.phone, state.invitedPlayers),
   };
 };
 
 const clearInvites = (state) => {
   return {
     ...state,
-    invitedPlayers: {},
+    //invitedPlayers: {},
   };
 };
 
 export default typeToReducer({
-  [INVITE_PLAYER]: invitePlayer,
-  [REMOVE_PLAYER]: removePlayer,
-  [CLEAR_INVITES]: clearInvites,
+  //[INVITE_PLAYER]: invitePlayer,
+  //[REMOVE_PLAYER]: removePlayer,
+  //[CLEAR_INVITES]: clearInvites,
 }, initialState);

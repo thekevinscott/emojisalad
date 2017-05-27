@@ -79,7 +79,8 @@ class InvitePlayers extends Component {
     } = this.props;
 
     const friends = getContacts(this.props.friends, this.state.search);
-    const invitableFriends = getContacts(this.props.invitableFriends, this.state.search);
+    const invitableFriends = [];
+    //const invitableFriends = getContacts(this.props.invitableFriends, this.state.search);
 
     return (
       <View

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   constants,
 } from '../styles';
@@ -32,11 +33,13 @@ import {
 } from 'pages/Game';
 
 import NewGame from 'pages/NewGame';
+import GameDetails from 'pages/GameDetails';
 
 import Invite from 'pages/Invite';
 
 import Login from 'pages/Login';
 import Onboarding from 'pages/Onboarding';
+import Settings from 'pages/Settings';
 
 class Routes extends Component {
   static propTypes = {
@@ -89,8 +92,9 @@ class Routes extends Component {
   replace: ActionConst.REPLACE,
   */
   render() {
-    const newGame = (<Icon name="pencil-square-o" size={30} color={constants.purple} />);
-    const settings = (<Icon name="navicon" size={30} color={constants.purple} />);
+    const newGame = (<FontAwesomeIcon name="pencil-square-o" size={30} color={constants.purple} />);
+    const settings = (<Ionicons name="ios-settings" size={30} color={constants.purple} />);
+    const information = (<Ionicons name="ios-information-circle-outline" size={30} color={constants.purple} />);
     // This fucks up the connectWithFocus activeComponent
     // listener, since the active component name is Games (24),
     // not Games
@@ -104,6 +108,14 @@ class Routes extends Component {
           component={Page}
           page={Login}
           initial={this.isInitial('register')}
+          title=""
+        />
+        <Scene
+          passProps
+          key="settings"
+          component={Page}
+          page={Settings}
+          type={ActionConst.PUSH}
           title=""
         />
         <Scene
@@ -122,11 +134,24 @@ class Routes extends Component {
           title={gamesTitle}
           leftTitle={settings}
           onLeft={() => {
-            //debugger;
+            Actions.settings();
           }}
           rightTitle={newGame}
           onRight={() => {
             Actions.newGame();
+          }}
+        />
+        <Scene
+          passProps
+          key="gameDetails"
+          direction="vertical"
+          type={ActionConst.PUSH}
+          component={Page}
+          page={GameDetails}
+          title="Details"
+          rightTitle="Done"
+          onRight={() => {
+            Actions.pop();
           }}
         />
         <Scene
@@ -164,12 +189,12 @@ class Routes extends Component {
             //console.log('action games 1');
             Actions.games();
           }}
+          rightTitle={information}
           onRight={({ game }) => {
-            Actions.invite({
+            Actions.gameDetails({
               game,
             });
           }}
-          rightTitle="Invite"
         />
       </Scene>
     );

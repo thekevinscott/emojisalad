@@ -33,8 +33,8 @@ class GameSettings extends Component {
     actions: PropTypes.shape({
       invitePlayer: PropTypes.func.isRequired,
     }).isRequired,
-    startGame: PropTypes.func.isRequired,
     me: PropTypes.object.isRequired,
+    onChange: PropTypes.func,
   };
 
   constructor(props) {
@@ -48,34 +48,24 @@ class GameSettings extends Component {
     this.addPlayer = this.addPlayer.bind(this);
   }
 
-  componentWillMount() {
-    Actions.refresh({
-      rightTitle: 'Done',
-      onRight: () => {
-        this.props.startGame(this.state.invitedPlayers);
-      }
-    });
-
-    //const keys = Object.keys(this.state.invitedPlayers);
-    //if (keys.length === 0) {
-      //Actions.invite({
-        //addPlayer: this.addPlayer,
-      //});
-    //}
-  }
-
   addPlayer(player) {
     const keys = Object.keys(this.state.invitedPlayers);
-    this.setState({
-      invitedPlayers: {
-        ...this.state.invitedPlayers,
-        [player.id]: {
-          player,
-          order: keys.length + 1,
-        },
+    const invitedPlayers = {
+      ...this.state.invitedPlayers,
+      [player.id]: {
+        player,
+        order: keys.length + 1,
       },
+    };
+    this.setState({
+      invitedPlayers,
     });
+
     Actions.pop();
+
+    if (this.props.onChange) {
+      this.props.onChange(player);
+    }
   }
 
   getData() {

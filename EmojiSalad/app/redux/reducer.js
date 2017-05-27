@@ -8,6 +8,7 @@ import Games from 'app/pages/Games/reducer';
 import Game from 'app/pages/Game/reducer';
 import Login from 'app/pages/Login/reducer';
 import Onboarding from 'app/pages/Onboarding/reducer';
+import Settings from 'app/pages/Settings/reducer';
 import NewGame from 'app/pages/NewGame/reducer';
 import Invite from 'app/pages/Invite/reducer';
 import Logger from 'app/components/Logger/reducer';
@@ -25,6 +26,7 @@ export default combineReducers({
     Game,
     Login,
     Onboarding,
+    Settings,
     Logger,
     NewGame,
     Invite,

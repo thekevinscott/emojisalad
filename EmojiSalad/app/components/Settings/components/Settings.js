@@ -55,6 +55,10 @@ class Settings extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      values: getValues(props.user),
+    };
+
     this.onChange = this.onChange.bind(this);
   }
 
@@ -68,10 +72,18 @@ class Settings extends Component {
       }, {});
       this.props.onChange(getIsReadyForSubmission(form), values);
     }
+
+    this.setState({
+      ...this.state,
+      values: fields.reduce((arr, field, index) => {
+        const value = form[index] !== undefined ? form[index] : this.state.values[index];
+        return arr.concat(value);
+      }, []),
+    });
   }
 
   render() {
-    const values = getValues(this.props.user);
+    const values = this.state.values;
 
     return (
       <Form

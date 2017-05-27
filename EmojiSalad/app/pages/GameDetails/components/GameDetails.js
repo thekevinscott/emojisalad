@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Actions, } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -10,43 +9,26 @@ import {
   mapDispatchToProps,
 } from '../selectors';
 
-class NewGame extends Component {
+class GameDetails extends Component {
   static propTypes = {
     actions: PropTypes.shape({
-      startGame: PropTypes.func.isRequired,
+      inviteToGame: PropTypes.func.isRequired,
     }).isRequired,
     me: PropTypes.object.isRequired,
+    game: PropTypes.shape({
+      key: PropTypes.string.isRequired,
+    }).isRequired,
     pending: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      invitedPlayers: {},
-    };
 
     this.onChange = this.onChange.bind(this);
-    this.startGame = this.startGame.bind(this);
-  }
-
-  startGame() {
-    if (!this.props.pending) {
-      this.props.actions.startGame(this.props.me.key, this.state.invitedPlayers);
-    }
-  }
-
-  componentWillMount() {
-    Actions.refresh({
-      rightTitle: 'Done',
-      onRight: this.startGame,
-    });
   }
 
   onChange(player) {
-    this.setState({
-      ...this.state.invitedPlayers,
-      [player.id]: player,
-    });
+    this.props.actions.inviteToGame(this.props.me, player);
   }
 
   render() {
@@ -61,4 +43,4 @@ class NewGame extends Component {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NewGame);
+)(GameDetails);

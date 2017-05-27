@@ -8,7 +8,15 @@ import {
   getUserFriends,
 } from './actions';
 
-export function mapStateToProps(state) {
+const selectContacts = (contacts, game = { players: [] }) => {
+  console.log(contacts, game);
+  const gamePlayers = game.players.map(player => player.key);
+  return contacts.filter(contact => {
+    return gamePlayers.indexOf(contact.key) === -1;
+  });
+};
+
+export function mapStateToProps(state, { game }) {
   const me = selectMe(state);
   const {
     friends,
@@ -18,8 +26,8 @@ export function mapStateToProps(state) {
 
   return {
     me,
-    friends,
-    invitableFriends,
+    friends: selectContacts(friends, game),
+    invitableFriends: selectContacts(invitableFriends, game),
     fetching,
   };
 }

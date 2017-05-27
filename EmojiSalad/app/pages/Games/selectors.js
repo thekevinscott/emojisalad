@@ -23,10 +23,7 @@ export function selectUser(state, userKey) {
 }
 
 export function selectPlayers(state, userKeys = []) {
-  return userKeys.map(userKey => {
-    const player = state.data.users[userKey] || {};
-    return player;
-  });
+  return userKeys.map(userKey => state.data.users[userKey] || {});
 }
 
 //export function getLastMessage(game) {
@@ -121,10 +118,11 @@ export const selectGamesByNewestFirst = state => {
   }).map(game => {
     const mostRecentMessage = getMostRecentMessage(game);
 
+    const isUnread = mostRecentMessage && mostRecentMessage.key !== game.lastRead || false;
+
     return {
       ...game,
-      isUnread: true,
-      //isUnread: mostRecentMessage && mostRecentMessage.key !== game.lastRead,
+      isUnread,
     };
   });
 };

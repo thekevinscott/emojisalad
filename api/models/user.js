@@ -208,6 +208,7 @@ const User = {
       throw new Error("You must provide a valid key to update");
     }
 
+    console.info('user update query', query.toString());
     return db.query(query).then((rows) => {
       if ( rows && rows.affectedRows ) {
         return User.findOne(user);

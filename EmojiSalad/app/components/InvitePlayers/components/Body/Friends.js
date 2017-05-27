@@ -21,12 +21,12 @@ const getInstructions = fetching => {
   return [];
 };
 
-const getNothingFound = (contactsObj) => {
+const getNothingFound = (fetching, contactsObj) => {
   const contactsExist = Object.keys(contactsObj).reduce((found, key) => {
     return found || contactsObj[key].length > 0;
   }, false);
 
-  if (!contactsExist) {
+  if (!contactsExist && !fetching) {
     return [(
       <Instructions key="nothingFound">
         Nobody is found, try modifying your search!
@@ -51,7 +51,7 @@ const getData = (fetching, contacts) => ({
       friend={friend}
     />
   )),
-  nothingFound: getNothingFound(contacts),
+  nothingFound: getNothingFound(fetching, contacts),
 });
 
 const defaultHeaders = {
@@ -66,14 +66,12 @@ const defaultHeaders = {
 const getHeaders = data => {
   return Object.keys(data).reduce((obj, key) => {
     if (data[key].length) {
-      console.log('data exists for key', key);
       return {
         ...obj,
         [key]: defaultHeaders[key],
       };
     }
 
-    console.log('data does not exists for key', key);
     return obj;
   }, {});
 };
@@ -89,7 +87,6 @@ const Friends = ({
     invitableFriends
   });
   const headers = getHeaders(data);
-  console.log('headers', headers);
   return (
     <List
       onPress={({ props }) => {
