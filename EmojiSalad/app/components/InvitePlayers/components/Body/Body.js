@@ -7,38 +7,28 @@ import {
 } from 'react-native';
 
 import Friends from './Friends';
-import Instructions from './Instructions';
 import { FriendsPropTypes } from 'app/components/InvitePlayers';
 
 const Body = ({
+  fetching,
   friends,
   invitableFriends,
   addPlayer,
 }) => {
-  if (friends.length || invitableFriends.length) {
-    return (
-      <Friends
-        friends={friends}
-        invitableFriends={invitableFriends}
-        addPlayer={addPlayer}
-      />
-    );
-  }
-
   return (
-    <Instructions>
-      Loading friends
-    </Instructions>
+    <Friends
+      fetching={fetching}
+      friends={friends}
+      invitableFriends={invitableFriends}
+      addPlayer={addPlayer}
+    />
   );
 };
 
 Body.propTypes = {
   ...FriendsPropTypes,
   addPlayer: PropTypes.func.isRequired,
-  //invitedPlayers: PropTypes.array.isRequired,
-  //removePlayer: PropTypes.func.isRequired,
-  //startGame: PropTypes.func.isRequired,
-  //children: PropTypes.node.isRequired,
+  fetching: PropTypes.bool.isRequired,
 };
 
 export default Body;

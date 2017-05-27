@@ -24,7 +24,7 @@ export default function translateIncomingData(message) {
 
   console.log('incoming 1');
   return fetchUserKey(phoneNumber).then(userKey => {
-    console.log('incoming 2', userKey);
+    console.log('incoming 2', userKey, senderId);
     if (message.player && message.player.game_key) {
       return {
         userKey,

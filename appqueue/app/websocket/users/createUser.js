@@ -11,6 +11,8 @@ export default function createUser({ userId, token }) {
         protocol: 'appqueue',
         facebookId: userId,
         facebookToken: token,
+        confirmed_avatar: 1,
+        confirmed: 1,
       },
     },
   });

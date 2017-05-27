@@ -1,11 +1,8 @@
-/**
- * @flow
- */
-
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Animated,
-  View,
+  //View,
 } from 'react-native';
 
 import Message from './Message';
@@ -19,6 +16,12 @@ import {
 } from '../utils';
 
 export default class Messages extends Component {
+  static propTypes = {
+    updateStartingMessage: PropTypes.func.isRequired,
+    game: PropTypes.object.isRequired,
+    messages: PropTypes.array.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -50,6 +53,7 @@ export default class Messages extends Component {
 
       const toValue = getTargetHeight(this.state.props.current.messages, this.state.messages);
       const duration = this.state.props.current.messages.length > 1 ? styles.MESSAGE_SLIDE_DURATION : 0;
+
       this.animation = Animated.timing(this.state.top, {
         toValue,
         duration,

@@ -6,6 +6,8 @@ import {
   updateStartingMessage,
   leaveGame,
   pauseGame,
+  confirmInvite,
+  cancelInvite,
 } from './actions';
 
 import {
@@ -121,7 +123,25 @@ export const selectGamesByNewestFirst = state => {
 
     return {
       ...game,
-      isUnread: mostRecentMessage && mostRecentMessage.key !== game.lastRead,
+      isUnread: true,
+      //isUnread: mostRecentMessage && mostRecentMessage.key !== game.lastRead,
+    };
+  });
+};
+
+const selectInvites = ({ data }) => {
+  return Object.keys(data.invites).map(key => {
+    const invite = data.invites[key];
+    const inviterUserKey = data.players[invite.inviter_player].userKey;
+    const inviter = {
+      key: inviterUserKey,
+      ...data.users[inviterUserKey],
+    };
+
+    return {
+      key: invite.key,
+      game: invite.game,
+      inviter,
     };
   });
 };
@@ -132,6 +152,7 @@ export function mapStateToProps(state) {
   return {
     fetching: state.ui.Games.fetching || false,
     games: selectGamesByNewestFirst(state),
+    invites: selectInvites(state),
     me: selectMe(state),
     logger: loggerMessages,
   };
@@ -151,6 +172,8 @@ export function mapDispatchToProps(dispatch) {
       },
       pauseGame: bindActionCreators(pauseGame, dispatch),
       leaveGame: bindActionCreators(leaveGame, dispatch),
+      confirmInvite: bindActionCreators(confirmInvite, dispatch),
+      cancelInvite: bindActionCreators(cancelInvite, dispatch),
     },
   };
 }

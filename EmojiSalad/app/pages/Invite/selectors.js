@@ -10,13 +10,17 @@ import {
 
 export function mapStateToProps(state) {
   const me = selectMe(state);
-  //const gameKey = game.key;
+  const {
+    friends,
+    invitableFriends,
+    fetching,
+  } = state.ui.Invite;
 
   return {
     me,
-    friends: state.ui.Invite.friends,
-    invitableFriends: state.ui.Invite.invitableFriends,
-    //gameKey,
+    friends,
+    invitableFriends,
+    fetching,
   };
 }
 

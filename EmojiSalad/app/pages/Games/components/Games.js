@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
-import {
-  Actions,
-} from 'react-native-router-flux';
+//import { Actions, } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import connectWithFocus from '../../../utils/connectWithFocus';
-//import { connect } from 'react-redux';
-//import Spinner from 'react-native-loading-spinner-overlay';
-//import { Logger } from '../../../components/Logger';
 
-import List from './List';
+import Body from './Body';
+import Game from './Game';
+import Invite from './Invite';
 import {
   //Text,
   View,
-  ListView,
+  //Alert,
+  //BodyView,
   //PushNotificationIOS,
   //Alert,
   //RefreshControl,
@@ -25,13 +23,12 @@ import {
   mapDispatchToProps,
 } from '../selectors';
 
-const ds = new ListView.DataSource({
-  rowHasChanged: (r1, r2) => r1 !== r2,
-});
-
 class Games extends Component {
   static propTypes = {
     fetching: PropTypes.bool.isRequired,
+    invites: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string.isRequired,
+    })).isRequired,
     games: PropTypes.arrayOf(PropTypes.shape({
     })).isRequired,
     me: PropTypes.shape({
@@ -43,6 +40,8 @@ class Games extends Component {
       pauseGame: PropTypes.func.isRequired,
       leaveGame: PropTypes.func.isRequired,
       updateStartingMessage: PropTypes.func.isRequired,
+      confirmInvite: PropTypes.func.isRequired,
+      cancelInvite: PropTypes.func.isRequired,
     }).isRequired,
   };
 
@@ -51,9 +50,9 @@ class Games extends Component {
   }
 
   componentWillMount() {
-    if (this.props.games.length === 0) {
-      Actions.newGame();
-    }
+    //if (this.props.games.length === 0) {
+      //Actions.newGame();
+    //}
   }
 
   componentWillAppear({
@@ -63,21 +62,56 @@ class Games extends Component {
     this.props.actions.fetchData(this.props.me.key);
   }
 
-  getData() {
-    return ds.cloneWithRows(this.props.games);
-  }
-
   render() {
+    const {
+      invites,
+      me,
+      games,
+      actions: {
+        cancelInvite,
+        confirmInvite,
+        openGame,
+        updateStartingMessage,
+      },
+    } = this.props;
+
+    const data = {
+      'invites': invites.map(invite => {
+        return (
+          <Invite
+            key={invite.key}
+            invite={invite}
+            cancelInvite={() => {
+              cancelInvite(me.key, invite);
+            }}
+            confirmInvite={() => {
+              confirmInvite(me.key, invite);
+            }}
+          />
+        );
+      }),
+      'games': games.map(game => {
+        return (
+          <Game
+            key={game.key}
+            game={game}
+            openGame={() => {
+              openGame(game, games);
+            }}
+            updateStartingMessage={updateStartingMessage}
+          />
+        );
+      }),
+    };
+
     return (
       <View
         style={styles.games}
       >
-        <List
+        <Body
+          data={data}
           fetching={this.props.fetching}
           games={this.props.games}
-          dataSource={this.getData()}
-          updateStartingMessage={this.props.actions.updateStartingMessage}
-          openGame={this.props.actions.openGame}
           pauseGame={game => {
             this.props.actions.pauseGame(this.props.me, game);
           }}

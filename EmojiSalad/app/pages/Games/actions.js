@@ -9,6 +9,8 @@ import {
   UPDATE_STARTING_MESSAGE,
   PAUSE_GAME,
   LEAVE_GAME,
+  CONFIRM_INVITE,
+  CANCEL_INVITE,
 } from './types';
 
 export function fetchData(userKey) {
@@ -63,3 +65,19 @@ export const leaveGame = (user, game) => dispatch => dispatch(() => {
     }
   });
 });
+
+const inviteAction = type => (userKey, invite) => dispatch => {
+  return dispatch({
+    type,
+    meta: {
+      invite,
+    },
+    payload: {
+      userKey,
+      gameKey: invite.game,
+    }
+  });
+};
+
+export const confirmInvite = inviteAction(CONFIRM_INVITE);
+export const cancelInvite = inviteAction(CANCEL_INVITE);

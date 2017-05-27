@@ -51,11 +51,12 @@ class Onboarding extends Component {
 
   render() {
     const disabled = !this.state.readyForSubmission;
+    const welcome = 'Hi!';
 
     return (
       <View style={styles.container}>
         <View style={styles.introText}>
-          <Text style={styles.hi}>Hi, Michelle!</Text>
+          <Text style={styles.hi}>{ welcome }</Text>
           <Text style={styles.confirm}>Let’s confirm a few things so we can get started.</Text>
         </View>
         <View style={styles.settingsContainer}>

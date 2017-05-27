@@ -259,7 +259,7 @@ const Invite = {
     return db.query(query).then((invites) => {
       console.info('got invite back');
       if ( invites && invites.length ) {
-        //console.info('invites found');
+        console.info('invites found', invites.length, invites.map(invite => invite.inviter_id));
         return Promise.join(
           Game.find({ player_ids: invites.map(invite => invite.inviter_id) }),
           Player.find({ ids: invites.map(invite => invite.inviter_id) }),
@@ -287,6 +287,9 @@ const Invite = {
         //console.info('no invites found');
         return [];
       }
+    }).then(invites => {
+      console.info('final invites', invites);
+      return invites;
     });
   },
   use: (invite_id) => {

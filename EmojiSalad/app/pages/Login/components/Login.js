@@ -24,17 +24,17 @@ const permissions = [
 
 class Login extends Component {
   static propTypes = {
-    login: PropTypes.func.isRequired,
-    next: PropTypes.func.isRequired,
+    actions: PropTypes.shape({
+      login: PropTypes.func.isRequired,
+      next: PropTypes.func.isRequired,
+      //sendDeviceInfo: PropTypes.func.isRequired,
+    }).isRequired,
     user: PropTypes.object,
+    state: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      credentials: null,
-      gotCredentials: false,
-    };
     this.onLoginFound = this.onLoginFound.bind(this);
     this.login = this.login.bind(this);
     this.onLogin = this.onLogin.bind(this);
@@ -44,7 +44,7 @@ class Login extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.user && nextProps.user) {
       console.log('we have logged in with user', nextProps.user);
-      this.props.next(nextProps.user);
+      this.props.actions.next(nextProps.user);
     }
   }
 
@@ -52,6 +52,7 @@ class Login extends Component {
   }
 
   onLoginFound(data) {
+    console.log('data', data);
     this.login(data);
   }
 
@@ -60,16 +61,11 @@ class Login extends Component {
   }
 
   login(data) {
-    this.props.login(data);
+    //this.props.actions.sendDeviceInfo(this.props.state);
+    this.props.actions.login(data);
   }
 
   render() {
-    if (this.state.gotCredentials === false) {
-      //return null;
-    } else if (this.state.credentials) {
-      //return null;
-    }
-
     return (
       <View style={styles.container}>
         <Text style={styles.emoji}>😎</Text>

@@ -25,10 +25,15 @@ class Invite extends Component {
       key: PropTypes.string.isRequired,
       facebookToken: PropTypes.string.isRequired,
     }).isRequired,
+    fetching: PropTypes.bool.isRequired,
     addPlayer: PropTypes.func.isRequired,
     gameKey: PropTypes.string,
     ...FriendsPropTypes,
   };
+
+  constructor(props) {
+    super(props);
+  }
 
   componentDidMount() {
     this.props.actions.getUserFriends(this.props.me.facebookToken);
@@ -37,6 +42,7 @@ class Invite extends Component {
   render() {
     return (
       <InvitePlayers
+        fetching={this.props.fetching}
         friends={this.props.friends}
         invitableFriends={this.props.invitableFriends}
         addPlayer={this.props.addPlayer}

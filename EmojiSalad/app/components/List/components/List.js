@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
+  //View,
   ListView,
 } from 'react-native';
 
@@ -22,38 +23,63 @@ const renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => (
   />
 );
 
-const getData = data => ds.cloneWithRowsAndSections(data);
+const getData = data => {
+  return ds.cloneWithRowsAndSections(data);
+};
 
-const List = ({
-  data,
-  onPress,
-  headers,
-}) => (
-  <ListView
-    dataSource={getData(data)}
-    renderRow={data => (
-      <Row
-        data={data}
-        onPress={() => onPress(data)}
-      />
-    )}
-    renderSeparator={renderSeparator}
-    renderSectionHeader={(sectionData, id) => {
+const getRenderSectionHeader = (headers = []) => {
+  if (Object.keys(headers).length > 0) {
+    return function renderSectionHeader(sectionData, id) {
       if (headers && headers[id]) {
         return (<SectionHeader>{ headers[id] }</SectionHeader>);
       }
 
       return null;
       //return (<SectionHeader data={id} />);
-    }}
-  />
-);
+    };
+  }
+
+  return null;
+};
+
+const getOnPress = (onPress, data) => {
+  if (onPress) {
+    return function _onPress() {
+      onPress(data);
+    }
+  }
+
+  return null;
+};
+
+const List = ({
+  data,
+  onPress,
+  headers,
+  noRowPadding,
+}) => {
+  return (
+    <ListView
+      dataSource={getData(data)}
+      enableEmptySections
+      renderRow={data => (
+        <Row
+          data={data}
+          onPress={getOnPress(onPress, data)}
+          noRowPadding={noRowPadding || false}
+        />
+      )}
+      renderSeparator={renderSeparator}
+      renderSectionHeader={getRenderSectionHeader(headers)}
+    />
+  );
+};
 
 List.propTypes = {
   data: PropTypes.object.isRequired,
   onPress: PropTypes.func,
   headers: PropTypes.object,
+  noRowPadding: PropTypes.bool,
 };
 
 export default List;
-

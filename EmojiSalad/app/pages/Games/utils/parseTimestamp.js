@@ -1,8 +1,12 @@
 import moment from 'moment';
 
 const parseTimestamp = timestamp => {
-  const date = moment(timestamp);
-  return date.fromNow();
+  if (timestamp) {
+    const date = moment(timestamp);
+    return date.fromNow();
+  }
+
+  return '';
 };
 
 export default parseTimestamp;

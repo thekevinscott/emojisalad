@@ -1,12 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Messages from './Messages';
-import RowHeader from './RowHeader';
+import GameHeader from './GameHeader';
 
 import {
-  Text,
+  //Text,
   View,
-  TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 
 import * as styles from '../styles';
@@ -17,9 +18,7 @@ const getUnreadStyle = ({ isUnread }) => ({
 });
 
 const Game = ({
-  rowID,
   game,
-  games,
   openGame,
   updateStartingMessage,
 }) => {
@@ -29,11 +28,9 @@ const Game = ({
   const unreadDotStyle = getUnreadStyle(game);
 
   return (
-    <TouchableHighlight
-      onPress={() => {
-        openGame(game, games);
-      }}
-      key={`${rowID}`}
+    <TouchableOpacity
+      onPress={openGame}
+      style={styles.row}
     >
       <View style={styles.rowContainer}>
         <View
@@ -49,14 +46,25 @@ const Game = ({
             game={game}
             updateStartingMessage={updateStartingMessage}
           />
-          <RowHeader
+          <GameHeader
             players={game.players}
             timestamp={mostRecentMessage.timestamp}
           />
         </View>
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
+};
+
+Game.propTypes = {
+  game: PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    messages: PropTypes.array.isRequired,
+    players: PropTypes.array.isRequired,
+    isUnread: PropTypes.bool.isRequired,
+  }).isRequired,
+  openGame: PropTypes.func.isRequired,
+  updateStartingMessage: PropTypes.func.isRequired,
 };
 
 export default Game;

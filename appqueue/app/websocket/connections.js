@@ -18,5 +18,5 @@ export function setClient(ws, { userKey }) {
 
 export function getClient(userKey) {
   console.info('get the client', userKey, Object.keys(users));
-  return users[userKey];
+  return users[userKey] || [];
 }

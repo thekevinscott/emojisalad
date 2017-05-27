@@ -5,39 +5,91 @@ import {
   Text,
 } from 'react-native';
 
+import Instructions from './Instructions';
 import Friend from './Friend';
 import { FriendsPropTypes } from 'app/components/InvitePlayers';
 
-const getData = (friends, invitableFriends) => ({
-  emojiSaladFriends: friends.map((friend, key) => (
+const getInstructions = fetching => {
+  if (fetching) {
+    return [(
+      <Instructions key="fetching" spinner>
+        Loading friends 
+      </Instructions>
+    )];
+  }
+
+  return [];
+};
+
+const getNothingFound = (contactsObj) => {
+  const contactsExist = Object.keys(contactsObj).reduce((found, key) => {
+    return found || contactsObj[key].length > 0;
+  }, false);
+
+  if (!contactsExist) {
+    return [(
+      <Instructions key="nothingFound">
+        Nobody is found, try modifying your search!
+      </Instructions>
+    )];
+  }
+
+  return [];
+};
+
+const getData = (fetching, contacts) => ({
+  fetching: getInstructions(fetching),
+  friends: contacts.friends.map((friend, key) => (
     <Friend
       key={key}
       friend={friend}
     />
   )),
-  //facebookFriends: invitableFriends.map((friend, key) => (
-    //<Friend
-      //key={key}
-      //friend={friend}
-    ///>
-  //)),
+  invitableFriends: contacts.invitableFriends.map((friend, key) => (
+    <Friend
+      key={key}
+      friend={friend}
+    />
+  )),
+  nothingFound: getNothingFound(contacts),
 });
 
-const headers = {
-  emojiSaladFriends: (
+const defaultHeaders = {
+  friends: (
     <Text>Emoji Salad Friends</Text>
   ),
-  facebookFriends: (
+  invitableFriends: (
     <Text>Facebook Friends</Text>
   ),
 };
 
+const getHeaders = data => {
+  return Object.keys(data).reduce((obj, key) => {
+    if (data[key].length) {
+      console.log('data exists for key', key);
+      return {
+        ...obj,
+        [key]: defaultHeaders[key],
+      };
+    }
+
+    console.log('data does not exists for key', key);
+    return obj;
+  }, {});
+};
+
 const Friends = ({
+  fetching,
   friends,
   invitableFriends,
   addPlayer,
 }) => {
-  const data = getData(friends, invitableFriends);
+  const data = getData(fetching, {
+    friends,
+    invitableFriends
+  });
+  const headers = getHeaders(data);
+  console.log('headers', headers);
   return (
     <List
       onPress={({ props }) => {
@@ -52,6 +104,7 @@ const Friends = ({
 Friends.propTypes = {
   ...FriendsPropTypes,
   addPlayer: PropTypes.func.isRequired,
+  fetching: PropTypes.bool.isRequired,
   //invitedPlayers: PropTypes.array.isRequired,
   //removePlayer: PropTypes.func.isRequired,
   //startGame: PropTypes.func.isRequired,

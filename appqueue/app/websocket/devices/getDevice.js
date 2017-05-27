@@ -2,25 +2,34 @@
 import Squel from 'squel';
 import db from 'db';
 
+function DeviceError(message, code) {
+  this.message = message;
+  this.code = code;
+  this.stack = (new Error()).stack;
+}
+DeviceError.prototype = Object.create(Error.prototype);
+DeviceError.prototype.constructor = DeviceError;
+
 const squel = Squel.useFlavour('mysql');
 
 const getDevice = userKey => {
   const getDeviceQuery = squel
   .select()
   .from('devices')
-  .where('number IS NOT NULL')
+  //.where('number IS NOT NULL')
   .where('user_key = ?', userKey);
 
+  console.info(getDeviceQuery.toString());
   return db.query(getDeviceQuery).then(devices => {
     //console.log('devices back', devices.length, devices);
     if (devices.length === 0) {
-      console.error('Super weird, no devices found for user key', userKey, ' that shouldnt ever happen');
-      console.error(getDeviceQuery.toString());
-      throw new Error(`No devices found for ${userKey}`);
+      //console.error('Super weird, no devices found for user key', userKey, ' that shouldnt ever happen');
+      //console.error(getDeviceQuery.toString());
+      throw new DeviceError(`No devices found for ${userKey}`, 1);
     } else if (devices.length > 1) {
-      console.error('also weird, multiple devices found for ', userKey);
+      console.error('weird, multiple devices found for ', userKey);
       console.error(getDeviceQuery.toString());
-      throw new Error(`Multiple devices found for ${userKey}`);
+      throw new DeviceError(`Multiple devices found for ${userKey}`, 2);
     }
 
     return devices[0];

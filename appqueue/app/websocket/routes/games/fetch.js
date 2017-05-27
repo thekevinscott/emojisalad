@@ -51,6 +51,7 @@ const getAllGamesForUser = userKey => {
 const getAllInvitesForUser = userKey => {
   return getUserInvites(userKey).then(invites => {
     const gameKeys = invites.filter(invite => {
+      //console.log('invite', invite);
       // sometimes, somebody (Kevin) will stroll
       // into the database and delete games willy nilly.
       // that can leave hanging invites around
@@ -59,7 +60,13 @@ const getAllInvitesForUser = userKey => {
       // If a game is not present, assume
       // this is a bum invite
       return invite.game;
-    }).map(invite => invite.game.key);
+    }).map(invite => {
+      //console.log('now this invite', invite);
+      return invite.game.key;
+    });
+
+    //console.log('game keys', gameKeys);
+
     return fetchMessages({
       userKey,
       gameKeys,
@@ -67,13 +74,6 @@ const getAllInvitesForUser = userKey => {
       totalMessages,
       messages,
     }) => {
-      //const invitesByGame = invites.reduce((obj, invite) => {
-        //return {
-          //...obj,
-          //[invite.game.key]: invite,
-        //};
-      //}, {});
-
       return invites.map(invite => ({
         ...invite,
         messages: messages[invite.game.key],

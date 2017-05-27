@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Text,
   View,
@@ -8,11 +9,12 @@ import * as styles from '../styles';
 
 import getPlayerString from '../utils/getPlayerString';
 import parseTimestamp from '../utils/parseTimestamp';
+import { Chevron } from 'components/Icon';
 
-export default function RowHeader({
+const GameHeader = ({
   players,
   timestamp,
-}) {
+}) => {
   return (
     <View style={styles.rowHeader}>
       <Text
@@ -24,6 +26,18 @@ export default function RowHeader({
       <Text style={styles.timestamp}>
         {parseTimestamp(timestamp)}
       </Text>
+      <Chevron
+        right
+        color="#C7C7CC"
+        size={19}
+      />
     </View>
   );
 }
+
+GameHeader.propTypes = {
+  players: PropTypes.array.isRequired,
+  timestamp: PropTypes.number,
+};
+
+export default GameHeader;

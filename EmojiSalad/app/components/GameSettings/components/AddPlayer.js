@@ -8,7 +8,7 @@ import {
 
 import * as styles from '../styles';
 
-import Add from 'components/Add';
+import { Add } from 'components/Icon';
 
 const AddPlayer = ({
   findPlayerToInvite,

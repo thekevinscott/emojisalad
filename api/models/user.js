@@ -58,6 +58,7 @@ const User = {
       console.info('create user 3', params);
       console.info('parsed the number', from);
       const confirmed = params.confirmed || 0;
+      const confirmed_avatar = params.confirmed_avatar || 0;
 
       // If we're passing a facebook ID, we need to do
       // a manual search to see if we've already inserted
@@ -68,12 +69,14 @@ const User = {
             return {
               key: user.key,
               confirmed,
+              confirmed_avatar,
               avatar,
             };
           }
 
           return {
             confirmed,
+            confirmed_avatar,
             avatar,
           };
         });
@@ -81,11 +84,13 @@ const User = {
 
       return {
         confirmed,
+        confirmed_avatar,
         avatar,
       };
     }).then(({
       key,
       confirmed,
+      confirmed_avatar,
       avatar,
     }) => {
       let query;
@@ -98,6 +103,7 @@ const User = {
           created: squel.fval('NOW(3)'),
           //last_activity: squel.fval('NOW(3)'),
           confirmed,
+          confirmed_avatar,
           from,
           avatar,
           nickname,
@@ -134,6 +140,23 @@ const User = {
 
         return User.findOne(params);
       }).then(user => {
+        if (user.protocol === 'appqueue') {
+          console.info('UPDATE APP QUEUE USER', user);
+          // we set the user from to match the user key
+          return User.update({
+            key: user.key
+          }, {
+            from: user.key,
+          }).then(() => {
+            return {
+              ...user,
+              from: user.key,
+            };
+          });
+        }
+
+        return user;
+      }).then(user => {
         return {
           ...user,
           to: params.to,
@@ -144,6 +167,7 @@ const User = {
   update: (user, params) => {
     console.info('user update', user, params);
     const whitelist = [
+      'from',
       'nickname',
       'blacklist',
       'maximum_games',
@@ -155,7 +179,7 @@ const User = {
       'facebookToken',
     ];
     let query = squel
-                  .update()
+                  .update({ autoQuoteFieldNames: true })
                   .table('users', 'u');
 
     if (user.id) {

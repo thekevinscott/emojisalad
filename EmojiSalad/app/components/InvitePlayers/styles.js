@@ -8,18 +8,23 @@ export const newGame = {
 
 export const instructions = {
   flex: 1,
-  padding: 60,
+  //padding: 60,
   alignItems: 'center',
+};
+
+export const instructionsBody = {
+  flex: 0,
+  flexDirection: 'row',
 };
 
 export const text = {
   fontSize: 16,
   color: '#666',
-  width: 160,
   textAlign: 'center',
+  marginRight: 10,
 };
 
-const invitePlayersHeight = 40;
+//const invitePlayersHeight = 40;
 
 export const invitePlayers = {
   flex: 0,

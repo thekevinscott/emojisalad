@@ -9,6 +9,7 @@ import {
 
 import {
   FETCH_GAMES,
+  CONFIRM_INVITE,
 } from 'app/pages/Games/types';
 
 import {
@@ -57,6 +58,24 @@ function translateGame(currentGame = {}, game = {}) {
 }
 
 export default typeToReducer({
+  [CONFIRM_INVITE]: {
+    FULFILLED: (state, { data, meta }) => {
+      return {
+        ...state,
+        [data.gameKey]: translateGame(state[data.gameKey], {
+          key: data.gameKey,
+          messages: [data],
+          totalMessages: 1,
+          players: [
+            // an invite has at least two players;
+            // the inviter, and me
+            { user_key: meta.invite.inviter.key },
+            { user_key: data.userKey },
+          ],
+        }),
+      };
+    },
+  },
   [START_NEW_GAME]: {
     FULFILLED: (state, { data }) => {
       return {
@@ -69,21 +88,25 @@ export default typeToReducer({
     FULFILLED: (state, { data }) => {
       return {
         ...data.reduce((obj, el) => {
-          if (el.type === 'invite') {
-            const game = {
-              ...el.game,
-              messages: el.messages,
-            };
+          //if (el.type === 'invite') {
+            //const game = {
+              //...el.game,
+              //messages: el.messages,
+            //};
+            //return {
+              //...obj,
+              //[game.key]: translateGame(state[game.key], game),
+            //};
+          //}
+
+          if (el.type === 'game') {
             return {
               ...obj,
-              [game.key]: translateGame(state[game.key], game),
+              [el.key]: translateGame(state[el.key], el),
             };
           }
 
-          return {
-            ...obj,
-            [el.key]: translateGame(state[el.key], el),
-          };
+          return obj;
         }, {}),
       };
     },
@@ -148,7 +171,7 @@ export default typeToReducer({
   },
   [RECEIVE_MESSAGE]: {
     FULFILLED: (state, { data }) => {
-      const messageKey = data.messageKey;
+      //const messageKey = data.messageKey;
       const gameKey = data.gameKey;
       const message = data;
       const messages = translateMessages(state[gameKey], {

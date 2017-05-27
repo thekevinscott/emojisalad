@@ -17,8 +17,8 @@ function parseURLAndOptions(url, options = {}) {
     const body = options.body;
     delete options.body;
     if (options.method === 'GET') {
-      console.info('Dont do this anymore, pass body params to get requests as query string');
-      console.info('this is probably coming from fetchfromservice; this logic could be moved there I believe');
+      //console.info('Dont do this anymore, pass body params to get requests as query string');
+      //console.info('this is probably coming from fetchfromservice; this logic could be moved there I believe');
       return {
         url: `${url}?${querystring.stringify(body)}`,
         options,

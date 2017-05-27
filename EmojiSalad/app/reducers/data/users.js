@@ -13,7 +13,7 @@ function getPlayersWithUserKeys(players) {
 }
 
 function getUsers(games) {
-  return games.reduce((gameObj, el) => {
+  const users = games.reduce((gameObj, el) => {
     if (el.type === 'game') {
       const game = el;
       return {
@@ -23,18 +23,21 @@ function getUsers(games) {
           [player.user_key]: player,
         }), {}),
       };
+    } else if (el.type ==='invite') {
+      //const game = el.game;
+      return {
+        ...gameObj,
+        ...getPlayersWithUserKeys([el.inviter_player]).reduce((playerObj, player) => ({
+          ...playerObj,
+          [player.user_key]: player,
+        }), {}),
+      };
     }
 
-    const game = el.game;
-
-    return {
-      ...gameObj,
-      ...getPlayersWithUserKeys(game.players).reduce((playerObj, player) => ({
-        ...playerObj,
-        [player.user_key]: player,
-      }), {}),
-    };
+    return gameObj;
   }, {});
+
+  return users;
 }
 
 function translateUser(user) {
@@ -52,6 +55,7 @@ export default typeToReducer({
   [FETCH_GAMES]: {
     FULFILLED: (state, action) => {
       const users = getUsers(action.data);
+
       return {
         ...state,
         ...Object.keys(users).reduce((obj, userKey) => {
