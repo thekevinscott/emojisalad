@@ -42,6 +42,7 @@ renderRow.propTypes = {
 
 const Body = ({
   data,
+  refreshControl,
 }) => {
   //if (fetching && (!games || games.length === 0)) {
     //return (
@@ -59,6 +60,7 @@ const Body = ({
       <List
         data={data}
         noRowPadding
+        refreshControl={refreshControl}
       />
     );
     //return (
@@ -114,6 +116,7 @@ Body.propTypes = {
   data: PropTypes.shape({
     games: PropTypes.arrayOf(PropTypes.node).isRequired,
   }).isRequired,
+  refreshControl: PropTypes.node,
 };
 
 export default Body;

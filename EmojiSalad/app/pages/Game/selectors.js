@@ -25,6 +25,13 @@ const selectArrayFromState = (messages = {}, keys = []) => {
   }));
 };
 
+export const makeNameFromPlayers = (players = []) => players.map(({
+  name,
+  nickname,
+}) => {
+  return nickname || name || '';
+}).map(name => name.split(' ').shift()).filter(n => n).join(', ');
+
 export function selectMessages(game, messages, pendingMessages, firstRead) {
   const selectedMessages = selectArrayFromState(messages, game.messages);
   const selectedPendingMessages = selectArrayFromState(pendingMessages, game.pendingMessages);
@@ -39,10 +46,28 @@ function selectCompose(state, gameKey) {
   return (state.ui.Game[gameKey] || {}).compose;
 }
 
+const selectGame = ({ data }, gameKey) => {
+  if (data.games[gameKey]) {
+    const game = data.games[gameKey];
+
+    const players = game.players.map(userKey => {
+      return data.users[userKey];
+    });
+
+    return {
+      ...game,
+      name: game.name || makeNameFromPlayers(players),
+      players,
+    };
+  }
+
+  return {};
+};
+
 export function mapStateToProps(state, props) {
   //console.log(props.game, state.data.games);
   const gameKey = props.game.key;
-  const game = state.data.games[gameKey] || {};
+  const game = selectGame(state, gameKey);
   const {
     seen,
     loading,

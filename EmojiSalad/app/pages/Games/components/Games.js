@@ -9,6 +9,7 @@ import Invite from './Invite';
 import {
   //Text,
   View,
+  RefreshControl,
   //Alert,
   //BodyView,
   //PushNotificationIOS,
@@ -24,6 +25,8 @@ import {
 } from '../selectors';
 
 class Games extends Component {
+  static key = 'games';
+
   static propTypes = {
     fetching: PropTypes.bool.isRequired,
     invites: PropTypes.arrayOf(PropTypes.shape({
@@ -47,6 +50,8 @@ class Games extends Component {
 
   constructor(props) {
     super(props);
+
+    this.refresh = this.refresh.bind(this);
   }
 
   componentWillMount() {
@@ -59,6 +64,10 @@ class Games extends Component {
     type,
   }) {
     console.log('Overview Component componentWillAppear called', type);
+    this.refresh();
+  }
+
+  refresh() {
     this.props.actions.fetchData(this.props.me.key);
   }
 
@@ -109,6 +118,12 @@ class Games extends Component {
         style={styles.games}
       >
         <Body
+          refreshControl={(
+            <RefreshControl
+              refreshing={this.props.fetching}
+              onRefresh={this.refresh}
+            />
+          )}
           data={data}
           fetching={this.props.fetching}
           games={this.props.games}

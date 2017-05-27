@@ -19,14 +19,9 @@ import {
   mapDispatchToProps,
 } from '../selectors';
 
-const getNameOfGame = (players) => {
-  return players.map(({
-    name,
-    nickname,
-  }) => {
-    return nickname || name || '';
-  }).map(name => name.split(' ').shift()).filter(n => n).join(', ');
-};
+import {
+  makeNameFromPlayers,
+} from 'pages/Game/selectors';
 
 class GameSettings extends Component {
   static propTypes = {
@@ -79,7 +74,7 @@ class GameSettings extends Component {
       sectionOne: [
         (<NameOfGame
           key="nameOfGame"
-          name={getNameOfGame([this.props.me].concat(invitedPlayers))}
+          name={makeNameFromPlayers([this.props.me].concat(invitedPlayers))}
         />),
       ].concat(invitedPlayers.map(player => (
         <Player

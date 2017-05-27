@@ -45,6 +45,7 @@ class Routes extends Component {
   static propTypes = {
     me: PropTypes.any,
     dispatch: PropTypes.func.isRequired,
+    games: PropTypes.array.isRequired,
   };
 
   componentDidMount() {
@@ -98,8 +99,8 @@ class Routes extends Component {
     // This fucks up the connectWithFocus activeComponent
     // listener, since the active component name is Games (24),
     // not Games
-    //const gamesTitle = `Games (${this.props.games.length})`;
-    const gamesTitle = 'Games';
+    const gamesTitle = `Games (${this.props.games.length})`;
+    //const gamesTitle = 'Games';
     const scenes = Actions.create(
       <Scene key="root">
         <Scene

@@ -303,6 +303,7 @@ const Game = {
     let query = squel
                 .select()
                 .field('g.id')
+                .field('g.name')
                 .field('g.key')
                 .field('g.created')
                 .field('r.id', 'round_id')

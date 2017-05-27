@@ -57,11 +57,13 @@ const List = ({
   onPress,
   headers,
   noRowPadding,
+  refreshControl,
 }) => {
   return (
     <ListView
       dataSource={getData(data)}
       enableEmptySections
+      refreshControl={refreshControl}
       renderRow={data => (
         <Row
           data={data}
@@ -80,6 +82,7 @@ List.propTypes = {
   onPress: PropTypes.func,
   headers: PropTypes.object,
   noRowPadding: PropTypes.bool,
+  refreshControl: PropTypes.node,
 };
 
 export default List;

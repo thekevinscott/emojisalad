@@ -54,6 +54,7 @@ function translateGame(currentGame = {}, game = {}) {
     // messages is an array of keys of messages in an unordered list
     messages: translateMessages(currentGame, game) || currentGame.messages || [],
     totalMessages: (game.total_messages !== undefined) ? game.total_messages : currentGame.total_messages,
+    name: game.name || currentGame.name,
   };
 }
 

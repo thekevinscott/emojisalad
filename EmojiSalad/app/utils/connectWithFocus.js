@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   AppState,
@@ -24,8 +25,18 @@ function getWrappedComponent(
   )(component);
 }
 
+const getActiveComponent = (scene = {}) => {
+  if (!scene.key) {
+    console.warn('Not providing an explicit key for scene could cause errors in connectWithFocus; we\'ll fall back to using title for now but you should provide a key', scene);
+  }
+  return scene.key || scene.title;
+};
+
 const patchedConnect = (...args) => component => {
-  const componentName = component.name;
+  const componentKey = component.key || component.name;
+  if (!component.key) {
+    console.warn('Not providing an explicit static key for your component could cause errors in connectWithFocus; we\'ll fall back to using title for now but you should provide a key', component);
+  }
   const mapStateToProps = ({ application }) => {
     const {
       scene,
@@ -36,7 +47,7 @@ const patchedConnect = (...args) => component => {
     } = application.connection;
 
     return {
-      activeComponent: (scene || {}).title,
+      activeComponent: getActiveComponent(scene),
       websocketConnected: connected,
     };
   };
@@ -44,6 +55,11 @@ const patchedConnect = (...args) => component => {
   const WrappedComponent = getWrappedComponent(component, args);
 
   class WrapperComponent extends Component {
+    static propTypes = {
+      activeComponent: PropTypes.any,
+      websocketConnected: PropTypes.bool.isRequired,
+    };
+
     constructor(props) {
       super(props);
       this.state = {
@@ -77,7 +93,7 @@ const patchedConnect = (...args) => component => {
     }
 
     isComponentActive(activeComponent) {
-      return activeComponent === componentName;
+      return activeComponent === componentKey;
     }
 
     willComponentBecomeActive(nextProps) {
