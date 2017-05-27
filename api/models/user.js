@@ -9,6 +9,14 @@ import setKey from 'setKey';
 let Player;
 const default_maximum_games = 4;
 
+const getDefaultMaximumGames = ({ protocol }) => {
+  if (protocol === 'appqueue') {
+    return 9999;
+  }
+
+  return default_maximum_games;
+};
+
 function arrayToObj(arr, key, callback) {
   return arr.reduce((obj, el) => {
     if ( ! obj[el[key]] ) {
@@ -108,7 +116,7 @@ const User = {
           avatar,
           nickname,
           protocol: params.protocol,
-          maximum_games: default_maximum_games,
+          maximum_games: getDefaultMaximumGames(params),
           facebookId,
           facebookToken,
         });
