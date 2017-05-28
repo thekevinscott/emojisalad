@@ -52,6 +52,7 @@ class NewGame extends Component {
   render() {
     return (
       <GameSettings
+        game={{ players: [this.props.me] }}
         onChange={this.onChange}
       />
     );

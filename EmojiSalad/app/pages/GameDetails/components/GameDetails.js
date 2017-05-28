@@ -35,6 +35,7 @@ class GameDetails extends Component {
     return (
       <GameSettings
         onChange={this.onChange}
+        game={this.props.game}
       />
     );
   }

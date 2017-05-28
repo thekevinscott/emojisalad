@@ -22,10 +22,13 @@ export const nameOfGame = {
 
 export const gameNameLabel = {
   fontSize: 12,
+  marginBottom: 14,
 };
 
 export const gameName = {
+  height: 20,
   fontSize: 17,
+  marginBottom: 10,
 };
 
 export const avatar = {

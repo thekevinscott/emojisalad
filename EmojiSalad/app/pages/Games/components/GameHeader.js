@@ -7,13 +7,12 @@ import {
 
 import * as styles from '../styles';
 
-import getPlayerString from '../utils/getPlayerString';
 import parseTimestamp from '../utils/parseTimestamp';
 import { Chevron } from 'components/Icon';
 
 const GameHeader = ({
-  players,
   timestamp,
+  name,
 }) => {
   return (
     <View style={styles.rowHeader}>
@@ -21,7 +20,7 @@ const GameHeader = ({
         style={styles.players}
         numberOfLines={1}
       >
-        {getPlayerString(players)}
+        {name}
       </Text>
       <Text style={styles.timestamp}>
         {parseTimestamp(timestamp)}
@@ -36,8 +35,8 @@ const GameHeader = ({
 }
 
 GameHeader.propTypes = {
-  players: PropTypes.array.isRequired,
   timestamp: PropTypes.number,
+  name: PropTypes.string.isRequired,
 };
 
 export default GameHeader;

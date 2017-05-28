@@ -45,6 +45,7 @@ export const games = {
 
 export const row = {
   backgroundColor: BG_COLOR,
+  height: 58,
   padding: ROW_PADDING,
   overflow: 'hidden',
   //justifyContent: 'center',

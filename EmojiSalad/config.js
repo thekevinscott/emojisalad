@@ -1,5 +1,5 @@
-export const ENVIRONMENT = 'production';
-//export const ENVIRONMENT = 'development';
+//export const ENVIRONMENT = 'production';
+export const ENVIRONMENT = 'development';
 //export const ENVIRONMENT = 'development-device';
 
 const LOCAL_IP = '192.168.0.8';
@@ -39,7 +39,7 @@ export const API_PORT = apiConfig.API_PORT;
 
 /* Storage */
 export const KEY = '@EmojiSalad';
-export const PERSIST_DATA = true;
+export const PERSIST_DATA = 1;
 
 if (ENVIRONMENT === 'production' && !PERSIST_DATA) {
   console.warn('RESET is set to true in a production environment; are you sure about that?');

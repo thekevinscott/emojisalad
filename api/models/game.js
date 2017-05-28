@@ -101,7 +101,7 @@ const Game = {
       return Promise.all(users.map((user) => {
         console.info('check that this user is valid', user);
         return User.findOne(user).then((result) => {
-          console.log('get sender');
+          console.log('get sender', result);
           return getSender(user, result).then(sender => {
             console.log('got sender', sender);
             return Object.assign({}, result, {
@@ -369,6 +369,7 @@ const Game = {
               const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
               return {
                 id: game.id,
+                name: game.name,
                 key: game.key,
                 created: game.created,
                 players: players[game.id] || [],
@@ -382,7 +383,44 @@ const Game = {
         return [];
       }
     });
-  }
+  },
+  update: (game, params) => {
+    console.info('****** game update', game, params);
+    const whitelist = [
+      'name',
+    ];
+
+    let query = squel
+                  .update({ autoQuoteFieldNames: true })
+                  .table('games', 'g');
+
+    if (game.id) {
+      query = query.where('g.id=?', game.id);
+    } else if (game.key) {
+      query = query.where('g.key=?', game.key);
+    }
+
+    let valid_query = false;
+    whitelist.map((key) => {
+      if ( params[key] ) {
+        valid_query = true;
+        query.set(key, params[key]);
+      }
+    });
+
+    if ( ! valid_query ) {
+      throw new Error("You must provide a valid key to update");
+    }
+
+    console.info('game update query', query.toString());
+    return db.query(query).then((rows) => {
+      if ( rows && rows.affectedRows ) {
+        return Game.findOne(game);
+      } else {
+        return null;
+      }
+    });
+  },
 };
 
 module.exports = Game;

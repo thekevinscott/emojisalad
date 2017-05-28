@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Messages from './Messages';
 import GameHeader from './GameHeader';
 
+import getPlayerString from '../utils/getPlayerString';
 import {
   //Text,
   View,
@@ -26,6 +27,7 @@ const Game = ({
   const mostRecentMessage = messages[messages.length - 1] || {};
 
   const unreadDotStyle = getUnreadStyle(game);
+  const name = game.name || getPlayerString(game.players);
 
   return (
     <TouchableOpacity
@@ -47,7 +49,7 @@ const Game = ({
             updateStartingMessage={updateStartingMessage}
           />
           <GameHeader
-            players={game.players}
+            name={name}
             timestamp={mostRecentMessage.timestamp}
           />
         </View>

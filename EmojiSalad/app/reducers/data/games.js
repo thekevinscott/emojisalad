@@ -18,6 +18,10 @@ import {
   RECEIVE_MESSAGE,
 } from 'app/pages/Game/types';
 
+import {
+  UPDATE_GAME,
+} from 'components/GameSettings/types';
+
 export const initialState = {};
 
 function translateRound(round = {}) {
@@ -59,6 +63,14 @@ function translateGame(currentGame = {}, game = {}) {
 }
 
 export default typeToReducer({
+  [UPDATE_GAME]: {
+    FULFILLED: (state, { data }) => {
+      return {
+        ...state,
+        [data.key]: translateGame(state[data.key], data),
+      };
+    },
+  },
   [CONFIRM_INVITE]: {
     FULFILLED: (state, { data, meta }) => {
       return {

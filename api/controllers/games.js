@@ -27,6 +27,26 @@ function findOne(req) {
   }
   return Game.findOne(game_id);
 }
+const getArgs = (game_id) => {
+  if ( /^\d+$/.test(game_id)) {
+    return {
+      id: game_id,
+    };
+  }
+
+  return {
+    key: game_id,
+  };
+};
+function update(req) {
+  const game_id = req.params.game_id;
+
+  const args = getArgs(game_id);
+
+  return Game.update(args, req.body).then((response) => {
+    return response;
+  });
+}
 function add(req) {
   //console.debug('game add!!');
   const game_id = req.params.game_id;
@@ -150,6 +170,11 @@ module.exports = [
     path: '/:game_id/players',
     method: 'post',
     fn: add
+  },
+  {
+    path: '/:game_id',
+    method: 'put',
+    fn: update
   },
   {
     path: '/:game_id/messages',

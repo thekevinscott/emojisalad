@@ -1,5 +1,5 @@
 export const row = {
-  height: 58,
+  //height: 58,
   justifyContent: 'center',
   padding: 15,
   flex: 1,

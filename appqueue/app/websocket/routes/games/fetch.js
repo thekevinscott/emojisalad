@@ -27,6 +27,7 @@ const getAllGamesForUser = userKey => {
       key: game.key,
       created: game.created,
       players: game.players,
+      name: game.name,
       //round: game.round,
       round_count: game.round_count,
     }));

@@ -11,6 +11,7 @@ import pause from './routes/games/pause';
 import leave from './routes/games/leave';
 import login from './routes/users/login';
 import updateSettings from './routes/users/updateSettings';
+import updateGame from './routes/games/update';
 import confirmInvite from './routes/invites/confirm';
 import cancelInvite from './routes/invites/cancel';
 import inviteToGame from './routes/invites/create';
@@ -31,6 +32,7 @@ export const CANCEL_INVITE = '@Games/CANCEL_INVITE';
 export const INVITE_TO_GAME = '@GameDetails/INVITE_TO_GAME';
 export const LOGIN = '@Login/LOGIN';
 export const SETTINGS_UPDATE_USER = '@Settings/UPDATE_USER';
+export const UPDATE_GAME = '@GameSettings/UPDATE_GAME';
 export const FB = '@websocket/FB_API';
 
 const ROUTES = {
@@ -46,6 +48,7 @@ const ROUTES = {
   [LEAVE]: leave,
   [CONFIRM_INVITE]: confirmInvite,
   [CANCEL_INVITE]: cancelInvite,
+  [UPDATE_GAME]: updateGame,
   [INVITE_TO_GAME]: inviteToGame,
   [LOGIN]: login,
   [SETTINGS_UPDATE_USER]: updateSettings,

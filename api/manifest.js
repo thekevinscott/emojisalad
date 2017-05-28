@@ -54,7 +54,12 @@ const getManifest = (port) => {
         endpoint: `${base_url}games`,
         method: 'GET'
         //description: 'Get a list of games with an optional query string'
-      }
+      },
+      update: {
+        endpoint: `${base_url}games/:game_id`,
+        method: 'PUT'
+        //description: 'Create a games'
+      },
     },
     invites: {
       create: {

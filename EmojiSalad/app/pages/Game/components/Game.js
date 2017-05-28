@@ -71,6 +71,14 @@ class Game extends Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.game.name !== nextProps.game.name) {
+      Actions.refresh({
+        title: nextProps.game.name,
+      });
+    }
+  }
+
   loadEarlier() {
     const {
       game,
@@ -97,6 +105,8 @@ class Game extends Component {
       //logger,
       compose,
     } = this.props;
+
+    console.log('game', game);
 
     return (
       <View
