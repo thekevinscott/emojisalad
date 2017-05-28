@@ -17,5 +17,18 @@ export default function startNewGame(key) {
         ],
       },
     },
+  }).then((game) => {
+    console.log('PING THE BOT', game);
+    return fetchFromService({
+      service: 'bot',
+      route: 'newGame',
+      options: {
+        body: game,
+      },
+    }).then(() => {
+      return game;
+    }).catch(err => {
+      console.log('Bot is down', err);
+    });
   });
 }

@@ -52,10 +52,10 @@ module.exports = (user_params, message) => {
             player: new_player,
             key: 'new-game',
             //from: participant.game_number,
-            options: [
-              new_player.nickname,
-              new_player.avatar
-            ]
+            options: {
+              nickname: new_player.nickname,
+              avatar: new_player.avatar
+            },
           }];
         });
       });

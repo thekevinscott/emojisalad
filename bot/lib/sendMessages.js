@@ -55,6 +55,7 @@ const sendMessages = (messages = [], options = {}) => {
   }
 
   const messages_by_protocol = messages.reduce((obj, message) => {
+    console.log('message', message);
     if ( ! message.protocol ) {
       throw new Error("Message protocol not provided: " + JSON.stringify(message));
     }

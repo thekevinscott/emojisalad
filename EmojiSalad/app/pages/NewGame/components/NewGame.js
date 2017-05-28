@@ -35,7 +35,8 @@ class NewGame extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    console.log('component did Mount');
     Actions.refresh({
       rightTitle: 'Done',
       onRight: this.startGame,

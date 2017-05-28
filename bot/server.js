@@ -9,6 +9,7 @@ const Promise = require('bluebird');
 const registry = require('microservice-registry');
 
 const endpoint = 'http://localhost:' + port + '/';
+const newGame = require('./routes/newGame');
 
 const PROTOCOLS = process.env.PROTOCOLS;
 if ( ! PROTOCOLS ) {
@@ -20,13 +21,7 @@ const requiredServices = PROTOCOLS.split(',').concat([
 ]);
 registry.register('bot', {
   services: requiredServices,
-  api: {
-    ping: {
-      endpoint: endpoint + 'ping',
-      method: 'GET',
-      description: 'An endpoint for calling back the Bot'
-    }
-  }
+  api: require('./manifest')(port)
 });
 
 app.set('port', port);
@@ -48,6 +43,9 @@ app.listen(port, () => {
   }, 5000);
   app.get('/ping', (req, res) => {
     ping(req, res);
+  });
+  app.post('/newGame', (req, res) => {
+    newGame(req, res);
   });
 
   registry.ready(() => {
