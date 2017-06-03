@@ -18,9 +18,9 @@ import InvitePlayers, { FriendsPropTypes } from 'app/components/InvitePlayers';
 
 class Invite extends Component {
   static propTypes = {
-    actions: PropTypes.shape({
-      getUserFriends: PropTypes.func.isRequired,
-    }).isRequired,
+    //actions: PropTypes.shape({
+      //getUserFriends: PropTypes.func.isRequired,
+    //}).isRequired,
     me: PropTypes.shape({
       key: PropTypes.string.isRequired,
       facebookToken: PropTypes.string.isRequired,
@@ -30,14 +30,6 @@ class Invite extends Component {
     gameKey: PropTypes.string,
     ...FriendsPropTypes,
   };
-
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    this.props.actions.getUserFriends(this.props.me.facebookToken);
-  }
 
   render() {
     return (

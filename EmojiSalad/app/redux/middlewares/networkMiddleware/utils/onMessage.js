@@ -25,7 +25,7 @@ const onMessage = e => {
   } = parsePayload(e);
 
   const parsedType = fromApiToType(type);
-  console.log('**** on message', parsedType);
+  //console.log('**** on message', parsedType);
 
   const payload = {
     type: parsedType,

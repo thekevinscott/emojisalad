@@ -5,6 +5,10 @@ import {
 } from 'app/pages/Games/types';
 
 import {
+  INVITE_TO_GAME,
+} from 'app/pages/GameDetails/types';
+
+import {
   UPDATE_USER,
 } from 'app/pages/Settings/types';
 
@@ -45,6 +49,22 @@ function translateUser(user) {
 }
 
 export default typeToReducer({
+  [INVITE_TO_GAME]: {
+    FULFILLED: (state, {
+      data,
+    }) => data.reduce((users, invite) => {
+      if (invite.error) {
+        return users;
+      }
+
+      const invitedUser = invite.invited_user;
+
+      return {
+        ...users,
+        [invitedUser.key]: translateUser(invitedUser),
+      };
+    }, state),
+  },
   [UPDATE_USER]: {
     FULFILLED: (state, { data }) => {
       return {

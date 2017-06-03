@@ -33,7 +33,7 @@ const bootstrapSocket = (dispatch) => {
   socket.on('message', e => {
     const payload = onMessage(e);
     dispatch(payload);
-    if (payload.meta && payload.meta.id && promises[payload.meta.id]) {
+    if (payload.meta && payload.meta.id !== undefined && promises[payload.meta.id]) {
       const promise = promises[payload.meta.id];
       if (payload.type.indexOf('_REJECTED') !== -1) {
         console.log('throw error for', payload);
@@ -42,6 +42,8 @@ const bootstrapSocket = (dispatch) => {
         console.log('resolve payload for', payload);
         promise.resolve(payload);
       }
+    } else {
+      console.log('no meta id for', payload);
     }
   });
 };
@@ -87,7 +89,7 @@ const websocket = ({
     });
 
     const messageId = packet.meta.id;
-    console.log('sent message id', messageId);
+    //console.log('sent message id', messageId);
     return messageId;
   }
 };

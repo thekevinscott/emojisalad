@@ -17,8 +17,23 @@ class GameDetails extends Component {
     me: PropTypes.object.isRequired,
     game: PropTypes.shape({
       key: PropTypes.string.isRequired,
+      invites: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+      })).isRequired,
+      players: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+        nickname: PropTypes.string,
+        key: PropTypes.string.isRequired,
+      })).isRequired,
     }).isRequired,
-    pending: PropTypes.bool.isRequired,
+    players: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string,
+      nickname: PropTypes.string,
+      avatar: PropTypes.string,
+      // TODO: This should be an enum
+      status: PropTypes.string.isRequired,
+    })).isRequired,
+    //pending: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -36,6 +51,7 @@ class GameDetails extends Component {
       <GameSettings
         onChange={this.onChange}
         game={this.props.game}
+        players={this.props.players}
       />
     );
   }

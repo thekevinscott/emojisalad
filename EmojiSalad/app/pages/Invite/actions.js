@@ -10,7 +10,7 @@ import {
 
 import {
   INVITE,
-  GET_USER_FRIENDS,
+  //GET_USER_FRIENDS,
 } from './types';
 
 export const invite = (userKey, gameKey, phones) => dispatch => dispatch(() => {
@@ -28,18 +28,18 @@ export const invite = (userKey, gameKey, phones) => dispatch => dispatch(() => {
   });
 });
 
-export const getUserFriends = (token) => dispatch => dispatch(() => {
-  return dispatch({
-    type: FB_API,
-    meta: {
-      type: GET_USER_FRIENDS,
-    },
-    payload: {
-      token,
-      path: [
-        'me/friends',
-        'me/invitable_friends',
-      ],
-    },
-  });
-});
+//export const getUserFriends = (token) => dispatch => dispatch(() => {
+  //return dispatch({
+    //type: FB_API,
+    //meta: {
+      //type: GET_USER_FRIENDS,
+    //},
+    //payload: {
+      //token,
+      //path: [
+        //'me/friends',
+        //'me/invitable_friends',
+      //],
+    //},
+  //});
+//});

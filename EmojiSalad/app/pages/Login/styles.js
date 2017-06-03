@@ -17,5 +17,5 @@ export const logo = {
 
 export const facebookContainer = {
   alignItems: 'center',
-  flex: 1,
+  flex: 0,
 };

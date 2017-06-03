@@ -27,6 +27,7 @@ const getAllGamesForUser = userKey => {
       key: game.key,
       created: game.created,
       players: game.players,
+      invites: game.invites,
       name: game.name,
       //round: game.round,
       round_count: game.round_count,
@@ -109,6 +110,7 @@ export default function fetchGames(ws, { userKey }) {
   }) => {
     return addType(games, 'game').concat(addType(invites, 'invite'));
   }).then(rows => {
+    console.info('rows of games', rows);
     // still need to sort it
     return rows;
   });

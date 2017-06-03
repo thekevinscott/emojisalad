@@ -10,10 +10,17 @@ import {
 export const inviteToGame = (userKey, game, player) => dispatch => {
   return dispatch({
     type: INVITE_TO_GAME,
+    meta: {
+      userKey,
+      gameKey: game.key,
+      players: [player],
+    },
     payload: {
       userKey,
       gameKey: game.key,
-      players: player.key,
+      players: [{
+        facebookId: player.id,
+      }],
     },
   });
 };

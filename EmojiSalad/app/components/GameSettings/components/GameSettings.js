@@ -34,6 +34,9 @@ class GameSettings extends Component {
     }).isRequired,
     game: PropTypes.shape({
       name: PropTypes.string,
+      invites: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+      })).isRequired,
       players: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string,
         nickname: PropTypes.string,
@@ -42,6 +45,13 @@ class GameSettings extends Component {
     }).isRequired,
     me: PropTypes.object.isRequired,
     onChange: PropTypes.func,
+    players: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string,
+      nickname: PropTypes.string,
+      avatar: PropTypes.string,
+      // TODO: This should be an enum
+      status: PropTypes.string.isRequired,
+    })).isRequired,
   };
 
   constructor(props) {
@@ -60,7 +70,6 @@ class GameSettings extends Component {
   }
 
   componentWillAppear() {
-    console.log('game settings will appear');
     Actions.refresh({
       onRight: this.updateGame,
     });
@@ -118,9 +127,9 @@ class GameSettings extends Component {
           name={this.state.gameName}
           placeholder={makeNameFromPlayers(this.props.game.players.concat(invitedPlayers))}
         />),
-      ].concat(invitedPlayers.map(player => (
+      ].concat(this.props.players.map((player, index) => (
         <Player
-          key={player.id}
+          key={`${player}-${index}`}
           player={player}
         />
       ))).concat([
@@ -129,6 +138,7 @@ class GameSettings extends Component {
           findPlayerToInvite={() => {
             Actions.invite({
               addPlayer: this.addPlayer,
+              game: this.props.game,
             });
           }}
         />),

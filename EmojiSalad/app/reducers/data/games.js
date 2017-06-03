@@ -48,11 +48,12 @@ function translateMessages(currentGame = {}, game = {}) {
 function translateGame(currentGame = {}, game = {}) {
   const timestamp = translateTimestampFromDatabase(game.created) || currentGame.timestamp;
   return {
-    key: game.key || currentGame.key,
+    key: game.key || currentGame.key || '',
     timestamp,
     archived: (game.archived !== undefined) ? game.archived : currentGame.archived,
     roundCount: (game.round_count !== undefined) ? game.round_count : currentGame.round_count,
     players: (game.players || []).map(player => player.user_key),
+    invites: (game.invites || []).map(invite => invite.key),
     round: translateRound(game.round || {}) || currentGame.round,
     pendingMessages: currentGame.pendingMessages || [],
     // messages is an array of keys of messages in an unordered list

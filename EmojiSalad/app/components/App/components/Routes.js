@@ -37,7 +37,6 @@ import GameDetails from 'pages/GameDetails';
 
 import Invite from 'pages/Invite';
 
-import Login from 'pages/Login';
 import Onboarding from 'pages/Onboarding';
 import Settings from 'pages/Settings';
 
@@ -79,13 +78,13 @@ class Routes extends Component {
   }
 
   isInitial(key) {
-    if (key === 'register') {
-      return !this.props.me.key;
+    if (key === 'onboarding') {
+      return !this.props.me.registered;
     } else if (key === 'games') {
-      return !!this.props.me.key;
-    } else if (key === 'game') {
-      return false;
+      return !!this.props.me.registered;
     }
+
+    return false;
   }
 
   /*
@@ -99,18 +98,9 @@ class Routes extends Component {
     // This fucks up the connectWithFocus activeComponent
     // listener, since the active component name is Games (24),
     // not Games
-    const gamesTitle = `Games (${this.props.games.length})`;
     //const gamesTitle = 'Games';
     const scenes = Actions.create(
       <Scene key="root">
-        <Scene
-          passProps
-          key="login"
-          component={Page}
-          page={Login}
-          initial={this.isInitial('register')}
-          title=""
-        />
         <Scene
           passProps
           key="settings"
@@ -122,6 +112,7 @@ class Routes extends Component {
         <Scene
           passProps
           key="onboarding"
+          initial={this.isInitial('onboarding')}
           component={Page}
           page={Onboarding}
           title=""
@@ -132,7 +123,6 @@ class Routes extends Component {
           component={Page}
           page={Games}
           initial={this.isInitial('games')}
-          title={gamesTitle}
           leftTitle={settings}
           onLeft={() => {
             Actions.settings();
@@ -183,7 +173,6 @@ class Routes extends Component {
           key="game"
           component={Page}
           page={Game}
-          initial={this.isInitial('game')}
           title="Game"
           leftTitle="Games"
           onLeft={() => {

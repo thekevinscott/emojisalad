@@ -245,9 +245,9 @@ const Round = {
               .where('r.created > ?',params.created);
     }
 
-    console.info('round find query', query.toString());
+    //console.info('round find query', query.toString());
     return db.query(query).then((rounds) => {
-      console.info('found rounds', rounds);
+      //console.info('found rounds', rounds);
       if ( rounds.length ) {
         if ( params.most_recent ) {
           const rounds_by_game_id = rounds.reduce((obj, round) => {
@@ -291,13 +291,13 @@ const Round = {
             return obj;
           }, {});
         }).then((guesses_by_round_id) => {
-          console.info('guesses by roudn id', guesses_by_round_id);
+          //console.info('guesses by roudn id', guesses_by_round_id);
           return Promise.all(
             rounds.map((round) => {
               return Promise.join(
                 Player.find({ game_id: round.game_id }),
                 (players) => {
-                  console.info('players for round', players);
+                  //console.info('players for round', players);
                   const submitter = players.filter((player) => {
                     return player.id === round.submitter_id;
                   })[0];
@@ -324,7 +324,7 @@ const Round = {
             })
           );
         }).then((foundRounds) => {
-          console.info('final rounds payload', foundRounds);
+          //console.info('final rounds payload', foundRounds);
           return foundRounds;
         });
       } else {

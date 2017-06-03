@@ -12,7 +12,10 @@ const sendMessage = (ws, startTime) => payload => {
       if (startTime) {
         console.info('seconds elapsed', ((new Date()).getTime() - startTime.getTime()) / 1000);
       }
-      const parsedPayload = JSON.stringify(payload);
+      const parsedPayload = JSON.stringify({
+        meta: {},
+        ...payload,
+      });
       ws.emit('message', parsedPayload);
       resolve(parsedPayload);
     }

@@ -1,5 +1,5 @@
 export const container = {
-  flex: 1,
+  flex: 0,
 };
 
 export const section = {

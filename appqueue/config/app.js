@@ -14,6 +14,6 @@ module.exports = {
   LOG_LEVEL: 'info',
   REQUIRED_SERVICES: [
     'api',
-    'sms',
+    //'sms',
   ],
 };

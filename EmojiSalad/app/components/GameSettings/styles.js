@@ -14,6 +14,7 @@ export const player = {
 
 export const nickname = {
   fontSize: 17,
+  flex: 1,
 };
 
 export const nameOfGame = {
@@ -44,4 +45,8 @@ export const addPlayerText = {
   color: '#0076FF',
   marginLeft: 10,
   fontSize: 17,
+};
+
+export const status = {
+  color: 'gray',
 };

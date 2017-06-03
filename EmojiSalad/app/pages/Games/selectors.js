@@ -26,6 +26,16 @@ export function selectPlayers(state, userKeys = []) {
   return userKeys.map(userKey => state.data.users[userKey] || {});
 }
 
+export function selectInvitesByKey(state, inviteKeys = []) {
+  return inviteKeys.map(inviteKey => {
+    return state.data.invites[inviteKey] || {};
+  }).map(invite => {
+    return {
+      ...invite,
+    };
+  });
+}
+
 //export function getLastMessage(game) {
   //return Number(game.messages[game.messages.length - 1].timestamp);
 //}
@@ -95,11 +105,13 @@ export function selectGames(state) {
     const row = data[key];
     const startingMessage = getStartingMessage(state, key);
     const players = selectPlayers(state, row.players);
+    const invites = selectInvitesByKey(state, row.invites);
     const messages = selectMessages(state, row.messages, startingMessage);
     const lastRead = selectLastRead(state, key);
     return {
       key,
       ...row,
+      invites,
       players,
       messages,
       lastRead,
@@ -129,7 +141,11 @@ export const selectGamesByNewestFirst = state => {
 
 const selectInvites = ({ data }) => {
   return Object.keys(data.invites).map(key => {
-    const invite = data.invites[key];
+    return data.invites[key];
+  }).filter(invite => {
+    // get rid of any invites where I am the inviter
+    return data.players[invite.inviter_player].userKey !== data.me.key;
+  }).map(invite => {
     const inviterUserKey = data.players[invite.inviter_player].userKey;
     const inviter = {
       key: inviterUserKey,

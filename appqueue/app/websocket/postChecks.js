@@ -25,14 +25,15 @@ const postChecks = (ws, { payload }) => {
     userKey,
   } = payload;
 
-  console.log('payload for post checks', payload);
+  console.info('payload for post checks', payload);
   const sendMessage = _sendMessage(ws);
+  console.info('sent it off');
 
   return getDevice(userKey).then(device => {
-    //console.info('the fetched device', device);
+    console.info('the fetched device', device);
     return Promise.all(getPromises(ws, device));
   }).then(requestsToMake => {
-    //console.info('requests to make', requestsToMake);
+    console.info('requests to make', requestsToMake);
     if (requestsToMake.length) {
       requestsToMake.forEach(request => {
         sendMessage(request);

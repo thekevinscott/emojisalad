@@ -59,6 +59,16 @@ const User = {
       facebookToken = params.facebookToken;
     }
 
+    let facebookTokenExpiration = null;
+    if (params.facebookTokenExpiration) {
+      facebookTokenExpiration = params.facebookTokenExpiration;
+    }
+
+    let facebookPermissions = null;
+    if (params.facebookPermissions) {
+      facebookPermissions = params.facebookPermissions;
+    }
+
     console.info('create user 1');
     return Emoji.getRandom().then((result) => {
       console.info('create user 2', result);
@@ -119,6 +129,8 @@ const User = {
           maximum_games: getDefaultMaximumGames(params),
           facebookId,
           facebookToken,
+          facebookPermissions,
+          facebookTokenExpiration,
         });
       } else {
         method = 'query';
@@ -185,6 +197,8 @@ const User = {
       'protocol',
       'registered',
       'facebookToken',
+      'facebookPermissions',
+      'facebookTokenExpiration',
     ];
     let query = squel
                   .update({ autoQuoteFieldNames: true })
@@ -215,6 +229,43 @@ const User = {
       } else {
         return null;
       }
+    });
+  },
+  updateFriends: (user, params) => {
+    const facebookIds = params.contacts.friends.map(friend => friend.id);
+    return User.find({ facebookIds }).then(users => {
+      const usersByFacebookId = users.reduce((obj, user) => ({
+        ...obj,
+        [user.facebookId]: user,
+      }), {});
+
+      const friendsWithKeys = params.contacts.friends.map(friend => {
+        return {
+          ...friend,
+          key: usersByFacebookId[friend.id].key,
+        };
+      });
+      //console.info('user update friends', user, params);
+      const friends = JSON.stringify(friendsWithKeys);
+      const invitable_friends = JSON.stringify(params.contacts.invitable_friends);
+      const query = squel
+                  .insert({ autoQuoteFieldNames: true })
+                  .into('friends')
+                  .setFields({
+                    user_key: params.user_key,
+                    updated: squel.fval('NOW()'),
+                    friends,
+                    invitable_friends,
+                  })
+                  .onDupUpdate('friends', friends)
+                  .onDupUpdate('invitable_friends', invitable_friends);
+
+      return db.create(query).then(() => {
+        return {
+          friends: friendsWithKeys,
+          invitable_friends: params.contacts.invitable_friends,
+        };
+      });
     });
   },
   getPlayersNum: Promise.coroutine(function* (params) {
@@ -276,7 +327,7 @@ const User = {
       query = query.where('u.facebookId = ?',params.facebookId);
     } else if ( params.facebookIds ) {
       someWhereStatement = true;
-      query = query.where('u.facebookId IN (?)',params.facebookIds);
+      query = query.where('u.facebookId IN ?',[].concat(params.facebookIds));
     }
 
     if ( params.from ) {

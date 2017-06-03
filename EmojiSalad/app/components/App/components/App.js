@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Authentication from 'components/Authentication';
+//import connectWithFacebook from 'utils/connectWithFacebook';
 //import connectWithFocus from '../../../utils/connectWithFocus';
 //import codePush from 'react-native-code-push';
 
@@ -20,6 +23,15 @@ import {
 //};
 
 class App extends Component {
+  static propTypes = {
+    actions: PropTypes.shape({
+      savePushId: PropTypes.func.isRequired,
+    }).isRequired,
+    store: PropTypes.shape({
+      getState: PropTypes.func.isRequired,
+    }).isRequired,
+  };
+
   constructor(props) {
     super(props);
 
@@ -49,10 +61,12 @@ class App extends Component {
 
     return (
       <AppProvider store={this.props.store}>
-        <Routes
-          me={me}
-          games={games}
-        />
+        <Authentication>
+          <Routes
+            me={me}
+            games={games}
+          />
+        </Authentication>
       </AppProvider>
     );
   }

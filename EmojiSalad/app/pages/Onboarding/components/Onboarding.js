@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+//import { Actions } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -13,7 +14,7 @@ import {
 } from 'react-native';
 
 import LetsPlay from './LetsPlay';
-import Settings from 'components/Settings';
+import UserSettings from 'components/UserSettings';
 
 import * as styles from '../styles';
 
@@ -22,24 +23,17 @@ class Onboarding extends Component {
     updateUser: PropTypes.func.isRequired,
     me: PropTypes.object.isRequired,
     saved: PropTypes.bool.isRequired,
-    next: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      readyForSubmission: false,
+      readyForSubmission: !!props.me.nickname,
       form: null,
     };
 
     this.onChange = this.onChange.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.saved) {
-      this.props.next();
-    }
   }
 
   onChange(readyForSubmission, form) {
@@ -60,7 +54,7 @@ class Onboarding extends Component {
           <Text style={styles.confirm}>Let’s confirm a few things so we can get started.</Text>
         </View>
         <View style={styles.settingsContainer}>
-          <Settings
+          <UserSettings
             onChange={this.onChange}
           />
         </View>

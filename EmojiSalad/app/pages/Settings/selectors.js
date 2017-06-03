@@ -2,6 +2,7 @@
 
 import {
   updateSettings,
+  logout,
 } from './actions';
 
 export const mapStateToProps = (state) => {
@@ -16,6 +17,9 @@ export const mapDispatchToProps = (dispatch) => {
     actions: {
       updateSettings: (form, me) => {
         return dispatch(updateSettings(form, me));
+      },
+      logout: () => {
+        return dispatch(logout());
       },
     },
   };

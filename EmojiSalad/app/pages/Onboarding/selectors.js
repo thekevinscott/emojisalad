@@ -1,5 +1,3 @@
-import { Actions } from 'react-native-router-flux';
-
 import {
   updateUser,
 } from './actions';
@@ -13,9 +11,6 @@ export const mapStateToProps = (state) => {
 
 export const mapDispatchToProps = (dispatch) => {
   return {
-    next: () => {
-      Actions.games();
-    },
     updateUser: (form, me) => {
       return dispatch(updateUser(form, me));
     },

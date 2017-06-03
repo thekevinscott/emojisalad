@@ -1,52 +1,46 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import {
   Text,
   View,
 } from 'react-native';
 
-const getName = ({
-  name,
-  nickname,
-  avatar,
+import {
+  FriendPropType,
+} from '../InvitePlayers';
+
+import * as styles from '../../styles';
+
+const Friend = ({
+  friend,
 }) => {
-  if (nickname) {
+  if (friend.nickname) {
     return (
-      <View style={{
-        flexDirection: 'row',
-      }}>
-        {avatar && (
+      <View style={styles.friend}>
+        {friend.avatar && (
           <Text style={{
             marginRight: 10,
           }}>
-          {`${avatar}`}
+          {`${friend.avatar}`}
         </Text>
         )}
         <Text>
-          {`${nickname} (${name})`}
+          {`${friend.nickname} (${friend.name})`}
         </Text>
       </View>
     );
   }
 
-  return (<Text>{ name }</Text>);
-};
 
-const Friend = ({
-  friend,
-}) => {
   return (
-    <View friend={friend}>
-      { getName(friend) }
+    <View style={styles.friend}>
+      <Text>{ friend.name }</Text>
     </View>
   );
 };
 
 Friend.propTypes = {
-  friend: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-  }).isRequired,
+  friend: FriendPropType,
 };
 
 export default Friend;

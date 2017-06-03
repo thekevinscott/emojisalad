@@ -23,6 +23,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		22834B6D4C5A45CEB062102D /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 57242E6C89934A54BBC962EF /* libz.tbd */; };
+		272D343F48C3405895866AB9 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 705FAF85C2DD46EB895213DC /* libRCTFBSDK.a */; };
 		291BCF05106241B881CB42A5 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8AAAC46CEFC4EDE875B03AE /* libCodePush.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -128,6 +129,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 3245CDED1BFEE35C00EABF68;
 			remoteInfo = RCTOneSignal;
+		};
+		341AAAD31EDB0E1C00634699 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FF821B798F14B40A684327B /* RCTFBSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9350E0F11CE3B0920041D815;
+			remoteInfo = RCTFBSDK;
 		};
 		346079EB1E8DC31300E60745 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -334,12 +342,14 @@
 		34EF73221E9A855C00AEC4EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EmojiSalad/Images.xcassets; sourceTree = "<group>"; };
 		36F8D46B56A04BF29A662B82 /* RNSimpleSound.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleSound.xcodeproj; path = "../node_modules/react-native-simple-sound/RNSimpleSound.xcodeproj"; sourceTree = "<group>"; };
 		426C4952B7E34767AB974FA2 /* libRNSimpleSound.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleSound.a; sourceTree = "<group>"; };
+		4FF821B798F14B40A684327B /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		56B5F9D9AD8A40888937F9E3 /* ContactsWrapper.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ContactsWrapper.xcodeproj; path = "../node_modules/react-native-contacts-wrapper/ios/ContactsWrapper.xcodeproj"; sourceTree = "<group>"; };
 		57242E6C89934A54BBC962EF /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5F786376FE18419D969F79B1 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		61DDFE9D365249F1AA243198 /* RCTOneSignal.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTOneSignal.xcodeproj; path = "../node_modules/react-native-onesignal/ios/RCTOneSignal.xcodeproj"; sourceTree = "<group>"; };
 		6C6615E4CB2547CCA942B143 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		705FAF85C2DD46EB895213DC /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
 		70619CED96B64F1A98D6D74F /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		736D1D7E66EB49B286550361 /* libRCTContactsWrapper.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTContactsWrapper.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
@@ -385,6 +395,7 @@
 				BE24DC03E66B4AC19B7A7858 /* libRNSimpleSound.a in Frameworks */,
 				05A4CFDBBF4F4ECDBCC22BE5 /* libRCTOneSignal.a in Frameworks */,
 				A1CD2396A6D6433FAC6FF6CD /* libRCTContactsWrapper.a in Frameworks */,
+				272D343F48C3405895866AB9 /* libRCTFBSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -530,6 +541,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		341AAACA1EDB0E1B00634699 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				341AAAD41EDB0E1C00634699 /* libRCTFBSDK.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		346079CE1E8DC31200E60745 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -630,6 +649,7 @@
 				36F8D46B56A04BF29A662B82 /* RNSimpleSound.xcodeproj */,
 				61DDFE9D365249F1AA243198 /* RCTOneSignal.xcodeproj */,
 				56B5F9D9AD8A40888937F9E3 /* ContactsWrapper.xcodeproj */,
+				4FF821B798F14B40A684327B /* RCTFBSDK.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -828,6 +848,10 @@
 					ProjectRef = 346D3CD91EBFD5BC00D559C2 /* RCTFBLogin.xcodeproj */;
 				},
 				{
+					ProductGroup = 341AAACA1EDB0E1B00634699 /* Products */;
+					ProjectRef = 4FF821B798F14B40A684327B /* RCTFBSDK.xcodeproj */;
+				},
+				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
 					ProjectRef = 00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */;
 				},
@@ -952,6 +976,13 @@
 			fileType = archive.ar;
 			path = libRCTOneSignal.a;
 			remoteRef = 3401BA1E1EB2716D004BEE50 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		341AAAD41EDB0E1C00634699 /* libRCTFBSDK.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTFBSDK.a;
+			remoteRef = 341AAAD31EDB0E1C00634699 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		346079EC1E8DC31300E60745 /* libRNDeviceInfo.a */ = {
@@ -1273,12 +1304,14 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-sound/RNSimpleSound",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = EmojiSaladTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1314,12 +1347,14 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-sound/RNSimpleSound",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = EmojiSaladTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1360,6 +1395,7 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-sound/RNSimpleSound",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1394,6 +1430,7 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-sound/RNSimpleSound",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1431,11 +1468,13 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-sound/RNSimpleSound",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = "EmojiSalad-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1480,11 +1519,13 @@
 					"$(SRCROOT)/../node_modules/react-native-simple-sound/RNSimpleSound",
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
+					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
 				);
 				INFOPLIST_FILE = "EmojiSalad-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1530,6 +1571,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.EmojiSalad-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1555,6 +1597,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

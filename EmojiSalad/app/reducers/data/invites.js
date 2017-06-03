@@ -8,6 +8,10 @@ import {
   CANCEL_INVITE,
 } from 'app/pages/Games/types';
 
+import {
+  INVITE_TO_GAME,
+} from 'app/pages/GameDetails/types';
+
 //import {
   //RECEIVE_MESSAGE,
 //} from 'app/pages/Game/types';
@@ -45,6 +49,36 @@ const omitKey = (state, { meta }) => {
 };
 
 export default typeToReducer({
+  [INVITE_TO_GAME]: {
+    //PENDING: (state, action) => {
+      //return state;
+    //},
+    FULFILLED: (state, {
+      data,
+      meta: {
+        gameKey,
+      },
+    }) => {
+      return data.reduce((invites, invite) => {
+        if (invite.error) {
+          return invites;
+        }
+        const key = invite.key;
+
+        const newInvite = {
+          ...invite,
+          game: { key: gameKey },
+        };
+
+        console.log('new invite', newInvite);
+
+        return {
+          ...invites,
+          [key]: translateInvite(invites[key], newInvite),
+        };
+      }, state);
+    },
+  },
   [CONFIRM_INVITE]: {
     FULFILLED: omitKey,
   },
@@ -53,15 +87,27 @@ export default typeToReducer({
   },
   [FETCH_GAMES]: {
     FULFILLED: (state, { data }) => {
-      return {
-        ...state,
-        ...data.filter(obj => {
-          return obj.type === 'invite';
-        }).reduce((obj, invite) => ({
+      return data.reduce((obj, row) => {
+        if (row.type === 'invite') {
+          return {
+            ...obj,
+            [row.key]: translateInvite(state[row.key], row),
+          };
+        }
+
+        return {
           ...obj,
-          [invite.key]: translateInvite(state[invite.key], invite),
-        }), {}),
-      };
+          ...row.invites.reduce((gameInvites, invite) => {
+            return {
+              ...gameInvites,
+              [invite.key]: translateInvite(state[invite.key], {
+                ...invite,
+                game: row,
+              }),
+            };
+          }, {}),
+        };
+      }, state);
     },
   },
   //[RECEIVE_MESSAGE]: {

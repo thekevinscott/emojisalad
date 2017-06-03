@@ -1,29 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import getWrappedComponent from './getWrappedComponent';
 import { connect } from 'react-redux';
 import {
   AppState,
 } from 'react-native';
-
-function getWrappedComponent(
-  component,
-  [
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-    options,
-  ],
-) {
-  return connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps,
-    {
-      ...options,
-      withRef: true,
-    },
-  )(component);
-}
 
 const getActiveComponent = (scene = {}) => {
   if (!scene.key) {

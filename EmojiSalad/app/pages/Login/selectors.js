@@ -1,22 +1,9 @@
-import {
-  login,
-  next,
-} from './actions';
-
-export const mapStateToProps = (state) => {
+export const mapStateToProps = () => {
   return {
-    user: state.ui.Login.user,
-    state,
   };
 };
 
-export const mapDispatchToProps = (dispatch) => {
+export const mapDispatchToProps = () => {
   return {
-    actions: {
-      next,
-      login: (data) => {
-        return dispatch(login(data));
-      },
-    },
   };
 };

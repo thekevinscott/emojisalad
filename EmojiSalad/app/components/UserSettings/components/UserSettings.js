@@ -10,7 +10,7 @@ import {
 import Form from 'components/Form';
 import AvatarPicker from './AvatarPicker';
 
-const fields = [
+const defaultFields = [
   {
     name: 'nickname',
     label: "Your Nickname",
@@ -28,7 +28,7 @@ const fields = [
   }
 ];
 
-const getIsReadyForSubmission = (form) => fields.reduce((isReady, field, index) => {
+const getIsReadyForSubmission = (form) => defaultFields.reduce((isReady, field, index) => {
   if (isReady === false) {
     return false;
   }
@@ -40,13 +40,13 @@ const getIsReadyForSubmission = (form) => fields.reduce((isReady, field, index) 
   return isReady;
 }, true);
 
-const getValues = (user = {}) => {
+const getValues = (user = {}, fields) => {
   return fields.reduce((values, field) => {
     return values.concat(user[field.name]);
   }, []);
 };
 
-class Settings extends Component {
+class UserSettings extends Component {
   static propTypes = {
     onChange: PropTypes.func,
     user: PropTypes.object,
@@ -56,13 +56,18 @@ class Settings extends Component {
     super(props);
 
     this.state = {
-      values: getValues(props.user),
+      values: getValues(props.user, this.getFields()),
     };
 
     this.onChange = this.onChange.bind(this);
   }
 
+  getFields() {
+    return defaultFields;
+  }
+
   onChange(form) {
+    const fields = this.getFields();
     if (this.props.onChange) {
       const values = fields.reduce((obj, field, index) => {
         return {
@@ -87,7 +92,7 @@ class Settings extends Component {
 
     return (
       <Form
-        fields={fields}
+        fields={this.getFields()}
         onChange={this.onChange}
         values={values}
       />
@@ -98,4 +103,4 @@ class Settings extends Component {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Settings);
+)(UserSettings);

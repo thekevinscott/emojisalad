@@ -12,8 +12,10 @@ import {
   View,
 } from 'react-native';
 
+import LogoutButton from './LogoutButton';
+
 import * as styles from '../styles';
-import GameSettings from 'components/Settings';
+import UserSettings from 'components/UserSettings';
 
 class Settings extends Component {
   static propTypes = {
@@ -22,6 +24,7 @@ class Settings extends Component {
 
     actions: PropTypes.shape({
       updateSettings: PropTypes.func.isRequired,
+      logout: PropTypes.func.isRequired,
     }).isRequired,
   };
 
@@ -60,9 +63,11 @@ class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <GameSettings
+        <UserSettings
           onChange={this.onChange}
+          fields={[]}
         />
+        <LogoutButton />
       </View>
     );
   }

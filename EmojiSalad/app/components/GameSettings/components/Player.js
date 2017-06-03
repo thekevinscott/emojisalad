@@ -9,11 +9,13 @@ import {
 import * as styles from '../styles';
 
 const getName = (name, nickname) => {
-  if (nickname) {
-    return `${nickname} (${name})`;
-  }
+  return [name, nickname].filter(str => str).map((str, index) => {
+    if (index > 0) {
+      return `(${str})`;
+    }
 
-  return name;
+    return str;
+  }).join(' ');
 };
 
 const Player = ({
@@ -31,13 +33,16 @@ const Player = ({
       <Text style={styles.nickname}>
         { getName(name, nickname) }
       </Text>
+      <Text style={styles.status}>
+        Pending
+      </Text>
     </View>
   );
 }
 
 Player.propTypes = {
   player: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     nickname: PropTypes.string,
     avatar: PropTypes.string,
   }).isRequired,

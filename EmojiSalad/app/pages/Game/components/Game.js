@@ -39,6 +39,15 @@ class Game extends Component {
     messages: PropTypes.array.isRequired,
     game: PropTypes.shape({
       name: PropTypes.string.isRequired,
+      key: PropTypes.string.isRequired,
+      invites: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+      })).isRequired,
+      players: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+        nickname: PropTypes.string,
+        key: PropTypes.string.isRequired,
+      })).isRequired,
     }).isRequired,
   };
   constructor(props) {
@@ -48,7 +57,7 @@ class Game extends Component {
   }
 
   componentWillAppear() {
-    console.log('game component will appear');
+    //console.log('game component will appear');
     //const d = moment();
     //this.props.actions.updateLogger(`Game component refreshed: ${d.format('dddd Do h:mm:ss a')}`);
     const {
@@ -59,7 +68,6 @@ class Game extends Component {
       seen,
     } = this.props;
 
-    //console.log('this props', this.props);
 
     actions.fetchLatestMessages(me.key, game.key, {
       messages,
@@ -105,8 +113,6 @@ class Game extends Component {
       //logger,
       compose,
     } = this.props;
-
-    console.log('game', game);
 
     return (
       <View

@@ -72,3 +72,7 @@ export const startGame = {
   padding: 20,
   alignItems: 'center',
 };
+
+export const friend = {
+  flexDirection: 'row',
+};

@@ -39,6 +39,14 @@ function update(req) {
     return response;
   });
 }
+
+function updateFriends(req) {
+  const user_id = req.params.user_id;
+
+  const args = getArgs(user_id);
+
+  return User.updateFriends(args, req.body);
+}
 function remove(req) {
   const user_id = req.params.user_id;
   if ( ! user_id ) {
@@ -69,6 +77,11 @@ module.exports = [
     path: '/:user_id',
     method: 'put',
     fn: update
+  },
+  {
+    path: '/:user_id/friends',
+    method: 'put',
+    fn: updateFriends
   },
   {
     path: '/:user_id',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import { Actions, } from 'react-native-router-flux';
+import { Actions, } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import connectWithFocus from '../../../utils/connectWithFocus';
 
@@ -33,9 +33,18 @@ class Games extends Component {
       key: PropTypes.string.isRequired,
     })).isRequired,
     games: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      invites: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+      })).isRequired,
+      players: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+        nickname: PropTypes.string,
+        key: PropTypes.string.isRequired,
+      })).isRequired,
     })).isRequired,
     me: PropTypes.shape({
-      key: PropTypes.string.isRequired,
+      key: PropTypes.string,
     }).isRequired,
     actions: PropTypes.shape({
       fetchData: PropTypes.func.isRequired,
@@ -54,21 +63,22 @@ class Games extends Component {
     this.refresh = this.refresh.bind(this);
   }
 
-  componentWillMount() {
-    //if (this.props.games.length === 0) {
-      //Actions.newGame();
-    //}
-  }
-
   componentWillAppear({
     type,
   }) {
     console.log('Overview Component componentWillAppear called', type);
     this.refresh();
+
+    const gamesTitle = `Games (${this.props.games.length})`;
+    Actions.refresh({
+      title: gamesTitle,
+    });
   }
 
   refresh() {
-    this.props.actions.fetchData(this.props.me.key);
+    if (!this.props.fetching) {
+      this.props.actions.fetchData(this.props.me.key);
+    }
   }
 
   render() {

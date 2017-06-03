@@ -9,6 +9,7 @@ const EmojiData = require('emoji-data');
 const Player = require('./player');
 const User = require('./user');
 const Round = require('./round');
+let Invite;
 import setKey from 'setKey';
 //const Round = require('./round');
 
@@ -294,6 +295,9 @@ const Game = {
     });
   },
   find: (params = {}) => {
+    if (!Invite) {
+      Invite = require('./invite');
+    }
     //console.info('find game');
     const select_rounds_query = squel
     .select()
@@ -361,9 +365,15 @@ const Game = {
       if ( games && games.length ) {
         const game_ids = games.map(game => game.id);
         return Promise.join(
+          Invite.find({ game_ids }, [ 'game' ]).then(getByGameID),
           Player.find({ game_ids }).then(getByGameID),
           Round.find({ game_ids, most_recent: true }).then(getByGameID),
-          (players = {}, rounds = {}) => {
+          (
+            invites = {},
+            players = {},
+            rounds = {}
+          ) => {
+            //console.log('found promises', invites, players, rounds);
             //console.info('found games');
             return games.map((game) => {
               const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
@@ -373,12 +383,27 @@ const Game = {
                 key: game.key,
                 created: game.created,
                 players: players[game.id] || [],
+                invites: (invites[game.id] || []).map(invite => {
+                  return Object.keys(invite).reduce((inviteObj, key) => {
+                    if (key === 'id') {
+                      return inviteObj;
+                    }
+
+                    return {
+                      ...inviteObj,
+                      [key]: invite[key],
+                    };
+                  }, {});
+                }),
                 round_count: game.round_count,
                 round
               };
             });
           }
-        );
+        ).then(resp => {
+          console.info('final games', resp);
+          return resp;
+        });
       } else {
         return [];
       }

@@ -7,13 +7,31 @@ import {
   inviteToGame,
 } from './actions';
 
-export function mapStateToProps(state) {
+const toArr = (obj = {}) => Object.keys(obj).reduce((arr, key) => arr.concat({
+  ...obj[key],
+  key,
+}), []);
+
+export function mapStateToProps(state, { game }) {
   const me = selectMe(state);
-  const pending = state.ui.NewGame.pending;
+  const savingInvites = toArr((state.ui.GameDetails[game.key] || {}).pendingInvites);
+  const invites = toArr(state.data.invites);
+
+  const players = savingInvites.map(invite => {
+    return {
+      ...invite,
+      status: 'saving',
+    };
+  }).concat(invites.map(invite => {
+    return {
+      ...state.data.users[invite.invited_user],
+      status: 'pending',
+    };
+  }));
 
   return {
     me,
-    pending,
+    players,
   };
 }
 

@@ -40,7 +40,9 @@ const WHITELISTED_REDUCERS = {
         return Object.keys(state).reduce((obj, gameKey) => {
           const {
             key,
+            name,
             roundCount,
+            invites,
             players,
             round,
             messages,
@@ -51,6 +53,8 @@ const WHITELISTED_REDUCERS = {
             ...obj,
             [gameKey]: {
               key,
+              name,
+              invites,
               roundCount,
               players,
               round,

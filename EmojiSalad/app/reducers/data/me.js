@@ -10,20 +10,19 @@ import {
 } from 'app/utils/device/types';
 
 import {
-  types,
-} from 'app/pages/Register';
+  SUBMIT_CLAIM,
+} from 'app/pages/Register/types';
 
 import {
-  LOGIN,
-} from 'app/pages/Login/types';
+  SERVER_LOGIN,
+  LOCAL_LOGOUT,
+} from 'components/Authentication/types';
 
 import {
   UPDATE_USER,
 } from 'app/pages/Settings/types';
 
-const {
-  SUBMIT_CLAIM,
-} = types;
+const SEND_FRIENDS = `@users/SEND_FRIENDS`;
 
 const initialState = {
   //id: null,
@@ -41,6 +40,11 @@ const initialState = {
   protocol: null,
   deviceToken: null,
   deviceInfo: null,
+  registered: 0,
+  contacts: {
+    friends: [],
+    invitableFriends: [],
+  },
 };
 
 const translateMe = (payload) => {
@@ -60,10 +64,34 @@ const translateMe = (payload) => {
     protocol: payload.protocol,
     facebookId: payload.facebookId,
     facebookToken: payload.facebookToken,
+    registered: payload.registered,
+    contacts: payload.contacts,
   };
 };
 
+const gatherContacts = (contacts, { key }) => contacts.reduce((obj, friend, order) => ({
+  ...obj,
+  [friend[key]]: friend,
+  // facebook returns friends in an intelligent order (that it thinks you
+  // will prefer) so we maintain that order
+  order,
+}), {});
+
 export default typeToReducer({
+  [SEND_FRIENDS]: (state, {
+    data: contacts,
+  }) => {
+    return {
+      ...state,
+      contacts: {
+        friends: gatherContacts(contacts.friends, { key: 'key' }),
+        invitable_friends: gatherContacts(contacts.invitable_friends, { key: 'id' }),
+      },
+    };
+  },
+  [LOCAL_LOGOUT]: () => {
+    return initialState;
+  },
   [UPDATE_USER]: {
     FULFILLED: (state, action) => {
       return {
@@ -72,7 +100,7 @@ export default typeToReducer({
       };
     },
   },
-  [LOGIN]: {
+  [SERVER_LOGIN]: {
     FULFILLED: (state, action) => {
       Raven.setUser({
         key: action.key,

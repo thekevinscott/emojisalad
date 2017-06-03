@@ -54,10 +54,15 @@ const selectGame = ({ data }, gameKey) => {
       return data.users[userKey];
     });
 
+    const invites = game.invites.map(inviteKey => {
+      return data.invites[inviteKey];
+    });
+
     return {
       ...game,
       name: game.name || makeNameFromPlayers(players),
       players,
+      invites,
     };
   }
 
