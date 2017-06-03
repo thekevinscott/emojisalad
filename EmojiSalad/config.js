@@ -1,5 +1,5 @@
-//export const ENVIRONMENT = 'production';
-export const ENVIRONMENT = 'development';
+export const ENVIRONMENT = 'production';
+//export const ENVIRONMENT = 'development';
 //export const ENVIRONMENT = 'development-device';
 
 const LOCAL_IP = '192.168.0.8';
