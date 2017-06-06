@@ -3,15 +3,15 @@ import Raven from 'raven-js';
 
 import {
   SAVE_PUSH_ID,
-} from 'app/components/App/types';
+} from 'components/App/types';
 
 import {
   UPDATE_DEVICE_INFO,
-} from 'app/utils/device/types';
+} from 'utils/device/types';
 
 import {
   SUBMIT_CLAIM,
-} from 'app/pages/Register/types';
+} from 'pages/Register/types';
 
 import {
   SERVER_LOGIN,
@@ -20,7 +20,7 @@ import {
 
 import {
   UPDATE_USER,
-} from 'app/pages/Settings/types';
+} from 'pages/Settings/types';
 
 const SEND_FRIENDS = `@users/SEND_FRIENDS`;
 

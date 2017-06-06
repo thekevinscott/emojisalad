@@ -2,15 +2,15 @@ import typeToReducer from 'type-to-reducer';
 
 import {
   FETCH_GAMES,
-} from 'app/pages/Games/types';
+} from 'pages/Games/types';
 
 import {
   INVITE_TO_GAME,
-} from 'app/pages/GameDetails/types';
+} from 'pages/GameDetails/types';
 
 import {
   UPDATE_USER,
-} from 'app/pages/Settings/types';
+} from 'pages/Settings/types';
 
 const initialState = {};
 

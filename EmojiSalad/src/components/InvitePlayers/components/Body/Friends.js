@@ -7,7 +7,7 @@ import {
 
 import Instructions from './Instructions';
 import Friend from './Friend';
-import { FriendsPropTypes } from 'app/components/InvitePlayers';
+import { FriendsPropTypes } from 'components/InvitePlayers';
 
 const getInstructions = fetching => {
   if (fetching) {

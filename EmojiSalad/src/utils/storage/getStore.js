@@ -1,7 +1,8 @@
+/* globals Promise */
 import {
   KEY,
   PERSIST_DATA,
-} from '../../../config';
+} from 'src/config';
 
 import {
   AsyncStorage,

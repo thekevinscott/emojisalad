@@ -1,22 +1,22 @@
 import typeToReducer from 'type-to-reducer';
 import R from 'ramda';
 
-import translateTimestampFromDatabase from 'app/utils/translateTimestampFromDatabase';
+import translateTimestampFromDatabase from 'utils/translateTimestampFromDatabase';
 
 import {
   START_NEW_GAME,
-} from 'app/pages/NewGame/types';
+} from 'pages/NewGame/types';
 
 import {
   FETCH_GAMES,
   CONFIRM_INVITE,
-} from 'app/pages/Games/types';
+} from 'pages/Games/types';
 
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
-} from 'app/pages/Game/types';
+} from 'pages/Game/types';
 
 import {
   UPDATE_GAME,

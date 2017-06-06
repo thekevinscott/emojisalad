@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Raven from 'raven-js';
 require('raven-js/plugins/react-native')(Raven);
 
-import { INFO } from 'app/utils/device/index';
+import { INFO } from 'utils/device/index';
 
 Raven.config('https://32267e621577475095319f5baf4c837b@sentry.io/115596', {
   release: INFO.readableAppVersion,
@@ -10,8 +10,8 @@ Raven.config('https://32267e621577475095319f5baf4c837b@sentry.io/115596', {
 
 import {
   AppRegistry,
-  View,
-  Text,
+  //View,
+  //Text,
 } from 'react-native';
 
 import {
@@ -24,10 +24,6 @@ import {
   App,
   Loading,
 } from 'components/App';
-
-const style = {
-  flex: 1,
-};
 
 class EmojiSalad extends Component {
   componentWillMount() {
@@ -58,7 +54,7 @@ class EmojiSalad extends Component {
     });
   }
 
-  renderApp() {
+  render() {
     if (this.state.store) {
       return (
         <App store={this.state.store} />
@@ -66,14 +62,6 @@ class EmojiSalad extends Component {
     }
 
     return (<Loading />);
-  }
-
-  render() {
-    return (
-      <View>
-        <Text>hi</Text>
-      </View>
-    );
   }
 }
 

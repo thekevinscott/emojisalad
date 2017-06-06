@@ -2,12 +2,12 @@
   "presets": ["react-native-stage-0"],
   "plugins": [
     ["module-alias", [
-      { "src": "./app", "expose": "app" },
-      { "src": "./app/pages", "expose": "pages" },
-      { "src": "./app/components", "expose": "components" },
-      { "src": "./app/utils", "expose": "utils" },
-      { "src": "./app/reducers", "expose": "reducers" },
-      { "src": "./app/redux/middlewares", "expose": "middlewares" },
+      { "src": "./src", "expose": "src" },
+      { "src": "./src/pages", "expose": "pages" },
+      { "src": "./src/components", "expose": "components" },
+      { "src": "./src/utils", "expose": "utils" },
+      { "src": "./src/reducers", "expose": "reducers" },
+      { "src": "./src/redux/middlewares", "expose": "middlewares" },
       { "src": "./config.js", "expose": "config" },
     ]]
   ]

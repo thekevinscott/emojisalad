@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import {
   //Text,
@@ -14,11 +13,6 @@ import * as styles from '../styles';
 
 import Friends from './Body/Friends';
 import Search from './Search';
-
-import {
-  mapStateToProps,
-  mapDispatchToProps,
-} from '../selectors';
 
 export const FriendPropType = PropTypes.shape({
   id: PropTypes.oneOfType([
@@ -106,7 +100,4 @@ class InvitePlayers extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvitePlayers);
+export default InvitePlayers;

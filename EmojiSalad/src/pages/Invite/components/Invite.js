@@ -14,7 +14,7 @@ import {
   mapDispatchToProps,
 } from '../selectors';
 
-import InvitePlayers, { FriendsPropTypes } from 'app/components/InvitePlayers';
+import InvitePlayers, { FriendsPropTypes } from 'components/InvitePlayers';
 
 class Invite extends Component {
   static propTypes = {

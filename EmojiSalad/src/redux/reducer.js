@@ -2,11 +2,11 @@ import {
   combineReducers,
 } from 'redux';
 
-import ui from 'app/reducers/ui';
+import ui from 'reducers/ui';
 
-import data from 'app/reducers/data';
+import data from 'reducers/data';
 
-import application from 'app/reducers/application';
+import application from 'reducers/application';
 
 export default combineReducers({
   ui,

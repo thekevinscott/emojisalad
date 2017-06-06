@@ -1,20 +1,20 @@
 import typeToReducer from 'type-to-reducer';
 
-//import translateTimestampFromDatabase from 'app/utils/translateTimestampFromDatabase';
+//import translateTimestampFromDatabase from 'utils/translateTimestampFromDatabase';
 
 import {
   FETCH_GAMES,
   CONFIRM_INVITE,
   CANCEL_INVITE,
-} from 'app/pages/Games/types';
+} from 'pages/Games/types';
 
 import {
   INVITE_TO_GAME,
-} from 'app/pages/GameDetails/types';
+} from 'pages/GameDetails/types';
 
 //import {
   //RECEIVE_MESSAGE,
-//} from 'app/pages/Game/types';
+//} from 'pages/Game/types';
 
 export const initialState = {};
 

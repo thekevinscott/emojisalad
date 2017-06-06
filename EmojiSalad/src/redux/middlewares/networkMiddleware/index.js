@@ -5,7 +5,7 @@ import io from './socketio';
 import {
   API_PORT,
   API_HOST,
-} from 'config';
+} from 'src/config';
 
 import {
   updateStatus,

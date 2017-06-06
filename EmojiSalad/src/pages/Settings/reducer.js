@@ -2,7 +2,7 @@ import typeToReducer from 'type-to-reducer';
 
 import {
   UPDATE_USER,
-} from 'app/pages/Settings/types';
+} from 'pages/Settings/types';
 
 const initialState = {
   pending: false,

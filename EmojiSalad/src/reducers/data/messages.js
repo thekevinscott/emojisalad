@@ -8,13 +8,13 @@ import translateTimestampFromDatabase from '../../utils/translateTimestampFromDa
 
 import {
   FETCH_GAMES,
-} from 'app/pages/Games/types';
+} from 'pages/Games/types';
 
 import {
   FETCH_MESSAGES,
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
-} from 'app/pages/Game/types';
+} from 'pages/Game/types';
 
 //Sound.enable(true);
 const sounds = [
