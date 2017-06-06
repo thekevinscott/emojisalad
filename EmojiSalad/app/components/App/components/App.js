@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 import Authentication from 'components/Authentication';
-//import connectWithFacebook from 'utils/connectWithFacebook';
-//import connectWithFocus from '../../../utils/connectWithFocus';
-//import codePush from 'react-native-code-push';
-
-import AppProvider from '../../../redux/AppProvider';
 import OneSignal from 'react-native-onesignal'; // Import package from node modules
-
 import Routes from './Routes';
+
 import {
   selectMe,
   selectGames,
@@ -17,10 +14,11 @@ import {
   mapDispatchToProps,
 } from '../selectors';
 
-//const codePushOptions = {
-  //updateDialog: true,
-  //checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
-//};
+import {
+  View,
+} from 'react-native';
+
+import * as styles from '../styles';
 
 class App extends Component {
   static propTypes = {
@@ -43,6 +41,7 @@ class App extends Component {
   }
 
   componentWillMount() {
+    console.log('can this be moved out of the component into the raw javascript?');
     OneSignal.addEventListener('ids', this.receivedPushToken);
   }
 
@@ -60,14 +59,16 @@ class App extends Component {
     const games = selectGames(state);
 
     return (
-      <AppProvider store={this.props.store}>
-        <Authentication>
-          <Routes
-            me={me}
-            games={games}
-          />
-        </Authentication>
-      </AppProvider>
+      <Provider store={this.props.store}>
+        <View style={styles.page}>
+          <Authentication>
+            <Routes
+              me={me}
+              games={games}
+            />
+          </Authentication>
+        </View>
+      </Provider>
     );
   }
 }

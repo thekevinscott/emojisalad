@@ -1,7 +1,4 @@
 import { Actions } from 'react-native-router-flux';
-import {
-  update as updateLogger,
-} from 'components/Logger/actions';
 
 import {
   FETCH_GAMES,
@@ -15,7 +12,6 @@ import {
 
 export function fetchData(userKey) {
   return dispatch => {
-    dispatch(updateLogger(`fetch data with user key: ${userKey}`));
     return dispatch({
       type: FETCH_GAMES,
       payload: {

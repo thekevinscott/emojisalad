@@ -3,10 +3,6 @@ import {
 } from 'components/App/selectors';
 
 import {
-  update as updateLogger,
-} from 'components/Logger/actions';
-
-import {
   fetchMessages,
   updateCompose,
   sendMessage,
@@ -133,9 +129,6 @@ export function mapDispatchToProps(dispatch, ownProps) {
       sendMessage: (userKey, message) => {
         const gameKey = ownProps.game.key;
         return dispatch(sendMessage(userKey, gameKey, message));
-      },
-      updateLogger: msg => {
-        return dispatch(updateLogger(msg));
       },
     },
   };

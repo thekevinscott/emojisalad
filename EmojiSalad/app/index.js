@@ -11,14 +11,14 @@ Raven.config('https://32267e621577475095319f5baf4c837b@sentry.io/115596', {
 import {
   AppRegistry,
   View,
-  //Text,
+  Text,
 } from 'react-native';
 
 import {
   getStore,
 } from 'utils/storage';
 
-import configureStore from './configureStore';
+import configureStore from './redux/configureStore';
 
 import {
   App,
@@ -70,11 +70,12 @@ class EmojiSalad extends Component {
 
   render() {
     return (
-      <View style={style}>
-        {this.renderApp()}
+      <View>
+        <Text>hi</Text>
       </View>
     );
   }
 }
 
 AppRegistry.registerComponent('EmojiSalad', () => EmojiSalad);
+

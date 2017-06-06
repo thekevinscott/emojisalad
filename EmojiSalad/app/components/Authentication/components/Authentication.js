@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 //import graphRequest from './graphRequest';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import Login from 'pages/Login';
+//import {
+  //Actions,
+//} from 'react-native-router-flux';
 
 const permissions = [
   "email",
@@ -25,6 +28,7 @@ class Authentication extends Component {
   static propTypes = {
     me: PropTypes.shape({
       key: PropTypes.string,
+      registered: PropTypes.number.isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       localLogin: PropTypes.func.isRequired,
@@ -99,11 +103,12 @@ class Authentication extends Component {
 
   render() {
     const {
-      //me,
-      isLoggedIn,
+      me,
+      //isLoggedIn,
     } = this.props;
 
-    const opacity = isLoggedIn ? 0 : 1;
+    //const opacity = isLoggedIn ? 0 : 1;
+    const opacity = me.key ? 0 : 1;
 
     return (
       <View style={styles.container}>

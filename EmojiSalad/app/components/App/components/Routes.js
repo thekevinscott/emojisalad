@@ -18,15 +18,8 @@ import {
   Scene,
 } from 'react-native-router-flux';
 
-import {
-  Page,
-} from 'components/Page';
-
-//import {
-  //Register,
-//} from 'pages/Register';
-
 import Games from 'pages/Games';
+import { Base } from 'components/Authentication';
 
 import {
   Game,
@@ -81,7 +74,9 @@ class Routes extends Component {
     if (key === 'onboarding') {
       return !this.props.me.registered;
     } else if (key === 'games') {
-      return !!this.props.me.registered;
+      return !!this.props.me.registered && this.props.me.key;
+    } else if (key === 'hide') {
+      return !!this.props.me.key;
     }
 
     return false;
@@ -102,10 +97,14 @@ class Routes extends Component {
     const scenes = Actions.create(
       <Scene key="root">
         <Scene
+          key="hide"
+          initial={this.isInitial('hide')}
+          component={Base}
+        />
+        <Scene
           passProps
           key="settings"
-          component={Page}
-          page={Settings}
+          component={Settings}
           type={ActionConst.PUSH}
           title=""
         />
@@ -113,15 +112,13 @@ class Routes extends Component {
           passProps
           key="onboarding"
           initial={this.isInitial('onboarding')}
-          component={Page}
-          page={Onboarding}
+          component={Onboarding}
           title=""
         />
         <Scene
           passProps
           key="games"
-          component={Page}
-          page={Games}
+          component={Games}
           initial={this.isInitial('games')}
           leftTitle={settings}
           onLeft={() => {
@@ -137,8 +134,7 @@ class Routes extends Component {
           key="gameDetails"
           direction="vertical"
           type={ActionConst.PUSH}
-          component={Page}
-          page={GameDetails}
+          component={GameDetails}
           title="Details"
           rightTitle="Done"
           onRight={() => {
@@ -150,8 +146,7 @@ class Routes extends Component {
           key="newGame"
           direction="vertical"
           type={ActionConst.PUSH}
-          component={Page}
-          page={NewGame}
+          component={NewGame}
           title="New Game"
           leftTitle="Cancel"
           onLeft={() => {
@@ -163,16 +158,14 @@ class Routes extends Component {
           key="invite"
           direction="vertical"
           type={ActionConst.PUSH}
-          component={Page}
-          page={Invite}
+          component={Invite}
           title="Add Player"
           leftTitle="Back"
         />
         <Scene
           passProps
           key="game"
-          component={Page}
-          page={Game}
+          component={Game}
           title="Game"
           leftTitle="Games"
           onLeft={() => {

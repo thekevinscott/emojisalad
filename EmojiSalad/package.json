@@ -32,6 +32,7 @@
     "react-native-swipe-list-view": "^0.4.1",
     "react-native-ua": "1.0.0",
     "react-native-vector-icons": "^4.0.1",
+    "react-navigation": "^1.0.0-beta.11",
     "react-redux": "5.0.4",
     "redux": "3.6.0",
     "redux-promise-middleware": "4.2.0",

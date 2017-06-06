@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 
 import LetsPlay from './LetsPlay';
-import UserSettings from 'components/UserSettings';
 
 import * as styles from '../styles';
 
@@ -22,7 +21,6 @@ class Onboarding extends Component {
   static propTypes = {
     updateUser: PropTypes.func.isRequired,
     me: PropTypes.object.isRequired,
-    saved: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -54,9 +52,6 @@ class Onboarding extends Component {
           <Text style={styles.confirm}>Let’s confirm a few things so we can get started.</Text>
         </View>
         <View style={styles.settingsContainer}>
-          <UserSettings
-            onChange={this.onChange}
-          />
         </View>
         <View style={styles.buttonContainer}>
           <LetsPlay

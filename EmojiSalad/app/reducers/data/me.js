@@ -69,7 +69,7 @@ const translateMe = (payload) => {
   };
 };
 
-const gatherContacts = (contacts, { key }) => contacts.reduce((obj, friend, order) => ({
+const gatherContacts = (contacts = [], { key }) => contacts.reduce((obj, friend, order) => ({
   ...obj,
   [friend[key]]: friend,
   // facebook returns friends in an intelligent order (that it thinks you

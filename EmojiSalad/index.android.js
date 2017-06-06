@@ -1,1 +1,2 @@
-require('./app/redux/bootstrap');
+require('./app');
+

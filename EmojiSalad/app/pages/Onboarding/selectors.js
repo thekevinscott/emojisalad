@@ -5,7 +5,6 @@ import {
 export const mapStateToProps = (state) => {
   return {
     me: state.data.me,
-    saved: state.ui.Onboarding.saved,
   };
 };
 
