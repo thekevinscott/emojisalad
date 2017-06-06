@@ -1,6 +1,6 @@
 import getDevice from './devices/getDevice';
 import requestDeviceInfo from './devices/requestDeviceInfo';
-//import requestDevicePushId from './devices/requestDevicePushId';
+import requestDevicePushId from './devices/requestDevicePushId';
 import _sendMessage from './sendMessage';
 
 const getPromises = (ws, {
@@ -13,9 +13,9 @@ const getPromises = (ws, {
     promises.push(requestDeviceInfo());
   }
 
-  //if (!pushId) {
-    //promises.push(requestDevicePushId());
-  //}
+  if (!pushId) {
+    promises.push(requestDevicePushId());
+  }
 
   return promises;
 };
