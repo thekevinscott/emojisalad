@@ -1,7 +1,7 @@
 import {
   setStore,
   getStateParts,
-} from '../../utils/storage';
+} from 'utils/storage';
 
 export default function storageMiddleware({ getState }) {
   return next => action => {

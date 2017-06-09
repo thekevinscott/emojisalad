@@ -14,10 +14,6 @@ import {
   sortBy,
 } from 'utils/sort';
 
-import {
-  selectMe,
-} from 'components/App/selectors';
-
 export function selectUser(state, userKey) {
   return state.data.users[userKey];
 }
@@ -167,7 +163,7 @@ export function mapStateToProps(state) {
     fetching: state.ui.Games.fetching || false,
     games: selectGamesByNewestFirst(state),
     invites: selectInvites(state),
-    me: selectMe(state),
+    me: state.data.me,
     logger: loggerMessages,
   };
 }

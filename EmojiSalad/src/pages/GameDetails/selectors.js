@@ -1,7 +1,4 @@
 //import { bindActionCreators } from 'redux'
-import {
-  selectMe,
-} from 'components/App/selectors';
 
 import {
   inviteToGame,
@@ -13,7 +10,7 @@ const toArr = (obj = {}) => Object.keys(obj).reduce((arr, key) => arr.concat({
 }), []);
 
 export function mapStateToProps(state, { game }) {
-  const me = selectMe(state);
+  const me = state.data.me;
   const savingInvites = toArr((state.ui.GameDetails[game.key] || {}).pendingInvites);
   const invites = toArr(state.data.invites);
 

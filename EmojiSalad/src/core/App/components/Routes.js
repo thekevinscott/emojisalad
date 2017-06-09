@@ -19,7 +19,7 @@ import {
 } from 'react-native-router-flux';
 
 import Games from 'pages/Games';
-import { Base } from 'components/Authentication';
+import { Base } from 'core/Authentication';
 
 import {
   Game,

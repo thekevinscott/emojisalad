@@ -1,14 +1,11 @@
 import { bindActionCreators } from 'redux'
-import {
-  selectMe,
-} from 'components/App/selectors';
 
 import {
   startGame,
 } from './actions';
 
 export function mapStateToProps(state) {
-  const me = selectMe(state);
+  const me = state.data.me;
   const pending = state.ui.NewGame.pending;
 
   return {

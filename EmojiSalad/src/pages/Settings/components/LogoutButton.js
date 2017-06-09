@@ -7,7 +7,7 @@ import {
 
 import {
   Logout,
-} from 'components/Authentication';
+} from 'core/Authentication';
 
 import * as styles from '../styles';
 

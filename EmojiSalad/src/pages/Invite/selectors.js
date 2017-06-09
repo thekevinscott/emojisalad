@@ -1,7 +1,4 @@
 //import { bindActionCreators } from 'redux'
-import {
-  selectMe,
-} from 'components/App/selectors';
 
 import {
   //invite,
@@ -23,7 +20,7 @@ const selectContacts = (contacts, game = { players: [], invites: [], }) => {
 };
 
 export function mapStateToProps(state, { game }) {
-  const me = selectMe(state);
+  const me = state.data.me;
 
   const {
     fetching,

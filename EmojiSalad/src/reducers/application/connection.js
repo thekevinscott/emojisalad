@@ -2,7 +2,7 @@ import typeToReducer from 'type-to-reducer';
 
 import {
   UPDATE_STATUS,
-} from 'middlewares/networkMiddleware/types';
+} from 'core/redux/middlewares/networkMiddleware/types';
 
 const initialState = {
   connected: false,

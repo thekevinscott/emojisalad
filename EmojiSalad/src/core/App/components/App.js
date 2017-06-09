@@ -3,12 +3,11 @@ import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Authentication from 'components/Authentication';
-import OneSignal from 'react-native-onesignal'; // Import package from node modules
+import Authentication from 'core/Authentication';
 import Routes from './Routes';
+import PushNotificationHandler from './PushNotificationHandler';
 
 import {
-  selectMe,
   selectGames,
   mapStateToProps,
   mapDispatchToProps,
@@ -30,44 +29,29 @@ class App extends Component {
     }).isRequired,
   };
 
-  constructor(props) {
-    super(props);
-
-    this.receivedPushToken = this.receivedPushToken.bind(this);
-  }
-
   shouldComponentUpdate() {
     return false;
   }
 
-  componentWillMount() {
-    console.log('can this be moved out of the component into the raw javascript?');
-    OneSignal.addEventListener('ids', this.receivedPushToken);
-  }
-
-  componentWillUnmount() {
-    OneSignal.removeEventListener('ids', this.receivedPushToken);
-  }
-
-  receivedPushToken({ pushToken, userId }) {
-    this.props.actions.savePushId(pushToken, userId);
-  }
-
   render() {
     const state = this.props.store.getState();
-    const me = selectMe(state);
+    const me = state.data.me;
     const games = selectGames(state);
 
     return (
       <Provider store={this.props.store}>
-        <View style={styles.page}>
-          <Authentication>
-            <Routes
-              me={me}
-              games={games}
-            />
-          </Authentication>
-        </View>
+        <PushNotificationHandler
+          savePushId={this.props.actions.savePushId}
+        >
+          <View style={styles.page}>
+            <Authentication>
+              <Routes
+                me={me}
+                games={games}
+              />
+            </Authentication>
+          </View>
+        </PushNotificationHandler>
       </Provider>
     );
   }

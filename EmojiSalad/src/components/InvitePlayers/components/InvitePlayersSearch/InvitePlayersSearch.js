@@ -1,15 +1,9 @@
-import React, { PropTypes, Component } from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import {
-  constants,
-} from 'components/App/styles';
-
-import {
-  Text,
   View,
   TextInput,
-  TouchableHighlight,
 } from 'react-native';
 
 import Add from './Add';

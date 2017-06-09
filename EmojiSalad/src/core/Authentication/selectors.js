@@ -2,13 +2,13 @@ import {
   localLogin,
   localLogout,
   serverLogin,
-} from './actions';
+} from 'core/redux/middlewares/authenticationMiddleware/actions';
 
-export const mapStateToProps = ({ data, ui }) => {
+export const mapStateToProps = ({ data, application }) => {
   return {
     me: data.me,
-    credentials: ui.Authentication.credentials,
-    isLoggedIn: ui.Authentication.isLoggedIn,
+    credentials: application.authentication.credentials,
+    isLoggedIn: application.authentication.isLoggedIn,
   };
 };
 

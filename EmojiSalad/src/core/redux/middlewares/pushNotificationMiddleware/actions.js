@@ -9,3 +9,4 @@ export const savePushId = (pushToken, pushId) => {
     pushId,
   };
 };
+

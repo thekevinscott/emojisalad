@@ -10,12 +10,7 @@ const BG_COLOR = '#fff';
 export const MESSAGE_FADEIN_DURATION = 200;
 export const MESSAGE_SLIDE_DURATION = 500;
 
-//import {
-  //HEADER_HEIGHT,
-//} from '../../themes/constants';
-
 export const container = {
-  //paddingTop: HEADER_HEIGHT,
 };
 
 export const list = {

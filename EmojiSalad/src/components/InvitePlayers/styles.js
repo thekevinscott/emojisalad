@@ -1,7 +1,3 @@
-import {
-  constants,
-} from 'components/App/styles';
-
 export const newGame = {
   flex: 1,
 };
@@ -34,7 +30,7 @@ export const invitePlayers = {
 };
 
 export const invitePlayer = {
-  color: constants.purple,
+  color: 'blue',
   flex: 1,
 };
 
@@ -59,7 +55,7 @@ export const invitedPlayer = {
 };
 
 export const invitedPlayerText = {
-  color: constants.purple,
+  color: 'purple',
   paddingRight: 150,
   flex: 1,
 };

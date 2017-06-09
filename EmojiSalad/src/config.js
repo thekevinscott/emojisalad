@@ -7,6 +7,9 @@ const LOCAL_IP = '192.168.0.8';
 // Rest API timeout
 export const NETWORK_TIMEOUT = 5000;
 
+// Raven error logging
+export const RAVEN_URL = 'https://32267e621577475095319f5baf4c837b@sentry.io/115596';
+
 function getAPI(environment) {
   const API_PORT = '5012';
   if (environment === 'production') {

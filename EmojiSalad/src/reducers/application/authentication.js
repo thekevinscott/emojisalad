@@ -4,7 +4,7 @@ import {
   LOCAL_LOGIN,
   LOCAL_LOGOUT,
   SERVER_LOGIN,
-} from './types';
+} from 'core/redux/middlewares/authenticationMiddleware/types';
 
 const initialState = {
   pending: false,
@@ -49,4 +49,5 @@ export default typeToReducer({
     },
   },
 }, initialState);
+
 

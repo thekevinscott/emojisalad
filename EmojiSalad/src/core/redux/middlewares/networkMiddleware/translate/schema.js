@@ -1,9 +1,4 @@
 import {
-  SUBMIT_CLAIM,
-  MIGRATE_USER,
-} from 'pages/Register/types';
-
-import {
   FETCH_GAMES,
 } from 'pages/Games/types';
 
@@ -18,7 +13,7 @@ import {
   REQUEST_DEVICE_PUSH_ID,
   SEND_DEVICE_INFO,
   SEND_DEVICE_PUSH_ID,
-} from 'middlewares/appqueueMiddleware/types';
+} from 'core/redux/middlewares/appqueueMiddleware/types';
 
 import {
   HANDSHAKE,
@@ -26,8 +21,6 @@ import {
 
 // TODO: How to keep this up to date with the server?
 const TYPES = {
-  [MIGRATE_USER]: 'MIGRATE_USER',
-  [SUBMIT_CLAIM]: 'CLAIM',
   [SEND_MESSAGE]: 'SEND_MESSAGE',
   [FETCH_MESSAGES]: 'FETCH_MESSAGES',
   [RECEIVE_MESSAGE]: 'RECEIVE_MESSAGE',

@@ -3,20 +3,16 @@ import Raven from 'raven-js';
 
 import {
   SAVE_PUSH_ID,
-} from 'components/App/types';
+} from 'core/redux/middlewares/pushNotificationMiddleware/types';
 
 import {
   UPDATE_DEVICE_INFO,
 } from 'utils/device/types';
 
 import {
-  SUBMIT_CLAIM,
-} from 'pages/Register/types';
-
-import {
   SERVER_LOGIN,
   LOCAL_LOGOUT,
-} from 'components/Authentication/types';
+} from 'core/redux/middlewares/authenticationMiddleware/types';
 
 import {
   UPDATE_USER,
@@ -101,19 +97,6 @@ export default typeToReducer({
     },
   },
   [SERVER_LOGIN]: {
-    FULFILLED: (state, action) => {
-      Raven.setUser({
-        key: action.key,
-        nickname: action.nickname,
-      });
-
-      return {
-        ...state,
-        ...translateMe(action.data),
-      };
-    },
-  },
-  [SUBMIT_CLAIM]: {
     FULFILLED: (state, action) => {
       Raven.setUser({
         key: action.key,

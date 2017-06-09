@@ -4,7 +4,7 @@ import {
 
 import {
   LOCAL_LOGOUT,
-} from 'components/Authentication/types';
+} from 'core/redux/middlewares/authenticationMiddleware/types';
 
 export const updateSettings = (data, me) => {
   return {

@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import VectorIcon from 'react-native-vector-icons/Ionicons';
 
 import {
-  constants,
-} from 'components/App/styles';
-
-import {
   TouchableHighlight,
   View,
 } from 'react-native';
@@ -49,7 +45,7 @@ const Icon = ({
     <VectorIcon
       name={icon}
       size={size || 30}
-      color={color || constants.purple}
+      color={color || 'blue'}
     />
   </TouchableHighlight>
 );

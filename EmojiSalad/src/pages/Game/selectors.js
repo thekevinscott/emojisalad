@@ -1,8 +1,4 @@
 import {
-  selectMe,
-} from 'components/App/selectors';
-
-import {
   fetchMessages,
   updateCompose,
   sendMessage,
@@ -86,7 +82,7 @@ export function mapStateToProps(state, props) {
 
   const loggerMessages = state.ui.Logger.messages;
 
-  const me = selectMe(state);
+  const me = state.data.me;
   return {
     game,
     messages,
