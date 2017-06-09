@@ -1,37 +1,42 @@
-import { Actions, } from 'react-native-router-flux';
-import connectWithFocus from 'utils/connectWithFocus';
 import React, { Component } from 'react';
+import { Actions, } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
-//import { connect } from 'react-redux';
-import {
-  View,
-  //Text,
-} from 'react-native';
+import { connect } from 'react-redux';
+//import connectWithFocus from 'utils/connectWithFocus';
 
-import * as styles from '../styles';
-
-import List from 'components/List';
-import Player from './Player';
-import NameOfGame from './NameOfGame';
-import AddPlayer from './AddPlayer';
-
-import {
-  mapStateToProps,
-  mapDispatchToProps,
-} from '../selectors';
-
+import GameSettings from './components/GameSettings';
 import {
   makeNameFromPlayers,
 } from 'pages/Game/selectors';
 
-class GameSettings extends Component {
+import {
+  mapStateToProps,
+  mapDispatchToProps,
+} from './selectors';
+
+import {
+  View,
+  Text,
+} from 'react-native';
+
+class GameSettingsContainer extends Component {
   static key = 'gameSettings';
 
   static propTypes = {
     actions: PropTypes.shape({
+      saveGame: PropTypes.func.isRequired,
+    }).isRequired,
+  };
+
+  /*
+  static propTypes = {
+    actions: PropTypes.shape({
+      startGame: PropTypes.func.isRequired,
       invitePlayer: PropTypes.func.isRequired,
       updateGame: PropTypes.func.isRequired,
     }).isRequired,
+    pending: PropTypes.bool.isRequired,
+
     game: PropTypes.shape({
       name: PropTypes.string,
       invites: PropTypes.arrayOf(PropTypes.shape({
@@ -42,7 +47,7 @@ class GameSettings extends Component {
         nickname: PropTypes.string,
         key: PropTypes.string.isRequired,
       })).isRequired,
-    }).isRequired,
+    }),
     me: PropTypes.object.isRequired,
     onChange: PropTypes.func,
     players: PropTypes.arrayOf(PropTypes.shape({
@@ -56,12 +61,14 @@ class GameSettings extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       invitedPlayers: {},
       gameName: props.game.name || '',
       changedGameName: false,
     };
+
+    this.onChange = this.onChange.bind(this);
+    this.startGame = this.startGame.bind(this);
 
     this.getData = this.getData.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
@@ -69,9 +76,27 @@ class GameSettings extends Component {
     this.updateGame = this.updateGame.bind(this);
   }
 
-  componentWillAppear() {
+  startGame() {
+    if (!this.props.pending) {
+      this.props.actions.startGame(this.props.me.key, this.state.invitedPlayers);
+    }
+  }
+
+  componentDidMount() {
+    console.log('component did Mount');
+    Actions.refresh({
+      rightTitle: 'Done',
+      onRight: this.startGame,
+    });
     Actions.refresh({
       onRight: this.updateGame,
+    });
+  }
+
+  onChange(player) {
+    this.setState({
+      ...this.state.invitedPlayers,
+      [player.id]: player,
     });
   }
 
@@ -146,20 +171,32 @@ class GameSettings extends Component {
     };
   }
 
+        data={this.getData()}
+        game={{ players: [this.props.me] }}
+        onChange={this.onChange}
+
+  */
+
+  componentWillAppear() {
+  }
+
   render() {
     return (
-      <View
-        style={styles.gameSettings}
-      >
-        <List
-          data={this.getData()}
-        />
-      </View>
+      <GameSettings
+        name="foo"
+        updateGameName={() => {}}
+        findPlayerToInvite={() => {
+          Actions.invite({
+            //addPlayer: this.addPlayer,
+            //game: this.props.game,
+          });
+        }}
+      />
     );
   }
 }
 
-export default connectWithFocus(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(GameSettings);
+)(GameSettingsContainer);

@@ -96,7 +96,7 @@ const Body = ({
       <TouchableOpacity
         style={styles.listContainer}
         onPress={() => {
-          Actions.newGame();
+          Actions.gameSettings();
         }}
       >
         <Text style={styles.text}>You have no games. Start a new game with your friends!</Text>

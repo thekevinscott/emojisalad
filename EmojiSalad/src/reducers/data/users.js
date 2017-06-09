@@ -6,7 +6,7 @@ import {
 
 import {
   INVITE_TO_GAME,
-} from 'pages/GameDetails/types';
+} from 'pages/GameSettings/types';
 
 import {
   UPDATE_USER,

@@ -18,7 +18,7 @@ const Settings = ({
   return (
     <View style={styles.container}>
       <UserSettings
-        me={me}
+        user={me}
         onChange={onChange}
         fields={fields}
       />

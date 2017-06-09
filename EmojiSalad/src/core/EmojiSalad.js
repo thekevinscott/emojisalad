@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import logging from 'utils/logging';
-
 import {
   getStore,
 } from 'utils/storage';
@@ -29,8 +27,6 @@ class EmojiSalad extends Component {
   getStore() {
     return getStore().then(initialState => {
       if (!this.state.store) {
-        logging.setUser(initialState.data.me);
-
         this.setState({
           store: configureStore(initialState),
         });

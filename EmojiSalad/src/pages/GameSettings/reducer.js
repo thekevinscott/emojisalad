@@ -1,19 +1,33 @@
 import typeToReducer from 'type-to-reducer';
 
 import {
-  //START_NEW_GAME,
+  START_NEW_GAME,
   INVITE_TO_GAME,
 } from './types';
 
 const initialState = {
+  pending: false,
 };
-
 const initialGameDetails = {
   pending: false,
   pendingInvites: {},
 };
 
 export default typeToReducer({
+  [START_NEW_GAME]: {
+    PENDING: state => {
+      return {
+        ...state,
+        pending: true,
+      };
+    },
+    FULFILLED: state => {
+      return {
+        ...state,
+        pending: false,
+      };
+    },
+  },
   [INVITE_TO_GAME]: {
     PENDING: (state, {
       meta: {
@@ -85,18 +99,5 @@ export default typeToReducer({
       };
     },
   },
-  //[START_NEW_GAME]: {
-    //PENDING: state => {
-      //return {
-        //...state,
-        //pending: true,
-      //};
-    //},
-    //FULFILLED: state => {
-      //return {
-        //...state,
-        //pending: false,
-      //};
-    //},
-  //},
 }, initialState);
+

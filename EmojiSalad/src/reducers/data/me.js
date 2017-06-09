@@ -43,7 +43,7 @@ const initialState = {
   },
 };
 
-const translateMe = (payload) => {
+const translateMe = (payload, user = {}) => {
   return {
     //id: payload.id,
     key: payload.key,
@@ -61,7 +61,7 @@ const translateMe = (payload) => {
     facebookId: payload.facebookId,
     facebookToken: payload.facebookToken,
     registered: payload.registered,
-    contacts: payload.contacts,
+    contacts: payload.contacts || user.contacts,
   };
 };
 
@@ -92,7 +92,7 @@ export default typeToReducer({
     FULFILLED: (state, action) => {
       return {
         ...state,
-        ...translateMe(action.data),
+        ...translateMe(action.data, state),
       };
     },
   },
@@ -105,7 +105,7 @@ export default typeToReducer({
 
       return {
         ...state,
-        ...translateMe(action.data),
+        ...translateMe(action.data, state),
       };
     },
   },

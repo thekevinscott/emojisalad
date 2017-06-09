@@ -21,7 +21,7 @@ const Invite = ({
   addPlayer,
 }) => (
   <View
-    style={styles.newGame}
+    style={styles.invite}
   >
     <Search
       onChange={onSearch}

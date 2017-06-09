@@ -25,8 +25,7 @@ import {
   Game,
 } from 'pages/Game';
 
-import NewGame from 'pages/NewGame';
-import GameDetails from 'pages/GameDetails';
+import GameSettings from 'pages/GameSettings';
 
 import Invite from 'pages/Invite';
 
@@ -125,28 +124,16 @@ class Routes extends Component {
           }}
           rightTitle={newGame}
           onRight={() => {
-            Actions.newGame();
+            Actions.gameSettings();
           }}
         />
         <Scene
           passProps
-          key="gameDetails"
+          key="gameSettings"
           direction="vertical"
           type={ActionConst.PUSH}
-          component={GameDetails}
-          title="Details"
-          rightTitle="Done"
-          onRight={() => {
-            Actions.pop();
-          }}
-        />
-        <Scene
-          passProps
-          key="newGame"
-          direction="vertical"
-          type={ActionConst.PUSH}
-          component={NewGame}
-          title="New Game"
+          component={GameSettings}
+          title="GameSettings"
           leftTitle="Cancel"
           onLeft={() => {
             Actions.games();
@@ -173,7 +160,7 @@ class Routes extends Component {
           }}
           rightTitle={information}
           onRight={({ game }) => {
-            Actions.gameDetails({
+            Actions.gameSettings({
               game,
             });
           }}

@@ -5,7 +5,8 @@ import translateTimestampFromDatabase from 'utils/translateTimestampFromDatabase
 
 import {
   START_NEW_GAME,
-} from 'pages/NewGame/types';
+  UPDATE_GAME,
+} from 'pages/GameSettings/types';
 
 import {
   FETCH_GAMES,
@@ -17,10 +18,6 @@ import {
   SEND_MESSAGE,
   RECEIVE_MESSAGE,
 } from 'pages/Game/types';
-
-import {
-  UPDATE_GAME,
-} from 'components/GameSettings/types';
 
 export const initialState = {};
 
