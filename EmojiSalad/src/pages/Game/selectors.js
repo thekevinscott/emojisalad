@@ -80,14 +80,11 @@ export function mapStateToProps(state, props) {
 
   const compose = selectCompose(state, game.key);
 
-  const loggerMessages = state.ui.Logger.messages;
-
   const me = state.data.me;
   return {
     game,
     messages,
     me,
-    logger: loggerMessages,
     compose,
     seen,
     loading,

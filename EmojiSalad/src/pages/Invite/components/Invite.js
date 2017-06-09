@@ -1,49 +1,48 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import {
-  //Text,
-  //View,
-  //RefreshControl,
+  View,
 } from 'react-native';
 
-//import * as styles from '../styles';
+import * as styles from '../styles';
 
+import Friends from './Body/Friends';
+import Search from './Search';
 import {
-  mapStateToProps,
-  mapDispatchToProps,
-} from '../selectors';
+  FriendsPropTypes,
+} from './propTypes';
 
-import InvitePlayers, { FriendsPropTypes } from 'components/InvitePlayers';
+const Invite = ({
+  onSearch,
+  fetching,
+  friends,
+  invitableFriends,
+  addPlayer,
+}) => (
+  <View
+    style={styles.newGame}
+  >
+    <Search
+      onChange={onSearch}
+      onCancel={() => {
+        Actions.pop();
+      }}
+    />
+    <Friends
+      fetching={fetching}
+      friends={friends}
+      invitableFriends={invitableFriends}
+      addPlayer={addPlayer}
+    />
+  </View>
+);
 
-class Invite extends Component {
-  static propTypes = {
-    //actions: PropTypes.shape({
-      //getUserFriends: PropTypes.func.isRequired,
-    //}).isRequired,
-    me: PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      facebookToken: PropTypes.string.isRequired,
-    }).isRequired,
-    fetching: PropTypes.bool.isRequired,
-    addPlayer: PropTypes.func.isRequired,
-    gameKey: PropTypes.string,
-    ...FriendsPropTypes,
-  };
+Invite.propTypes = {
+  addPlayer: PropTypes.func.isRequired,
+  fetching: PropTypes.bool.isRequired,
+  onSearch: PropTypes.func.isRequired,
+  ...FriendsPropTypes,
+};
 
-  render() {
-    return (
-      <InvitePlayers
-        fetching={this.props.fetching}
-        friends={this.props.friends}
-        invitableFriends={this.props.invitableFriends}
-        addPlayer={this.props.addPlayer}
-      />
-    );
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Invite);
+export default Invite;

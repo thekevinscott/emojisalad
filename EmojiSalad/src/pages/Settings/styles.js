@@ -1,5 +1,13 @@
+import {
+  Platform,
+} from 'react-native';
+
 export const container = {
   flex: 1,
+  marginTop: Platform.select({
+    ios: 64,
+    android: 33,
+  }),
 };
 
 export const logout = {

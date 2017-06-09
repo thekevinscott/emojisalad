@@ -6,9 +6,11 @@ import { connect } from 'react-redux';
 import {
   mapStateToProps,
   mapDispatchToProps,
-} from '../selectors';
+} from './selectors';
 
-class Settings extends Component {
+import Settings from './components/Settings';
+
+class SettingsContainer extends Component {
   static propTypes = {
     me: PropTypes.object.isRequired,
     pending: PropTypes.bool.isRequired,
@@ -65,5 +67,4 @@ class Settings extends Component {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Settings);
-
+)(SettingsContainer);

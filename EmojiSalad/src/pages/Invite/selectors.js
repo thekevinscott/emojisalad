@@ -19,6 +19,24 @@ const selectContacts = (contacts, game = { players: [], invites: [], }) => {
   });
 };
 
+export const getContacts = (arr = [], search = '') => {
+  if (search === '') {
+    return arr;
+  }
+
+  return arr.filter(checkContact(search));
+};
+
+const isMatch = (a, b) => a.toLowerCase().indexOf(b.toLowerCase()) === 0;
+
+const checkContact = search => ({
+  name = '',
+  nickname = '',
+}) => [
+  name,
+  nickname,
+].reduce((found, val) => found || isMatch(val, search), false);
+
 export function mapStateToProps(state, { game }) {
   const me = state.data.me;
 

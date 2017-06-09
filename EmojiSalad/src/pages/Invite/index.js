@@ -1,1 +1,1 @@
-export { default } from './components/Invite';
+export { default } from './InviteContainer';

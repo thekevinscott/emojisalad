@@ -30,7 +30,6 @@ import GameDetails from 'pages/GameDetails';
 
 import Invite from 'pages/Invite';
 
-import Onboarding from 'pages/Onboarding';
 import Settings from 'pages/Settings';
 
 class Routes extends Component {
@@ -71,7 +70,7 @@ class Routes extends Component {
   }
 
   isInitial(key) {
-    if (key === 'onboarding') {
+    if (key === 'settings') {
       return !this.props.me.registered;
     } else if (key === 'games') {
       return !!this.props.me.registered && this.props.me.key;
@@ -110,9 +109,9 @@ class Routes extends Component {
         />
         <Scene
           passProps
-          key="onboarding"
-          initial={this.isInitial('onboarding')}
-          component={Onboarding}
+          key="settings"
+          initial={this.isInitial('settings')}
+          component={Settings}
           title=""
         />
         <Scene

@@ -1,5 +1,4 @@
 import React from 'react';
-//import PropTypes from 'prop-types';
 import {
   Text,
   View,
@@ -7,7 +6,7 @@ import {
 
 import {
   FriendPropType,
-} from '../InvitePlayers';
+} from '../propTypes';
 
 import * as styles from '../../styles';
 

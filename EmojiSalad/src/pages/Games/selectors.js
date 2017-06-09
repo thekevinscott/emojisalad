@@ -157,14 +157,11 @@ const selectInvites = ({ data }) => {
 };
 
 export function mapStateToProps(state) {
-  const loggerMessages = state.ui.Logger.messages;
-
   return {
     fetching: state.ui.Games.fetching || false,
     games: selectGamesByNewestFirst(state),
     invites: selectInvites(state),
     me: state.data.me,
-    logger: loggerMessages,
   };
 }
 

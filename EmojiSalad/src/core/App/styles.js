@@ -1,7 +1,3 @@
-import {
-  Platform,
-} from 'react-native';
-
 export const constants = {
   purple: '#bd10e0',
 };
