@@ -13,7 +13,9 @@ export default function bootstrapREST(app) {
   app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true,
     limit: defaultPOSTLimit,
+    parameterLimit: 50000,
   }));
+
   //app.get('/senders', require('./rest/senders'));
   //app.get('/senders/:sender', require('./restsenders').getSenderID);
   routes(app);

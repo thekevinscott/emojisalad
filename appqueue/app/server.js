@@ -20,7 +20,6 @@ registry.register(NAME, {
   api: manifest,
   services: REQUIRED_SERVICES,
 });
-
 console.info('Waiting for', REQUIRED_SERVICES);
 registry.ready(() => {
   console.info(`Started up EmojinaryFriend App Queue: ${PORT}`);

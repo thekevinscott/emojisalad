@@ -33,6 +33,7 @@ export default function fetchUserFriends(ws, user) {
       },
     });
   }).then(data => {
+    console.info('send friends', data, user);
     sendMessage(ws)({
       type: SEND_FRIENDS,
       data,
