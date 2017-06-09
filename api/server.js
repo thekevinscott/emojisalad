@@ -22,9 +22,13 @@ app.use((req, res, next) => {
 });
 
 const bodyParser = require('body-parser');
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json({
+  limit: '35mb',
+}));
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
+  extended: true,
+  limit: '35mb',
+  parameterLimit: 50000,
 }));
 
 app.use(pmx.expressErrorHandler());

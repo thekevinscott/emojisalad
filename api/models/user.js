@@ -9,13 +9,6 @@ import setKey from 'setKey';
 let Player;
 const default_maximum_games = 4;
 
-const limit = (contacts, num) => {
-  return Object.keys(contacts).slice(0, num).reduce((obj, key) => ({
-    ...obj,
-    [key]: contacts.key,
-  }), {});
-};
-
 const getDefaultMaximumGames = ({ protocol }) => {
   if (protocol === 'appqueue') {
     return 9999;
@@ -269,7 +262,7 @@ const User = {
 
       return db.create(query).then(() => {
         return {
-          friends: limit(friendsWithKeys, 100),
+          friends: friendsWithKeys,
           invitable_friends: params.contacts.invitable_friends,
         };
       });
