@@ -1,29 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
+  StackNavigator,
+} from 'react-navigation';
+import {
   constants,
 } from '../styles';
+
 import {
   Linking,
 } from 'react-native';
 
-import {
-  Actions,
-  ActionConst,
-  Reducer,
-  Router,
-  Scene,
-} from 'react-native-router-flux';
-
 import Games from 'pages/Games';
 import { Base } from 'core/Authentication';
 
-import {
-  Game,
-} from 'pages/Game';
+import Game from 'pages/Game';
 
 import GameSettings from 'pages/GameSettings';
 
@@ -31,6 +25,7 @@ import Invite from 'pages/Invite';
 
 import Settings from 'pages/Settings';
 
+/*
 class Routes extends Component {
   static propTypes = {
     me: PropTypes.any,
@@ -80,12 +75,7 @@ class Routes extends Component {
     return false;
   }
 
-  /*
-  push: ActionConst.PUSH,
-  replace: ActionConst.REPLACE,
-  */
   render() {
-    const newGame = (<FontAwesomeIcon name="pencil-square-o" size={30} color={constants.purple} />);
     const settings = (<Ionicons name="ios-settings" size={30} color={constants.purple} />);
     const information = (<Ionicons name="ios-information-circle-outline" size={30} color={constants.purple} />);
     // This fucks up the connectWithFocus activeComponent
@@ -175,5 +165,15 @@ class Routes extends Component {
     );
   }
 }
+*/
 
-export default connect()(Routes);
+//export default connect()(Routes);
+
+
+export default StackNavigator({
+  Home: Settings,
+  Games,
+  Settings,
+  Game,
+  GameSettings,
+});

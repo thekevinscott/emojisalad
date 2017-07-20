@@ -1,5 +1,3 @@
-import { Actions } from 'react-native-router-flux';
-
 import {
   FETCH_MESSAGES,
   TRANSITION_TO_GAMES,
@@ -43,8 +41,8 @@ export function fetchMessages(userKey, gameKey, options = {}, meta = {}) {
 }
 
 export function goToGames() {
+  debugger;
   //console.log('action games 2');
-  Actions.games();
   return {
     type: TRANSITION_TO_GAMES,
   };

@@ -15,7 +15,6 @@ export default class PushNotificationHandler extends Component {
   }
 
   componentWillMount() {
-    console.log('can this be moved out of the component into the raw javascript?');
     OneSignal.addEventListener('ids', this.receivedPushToken);
   }
 

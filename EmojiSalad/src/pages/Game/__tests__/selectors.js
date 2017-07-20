@@ -1,8 +1,8 @@
+/* globals jest */
 jest.unmock('../selectors');
 jest.unmock('../actions');
 jest.unmock('../../../components/App/selectors');
 jest.unmock('faker');
-//jest.unmock('react-native-router-flux');
 jest.unmock('moment');
 jest.unmock('../../../testUtils/daysAgo');
 jest.unmock('../../../testUtils/getFixture');

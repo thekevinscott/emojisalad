@@ -1,5 +1,3 @@
-import { Actions } from 'react-native-router-flux';
-
 import {
   FETCH_GAMES,
   OPEN_GAME,
@@ -23,9 +21,10 @@ export function fetchData(userKey) {
 
 export function openGame(game, games) {
   return dispatch => {
-    Actions.game({
-      game,
-    });
+    debugger;
+    //Actions.game({
+      //game,
+    //});
 
     dispatch({
       type: OPEN_GAME,

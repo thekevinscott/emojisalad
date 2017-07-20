@@ -1,6 +1,3 @@
-import { bindActionCreators } from 'redux'
-import { Actions, } from 'react-native-router-flux';
-
 import {
   //startGame,
   saveGame,
@@ -22,13 +19,6 @@ export function mapDispatchToProps(dispatch) {
       saveGame: (game, params) => {
         dispatch(saveGame(game, params));
       },
-      //startGame: bindActionCreators(startGame, dispatch),
-      //saveGame: (game, params) => {
-        //dispatch(saveGame(game, params));
-      //},
-      //invitePlayer: () => {
-        //Actions.invite();
-      //},
     },
   };
 }

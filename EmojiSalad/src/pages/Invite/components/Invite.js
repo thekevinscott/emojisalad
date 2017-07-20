@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Actions } from 'react-native-router-flux';
 import {
   View,
 } from 'react-native';
@@ -26,7 +25,7 @@ const Invite = ({
     <Search
       onChange={onSearch}
       onCancel={() => {
-        Actions.pop();
+        debugger;
       }}
     />
     <Friends

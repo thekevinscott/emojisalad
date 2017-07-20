@@ -6,21 +6,21 @@ import {
 } from 'react-native';
 
 import LogoutButton from './LogoutButton';
+import Form from 'components/Form';
 
 import * as styles from '../styles';
-import UserSettings from './UserSettings';
 
 const Settings = ({
   onChange,
-  me,
+  values,
   fields,
 }) => {
   return (
     <View style={styles.container}>
-      <UserSettings
-        user={me}
-        onChange={onChange}
+      <Form
         fields={fields}
+        onChange={onChange}
+        values={values}
       />
       <LogoutButton />
     </View>
@@ -29,8 +29,14 @@ const Settings = ({
 
 Settings.propTypes = {
   onChange: PropTypes.func.isRequired,
-  me: PropTypes.object.isRequired,
-  fields: PropTypes.array.isRequired,
+  fields: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    spellCheck: PropTypes.bool,
+    required: PropTypes.bool,
+    component: PropTypes.func,
+  })).isRequired,
+  values: PropTypes.array.isRequired,
 };
 
 export default Settings;

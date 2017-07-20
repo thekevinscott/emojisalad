@@ -3,6 +3,7 @@ package com.emojisalad;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import cn.reactnative.customkeyboard.RNCustomKeyboardPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.geektime.rnonesignalandroid.ReactNativeOneSignalPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -35,6 +36,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCustomKeyboardPackage(),
             new FBSDKPackage(),
             new ReactNativeOneSignalPackage(),
             new VectorIconsPackage(),

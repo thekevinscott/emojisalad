@@ -42,7 +42,7 @@ export const API_PORT = apiConfig.API_PORT;
 
 /* Storage */
 export const KEY = '@EmojiSalad';
-export const PERSIST_DATA = 0;
+export const PERSIST_DATA = 1;
 
 if (ENVIRONMENT === 'production' && !PERSIST_DATA) {
   console.warn('RESET is set to true in a production environment; are you sure about that?');

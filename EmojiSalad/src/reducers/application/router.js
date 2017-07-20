@@ -1,7 +1,7 @@
 import typeToReducer from 'type-to-reducer';
-import {
-  ActionConst,
-} from 'react-native-router-flux';
+//import {
+  //ActionConst,
+//} from 'react-native-router-flux';
 
 const initialState = {
   scene: {
@@ -12,18 +12,18 @@ const initialState = {
 };
 
 export default typeToReducer({
-  [ActionConst.FOCUS]: (state, { scene }) => {
-    if (scene) {
-      return {
-        ...state,
-        scene: {
-          name: scene.name,
-          key: scene.sceneKey,
-          title: scene.title,
-        },
-      };
-    }
+  //[ActionConst.FOCUS]: (state, { scene }) => {
+    //if (scene) {
+      //return {
+        //...state,
+        //scene: {
+          //name: scene.name,
+          //key: scene.sceneKey,
+          //title: scene.title,
+        //},
+      //};
+    //}
 
-    return state;
-  },
+    //return state;
+  //},
 }, initialState);

@@ -1,19 +1,14 @@
-import {
-  Platform,
-} from 'react-native';
-
 export const container = {
   flex: 1,
-  marginTop: Platform.select({
-    ios: 64,
-    android: 33,
-  }),
 };
 
 export const logout = {
+  borderTopWidth: 1,
+  borderTopColor: '#C8C7CC',
+  alignItems: 'center',
   height: 75,
-  marginLeft: 20,
-  marginTop: 20,
+  paddingLeft: 20,
+  paddingTop: 20,
 };
 
 export const logoutText = {
@@ -29,4 +24,11 @@ export const avatar = {
 
 export const pickEmoji = {
   fontSize: 12,
+};
+
+export const emojiKeyboard = {
+};
+
+export const visible = {
+  opacity: 0.2,
 };

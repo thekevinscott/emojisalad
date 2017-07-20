@@ -1,7 +1,3 @@
-import {
-  Platform,
-} from 'react-native';
-
 const rowProps = {
   flex: 1,
   flexDirection: 'row',
@@ -10,10 +6,6 @@ const rowProps = {
 
 export const gameSettings = {
   flex: 1,
-  marginTop: Platform.select({
-    ios: 64,
-    android: 33,
-  }),
 };
 
 export const player = {

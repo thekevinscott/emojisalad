@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 //import graphRequest from './graphRequest';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import Login from 'pages/Login';
-//import {
-  //Actions,
-//} from 'react-native-router-flux';
 
 const permissions = [
   "email",
@@ -50,7 +47,7 @@ class Authentication extends Component {
     this.onLoginNotFound = this.onLoginNotFound.bind(this);
 
     this.state = {
-      loggedIn: false,
+      loggedIn: null,
     };
   }
 
@@ -108,7 +105,7 @@ class Authentication extends Component {
     } = this.props;
 
     //const opacity = isLoggedIn ? 0 : 1;
-    const opacity = me.key ? 0 : 1;
+    const opacity = !me.key && this.state.loggedIn !== null ? 1 : 0;
 
     return (
       <View style={styles.container}>

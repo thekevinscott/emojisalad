@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import {
-  Actions,
-} from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 //import graphRequest from './graphRequest';
 
@@ -19,10 +16,8 @@ class Base extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.me.key && nextProps.me.key) {
+      debugger;
       if (!nextProps.me.registered) {
-        Actions.onboarding();
-      } else {
-        Actions.games();
       }
     }
   }

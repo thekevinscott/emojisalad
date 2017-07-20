@@ -44,6 +44,8 @@
 		346D3CE41EBFD63F00D559C2 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 346D3CE11EBFD63F00D559C2 /* FBSDKLoginKit.framework */; };
 		346D3CE51EBFD63F00D559C2 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 346D3CE21EBFD63F00D559C2 /* FBSDKShareKit.framework */; };
 		346F63F21E947393002D6DDB /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5F786376FE18419D969F79B1 /* Ionicons.ttf */; };
+		34E8B3D41F1F9B9900710153 /* RNCustomKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 34E8B3D01F1F9B9900710153 /* RNCustomKeyboard.m */; };
+		34E8B3D81F1F9BB500710153 /* libRNCustomKeyboard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E8B3D71F1F9B9900710153 /* libRNCustomKeyboard.a */; };
 		34EF73231E9A855C00AEC4EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34EF73221E9A855C00AEC4EF /* Images.xcassets */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		6E921234A2D84377B3F7324C /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A336542904594CE183F5C82D /* libRNDeviceInfo.a */; };
@@ -185,6 +187,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = CodePush;
+		};
+		34E8B3CA1F1F9B7700710153 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNCustomKeyboard;
+		};
+		34E8B3D61F1F9B9900710153 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 34E8B3D11F1F9B9900710153 /* RNCustomKeyboard.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNCustomKeyboard;
 		};
 		3DAD3E831DF850E9000B6D8A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -339,6 +355,10 @@
 		34972EBA1E8EFDD0001ACCC8 /* receive.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = receive.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/receive.aif; sourceTree = "<group>"; };
 		34972EBB1E8EFDD0001ACCC8 /* send.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = send.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/send.aif; sourceTree = "<group>"; };
 		34972EBC1E8EFDD0001ACCC8 /* welcome.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = welcome.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/welcome.aif; sourceTree = "<group>"; };
+		34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCustomKeyboard.xcodeproj; path = "../node_modules/react-native-custom-keyboard/ios/RNCustomKeyboard.xcodeproj"; sourceTree = "<group>"; };
+		34E8B3CF1F1F9B9900710153 /* RNCustomKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCustomKeyboard.h; sourceTree = "<group>"; };
+		34E8B3D01F1F9B9900710153 /* RNCustomKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCustomKeyboard.m; sourceTree = "<group>"; };
+		34E8B3D11F1F9B9900710153 /* RNCustomKeyboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCustomKeyboard.xcodeproj; sourceTree = "<group>"; };
 		34EF73221E9A855C00AEC4EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = EmojiSalad/Images.xcassets; sourceTree = "<group>"; };
 		36F8D46B56A04BF29A662B82 /* RNSimpleSound.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSimpleSound.xcodeproj; path = "../node_modules/react-native-simple-sound/RNSimpleSound.xcodeproj"; sourceTree = "<group>"; };
 		426C4952B7E34767AB974FA2 /* libRNSimpleSound.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSimpleSound.a; sourceTree = "<group>"; };
@@ -373,6 +393,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34E8B3D81F1F9BB500710153 /* libRNCustomKeyboard.a in Frameworks */,
 				346D3CDF1EBFD5E800D559C2 /* libRCTFBLogin.a in Frameworks */,
 				346079FF1E8DC46A00E60745 /* libRCTPushNotification.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -610,6 +631,33 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		34E8B3A71F1F9B7700710153 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				34E8B3CB1F1F9B7700710153 /* libRNCustomKeyboard.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		34E8B3CE1F1F9B9900710153 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				34E8B3CF1F1F9B9900710153 /* RNCustomKeyboard.h */,
+				34E8B3D01F1F9B9900710153 /* RNCustomKeyboard.m */,
+				34E8B3D11F1F9B9900710153 /* RNCustomKeyboard.xcodeproj */,
+			);
+			name = ios;
+			path = "../node_modules/react-native-custom-keyboard/ios";
+			sourceTree = "<group>";
+		};
+		34E8B3D21F1F9B9900710153 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				34E8B3D71F1F9B9900710153 /* libRNCustomKeyboard.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -631,6 +679,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				34E8B3CE1F1F9B9900710153 /* ios */,
 				346D3CD91EBFD5BC00D559C2 /* RCTFBLogin.xcodeproj */,
 				346079F61E8DC44D00E60745 /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
@@ -650,6 +699,7 @@
 				61DDFE9D365249F1AA243198 /* RCTOneSignal.xcodeproj */,
 				56B5F9D9AD8A40888937F9E3 /* ContactsWrapper.xcodeproj */,
 				4FF821B798F14B40A684327B /* RCTFBSDK.xcodeproj */,
+				34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -896,6 +946,14 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 34E8B3D21F1F9B9900710153 /* Products */;
+					ProjectRef = 34E8B3D11F1F9B9900710153 /* RNCustomKeyboard.xcodeproj */;
+				},
+				{
+					ProductGroup = 34E8B3A71F1F9B7700710153 /* Products */;
+					ProjectRef = 34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */;
+				},
+				{
 					ProductGroup = 346079CE1E8DC31200E60745 /* Products */;
 					ProjectRef = 6C6615E4CB2547CCA942B143 /* RNDeviceInfo.xcodeproj */;
 				},
@@ -1032,6 +1090,20 @@
 			fileType = archive.ar;
 			path = libCodePush.a;
 			remoteRef = 3474C4191E8D497D008112BC /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		34E8B3CB1F1F9B7700710153 /* libRNCustomKeyboard.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCustomKeyboard.a;
+			remoteRef = 34E8B3CA1F1F9B7700710153 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		34E8B3D71F1F9B9900710153 /* libRNCustomKeyboard.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCustomKeyboard.a;
+			remoteRef = 34E8B3D61F1F9B9900710153 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */ = {
@@ -1235,6 +1307,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34E8B3D41F1F9B9900710153 /* RNCustomKeyboard.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -1305,12 +1378,14 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-custom-keyboard/ios",
 				);
 				INFOPLIST_FILE = EmojiSaladTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1348,12 +1423,14 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-custom-keyboard/ios",
 				);
 				INFOPLIST_FILE = EmojiSaladTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1396,6 +1473,7 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-custom-keyboard/ios",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1431,6 +1509,7 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-custom-keyboard/ios",
 				);
 				INFOPLIST_FILE = EmojiSalad/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1469,11 +1548,13 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-custom-keyboard/ios",
 				);
 				INFOPLIST_FILE = "EmojiSalad-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1520,11 +1601,13 @@
 					"$(SRCROOT)/../node_modules/react-native-onesignal/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-contacts-wrapper/ios/RCTContactsWrapper",
 					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
+					"$(SRCROOT)/../node_modules/react-native-custom-keyboard/ios",
 				);
 				INFOPLIST_FILE = "EmojiSalad-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1572,6 +1655,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.EmojiSalad-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1597,6 +1681,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

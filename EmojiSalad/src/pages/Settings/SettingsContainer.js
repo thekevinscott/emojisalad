@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Actions } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -9,8 +8,59 @@ import {
 } from './selectors';
 
 import Settings from './components/Settings';
+import SaveButton from './components/SaveButton';
+import AvatarPicker from './components/AvatarPicker';
+
+//const getIsReadyForSubmission = (form) => defaultFields.reduce((isReady, field, index) => {
+  //if (isReady === false) {
+    //return false;
+  //}
+
+  //if (field.required) {
+    //return (form[index] || '').trim() !== '';
+  //}
+
+  //return isReady;
+//}, true);
+
+//const getValues = (user = {}, fields) => {
+  //return fields.reduce((values, field) => {
+    //return values.concat(user[field.name]);
+  //}, []);
+//};
+
+const fields = [
+  {
+    name: 'nickname',
+    label: "Your Nickname",
+    spellCheck: false,
+    required: true,
+  },
+  {
+    name: 'number',
+    label: "Your Phone Number (optional)",
+  },
+  {
+    name: 'avatar',
+    label: "Your Emoji Avatar",
+    component: AvatarPicker,
+  }
+];
 
 class SettingsContainer extends Component {
+  static navigationOptions = ({ navigation }) => {
+    const params = navigation.state.params || {};
+    const updateSettings = params.updateSettings || function() {};
+    return {
+      title: 'Settings',
+      headerRight: (
+        <SaveButton
+          handlePress={updateSettings}
+        />
+      ),
+    };
+  };
+
   static propTypes = {
     me: PropTypes.object.isRequired,
     pending: PropTypes.bool.isRequired,
@@ -19,6 +69,7 @@ class SettingsContainer extends Component {
       updateSettings: PropTypes.func.isRequired,
       logout: PropTypes.func.isRequired,
     }).isRequired,
+    navigation: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -33,17 +84,16 @@ class SettingsContainer extends Component {
   }
 
   componentWillMount() {
-    Actions.refresh({
-      rightTitle: 'Done',
-      onRight: this.updateSettings,
+    this.props.navigation.setParams({
+      updateSettings: this.updateSettings,
     });
   }
 
   updateSettings() {
     if (!this.props.pending) {
       this.props.actions.updateSettings(this.state.form, this.props.me).then(() => {
+        this.props.navigation.navigate('Games');
       });
-      Actions.pop();
     }
   }
 
@@ -54,11 +104,21 @@ class SettingsContainer extends Component {
   }
 
   render() {
+    const {
+      me,
+    } = this.props;
+
+    const values = [
+      me.nickname,
+      me.number,
+      me.avatar,
+    ];
+
     return (
       <Settings
-        me={this.props.me}
+        values={values}
         onChange={this.onChange}
-        fields={[]}
+        fields={fields}
       />
     );
   }

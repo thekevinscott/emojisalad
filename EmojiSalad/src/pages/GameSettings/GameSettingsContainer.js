@@ -1,26 +1,23 @@
 import React, { Component } from 'react';
-import { Actions, } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 //import connectWithFocus from 'utils/connectWithFocus';
 
 import GameSettings from './components/GameSettings';
-import {
-  makeNameFromPlayers,
-} from 'pages/Game/selectors';
+import navigationOptions from './navigationOptions';
+//import {
+  //makeNameFromPlayers,
+//} from 'pages/Game/selectors';
 
 import {
   mapStateToProps,
   mapDispatchToProps,
 } from './selectors';
 
-import {
-  View,
-  Text,
-} from 'react-native';
-
 class GameSettingsContainer extends Component {
   static key = 'gameSettings';
+
+  static navigationOptions = navigationOptions;
 
   static propTypes = {
     actions: PropTypes.shape({
@@ -186,10 +183,11 @@ class GameSettingsContainer extends Component {
         name="foo"
         updateGameName={() => {}}
         findPlayerToInvite={() => {
-          Actions.invite({
+          debugger;
+          //Actions.invite({
             //addPlayer: this.addPlayer,
             //game: this.props.game,
-          });
+          //});
         }}
       />
     );

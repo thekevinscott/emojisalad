@@ -1,10 +1,6 @@
 import typeToReducer from 'type-to-reducer';
 
 import {
-  ActionConst,
-} from 'react-native-router-flux';
-
-import {
   FETCH_GAMES,
 } from '../Games/types';
 
@@ -73,13 +69,13 @@ const updateGame = (state, gameKey, payload = {}) => ({
 });
 
 export default typeToReducer({
-  [ActionConst.FOCUS]: (state, { scene }) => {
-    if (scene) {
-      return setActiveGame(state, scene.game);
-    }
+  //[ActionConst.FOCUS]: (state, { scene }) => {
+    //if (scene) {
+      //return setActiveGame(state, scene.game);
+    //}
 
-    return state;
-  },
+    //return state;
+  //},
   [FETCH_GAMES]: {
     FULFILLED: (state, action) => ({
       ...state,

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Actions, } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -37,10 +36,11 @@ class NewGame extends Component {
 
   componentDidMount() {
     console.log('component did Mount');
-    Actions.refresh({
-      rightTitle: 'Done',
-      onRight: this.startGame,
-    });
+    debugger;
+    //Actions.refresh({
+      //rightTitle: 'Done',
+      //onRight: this.startGame,
+    //});
   }
 
   onChange(player) {

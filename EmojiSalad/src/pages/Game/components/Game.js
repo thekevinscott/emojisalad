@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Actions, } from 'react-native-router-flux';
 import PropTypes from 'prop-types';
 import connectWithFocus from '../../../utils/connectWithFocus';
 //import Spinner from 'react-native-loading-spinner-overlay';
@@ -74,16 +73,18 @@ class Game extends Component {
       seen,
     });
 
-    Actions.refresh({
-      title: game.name,
-    });
+    debugger;
+    //Actions.refresh({
+      //title: game.name,
+    //});
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.game.name !== nextProps.game.name) {
-      Actions.refresh({
-        title: nextProps.game.name,
-      });
+      debugger;
+      //Actions.refresh({
+        //title: nextProps.game.name,
+      //});
     }
   }
 

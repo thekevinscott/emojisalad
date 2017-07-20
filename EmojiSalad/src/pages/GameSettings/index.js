@@ -1,1 +1,1 @@
-export { default } from './GameSettingsContainer';
+export { default } from './route';

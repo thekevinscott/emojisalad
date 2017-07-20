@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Actions, } from 'react-native-router-flux';
 import {
   Text,
   TouchableOpacity,
@@ -43,6 +42,7 @@ renderRow.propTypes = {
 const Body = ({
   data,
   refreshControl,
+  navigate,
 }) => {
   //if (fetching && (!games || games.length === 0)) {
     //return (
@@ -96,7 +96,7 @@ const Body = ({
       <TouchableOpacity
         style={styles.listContainer}
         onPress={() => {
-          Actions.gameSettings();
+          navigate('GameSettings');
         }}
       >
         <Text style={styles.text}>You have no games. Start a new game with your friends!</Text>
@@ -117,6 +117,7 @@ Body.propTypes = {
     games: PropTypes.arrayOf(PropTypes.node).isRequired,
   }).isRequired,
   refreshControl: PropTypes.node,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default Body;

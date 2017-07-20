@@ -1,5 +1,3 @@
-//import { Actions } from 'react-native-router-flux';
-
 import {
   updateSettings,
   logout,

@@ -36,6 +36,8 @@ const patchedConnect = (...args) => component => {
   const WrappedComponent = getWrappedComponent(component, args);
 
   class WrapperComponent extends Component {
+    static navigationOptions = component.navigationOptions || {};
+
     static propTypes = {
       activeComponent: PropTypes.any,
       websocketConnected: PropTypes.bool.isRequired,

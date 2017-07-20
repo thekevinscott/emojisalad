@@ -1,4 +1,3 @@
-import { Actions } from 'react-native-router-flux';
 import {
   UPDATE_USER,
 } from './types';
@@ -17,8 +16,6 @@ export const updateSettings = (data, me) => dispatch => {
         registered: true,
       },
     },
-  }).then(() => {
-    Actions.games();
   });
 };
 

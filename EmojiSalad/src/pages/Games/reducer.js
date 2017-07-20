@@ -1,10 +1,6 @@
 import typeToReducer from 'type-to-reducer';
 
 import {
-  ActionConst,
-} from 'react-native-router-flux';
-
-import {
   FETCH_GAMES,
   OPEN_GAME,
   UPDATE_STARTING_MESSAGE,
@@ -44,16 +40,16 @@ export default typeToReducer({
       };
     }, {}),
   }),
-  [ActionConst.FOCUS]: (state, { scene }) => {
-    if (scene) {
-      return {
-        ...state,
-        active: getActive(scene.name),
-      };
-    }
+  //[ActionConst.FOCUS]: (state, { scene }) => {
+    //if (scene) {
+      //return {
+        //...state,
+        //active: getActive(scene.name),
+      //};
+    //}
 
-    return state;
-  },
+    //return state;
+  //},
   [UPDATE_STARTING_MESSAGE]: (state, { game }) => {
     const message = game.messages[game.messages.length - 1];
     return {

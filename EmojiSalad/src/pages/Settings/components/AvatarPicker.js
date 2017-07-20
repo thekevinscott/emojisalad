@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+//import classNames from 'classnames';
+import EmojiInput from 'components/EmojiInput';
 //import EmojiPicker from 'react-native-simple-emoji-picker';
 
 import {
@@ -52,6 +54,7 @@ class AvatarPicker extends Component {
           title="Pick a different emoji"
           onPress={this.focus}
         />
+        <EmojiInput />
       </View>
     );
   }
