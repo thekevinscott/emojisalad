@@ -188,13 +188,6 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = CodePush;
 		};
-		34E8B3CA1F1F9B7700710153 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNCustomKeyboard;
-		};
 		34E8B3D61F1F9B9900710153 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 34E8B3D11F1F9B9900710153 /* RNCustomKeyboard.xcodeproj */;
@@ -355,7 +348,6 @@
 		34972EBA1E8EFDD0001ACCC8 /* receive.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = receive.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/receive.aif; sourceTree = "<group>"; };
 		34972EBB1E8EFDD0001ACCC8 /* send.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = send.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/send.aif; sourceTree = "<group>"; };
 		34972EBC1E8EFDD0001ACCC8 /* welcome.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = welcome.aif; path = ../../../../../../../www/emojisalad/EmojiSalad/Audio/outputs/welcome.aif; sourceTree = "<group>"; };
-		34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCustomKeyboard.xcodeproj; path = "../node_modules/react-native-custom-keyboard/ios/RNCustomKeyboard.xcodeproj"; sourceTree = "<group>"; };
 		34E8B3CF1F1F9B9900710153 /* RNCustomKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCustomKeyboard.h; sourceTree = "<group>"; };
 		34E8B3D01F1F9B9900710153 /* RNCustomKeyboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCustomKeyboard.m; sourceTree = "<group>"; };
 		34E8B3D11F1F9B9900710153 /* RNCustomKeyboard.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCustomKeyboard.xcodeproj; sourceTree = "<group>"; };
@@ -631,14 +623,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		34E8B3A71F1F9B7700710153 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				34E8B3CB1F1F9B7700710153 /* libRNCustomKeyboard.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		34E8B3CE1F1F9B9900710153 /* ios */ = {
 			isa = PBXGroup;
 			children = (
@@ -699,7 +683,6 @@
 				61DDFE9D365249F1AA243198 /* RCTOneSignal.xcodeproj */,
 				56B5F9D9AD8A40888937F9E3 /* ContactsWrapper.xcodeproj */,
 				4FF821B798F14B40A684327B /* RCTFBSDK.xcodeproj */,
-				34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -950,10 +933,6 @@
 					ProjectRef = 34E8B3D11F1F9B9900710153 /* RNCustomKeyboard.xcodeproj */;
 				},
 				{
-					ProductGroup = 34E8B3A71F1F9B7700710153 /* Products */;
-					ProjectRef = 34E24BCFDFA946ABA58ACC3F /* RNCustomKeyboard.xcodeproj */;
-				},
-				{
 					ProductGroup = 346079CE1E8DC31200E60745 /* Products */;
 					ProjectRef = 6C6615E4CB2547CCA942B143 /* RNDeviceInfo.xcodeproj */;
 				},
@@ -1090,13 +1069,6 @@
 			fileType = archive.ar;
 			path = libCodePush.a;
 			remoteRef = 3474C4191E8D497D008112BC /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		34E8B3CB1F1F9B7700710153 /* libRNCustomKeyboard.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNCustomKeyboard.a;
-			remoteRef = 34E8B3CA1F1F9B7700710153 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		34E8B3D71F1F9B9900710153 /* libRNCustomKeyboard.a */ = {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 //import PropTypes from 'prop-types';
-import { CustomTextInput } from 'react-native-custom-keyboard';
+//import { CustomTextInput } from 'react-native-custom-keyboard';
 
 import {
   View,

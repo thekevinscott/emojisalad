@@ -21,7 +21,6 @@
     "react-native-button": "1.8.2",
     "react-native-code-push": "^2.0.2-beta",
     "react-native-contacts-wrapper": "^0.2.3",
-    "react-native-custom-keyboard": "^1.0.4",
     "react-native-device-info": "^0.10.2",
     "react-native-facebook-login": "^1.5.0",
     "react-native-fbsdk": "^0.6.0",
