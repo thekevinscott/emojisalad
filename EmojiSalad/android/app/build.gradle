@@ -33,6 +33,13 @@ import com.android.build.OutputFile
  *   // bundleInPaidRelease: true,
  *   // bundleInBeta: true,
  *
+ *   // whether to disable dev mode in custom build variants (by default only disabled in release)
+ *   // for example: to disable dev mode in the staging build type (if configured)
+ *   devDisabledInStaging: true,
+ *   // The configuration property can be in the following formats
+ *   //         'devDisabledIn${productFlavor}${buildType}'
+ *   //         'devDisabledIn${buildType}'
+ *
  *   // the root of your project, i.e. where "package.json" lives
  *   root: "../../",
  *
@@ -58,7 +65,7 @@ import com.android.build.OutputFile
  *   inputExcludes: ["android/**", "ios/**"],
  *
  *   // override which node gets called and with what additional arguments
- *   nodeExecutableAndArgs: ["node"]
+ *   nodeExecutableAndArgs: ["node"],
  *
  *   // supply additional arguments to the packager
  *   extraPackagerArgs: []
@@ -66,7 +73,6 @@ import com.android.build.OutputFile
  */
 
 apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -85,14 +91,12 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.emojisalad"
         minSdkVersion 16
         targetSdkVersion 22
-        manifestPlaceholders = [onesignal_app_id: "f5e80a38-fcc6-4f7c-bfcf-fb82da346390",
-                             onesignal_google_project_number: "REMOTE"]
         versionCode 1
         versionName "1.0"
         ndk {
@@ -129,12 +133,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-fbsdk')
-    compile project(':react-native-contacts-wrapper')
     compile project(':react-native-onesignal')
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-ua')
-    compile project(':react-native-code-push')
     compile project(':react-native-device-info')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
