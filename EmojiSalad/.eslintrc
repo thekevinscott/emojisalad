@@ -1,0 +1,36 @@
+{
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "settings": {
+    "ecmascript": 6,
+    "jsx": true
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    /*"comma-dangle": [1, "always"],*/
+    "strict": [0, "global"],
+    "global-strict": 0,
+    "indent": [1, 2],
+    "new-cap": 0,
+    "no-console": 0,
+    "no-var": 2,
+    "object-shorthand": 2,
+    "no-dupe-args": 1,
+    "no-dupe-keys": 1,
+    "no-duplicate-case": 1,
+    "no-undef": 2,
+    "no-unused-vars": 1,
+    "prefer-const": 1,
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}

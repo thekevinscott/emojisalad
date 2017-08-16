@@ -1,0 +1,66 @@
+<html>
+<head><title>Guessing: 😀 😃 😄 😁</title></head>
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+<body>
+<script>
+(function(d, s, id){
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'Messenger'));
+</script>
+<script>
+/*
+window.extAsyncInit = function() {
+  console.log("loaded");
+
+};
+
+var messageToShare = {
+  "attachment":{
+    "type":"template",
+    "payload":{
+      "height": "compact",
+      "webview_share_button": false,
+      "elements": [{
+        "title":"Here is a goat",
+        {{!"image_url": "http://rs248.pbsrc.com/albums/gg176/bls31401/ugly.jpg?w=280&h=210&fit=crop",}}
+        "buttons":[{
+          "type":"web_url",
+          "url":"https://3318f959.ngrok.io/guess",
+          "title":"Guess"
+        }]
+      }]
+    }
+  }
+};
+function doit() {
+  MessengerExtensions.beginShareFlow(function success(response) {
+    // User dismissed without error, but did they
+    // share the message?
+
+    if(response.is_sent){
+      // The user actually did share. 
+      // Perhaps close the window w/ requestCloseBrowser().
+      	MessengerExtensions.requestCloseBrowser();
+    }else{
+
+    }
+
+  }, function error(errorCode, errorMessage) {      
+    // An error occurred in the process
+
+  },
+  messageToShare,
+  "current_thread");    
+
+  // the Messenger Extensions JS SDK is done loading 
+}
+*/
+</script>
+</body>
+</html>
+
+
