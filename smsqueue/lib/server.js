@@ -41,8 +41,9 @@ const { app } = require('queue')({
   },
 });
 
-app.get("/", (req, res) => {
-  console.log("index");
+app.get("/test", (req, res) => {
+  console.log("index test");
+  res.send("test");
 });
 
 const phone = require('lib/phone');
