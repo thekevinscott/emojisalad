@@ -65,7 +65,6 @@
     "gulp-util": "^3.0.6",
     "mocha": "^2.2.5",
     "mockrequire": "0.0.4",
-    "ngrok": "^0.1.99",
     "proxyquire": "^1.7.0",
     "sinon": "^1.15.4",
     "squirejs": "^0.2.1",

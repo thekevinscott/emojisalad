@@ -38,7 +38,6 @@
     "chai": "^3.5.0",
     "chai-datetime": "^1.4.1",
     "gulp-mocha": "^2.2.0",
-    "mocha": "^2.4.5",
-    "ngrok": "^0.2.2"
+    "mocha": "^2.4.5"
   }
 }
