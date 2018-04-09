@@ -1,11 +1,10 @@
 'use strict';
-
 const port = process.env.PORT;
 const ENVIRONMENT = process.env.ENVIRONMENT || 'development';
 
 const endpoint = "http://localhost:" + require('config/app').port + "/";
 
-//console.info('endpoint for web queue', endpoint);
+console.info('endpoint for web queue', endpoint);
 
 const options = {
   port: require('config/app').port,

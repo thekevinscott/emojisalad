@@ -1,13 +1,13 @@
  #!/bin/bash          
  echo Hello World   
 
- cd /var/www/appqueue
- npm i --production
- pm2 start app.json
+ # cd /var/www/appqueue
+ # npm i --production
+ # pm2 start app.json
 
- cd /var/www/mailqueue
- npm i --production
- pm2 start app.json
+ # cd /var/www/mailqueue
+ # npm i --production
+ # pm2 start app.json
 
  cd /var/www/nexmoqueue
  npm i --production

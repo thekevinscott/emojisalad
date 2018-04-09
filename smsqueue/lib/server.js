@@ -6,6 +6,7 @@ const ENVIRONMENT = process.env.ENVIRONMENT || 'development';
 const endpoint = `http://localhost:${require('config/app').port}/`;
 
 console.info('endpoint for sms queue', endpoint);
+console.log("ENV VARS", process.env.ENVIRONMENT);
 
 const options = {
   port: require('config/app').port,
@@ -38,6 +39,10 @@ const { app } = require('queue')({
       },
     },
   },
+});
+
+app.get("/", (req, res) => {
+  console.log("index");
 });
 
 const phone = require('lib/phone');

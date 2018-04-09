@@ -1,8 +1,8 @@
 module.exports = {
-  //"host"     : "45.55.41.73",
-  "host"     : "127.0.0.1",
-  "user"     : "emojinaryfriend",
-  "password" : "yU2ofgAizVovg9M}7Tu$d3==smAvZjqbAPagxPU7;ufYnCQGBo",
-  "database" : "smsqueue",
-  "charset"  : "utf8mb4"
+  host: "emojisalad.cfiretgvvbvv.us-east-1.rds.amazonaws.com",
+  user: "emojisalad",
+  password: "MUgr4yhN3vNLtgWd87kZX3Beqf38GJ2JyMdRJhh28",
+  database : "webqueue",
+  charset : "utf8mb4",
 };
+
