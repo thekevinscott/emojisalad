@@ -1,31 +1,31 @@
- #!/bin/bash          
- echo Hello World   
+#!/bin/bash
+echo Hello World
 
- # cd /var/www/appqueue
- # npm i --production
- # pm2 start app.json
+cd /var/www/web
+npm i --production
+pm2 start app.json
 
- # cd /var/www/mailqueue
- # npm i --production
- # pm2 start app.json
+# cd /var/www/appqueue
+# npm i --production
+# pm2 start app.json
 
- cd /var/www/nexmoqueue
- npm i --production
- pm2 start app.json
+# cd /var/www/mailqueue
+# npm i --production
+# pm2 start app.json
 
- cd /var/www/smsqueue
- npm i --production
- pm2 start app.json
+cd /var/www/nexmoqueue
+npm i --production
+pm2 start app.json
+
+cd /var/www/smsqueue
+npm i --production
+pm2 start app.json
 
 # cd /var/www/fbqueue
 #npm i --production
 # pm2 start app.json
 
 cd /var/www/webqueue
-npm i --production
-pm2 start app.json
-
-cd /var/www/web
 npm i --production
 pm2 start app.json
 

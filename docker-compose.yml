@@ -63,5 +63,5 @@ services:
   #   ports:
   #     - "5014:5014"
   #   command: "node ./webqueue/index.js"
-  emojisalad:
-    dockerfile: ./Dockerfile
+  # emojisalad:
+  #   dockerfile: ./Dockerfile
