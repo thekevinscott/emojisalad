@@ -1,6 +1,9 @@
 #!/bin/bash
 echo Hello Emojinary Friend
 
+cd /var/www/db
+npm i --production
+
 cd /var/www/shared
 npm i --production
 
