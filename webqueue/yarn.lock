@@ -2847,6 +2847,17 @@ micromatch@^3.0.4, micromatch@^3.1.4:
     node-lzw "^0.3.1"
     snappy "^4.1.2"
 
+"microservice-registry@https://github.com/thekevinscott/microservice-registry.git":
+  version "0.1.0"
+  uid "68febe6f990b84f234b396131257c09710e902a6"
+  resolved "https://github.com/thekevinscott/microservice-registry.git#68febe6f990b84f234b396131257c09710e902a6"
+  dependencies:
+    bluebird "^3.2.2"
+    lodash "^4.2.1"
+    node-discover "^0.4.0"
+    node-lzw "^0.3.1"
+    snappy "^4.1.2"
+
 mime-db@~1.33.0:
   version "1.33.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.33.0.tgz#a3492050a5cb9b63450541e39d9788d2272783db"
@@ -2962,7 +2973,7 @@ multipipe@^0.1.2:
   dependencies:
     duplexer2 "0.0.2"
 
-mysql@*:
+mysql@*, mysql@^2.15.0:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.15.0.tgz#ea16841156343e8f2e47fc8985ec41cdd9573b5c"
   dependencies:

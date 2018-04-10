@@ -27,6 +27,7 @@
     "gulp-util": "^3.0.7",
     "install": "^0.8.2",
     "microservice-registry": "https://github.com/thekevinscott/microservice-registry.git",
+    "mysql": "^2.15.0",
     "npm": "^3.10.9",
     "phone-formatter": "0.0.2",
     "pmx": "^1.6.4",
