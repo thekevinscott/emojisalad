@@ -1,5 +1,5 @@
 'use strict';
-const pmx = require('pmx');
+// const pmx = require('pmx');
 
 let LOG_LEVEL = (process.env.LOG_LEVEL !== undefined) ? process.env.LOG_LEVEL : 'warning';
 console.info = function() {
@@ -26,9 +26,9 @@ console.error = function() {
 };
 
 ['info','warning','error'].map(function(key) {
-  pmx.action('LOG_LEVEL:' + key, function(reply) {
-    console.log('LOG_LEVEL is: ' + key);
-    LOG_LEVEL = key;
-    reply({LOG_LEVEL : key});
-  });
+  // pmx.action('LOG_LEVEL:' + key, function(reply) {
+  //   console.log('LOG_LEVEL is: ' + key);
+  //   LOG_LEVEL = key;
+  //   reply({LOG_LEVEL : key});
+  // });
 });
