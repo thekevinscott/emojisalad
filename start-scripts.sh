@@ -1,5 +1,8 @@
 #!/bin/bash
-echo Hello World
+echo Hello Emojinary Friend
+
+cd /var/www
+npm i --production
 
 cd /var/www/web
 npm i --production
