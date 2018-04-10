@@ -69,11 +69,11 @@ module.exports = function(name) {
     if (! params ) {
       params = {};
     }
-    //console.debug('make request');
+    console.info('make request');
     return getService(name).then((service) => {
-      //console.log('service', name, namespace);
+      console.info('service', name, namespace);
       if ( !service[namespace] ) {
-        //console.log('1');
+        // console.log('1');
         console.error(service, name, namespace);
         throw new Error(`No namespace for ${namespace}`);
       } else if ( !service[namespace][key] ) {
