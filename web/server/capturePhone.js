@@ -3,6 +3,7 @@ const web = require('../service')('web');
 
 module.exports = (req, res) => {
   const phone = req.body.phone;
+  console.log("begin");
   return api('phones', 'parse', null, { phone }).then(response => {
     console.log("back", response);
     if (response.error) {
