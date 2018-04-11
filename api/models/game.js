@@ -408,6 +408,8 @@ const Game = {
       } else {
         return [];
       }
+    }).then(games => {
+      console.info('final response', games);
     });
   },
   update: (game, params) => {
