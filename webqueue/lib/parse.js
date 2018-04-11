@@ -23,6 +23,7 @@
  */
 
 module.exports = function parse(params) {
+  console.info("webqueue parse", params);
   if ( !params.from && ! params.From) {
     console.error('Potentially malicious error, invalid params', params);
     throw new Error('Incorrect parameters provided');
