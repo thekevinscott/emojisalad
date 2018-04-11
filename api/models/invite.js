@@ -272,32 +272,19 @@ const Invite = {
       if ( invites && invites.length ) {
         console.info('invites found', invites.length, invites.map(invite => invite.inviter_id));
 
-        const promises = [
-          'game',
-          'inviter',
-          'invited',
-        ].reduce((arr, key) => {
-          if (exclude.indexOf(key) !== -1) {
-            return arr;
-          }
-
-          let promise;
-          if (key === 'game') {
-            promise = Game.find({ player_ids: invites.map(invite => invite.inviter_id) });
-          } else if (key === 'inviter') {
-            promise = Player.find({ ids: invites.map(invite => invite.inviter_id) });
-          } else if (key === 'invited') {
-            promise = User.find({ ids: invites.map(invite => invite.invited_id) });
-          }
-
-          return arr.concat(promise);
-        }, []);
+        let promises = [
+          Player.find({ ids: invites.map(invite => invite.inviter_id) }),
+          User.find({ ids: invites.map(invite => invite.invited_id) }),
+        ];
+        if (exclude.indexOf("game") === -1) {
+          promises.push(Game.find({ player_ids: invites.map(invite => invite.inviter_id) }));
+        }
 
         return Promise.join(
           ...promises,
           (inviters, inviteds, games_arr) => {
             console.info("what is exclude", exclude);
-            console.info('did game find, player find, and user find', games_arr, inviters, inviteds);
+            console.info('did game find, player find, and user find', inviters, inviteds, games_arr);
             const players = _.indexBy(inviters, 'id');
             const users = _.indexBy(inviteds, 'id');
             let games;
