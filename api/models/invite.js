@@ -273,6 +273,12 @@ const Invite = {
         console.info('invites found', invites.length, invites.map(invite => invite.inviter_id));
 
         const promises = [
+          Game.find({ player_ids: invites.map(invite => invite.inviter_id) }),
+          Player.find({ ids: invites.map(invite => invite.inviter_id) }),
+          User.find({ ids: invites.map(invite => invite.invited_id) }),
+        ];
+        /*
+        const promises = [
           'game',
           'inviter',
           'invited',
@@ -292,14 +298,17 @@ const Invite = {
 
           return arr.concat(promise);
         }, []);
+        */
 
         console.info("promises", promises);
         return Promise.join(
           ...promises,
-          (inviters, inviteds, games_arr) => {
+          (games_arr, inviters, inviteds) => {
             console.info("****");
-            console.info(games_arr);
             console.info('did game find, player find, and user find', games_arr, inviters, inviteds);
+            console.info(games_arr);
+            console.info(inviters);
+            console.info(inviteds);
             const players = _.indexBy(inviters, 'id');
             const users = _.indexBy(inviteds, 'id');
             let games;
