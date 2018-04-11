@@ -410,6 +410,7 @@ const Game = {
       }
     }).then(games => {
       console.info('final response', games);
+      return games;
     });
   },
   update: (game, params) => {
