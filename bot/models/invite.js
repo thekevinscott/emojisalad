@@ -25,6 +25,7 @@ const Invite = {
     });
   },
   get: (params = {}) => {
+    console.log("get invites", params);
     return api('invites', 'get', params);
   },
   use: (invite) => {
