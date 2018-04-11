@@ -79,7 +79,7 @@ module.exports = (user, message) => {
         });
       } else {
         console.info('this user has players already, see if challenge or not');
-        resolve(getChallenge(user).then(phrases => {
+        // resolve(getChallenge(user).then(phrases => {
           /*
           console.info('phrases back', phrases);
           if (phrases && phrases.length > 0) {
@@ -95,7 +95,7 @@ module.exports = (user, message) => {
           console.info('start a new game, no associated challenges');
           console.info('create game', user);
           return Game.create([user]);
-        }));
+        // }));
       }
     }).then((game) => {
       console.info('game is back', game);

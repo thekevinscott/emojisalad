@@ -23,10 +23,10 @@ module.exports = (user_params, message) => {
     console.info('number of players', user.number_of_players);
     console.info('maximum games', user.maximum_games);
     if ( parseInt(user.number_of_players, 10) < parseInt(user.maximum_games, 10) ) {
-      return Challenge.get({
-        sender_id: user_params.to,
-        protocol: user_params.protocol,
-      }).then(phrases => {
+      // return Challenge.get({
+      //   sender_id: user_params.to,
+      //   protocol: user_params.protocol,
+      // }).then(phrases => {
         /*
         console.info('phrases back', phrases);
         if (phrases && phrases.length > 0) {
@@ -58,7 +58,7 @@ module.exports = (user_params, message) => {
             },
           }];
         });
-      });
+      // });
     } else {
       console.info('dont create the game');
       return [{
