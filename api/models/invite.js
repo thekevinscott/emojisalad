@@ -295,7 +295,7 @@ const Invite = {
         return Promise.join(
           ...promises,
           (inviters, inviteds, games_arr) => {
-            //console.info('did game find, player find, and user find', games_arr, inviters, inviteds);
+            console.info('did game find, player find, and user find', games_arr, inviters, inviteds);
             const players = _.indexBy(inviters, 'id');
             const users = _.indexBy(inviteds, 'id');
             let games;
