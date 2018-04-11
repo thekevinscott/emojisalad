@@ -61,10 +61,10 @@ const Router = ({ game_key, from, message, to, protocol }) => {
           // Check to see if the number has an associated challenge
           // with it.
           console.info('prepare to get challenge', to, protocol);
-          return Challenge.get({
-            sender_id: to,
-            protocol,
-          }).then(phrases => {
+          // return Challenge.get({
+          //   sender_id: to,
+          //   protocol,
+          // }).then(phrases => {
             /*
             console.info('phrases back', phrases);
             if (phrases && phrases.length > 0) {
@@ -84,7 +84,7 @@ const Router = ({ game_key, from, message, to, protocol }) => {
             // otherwise, create a user normally
             console.info('create user');
             return require('./create-user')(from, message, to, protocol);
-          });
+          // });
         }
       });
     }
