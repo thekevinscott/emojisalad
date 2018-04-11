@@ -41,7 +41,7 @@ module.exports = (user, message) => {
     invited_id: user.id,
     used: 0
   }).then((invites) => {
-    console.info('invites');
+    console.info('invites', invites);
     return new Promise((resolve) => {
       if ( invites.length && invites[0].game ) {
         console.info('add to game');
