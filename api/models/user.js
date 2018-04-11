@@ -7,7 +7,7 @@ const Challenge = require('models/challenge');
 import setKey from 'setKey';
 
 let Player;
-const default_maximum_games = 4;
+const default_maximum_games = 1;
 
 const getDefaultMaximumGames = ({ protocol }) => {
   if (protocol === 'appqueue') {
