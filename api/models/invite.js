@@ -273,12 +273,6 @@ const Invite = {
         console.info('invites found', invites.length, invites.map(invite => invite.inviter_id));
 
         const promises = [
-          Game.find({ player_ids: invites.map(invite => invite.inviter_id) }),
-          Player.find({ ids: invites.map(invite => invite.inviter_id) }),
-          User.find({ ids: invites.map(invite => invite.invited_id) }),
-        ];
-        /*
-        const promises = [
           'game',
           'inviter',
           'invited',
@@ -298,17 +292,12 @@ const Invite = {
 
           return arr.concat(promise);
         }, []);
-        */
 
-        console.info("promises", promises);
         return Promise.join(
           ...promises,
-          (games_arr, inviters, inviteds) => {
-            console.info("****");
+          (inviters, inviteds, games_arr) => {
+            console.info("what is exclude", exclude);
             console.info('did game find, player find, and user find', games_arr, inviters, inviteds);
-            console.info(games_arr);
-            console.info(inviters);
-            console.info(inviteds);
             const players = _.indexBy(inviters, 'id');
             const users = _.indexBy(inviteds, 'id');
             let games;
@@ -316,8 +305,12 @@ const Invite = {
               games = _.indexBy(games_arr, 'id') || {};
             }
 
+            console.info("games", games);
+
             return invites.map((invite) => {
+              console.info("invite", invite);
               if (exclude.indexOf('game') !== -1) {
+                console.info("return just the game id");
                 return {
                   key: invite.key,
                   id: invite.id,
@@ -328,6 +321,7 @@ const Invite = {
                   used: invite.used,
                 };
               }
+              console.info("return the full game");
 
               return {
                 key: invite.key,
