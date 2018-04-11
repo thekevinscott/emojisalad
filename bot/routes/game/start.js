@@ -53,10 +53,7 @@ module.exports = (user, message) => {
         });
       } else {
         console.info('create game', user);
-        return Game.create([user]).then(game => {
-          console.info("got the game", game);
-          return game;
-        });
+        resolve(Game.create([user]));
       }
     }).then((game) => {
       console.info('game is back', game);
