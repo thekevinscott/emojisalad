@@ -298,7 +298,7 @@ const Game = {
     if (!Invite) {
       Invite = require('./invite');
     }
-    //console.info('find game');
+    console.info('find game');
     const select_rounds_query = squel
     .select()
     .from('rounds')
@@ -358,10 +358,10 @@ const Game = {
       }, {});
     };
 
-    // console.info('find games', query.toString());
+    console.info('find games', query.toString());
 
     return db.query(query).then((games) => {
-      //console.info('return from games');
+      console.info('return from games');
       if ( games && games.length ) {
         const game_ids = games.map(game => game.id);
         console.info('***** find invites, players, and rounds');
@@ -374,7 +374,7 @@ const Game = {
             players = {},
             rounds = {}
           ) => {
-            //console.log('found promises', invites, players, rounds);
+            console.info('found promises', invites, players, rounds);
             //console.info('found games');
             return games.map((game) => {
               const round = ( rounds && rounds[game.id] ) ? rounds[game.id].pop() : null;
@@ -402,7 +402,7 @@ const Game = {
             });
           }
         ).then(resp => {
-          // console.info('final games', resp);
+          console.info('final games', resp);
           return resp;
         });
       } else {
