@@ -4,7 +4,6 @@ const Promise = require('bluebird');
 //const Player = require('models/player');
 const Round = require('models/round');
 const Invite = require('models/invite');
-const Challenge = require('models/challenge');
 //const User = require('models/user');
 const Game = require('models/game');
 //const Emoji = require('models/emoji');
@@ -36,31 +35,6 @@ const getInviteAcceptedMessages = (game, invite, invited, invited_key) => {
   });
 };
 
-const getChallenge = (user) => {
-  const promises = [
-    Challenge.get({
-      sender_id: user.to,
-      protocol: user.protocol,
-    }),
-    Challenge.guesses({
-      user_id: user.id,
-      from: user.from,
-      sender_id: user.to,
-      protocol: user.protocol,
-    }),
-  ];
-  return Promise.all(promises).then(response => {
-    const phrases = response[0];
-    const guesses = response[1];
-    if (guesses[user.to] && guesses[user.to].length) {
-      // this means they've already guessed on this number
-      return [];
-    }
-
-    return phrases;
-  });
-};
-
 module.exports = (user, message) => {
   console.info('start the game route');
   return Invite.get({
@@ -78,24 +52,8 @@ module.exports = (user, message) => {
           });
         });
       } else {
-        console.info('this user has players already, see if challenge or not');
-        // resolve(getChallenge(user).then(phrases => {
-          /*
-          console.info('phrases back', phrases);
-          if (phrases && phrases.length > 0) {
-            const phrase = phrases.shift();
-            return require('../challenge')({
-              user,
-              message,
-              phrase,
-            });
-          }
-          */
-
-          console.info('start a new game, no associated challenges');
-          console.info('create game', user);
-          return Game.create([user]);
-        // }));
+        console.info('create game', user);
+        return Game.create([user]);
       }
     }).then((game) => {
       console.info('game is back', game);

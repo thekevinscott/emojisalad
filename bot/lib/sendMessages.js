@@ -5,7 +5,6 @@ const request = Promise.promisify(require('request'));
 //const queues = require('config/services').queues;
 const sendAlert = require('./sendAlert');
 const registry = require('microservice-registry');
-// const track = require('./analytics');
 
 function sequence(tasks) {
   return tasks.reduce((current, task) => {
@@ -108,9 +107,6 @@ const sendMessages = (messages = [], options = {}) => {
           }
         }
         console.info('Request is fine', response.body, byteLength);
-        // if (protocol !== 'testqueue') {
-        //   track.outgoing(protocolMessages);
-        // }
         resolve(response);
       }).catch((err) => {
         clearTimeout(timer);

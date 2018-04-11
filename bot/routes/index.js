@@ -4,7 +4,6 @@
 //const Promise = require('bluebird');
 const Player = require('models/player');
 const User = require('models/user');
-const Challenge = require('models/challenge');
 
 const Router = ({ game_key, from, message, to, protocol }) => {
   console.info(`===========Router Index: ${message} | ${from} | ${to} | ${protocol} ${game_key}`);
@@ -55,36 +54,8 @@ const Router = ({ game_key, from, message, to, protocol }) => {
             });
           }
         } else {
-          // This might be a challenge request - a user texting
-          // a number they found on the street with an answer.
-          //
-          // Check to see if the number has an associated challenge
-          // with it.
-          console.info('prepare to get challenge', to, protocol);
-          // return Challenge.get({
-          //   sender_id: to,
-          //   protocol,
-          // }).then(phrases => {
-            /*
-            console.info('phrases back', phrases);
-            if (phrases && phrases.length > 0) {
-              const phrase = phrases.shift();
-              return require('./challenge')({
-                user: {
-                  from,
-                  to,
-                  protocol,
-                },
-                message,
-                phrase,
-              });
-            }
-            */
-
-            // otherwise, create a user normally
-            console.info('create user');
-            return require('./create-user')(from, message, to, protocol);
-          // });
+          console.info('create user');
+          return require('./create-user')(from, message, to, protocol);
         }
       });
     }
