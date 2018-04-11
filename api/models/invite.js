@@ -215,7 +215,7 @@ const Invite = {
     });
   },
   find: (params = {}, exclude = []) => {
-    console.info('params', params);
+    console.info('find invite with params', params);
     let query = squel
                 .select()
                 .field('i.game_number_id', 'sender')
@@ -266,7 +266,7 @@ const Invite = {
       query = query.where('i.used = ?',params.used);
     }
 
-    console.info('invite query', query.toString());
+    // console.info('invite query', query.toString());
     return db.query(query).then((invites) => {
       //console.info('got invite back');
       if ( invites && invites.length ) {

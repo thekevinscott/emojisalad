@@ -36,7 +36,7 @@ function getValidUsers(users) {
 const getSender = (user, result) => {
   return new Promise((resolve, reject) => {
     if ( user.to ) {
-      console.info('a to exists');
+      // console.info('a to exists');
       return resolve(user.to);
     }
 
@@ -44,7 +44,7 @@ const getSender = (user, result) => {
       return resolve();
     }
 
-    console.info('user players', user);
+    // console.info('user players', user);
     const player_sender_ids = result.players.map((player) => {
       return player.to;
     });
@@ -68,7 +68,7 @@ const getSender = (user, result) => {
         }
       };
 
-      console.info('service options', options);
+      // console.info('service options', options);
 
       return request(options).then((response) => {
         //console.info('response', response);
@@ -97,26 +97,26 @@ const Game = {
       //console.error('invalid parsed ids');
       throw new Error("You must provide a valid user");
     } else {
-      console.info('users that we will now check', users);
+      // console.info('users that we will now check', users);
       // check that every user is valid
       return Promise.all(users.map((user) => {
-        console.info('check that this user is valid', user);
+        // console.info('check that this user is valid', user);
         return User.findOne(user).then((result) => {
-          console.log('get sender', result);
+          // console.log('get sender', result);
           return getSender(user, result).then(sender => {
-            console.log('got sender', sender);
+            // console.log('got sender', sender);
             return Object.assign({}, result, {
               to: sender,
             });
           });
         });
       })).then((rows) => {
-        console.info('users that have been checked', rows);
+        // console.info('users that have been checked', rows);
         if ( getValidUsers(rows).length !== users.length ) {
           console.error('invalid queried ids');
           throw new Error("You must provide a valid user");
         } else {
-          console.info('the rows', rows);
+          // console.info('the rows', rows);
           rows.map((user) => {
             user.players.map((player) => {
               if ( player.to && player.to === user.to ) {
@@ -127,7 +127,7 @@ const Game = {
           return rows;
         }
       }).then((valid_users) => {
-        console.info('the valid users', valid_users);
+        // console.info('the valid users', valid_users);
         const query = squel
                       .insert()
                       .into('games', 'g')
@@ -145,7 +145,7 @@ const Game = {
             return setKey('games', {
               id: game.insertId,
             }).then(() => {
-              console.info('now add users ot game', valid_users, game);
+              // console.info('now add users ot game', valid_users, game);
               return Game.add({
                 id: game.insertId
               }, valid_users);
@@ -157,27 +157,27 @@ const Game = {
   },
   getNextSubmitter: (game_params) => {
     //console.info('get next submitter!');
-    console.info('get next submitter', game_params);
+    // console.info('get next submitter', game_params);
     return Promise.join(
       Round.findOne({ game_id: game_params.id, most_recent: true }),
       Game.findOne(game_params),
       (round, game) => {
-        console.info('game', game);
+        // console.info('game', game);
         const players = game.players;
-        console.info('game get next submitter', round, players);
+        // console.info('game get next submitter', round, players);
         let next;
         //if ( round ) {
         if ( round && round.id ) {
-          console.info('round exists, the players are', players, 'the submitter is', round.submitter);
+          // console.info('round exists, the players are', players, 'the submitter is', round.submitter);
           for ( let i=0,l=players.length; i<l; i++ ) {
             if ( players[i].id === round.submitter.id ) {
-              console.info('there is a match!', round.submitter.id);
+              // console.info('there is a match!', round.submitter.id);
               if ( i < l-1 ) {
-                console.info('grab the next one');
+                // console.info('grab the next one');
                 // grab the next one
                 next = players[i + 1];
               } else {
-                console.info('go to 0');
+                // console.info('go to 0');
                 next = players[0];
               }
               // else, just use the first player
@@ -185,13 +185,13 @@ const Game = {
             }
           }
         } else if ( players.length ) {
-          console.info('theres no round');
+          // console.info('theres no round');
           next = players[0];
         } else {
           throw new Error('wtf, no round and no players');
         }
         return Player.findOne({ id: next.id }).then((player) => {
-          console.info('next', player);
+          // console.info('next', player);
           return player;
         });
       }
@@ -243,7 +243,7 @@ const Game = {
     //});
   //},
   add: (game, users) => {
-    console.info('get ready to add users to game', game, users);
+    // console.info('get ready to add users to game', game, users);
     //console.debug('huzzah add');
     return new Promise((resolve) => {
       resolve();
@@ -254,7 +254,7 @@ const Game = {
         return Game.findOne(game.id);
       }
     }).then((foundGame) => {
-      console.info('found teh game', foundGame, users);
+      // console.info('found teh game', foundGame, users);
       return Promise.all(users.map((user) => {
         //if ( !user.to ) {
           //console.error(user);
@@ -265,18 +265,18 @@ const Game = {
           user_id: user.id,
           to: user.to
         };
-        console.info('prepare to create player', player_params);
+        // console.info('prepare to create player', player_params);
         return Player.create(player_params).catch((err) => {
-          console.info('did not create player', err);
+          // console.info('did not create player', err);
           throw new Error('Did not create player', player_params);
         });
       })).then((players) => {
-        console.info('players created', players, foundGame);
+        // console.info('players created', players, foundGame);
         return Object.assign({}, foundGame, {
           players: foundGame.players.concat(players.filter(player => player)),
         });
       }).then(finalGame => {
-        console.info('finalGame being returned', finalGame);
+        // console.info('finalGame being returned', finalGame);
         return finalGame;
       });
     });
@@ -358,12 +358,13 @@ const Game = {
       }, {});
     };
 
-    console.info('find games', query.toString());
+    // console.info('find games', query.toString());
 
     return db.query(query).then((games) => {
       //console.info('return from games');
       if ( games && games.length ) {
         const game_ids = games.map(game => game.id);
+        console.info('***** find invites, players, and rounds');
         return Promise.join(
           Invite.find({ game_ids }, [ 'game' ]).then(getByGameID),
           Player.find({ game_ids }).then(getByGameID),
@@ -401,7 +402,7 @@ const Game = {
             });
           }
         ).then(resp => {
-          console.info('final games', resp);
+          // console.info('final games', resp);
           return resp;
         });
       } else {
@@ -410,7 +411,7 @@ const Game = {
     });
   },
   update: (game, params) => {
-    console.info('****** game update', game, params);
+    // console.info('****** game update', game, params);
     const whitelist = [
       'name',
     ];
@@ -437,7 +438,7 @@ const Game = {
       throw new Error("You must provide a valid key to update");
     }
 
-    console.info('game update query', query.toString());
+    // console.info('game update query', query.toString());
     return db.query(query).then((rows) => {
       if ( rows && rows.affectedRows ) {
         return Game.findOne(game);

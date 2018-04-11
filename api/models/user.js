@@ -69,12 +69,12 @@ const User = {
       facebookPermissions = params.facebookPermissions;
     }
 
-    console.info('create user 1');
+    // console.info('create user 1');
     return Emoji.getRandom().then((result) => {
-      console.info('create user 2', result);
+      // console.info('create user 2', result);
       const avatar = result.emoji;
-      console.info('create user 3', params);
-      console.info('parsed the number', from);
+      // console.info('create user 3', params);
+      // console.info('parsed the number', from);
       const confirmed = params.confirmed || 0;
       const confirmed_avatar = params.confirmed_avatar || 0;
 
@@ -161,7 +161,7 @@ const User = {
         return User.findOne(params);
       }).then(user => {
         if (user.protocol === 'appqueue') {
-          console.info('UPDATE APP QUEUE USER', user);
+          // console.info('UPDATE APP QUEUE USER', user);
           // we set the user from to match the user key
           return User.update({
             key: user.key
@@ -185,7 +185,7 @@ const User = {
     });
   },
   update: (user, params) => {
-    console.info('user update', user, params);
+    // console.info('user update', user, params);
     const whitelist = [
       'from',
       'nickname',
@@ -222,7 +222,7 @@ const User = {
       throw new Error("You must provide a valid key to update");
     }
 
-    console.info('user update query', query.toString());
+    // console.info('user update query', query.toString());
     return db.query(query).then((rows) => {
       if ( rows && rows.affectedRows ) {
         return User.findOne(user);

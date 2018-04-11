@@ -92,7 +92,7 @@ const Player = {
   },
 
   find: (params = {}) => {
-    console.info('player find params', params);
+    // console.info('player find params', params);
     let archived = 0;
     if ( params.archived !== undefined ) {
       archived = params.archived;
@@ -180,7 +180,7 @@ const Player = {
       query = query.where('g.`id` IN ?',params.game_ids);
     }
 
-    console.info('query', query.toString());
+    // console.info('query', query.toString());
     return db.query(query);
   },
   remove: (player_id) => {
