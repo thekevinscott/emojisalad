@@ -145,7 +145,7 @@ server {
 server {
   listen 80;
 
-  server_name sms.emojinaryfriend.com;
+  server_name sms.emojisalad.com;
 
   location / {
     proxy_pass http://127.0.0.1:5009;
