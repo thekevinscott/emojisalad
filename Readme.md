@@ -40,8 +40,7 @@ BOT (to all)
 👾 It's your turn, ⚾️ Kevin...
 
 ```
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/9U7IJpVog4A" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+[![Image of Emoji Salad being played](https://img.youtube.com/vi/9U7IJpVog4A/0.jpg)](https://www.youtube.com/embed/9U7IJpVog4A)
 
 ## Why can't I play this game?
 
@@ -73,7 +72,7 @@ Here's a couple more articles to whet your whistle:
 
 Don't like to read? Neither did our users! (just kidding). But here's a video presentation about Emoji Salad:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/IamU08l-btM?start=2427" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+[![Talking about Emoji Salad at a meetup](https://img.youtube.com/vi/IamU08l-btM/0.jpg)](https://www.youtube.com/embed/IamU08l-btM?start=2427)
 
 ## Technical Details
 
