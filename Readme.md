@@ -48,10 +48,6 @@ Emoji Salad had a good run, it got us through some tough times, but part of grow
 
 If you'd like us to set you up a private game, send one of us an email and we'll try and set you up. You might have to buy us a beer for your troubles though :)
 
-## I want to see a gif of the thing in action!
-
-You can see it here:
-
 ## What did you learn?
 
 A lot! You can read Ari's rundown of our design process here:
