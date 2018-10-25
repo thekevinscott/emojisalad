@@ -72,10 +72,12 @@ Don't like to read? Neither did our users! (just kidding). But here's a video pr
 
 ## Technical Details
 
-The app was written entirely in Node.js and made extensive use of microserves. It was active over a number of channels, including Twilio, Nexmo, email, Facebook Messenger, and an app.
+The backend of Emoji Salad was Node.js and made extensive use of microserves. For the app version, we used React Native.
+
+Emoji Salad was capable of being played over a number of channels, including Twilio, Nexmo, email, Facebook Messenger, and an app, but we focused most of our attention on making the SMS experience the primary channel.
 
 ## Creators
 
 Emoji Salad was created by [Michelle Lew](http://michellelew.com), Ari Zilnik, and [Kevin Scott](https://thekevinscott.com) as part of SIBlings, a design collective founded in Brooklyn in 2014. SIBlings takes on cutting edge design problems and tries to solve them.
 
-<a href="https://twitter.com/BrownInstitute"><img alt="Emojicon" title="Emojicon" src="emojicon.png" /></a>
+<a href="https://twitter.com/BrownInstitute"><img alt="Emojicon" title="Emojicon" src="https://github.com/thekevinscott/emojisalad/blob/master/emojicon.jpg?raw=true" /></a>
