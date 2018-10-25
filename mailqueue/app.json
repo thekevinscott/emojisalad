@@ -1,9 +1,0 @@
-[{
-  "name" : "mail",
-  "script" : "./index.js",
-  "env": {
-    "LOG_LEVEL": "info",
-    "PORT" : "5010",
-    "ENVIRONMENT": "production"
-  }
-}]
