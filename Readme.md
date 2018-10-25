@@ -35,7 +35,9 @@ Legend of Zelda
 //////////
 
 BOT (to all)
-👾 Great job Kevin! Moving on to you...
+👾 YAY ⚾️ Kevin got it RIGHT! The phrase was THE LEGEND OF ZELDA
+
+👾 It's your turn, ⚾️ Kevin...
 
 ```
 
